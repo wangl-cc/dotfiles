@@ -77,7 +77,7 @@ set showcmd
 set encoding=utf-8
 
 " shell
-set shell=/bin/zsh
+set shell=/bin/bash
 
 " quickly write and quit
 nnoremap <buffer> <leader>w :w<CR>
