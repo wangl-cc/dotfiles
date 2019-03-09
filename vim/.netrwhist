@@ -1,9 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/usr/share/zsh/functions/Completion/Base'
-let g:netrw_dirhist_2='/usr/share/zsh/functions'
-let g:netrw_dirhist_3='/usr/share/zsh/functions/Chpwd'
-let g:netrw_dirhist_4='/usr/share/zsh/functions'
-let g:netrw_dirhist_5='/usr/share/zsh/functions/Exceptions'
-let g:netrw_dirhist_6='/home/wanglong'
-let g:netrw_dirhist_7='/home/wanglong/.vim/bundle/vim-fugitive'
