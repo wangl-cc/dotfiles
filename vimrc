@@ -46,8 +46,8 @@ let mapleader=","
 inoremap <Tab> <C-R>=TabSkip()<CR>
 
 function TabSkip()
-    let char = getline('.')[col('.') - 1]
-    if char == '}' || char == ')' || char == ']' || char == ';'
+    let l:char = getline('.')[col('.') - 1]
+    if l:char == '}' || l:char == ')' || l:char == ']' || l:char == ';'
         return "\<Right>"
     else
         return "\<Tab>"
@@ -80,9 +80,9 @@ set encoding=utf-8
 set shell=/bin/bash
 
 " quickly write and quit
-nnoremap <buffer> <leader>w :w<CR>
-nnoremap <buffer> <leader>q :q<CR>
-nnoremap <buffer> <leader>wq :wq<CR>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>wq :wq<CR>
 
 " quickly run
 " nnoremap <leader>r :call QuickRun()<cr>
