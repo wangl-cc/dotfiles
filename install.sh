@@ -1,7 +1,12 @@
 #!/usr/bin/bash
 
-mv ~/.vimrc ~/.vimrc_backup
-mv ~/.vim ~/.vim_backup
-ln -s $(dirname $(readlink -f $0))/vimrc ~/.vimrc
-ln -s $(dirname $(readlink -f $0))/vim ~/.vim
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+if [ -e ~/.vimrc ]; then
+    mv ~/.vimrc ~/.vimrc_backup
+fi
+
+if [ -e ~/.vim ]; then
+    mv ~/.vim ~/.vim_backup
+fi
+
+ln -s $(dirname $(readlink -f $0))/.vimrc ~/.vimrc
+ln -s $(dirname $(readlink -f $0))/.vim ~/.vim

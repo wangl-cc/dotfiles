@@ -1,22 +1,18 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" set the runtime path to include Vundle and initialize
-set runtimepath+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-" NERD tree plugin
-Plugin 'scrooloose/nerdtree'
-" julia-vim plugin
-Plugin 'JuliaEditorSupport/julia-vim'
-" auto pairs plugin
-Plugin 'jiangmiao/auto-pairs.git'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+" vim-plig
+call plug#begin('~/.vim/plugged')
+    " NERD tree plugin
+    Plug 'scrooloose/nerdtree'
+    " julia-vim plugin
+    Plug 'JuliaEditorSupport/julia-vim'
+    " auto pairs plugin
+    Plug 'jiangmiao/auto-pairs'
+call plug#end()
 
 " line number
 set number
@@ -84,25 +80,9 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>wq :wq<CR>
 
-" quickly run
-" nnoremap <leader>r :call QuickRun()<cr>
-func! QuickRun()
-    exec "w"
-    if &filetype == 'c'
-        exec "!gcc % -o %r.o"
-        exec "!time %r.o"
-    elseif &filetype == 'cpp'
-        exec "!g++ % -o %r.o"
-        exec "!time %r.o"
-    elseif &filetype == 'julia'
-        exec "!time julia --color=yes %"
-    elseif &filetype == 'python'
-        exec "!time python %"
-    elseif &filetype == 'markdown'
-        exec "google-chrome-stable %"
-    endif
-endfunc
-
 " NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+augroup NERDTreeAutoClose
+    autocmd!
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+augroup END
 nnoremap <leader>t :NERDTreeToggle<CR>
