@@ -50,11 +50,10 @@ class JuliaCompletePlugin(object):
         line = self.nvim.eval("getline('.')")
         col = self.nvim.eval("col('.')")
         msg = json.dumps(["-f", line, col-1])
-        msg = bytes(msg, "UTF-8")
+        msg = bytes(msg, "utf-8")
         self.sock.sendall(msg)
-        recv = self.sock.recv(10)
-        start = eval(recv)
-        self.nvim.command("let g:start={}".format(start))
+        recv = self.sock.recv(10).decode("utf-8")
+        self.nvim.command("let g:start={}".format(recv))
 
     @pynvim.function('JLComGet', sync=True)
     def jlcompget(self, args):
@@ -62,9 +61,8 @@ class JuliaCompletePlugin(object):
         msg=json.dumps(["-c", base, len(base)])
         msg=bytes(msg, "UTF-8")
         self.sock.sendall(msg)
-        recv=json_recv(self.sock)
-        comp=eval(recv)
-        self.nvim.command("let g:comp={}".format(str(comp)))
+        recv=json_recv(self.sock).decode("utf-8")
+        self.nvim.command("let g:comp={}".format(recv))
 
     @pynvim.autocmd('VimLeavePre', pattern='*.jl', sync=True)
     def vimleave(self, args):
