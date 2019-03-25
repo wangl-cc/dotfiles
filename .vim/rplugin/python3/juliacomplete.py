@@ -40,13 +40,31 @@ class JuliaCompletePlugin(object):
         self.sock = sock
         self.host = host
         self.port = port
-        os.system(
-            'julia -e "using VimCompletion; serverstart(\\"{}\\", {})" 2>&1 &'.format(self.host, self.port))
+        currentbuf = self.nvim.eval('bufwinnr("%")')
+        self.nvim.command(
+            'vsplit term://.//julia -L ~/.vim/julia/loadfile.jl')
+        self.jlbufname = self.nvim.eval('bufname("%")')
+        self.nvim.command("{} wincmd w".format(currentbuf))
         time.sleep(3)
         self.sock.connect((self.host, self.port))
 
+    @pynvim.function("Reconnect")
+    def reconnect(self, args):
+        try:
+            # Just for test, it's junk message
+            msg = json.dumps(["-f", "using ", 6])
+            msg = bytes(msg, "utf-8")
+            self.sock.sendall(msg)
+            _ = self.sock.recv(10).decode("utf-8")
+        except:
+            if self.nvim.eval('bufwinnr("{}")'.format(self.jlbufname)) == -1:
+                self.nvim.command(
+                    'vsplit term://.//julia -L ~/.vim/julia/loadfile.jl')
+                time.sleep(3)
+            self.sock.connect((self.host, self.port))
+
     @pynvim.function('JLFindStart', sync=True)
-    def findstart(self, arg):
+    def findstart(self, args):
         line = self.nvim.eval("getline('.')")
         col = self.nvim.eval("col('.')")
         msg = json.dumps(["-f", line, col-1])
@@ -63,6 +81,40 @@ class JuliaCompletePlugin(object):
         self.sock.sendall(msg)
         recv=json_recv(self.sock).decode("utf-8")
         self.nvim.command("let g:comp={}".format(recv))
+
+    @pynvim.function('JLRunLine')
+    def jlrunline(self, args):
+        line = self.nvim.eval("getline('.')")
+        msg = json.dumps(["-e", line])
+        msg = bytes(msg, "utf-8")
+        self.sock.sendall(msg)
+        recv = json_recv(self.sock).decode("utf-8")
+        self.nvim.command("echo {}".format(recv))
+
+    @pynvim.function('JLRunBlock')
+    def jlrunblock(self, args):
+        row = self.nvim.eval("line('.')")
+        beginrow = row
+        endrow = row
+        for i in range(row, 1, -1):
+            line = self.nvim.eval("getline({})".format(i))
+            if line[0] != " " and line[0:3] != "end":
+                beginrow = i
+                break
+        i = row
+        while True:
+            line = self.nvim.eval("getline({})".format(i))
+            if line[0:3] == "end":
+                endrow = i
+                break
+            i += 1
+        lines = self.nvim.eval("getline({}, {})".format(beginrow, endrow))
+        block = "\n".join(lines)
+        msg = json.dumps(["-e", block])
+        msg = bytes(msg, "utf-8")
+        self.sock.sendall(msg)
+        recv = json_recv(self.sock).decode("utf-8")
+        self.nvim.command("echo {}".format(recv))
 
     @pynvim.autocmd('VimLeavePre', pattern='*.jl', sync=True)
     def vimleave(self, args):

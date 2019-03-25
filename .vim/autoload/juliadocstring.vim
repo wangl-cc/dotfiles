@@ -3,6 +3,10 @@
 "
 " Author: Atsushi Sakai
 "
+" License: MIT
+"
+" Link: https://github.com/AtsushiSakai/julia.vim/blob/master/plugin/judocstring.vim
+"
 " Ref: Documentation · The Julia Language https://docs.julialang.org/en/v1/manual/documentation/index.html
 "
 
