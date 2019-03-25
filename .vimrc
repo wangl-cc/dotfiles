@@ -12,6 +12,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'JuliaEditorSupport/julia-vim'
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
+    " juliacomplete-nvim-client
+    Plug 'wangl-cc/juliacomplete-nvim-client', { 'do' : ':UpdateRemotePlugins' }
 call plug#end()
 
 " line number
