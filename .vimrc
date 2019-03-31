@@ -8,12 +8,17 @@ endif
 call plug#begin('~/.vim/plugged')
     " NERD tree plugin
     Plug 'scrooloose/nerdtree'
+    " Git
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'airblade/vim-gitgutter'
     " julia-vim plugin
     Plug 'JuliaEditorSupport/julia-vim'
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
     " juliacomplete-nvim-client
-    Plug 'wangl-cc/juliacomplete-nvim-client', { 'do' : ':UpdateRemotePlugins' }
+    Plug 'wangl-cc/juliatools-nvim', { 'do' : ':UpdateRemotePlugins' }
+    " vim-indent-guides
+    Plug 'nathanaelkane/vim-indent-guides'
 call plug#end()
 
 " line number
@@ -30,6 +35,7 @@ set nobackup
 set confirm
 
 " indent
+filetype indent on
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -75,7 +81,11 @@ set showcmd
 set encoding=utf-8
 
 " shell
-set shell=/bin/bash
+set shell=/bin/zsh
+
+" split
+set splitbelow
+set splitright
 
 " quickly write and quit
 nnoremap <leader>w :w<CR>
@@ -83,8 +93,12 @@ nnoremap <leader>q :q<CR>
 nnoremap <leader>wq :wq<CR>
 
 " NERDTree
+let NERDTreeShowHidden = 1
 augroup NERDTreeAutoClose
     autocmd!
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 augroup END
 nnoremap <leader>t :NERDTreeToggle<CR>
+
+" Git
+nnoremap <leader>g :GitGutterToggle<CR>
