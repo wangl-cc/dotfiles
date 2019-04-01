@@ -13,13 +13,27 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter'
     " julia-vim plugin
     Plug 'JuliaEditorSupport/julia-vim'
+    " Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
-    " juliacomplete-nvim-client
+    " juliacomplete
     Plug 'wangl-cc/juliatools-nvim', { 'do' : ':UpdateRemotePlugins' }
     " vim-indent-guides
     Plug 'nathanaelkane/vim-indent-guides'
+    " BioSyntax
+    Plug 'bioSyntax/bioSyntax-vim'
+    " vim-airline
+    Plug 'vim-airline/vim-airline'
+    " vimtex
+    Plug 'lervag/vimtex'
+    " lsc
+    " Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+    Plug 'Shougo/denite.nvim'
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 call plug#end()
+
+" filetype
+filetype indent plugin on
 
 " line number
 set number
@@ -28,14 +42,10 @@ set relativenumber
 " syntax highlight
 syntax on
 
-" nobackup
-set nobackup
-
 " confirm when quit
 set confirm
 
 " indent
-filetype indent on
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -51,7 +61,7 @@ inoremap <Tab> <C-R>=TabSkip()<CR>
 
 function TabSkip()
     let l:char = getline('.')[col('.') - 1]
-    if l:char == '}' || l:char == ')' || l:char == ']' || l:char == ';'
+    if l:char == '}' || l:char == ')' || l:char == ']' || l:char == ';' || l:char == "'" || l:char == '`' || l:char == '"'
         return "\<Right>"
     else
         return "\<Tab>"
@@ -67,9 +77,6 @@ set background=dark
 
 " showmatch
 set showmatch
-
-" show coordinate of cursor
-set ruler
 
 " novisualbell
 set novisualbell
@@ -102,3 +109,12 @@ nnoremap <leader>t :NERDTreeToggle<CR>
 
 " Git
 nnoremap <leader>g :GitGutterToggle<CR>
+
+" Indent guide
+let g:indent_guides_enable_on_vim_startup = 1
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+
+" tex
+let g:tex_flavor='latex'
