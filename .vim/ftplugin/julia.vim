@@ -12,5 +12,3 @@ augroup JuliaAutoClose
     autocmd!
     autocmd bufenter * if (winnr("$") == 1 && bufname("$") =~ "julia") | q | endif
 augroup END
-
-setlocal completefunc=juliacomplete#CompleteServer

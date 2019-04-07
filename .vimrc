@@ -1,3 +1,4 @@
+" If there is not plug.vim, install it and install plugins.
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -6,18 +7,18 @@ endif
 
 " vim-plig
 call plug#begin('~/.vim/plugged')
-    " NERD tree plugin
+    " tree
     Plug 'scrooloose/nerdtree'
     " Git
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'airblade/vim-gitgutter'
-    " julia-vim plugin
+    " Comment
+    Plug 'scrooloose/nerdcommenter'
+    " julia plugins
     Plug 'JuliaEditorSupport/julia-vim'
-    " Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
+    Plug 'wangl-cc/juliatools-nvim', { 'do' : ':UpdateRemotePlugins' }
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
-    " juliacomplete
-    Plug 'wangl-cc/juliatools-nvim', { 'do' : ':UpdateRemotePlugins' }
     " vim-indent-guides
     Plug 'nathanaelkane/vim-indent-guides'
     " BioSyntax
@@ -26,16 +27,18 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline'
     " vimtex
     Plug 'lervag/vimtex'
-    " lsc
-    " Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-    Plug 'Shougo/denite.nvim'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Shougo{
+        " Search at source
+        Plug 'Shougo/denite.nvim'
+        " Complelte
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " }
 call plug#end()
 
 " filetype
 filetype indent plugin on
 
-" line number
+" line number config
 set number
 set relativenumber
 
@@ -45,18 +48,19 @@ syntax on
 " confirm when quit
 set confirm
 
-" indent
+" indent config{
 set tabstop=4
 set shiftwidth=4
 set expandtab
 set smarttab
 set autoindent
 set smartindent
+" }
 
 " leader
 let mapleader=","
 
-" tab skip the brackets
+" tab skip the brackets{
 inoremap <Tab> <C-R>=TabSkip()<CR>
 
 function TabSkip()
@@ -67,10 +71,11 @@ function TabSkip()
         return "\<Tab>"
     endif
 endf
+" }
 
 " hlsearch
 set hlsearch
-nnoremap <leader>c :nohlsearch<cr>
+nnoremap <leader>nl :nohlsearch<cr>
 
 " background
 set background=dark
@@ -94,27 +99,45 @@ set shell=/bin/zsh
 set splitbelow
 set splitright
 
-" quickly write and quit
-nnoremap <leader>w :w<CR>
-nnoremap <leader>q :q<CR>
-nnoremap <leader>wq :wq<CR>
+" quickly write and quit {
+    nnoremap <leader>ww :w<CR>
+    nnoremap <leader>qq :q<CR>
+    nnoremap <leader>wq :wq<CR>
+" }
 
-" NERDTree
-let NERDTreeShowHidden = 1
-augroup NERDTreeAutoClose
-    autocmd!
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-augroup END
-nnoremap <leader>t :NERDTreeToggle<CR>
+" NERDTree{
+    let NERDTreeShowHidden = 1
+    nnoremap <leader>tt :NERDTreeToggle<CR>
+" }
 
-" Git
-nnoremap <leader>g :GitGutterToggle<CR>
+" Git Toggle map
+nnoremap <leader>gt :GitGutterToggle<CR>
 
-" Indent guide
+" Enable indent guide on startup
 let g:indent_guides_enable_on_vim_startup = 1
 
-" deoplete
+" Enable deoplete at startup
 let g:deoplete#enable_at_startup = 1
 
-" tex
+" .tex file flavor
 let g:tex_flavor='latex'
+
+" Comment config{
+    " Add spaces after comment delimiters by default
+    let g:NERDSpaceDelims = 1
+
+    " Use compact syntax for prettified multi-line comments
+    let g:NERDCompactSexyComs = 1
+
+    " Align line-wise comment delimiters flush left instead of following code indentation
+    let g:NERDDefaultAlign = 'left'
+
+    " Allow commenting and inverting empty lines (useful when commenting a region)
+    let g:NERDCommentEmptyLines = 1
+
+    " Enable trimming of trailing whitespace when uncommenting
+    let g:NERDTrimTrailingWhitespace = 1
+
+    " Enable NERDCommenterToggle to check all selected lines is commented or not 
+    let g:NERDToggleCheckAllLines = 1
+" }
