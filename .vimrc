@@ -1,8 +1,8 @@
 " If there is not plug.vim, install it and install plugins.
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " vim-plig
@@ -16,7 +16,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdcommenter'
     " julia plugins
     Plug 'JuliaEditorSupport/julia-vim'
-    Plug 'wangl-cc/juliatools-nvim', { 'do' : ':UpdateRemotePlugins' }
+    " LSP
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'prabirshrestha/async.vim'
+    Plug 'prabirshrestha/vim-lsp'
+    Plug 'lighttiger2505/deoplete-vim-lsp'
+    Plug 'Shougo/neco-vim'
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
     " vim-indent-guides
@@ -27,12 +32,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline'
     " vimtex
     Plug 'lervag/vimtex'
-    " Shougo{
-        " Search at source
-        Plug 'Shougo/denite.nvim'
-        " Complelte
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    " }
+    " markdown
+    Plug 'plasticboy/vim-markdown'
 call plug#end()
 
 " filetype
@@ -75,7 +76,7 @@ endf
 
 " hlsearch
 set hlsearch
-nnoremap <leader>nl :nohlsearch<cr>
+nnoremap <silent> <leader>nl :nohlsearch<cr>
 
 " background
 set background=dark
@@ -107,17 +108,14 @@ set splitright
 
 " NERDTree{
     let NERDTreeShowHidden = 1
-    nnoremap <leader>tt :NERDTreeToggle<CR>
+    nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 " }
 
 " Git Toggle map
-nnoremap <leader>gt :GitGutterToggle<CR>
+nnoremap <silent> <leader>gt :GitGutterToggle<CR>
 
-" Enable indent guide on startup
-let g:indent_guides_enable_on_vim_startup = 1
-
-" Enable deoplete at startup
-let g:deoplete#enable_at_startup = 1
+" indent guides
+nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
 
 " .tex file flavor
 let g:tex_flavor='latex'
@@ -138,6 +136,64 @@ let g:tex_flavor='latex'
     " Enable trimming of trailing whitespace when uncommenting
     let g:NERDTrimTrailingWhitespace = 1
 
-    " Enable NERDCommenterToggle to check all selected lines is commented or not 
+    " Enable NERDCommenterToggle to check all selected lines is commented or not
     let g:NERDToggleCheckAllLines = 1
 " }
+
+" markdown config{
+    " fold
+    let g:vim_markdown_folding_disabled = 1
+
+    " latex extension
+    let g:vim_markdown_math = 1
+
+    " yaml extension for jekyll
+    let g:vim_markdown_frontmatter = 1
+" }
+
+" julia version
+let g:default_julia_version = '1.1'
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+
+" language server{
+if (executable('pyls'))
+    augroup PythonLS
+        autocmd!
+        autocmd User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \})
+    augroup END
+endif
+
+if (executable('clangd'))
+    augroup ClangLS
+        autocmd!
+        autocmd User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd', '-background-index']},
+        \ 'whitelist': ['c', 'cpp'],
+        \})
+    augroup END
+endif
+
+if (executable('julia'))
+    augroup JuliaLS
+        autocmd!
+        autocmd User lsp_setup call lsp#register_server({
+        \ 'name': 'julia',
+        \ 'cmd': {server_info->['julia', '--startup-file=no', '--history-file=no', '-e', 'using LanguageServer; using Pkg; import StaticLint; import SymbolServer; env_path = dirname(Pkg.Types.Context().env.project_file); debug = false; server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict()); server.runlinter = true; run(server);']},
+        \ 'whitelist': ['julia'],
+        \})
+    augroup END
+endif
+
+nnoremap <silent> <leader>dc :LspHover<CR>
+nnoremap <silent> <leader>ss :LspStatus<CR>
+nnoremap <silent> <leader>rn :LspRename<CR>
+nnoremap <silent> <leader>gd :LspDefinition<CR>
+set completefunc=lsp#complete
+" }#
