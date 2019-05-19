@@ -185,7 +185,7 @@ if (executable('julia'))
         autocmd!
         autocmd User lsp_setup call lsp#register_server({
         \ 'name': 'julia',
-        \ 'cmd': {server_info->['julia', '--startup-file=no', '--history-file=no', '-e', 'using LanguageServer; using Pkg; import StaticLint; import SymbolServer; env_path = dirname(Pkg.Types.Context().env.project_file); debug = false; server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict()); server.runlinter = true; run(server);']},
+        \ 'cmd': {server_info->['julia', '--project=@.', '--startup-file=no', '--history-file=no', '-e', 'using LanguageServer; using Pkg; import StaticLint; import SymbolServer; env_path = dirname(Pkg.Types.Context().env.project_file); debug = false; server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict()); server.runlinter = true; run(server);']},
         \ 'whitelist': ['julia'],
         \})
     augroup END

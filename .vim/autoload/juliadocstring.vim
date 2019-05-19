@@ -11,12 +11,12 @@
 "
 
 function! s:generate_docstring(input_str)
-    "echo a:input_str 
+    "echo a:input_str
     let ind = stridx(a:input_str, " ")
     let header = a:input_str[0:ind-1]
     let body = a:input_str[ind:]
     echo header
-    if header == 'function'
+    if header == 'function' || header == 'macro'
         let rmap = s:parse_function(body)
     else
         echo "Unknown header"+header
@@ -27,7 +27,7 @@ function! s:generate_docstring(input_str)
 endfunction
 
 function! s:parse_function(body)
-    " Parse function code 
+    " Parse function code
     " return example
     "   input: levenberg_marquardt(f, Df, x1, lambda1; kmax=100, tol=1e-6)
     "   output:{'arg_list': ['f', 'Df', 'x1', 'lambda1'], 'opt_arg_list': ['kmax=100', 'tol=1e-6'],
@@ -68,13 +68,13 @@ function! s:generate_docstring_from_map(rmap)
     "
     "   ...
     "   # Arguments
-    "    - `f`: 
-    "    - `Df`: 
-    "    - `x1`: 
-    "    - `lambda1`: 
+    "    - `f`:
+    "    - `Df`:
+    "    - `x1`:
+    "    - `lambda2`:
     "    Optional args:
-    "    - `kmax=100`: 
-    "    - `tol=1e-6`: 
+    "    - `kmax=100`:
+    "    - `tol=1e-6`:
     "    ...
     "
     "   # Example
@@ -109,9 +109,11 @@ function! s:generate_docstring_from_map(rmap)
     return rstr
 endfunction
 
-function! s:get_function_code()
-    let ccol = line(".") 
-    let input_str = ""
+function! s:get_function_or_macro_code(kw)
+    let line = getline(".")
+    let codestart = stridx(line, a:kw)
+    let input_str = line[codestart:-1]
+    let ccol = line(".") + 1
     while 1
         let line = getline(ccol)
         let input_str = input_str . line
@@ -124,14 +126,44 @@ function! s:get_function_code()
     return input_str
 endfunction
 
+function! s:get_type_name(typekw)
+    let line = getline(".")
+    let strstart = stridx(line, a:typekw) + len(a:typekw) + 1
+    let whereidx = stridx(line, "where")
+    let endidx = stridx(line, "end")
+    if whereidx != -1
+        let strend = whereidx - 2
+    elseif endidx != -1
+        let strend = endidx - 2
+    else
+        let strend = -1
+    endif
+
+    return line[strstart:strend]
+endfunction
+
 function! juliadocstring#JuliaDocstring()
     "Read function header
     let line = getline(".")
     if stridx(line, "function") != -1
-        let input_str = s:get_function_code()
+        let input_str = s:get_function_or_macro_code('function')
         "echo input_str
         let docstring=s:generate_docstring(input_str)
         "echo docstring
+        call append(line(".")-1, split(docstring, "\n"))
+    elseif stridx(line, "macro") != -1
+        let input_str = s:get_function_or_macro_code('macro')
+        "echo input_str
+        let docstring=s:generate_docstring(input_str)
+        "echo docstring
+        call append(line(".")-1, split(docstring, "\n"))
+    elseif stridx(line, "struct") != -1
+        let typename = s:get_type_name("struct")
+        let docstring = s:generate_docstring_from_map({'func_name': typename, 'full_func_name': typename})
+        call append(line(".")-1, split(docstring, "\n"))
+    elseif stridx(line, "abstract type") != -1
+        let typename = s:get_type_name("abstract type")
+        let docstring = s:generate_docstring_from_map({'func_name': typename, 'full_func_name': typename})
         call append(line(".")-1, split(docstring, "\n"))
     else
         echo "[Error] Cannot find target codes"

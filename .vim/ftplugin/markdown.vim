@@ -1,5 +1,3 @@
-setlocal spell spelllang=en_us,cjk
-
 if !exists("g:viewer_command")
     let g:viewer_command = "google-chrome-stable --new-window"
 endif
