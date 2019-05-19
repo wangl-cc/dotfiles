@@ -10,3 +10,6 @@ fi
 
 ln -s $(dirname $(readlink -f $0))/.vimrc ~/.vimrc
 ln -s $(dirname $(readlink -f $0))/.vim ~/.vim
+echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after
+let &packpath = &runtimepath
+source ~/.vimrc" >> ~/.config/nvim/init.vim

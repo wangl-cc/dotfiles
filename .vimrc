@@ -64,7 +64,7 @@ let mapleader=","
 " tab skip the brackets{
 inoremap <Tab> <C-R>=TabSkip()<CR>
 
-function TabSkip()
+function! TabSkip()
     let l:char = getline('.')[col('.') - 1]
     if l:char == '}' || l:char == ')' || l:char == ']' || l:char == ';' || l:char == "'" || l:char == '`' || l:char == '"'
         return "\<Right>"
