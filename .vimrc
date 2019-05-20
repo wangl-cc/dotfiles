@@ -100,12 +100,6 @@ set shell=/bin/zsh
 set splitbelow
 set splitright
 
-" quickly write and quit {
-    nnoremap <leader>ww :w<CR>
-    nnoremap <leader>qq :q<CR>
-    nnoremap <leader>wq :wq<CR>
-" }
-
 " NERDTree{
     let NERDTreeShowHidden = 1
     nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
@@ -119,6 +113,11 @@ nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
 
 " .tex file flavor
 let g:tex_flavor='latex'
+
+let g:vimtex_compiler_progname = 'nvr'
+let g:vimtex_view_general_viewer = 'okular'
+let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+let g:vimtex_view_general_options_latexmk = '--unique'
 
 " Comment config{
     " Add spaces after comment delimiters by default
