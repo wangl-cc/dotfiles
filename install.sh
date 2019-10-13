@@ -16,10 +16,7 @@ if [ -e ~/.config/nvim/init.vim ]; then
     echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after
     let &packpath = &runtimepath
     source ~/.vimrc" >> ~/.config/nvim/init.vim
+    nvim -c PlugInstall
+else
+    vim -c PlugInstall
 fi
-
-# pip
-pip install --user -U pynvim
-
-# Plug install
-nvim -c PlugInstall
