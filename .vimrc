@@ -16,12 +16,20 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdcommenter'
     " julia plugins
     Plug 'JuliaEditorSupport/julia-vim'
-    " LSP
-    Plug 'Shougo/deoplete.nvim'
+    " LSP and complete
+    if has('nvim')
+      Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+      Plug 'Shougo/deoplete.nvim'
+      Plug 'roxma/nvim-yarp'
+      Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+    Plug 'Shougo/neco-vim'
     Plug 'prabirshrestha/async.vim'
     Plug 'prabirshrestha/vim-lsp'
     Plug 'lighttiger2505/deoplete-vim-lsp'
-    Plug 'Shougo/neco-vim'
+    Plug 'Shougo/neosnippet.vim'
+    Plug 'Shougo/neosnippet-snippets'
     " auto pairs plugin
     Plug 'jiangmiao/auto-pairs'
     " vim-indent-guides
@@ -34,10 +42,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'lervag/vimtex'
     " markdown
     Plug 'plasticboy/vim-markdown'
+
+    Plug 'rakr/vim-one'
 call plug#end()
 
 " filetype
 filetype indent plugin on
+
+" color scheme
+set background=light
+colorscheme one
+let g:airline_theme='one'
 
 " line number config
 set number
@@ -76,10 +91,7 @@ endf
 
 " hlsearch
 set hlsearch
-nnoremap <silent> <leader>nl :nohlsearch<cr>
-
-" background
-set background=dark
+nnoremap <silent> <leader>nl :nohlsearch<CR>
 
 " showmatch
 set showmatch
@@ -184,15 +196,33 @@ if (executable('julia'))
         autocmd!
         autocmd User lsp_setup call lsp#register_server({
         \ 'name': 'julia',
-        \ 'cmd': {server_info->['julia', '--project=@.', '--startup-file=no', '--history-file=no', '-e', 'using LanguageServer; using Pkg; import StaticLint; import SymbolServer; env_path = dirname(Pkg.Types.Context().env.project_file); debug = false; server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict()); server.runlinter = true; run(server);']},
+        \ 'cmd': {server_info->['julia', '--startup-file=no', '--history-file=no',  '--project=@.','-e', '
+        \ using LanguageServer;
+        \ using Pkg;
+        \ import StaticLint;
+        \ import SymbolServer;
+        \ env_path = dirname(Pkg.Types.Context().env.project_file);
+        \ debug = false;
+        \ server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict());
+        \ server.runlinter = true;
+        \ run(server);
+        \ ']
+        \},
         \ 'whitelist': ['julia'],
         \})
     augroup END
 endif
 
+nnoremap <silent> <leader>la :LspCodeAction<CR>
 nnoremap <silent> <leader>dc :LspHover<CR>
 nnoremap <silent> <leader>ss :LspStatus<CR>
 nnoremap <silent> <leader>rn :LspRename<CR>
 nnoremap <silent> <leader>gd :LspDefinition<CR>
-set completefunc=lsp#complete
 " }#
+
+" quickfix toggle
+nnoremap <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
+
+
+" remove tariling blanks
+nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
