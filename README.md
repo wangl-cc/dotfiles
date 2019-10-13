@@ -6,7 +6,7 @@ The install.sh will rename your own configuration files and create a symbol link
 
 ## Dependencies
 
-### python pkg
+### Python pkg
 
 * [pynvim](https://github.com/julia-vscode/LanguageServer.jl): deoplete required
 * neovim-remote: nvim vimtex backward search suppurt
