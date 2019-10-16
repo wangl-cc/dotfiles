@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 if [ -e ~/.vimrc ]; then
     mv ~/.vimrc ~/.vimrc_backup
