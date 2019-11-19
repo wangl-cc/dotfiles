@@ -2,3 +2,9 @@
 __pycache__
 .vim/plugged
 .vim/autoload/plug.vim
+.vim/plugs.vim
+.vim/config.vim
+.vim/autoload/builddir/
+.vim/autoload/plug.vim.old
+.vim/coc-settings.json
+.vim/coc-settings-user.json

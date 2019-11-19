@@ -27,8 +27,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'itchyny/lightline.vim'
     " markdown
     Plug 'plasticboy/vim-markdown'
-    " one theme
-    Plug 'rakr/vim-one'
+    " custom plugs
+    if filereadable($HOME . "/.vim/plugs.vim")
+        source ~/.vim/plugs.vim
+    endif
 call plug#end()
 " }}}
 
@@ -36,10 +38,6 @@ call plug#end()
 
 " filetype
 filetype indent plugin on
-
-" color scheme
-set background=light
-colorscheme one
 
 " line number config
 set number
@@ -121,12 +119,6 @@ nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 
 " Tex config {{{
 let g:tex_flavor='latex'
-
-let g:vimtex_compiler_progname = 'nvr'
-let g:vimtex_view_general_viewer = 'okular'
-let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
-let g:vimtex_view_general_options_latexmk = '--unique'
-
 let g:vimtex_fold_enabled = 1
 " }}}
 
@@ -168,7 +160,7 @@ let g:markdown_fenced_languages = [
 
 " Coc config {{{
 set hidden
-set backup
+set nobackup
 set nowritebackup
 set cmdheight=2
 set updatetime=300
@@ -221,6 +213,12 @@ let g:lightline = {
     \   'filename' : 'LightlineFilename',
     \ },
     \ }
+" }}}
+
+" custom config {{{
+if filereadable($HOME . "/.vim/config.vim")
+    source ~/.vim/config.vim
+endif
 " }}}
 
 " vim:tw=76:tw=4:sw=4:et:fdm=marker

@@ -26,7 +26,9 @@ if [ -e ~/.config/nvim/init.vim ]; then
     echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after
     let &packpath = &runtimepath
     source ~/.vimrc" >> ~/.config/nvim/init.vim
-    nvim -c PlugInstall
+    nvim -c PlugInstall +qall
+    nvim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
 else
-    vim -c PlugInstall
+    vim -c PlugInstall +qall
+    vim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
 fi
