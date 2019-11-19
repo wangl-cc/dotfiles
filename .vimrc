@@ -9,40 +9,23 @@ endif
 call plug#begin('~/.vim/plugged')
     " tree
     Plug 'scrooloose/nerdtree'
-    " Git
-    Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'airblade/vim-gitgutter'
     " Comment
     Plug 'scrooloose/nerdcommenter'
     " julia plugins
     Plug 'JuliaEditorSupport/julia-vim'
     " LSP and complete
-    if has('nvim')
-      Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-      Plug 'Shougo/deoplete.nvim'
-      Plug 'roxma/nvim-yarp'
-      Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-    Plug 'Shougo/neco-vim'
-    Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/vim-lsp'
-    Plug 'lighttiger2505/deoplete-vim-lsp'
-    Plug 'Shougo/neosnippet.vim'
-    Plug 'Shougo/neosnippet-snippets'
-    " auto pairs plugin
-    Plug 'jiangmiao/auto-pairs'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " tex
+    Plug 'lervag/vimtex'
     " vim-indent-guides
     Plug 'nathanaelkane/vim-indent-guides'
     " BioSyntax
     Plug 'bioSyntax/bioSyntax-vim'
-    " vim-airline
-    Plug 'vim-airline/vim-airline'
-    " vimtex
-    Plug 'lervag/vimtex'
+    " statusline
+    Plug 'itchyny/lightline.vim'
     " markdown
     Plug 'plasticboy/vim-markdown'
-
+    " one theme
     Plug 'rakr/vim-one'
 call plug#end()
 
@@ -52,7 +35,6 @@ filetype indent plugin on
 " color scheme
 set background=light
 colorscheme one
-let g:airline_theme='one'
 
 " line number config
 set number
@@ -75,6 +57,7 @@ set smartindent
 
 " leader
 let mapleader=","
+let maplocalleader=";"
 
 " tab skip the brackets{
 inoremap <Tab> <C-R>=TabSkip()<CR>
@@ -91,7 +74,7 @@ endf
 
 " hlsearch
 set hlsearch
-nnoremap <silent> <leader>nl :nohlsearch<CR>
+nnoremap <silent> <leader>n :nohlsearch<CR>
 
 " showmatch
 set showmatch
@@ -116,9 +99,6 @@ set splitright
     let NERDTreeShowHidden = 1
     nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 " }
-
-" Git Toggle map
-nnoremap <silent> <leader>gt :GitGutterToggle<CR>
 
 " indent guides
 nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
@@ -165,64 +145,69 @@ let g:vimtex_view_general_options_latexmk = '--unique'
 " julia version
 let g:default_julia_version = '1.1'
 
-" deoplete
-let g:deoplete#enable_at_startup = 1
-
-" language server{
-if (executable('pyls'))
-    augroup PythonLS
-        autocmd!
-        autocmd User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \})
-    augroup END
-endif
-
-if (executable('clangd'))
-    augroup ClangLS
-        autocmd!
-        autocmd User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd', '-background-index']},
-        \ 'whitelist': ['c', 'cpp'],
-        \})
-    augroup END
-endif
-
-if (executable('julia'))
-    augroup JuliaLS
-        autocmd!
-        autocmd User lsp_setup call lsp#register_server({
-        \ 'name': 'julia',
-        \ 'cmd': {server_info->['julia', '--startup-file=no', '--history-file=no',  '--project=@.','-e', '
-        \ using LanguageServer;
-        \ using Pkg;
-        \ import StaticLint;
-        \ import SymbolServer;
-        \ env_path = dirname(Pkg.Types.Context().env.project_file);
-        \ debug = false;
-        \ server = LanguageServer.LanguageServerInstance(stdin, stdout, debug, env_path, "", Dict());
-        \ server.runlinter = true;
-        \ run(server);
-        \ ']
-        \},
-        \ 'whitelist': ['julia'],
-        \})
-    augroup END
-endif
-
-nnoremap <silent> <leader>la :LspCodeAction<CR>
-nnoremap <silent> <leader>dc :LspHover<CR>
-nnoremap <silent> <leader>ss :LspStatus<CR>
-nnoremap <silent> <leader>rn :LspRename<CR>
-nnoremap <silent> <leader>gd :LspDefinition<CR>
-" }#
-
 " quickfix toggle
 nnoremap <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
 
-
 " remove tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
+
+" Coc config
+set hidden
+set backup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+nnoremap <silent> <leader>l :CocList<CR>
+nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>d <plug>(coc-definition)
+nmap <leader>rn <Plug>(coc-rename)
+vmap <silent> <leader>f <Plug>(coc-format-selected)
+nmap <silent> <leader>f <Plug>(coc-format)
+
+" vimlsp
+let g:markdown_fenced_languages = [
+      \ 'vim',
+      \ 'help'
+      \]
+
+" lightline
+set laststatus=2
+
+function! LightlineGitStatus() abort
+  let status = get(b:, 'coc_git_status', '')
+  " return blame
+  return winwidth(0) > 120 ? status : ''
+endfunction
+
+function! LightlineReadonly()
+  return &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? 'RO' : ''
+endfunction
+
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? '*' : ''
+  return filename . modified
+endfunction
+
+let g:lightline = {
+    \ 'colorscheme' : 'one',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'cocstatus', 'filename', 'readonly'] ],
+    \   'right' : [
+    \     [ 'gitstatus'],
+    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell' ,'lineinfo', 'percent' ],
+    \   ],
+    \ },
+    \ 'component_function': {
+    \   'cocstatus': 'coc#status',
+    \   'gitstatus' : 'LightlineGitStatus',
+    \   'readonly' : 'LightlineReadonly',
+    \   'filename' : 'LightlineFilename',
+    \ },
+    \ }
+
