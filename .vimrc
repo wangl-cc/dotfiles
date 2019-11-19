@@ -1,11 +1,13 @@
-" If there is not plug.vim, install it and install plugins.
+" Install vim-plug {{{
+" If there is not plug.vim, install it and install plugins
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+" }}}
 
-" vim-plig
+" Plug load {{{
 call plug#begin('~/.vim/plugged')
     " tree
     Plug 'scrooloose/nerdtree'
@@ -28,6 +30,9 @@ call plug#begin('~/.vim/plugged')
     " one theme
     Plug 'rakr/vim-one'
 call plug#end()
+" }}}
+
+" Misc config {{{
 
 " filetype
 filetype indent plugin on
@@ -59,7 +64,7 @@ set smartindent
 let mapleader=","
 let maplocalleader=";"
 
-" tab skip the brackets{
+" tab skip the brackets {{{
 inoremap <silent> <Tab> <C-R>=TabSkip()<CR>
 
 function! TabSkip()
@@ -70,7 +75,7 @@ function! TabSkip()
         return "\<Tab>"
     endif
 endf
-" }
+" }}}
 
 " hlsearch
 set hlsearch
@@ -95,53 +100,6 @@ set shell=/bin/zsh
 set splitbelow
 set splitright
 
-" NERDTree{
-    let NERDTreeShowHidden = 1
-    nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
-" }
-
-" indent guides
-nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
-
-" .tex file flavor
-let g:tex_flavor='latex'
-
-let g:vimtex_compiler_progname = 'nvr'
-let g:vimtex_view_general_viewer = 'okular'
-let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
-let g:vimtex_view_general_options_latexmk = '--unique'
-
-" Comment config{
-    " Add spaces after comment delimiters by default
-    let g:NERDSpaceDelims = 1
-
-    " Use compact syntax for prettified multi-line comments
-    let g:NERDCompactSexyComs = 1
-
-    " Align line-wise comment delimiters flush left instead of following code indentation
-    let g:NERDDefaultAlign = 'left'
-
-    " Allow commenting and inverting empty lines (useful when commenting a region)
-    let g:NERDCommentEmptyLines = 1
-
-    " Enable trimming of trailing whitespace when uncommenting
-    let g:NERDTrimTrailingWhitespace = 1
-
-    " Enable NERDCommenterToggle to check all selected lines is commented or not
-    let g:NERDToggleCheckAllLines = 1
-" }
-
-" markdown config{
-    " fold
-    let g:vim_markdown_folding_disabled = 1
-
-    " latex extension
-    let g:vim_markdown_math = 1
-
-    " yaml extension for jekyll
-    let g:vim_markdown_frontmatter = 1
-" }
-
 " julia version
 let g:default_julia_version = '1.1'
 
@@ -151,7 +109,62 @@ nnoremap <silent> <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
 " remove tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
 
-" Coc config
+" indent guides
+nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
+
+" }}}
+
+" NERDTree config {{{
+let NERDTreeShowHidden = 1
+nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
+" }}}
+
+" Tex config {{{
+let g:tex_flavor='latex'
+
+let g:vimtex_compiler_progname = 'nvr'
+let g:vimtex_view_general_viewer = 'okular'
+let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+let g:vimtex_view_general_options_latexmk = '--unique'
+" }}}
+
+" Comment config{{{
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+" Enable NERDCommenterToggle to check all selected lines is commented or not
+let g:NERDToggleCheckAllLines = 1
+" }}}
+
+" Markdown config{{{
+" fold
+let g:vim_markdown_folding_disabled = 1
+
+" latex extension
+let g:vim_markdown_math = 1
+
+" yaml extension for jekyll
+let g:vim_markdown_frontmatter = 1
+
+let g:markdown_fenced_languages = [
+      \ 'vim',
+      \ 'help'
+      \]
+" }}}
+
+" Coc config {{{
 set hidden
 set backup
 set nowritebackup
@@ -167,30 +180,25 @@ nmap <silent> <leader>d <plug>(coc-definition)
 nmap <leader>rn <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
+" }}}
 
-" vimlsp
-let g:markdown_fenced_languages = [
-      \ 'vim',
-      \ 'help'
-      \]
-
-" lightline
+" Lightline config {{{
 set laststatus=2
 
 function! LightlineGitStatus() abort
-  let status = get(b:, 'coc_git_status', '')
-  " return blame
-  return winwidth(0) > 120 ? status : ''
+    let status = get(b:, 'coc_git_status', '')
+    " return blame
+    return winwidth(0) > 120 ? status : ''
 endfunction
 
 function! LightlineReadonly()
-  return &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? 'RO' : ''
+      return &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? 'RO' : ''
 endfunction
 
 function! LightlineFilename()
-  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
-  let modified = &modified ? '*' : ''
-  return filename . modified
+    let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+    let modified = &modified ? '*' : ''
+    return filename . modified
 endfunction
 
 let g:lightline = {
@@ -210,4 +218,6 @@ let g:lightline = {
     \   'filename' : 'LightlineFilename',
     \ },
     \ }
+" }}}
 
+" vim:tw=76:tw=4:sw=4:et:fdm=marker
