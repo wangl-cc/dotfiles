@@ -28,7 +28,9 @@ if [ -e ~/.config/nvim/init.vim ]; then
     source ~/.vimrc" >> ~/.config/nvim/init.vim
     nvim -c PlugInstall +qall
     nvim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
+    nvim -c "call joinjson#Update()" +qall
 else
     vim -c PlugInstall +qall
     vim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
+    vim -c "call joinjson#Update()" +qall
 fi
