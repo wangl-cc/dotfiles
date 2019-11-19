@@ -126,6 +126,8 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_view_general_viewer = 'okular'
 let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 let g:vimtex_view_general_options_latexmk = '--unique'
+
+let g:vimtex_fold_enabled = 1
 " }}}
 
 " Comment config{{{
@@ -208,7 +210,8 @@ let g:lightline = {
     \             [ 'cocstatus', 'filename', 'readonly'] ],
     \   'right' : [
     \     [ 'gitstatus'],
-    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell' ,'lineinfo', 'percent' ],
+    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell',
+    \       'lineinfo', 'percent' ],
     \   ],
     \ },
     \ 'component_function': {
