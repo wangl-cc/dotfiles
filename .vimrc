@@ -60,11 +60,11 @@ let mapleader=","
 let maplocalleader=";"
 
 " tab skip the brackets{
-inoremap <Tab> <C-R>=TabSkip()<CR>
+inoremap <silent> <Tab> <C-R>=TabSkip()<CR>
 
 function! TabSkip()
-    let l:char = getline('.')[col('.') - 1]
-    if l:char == '}' || l:char == ')' || l:char == ']' || l:char == ';' || l:char == "'" || l:char == '`' || l:char == '"'
+    let char = getline('.')[col('.') - 1]
+    if char == '}' || char == ')' || char == ']' || char == ';' || char == "'" || char == '`' || char == '"'
         return "\<Right>"
     else
         return "\<Tab>"
@@ -146,7 +146,7 @@ let g:vimtex_view_general_options_latexmk = '--unique'
 let g:default_julia_version = '1.1'
 
 " quickfix toggle
-nnoremap <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
+nnoremap <silent> <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
 
 " remove tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
