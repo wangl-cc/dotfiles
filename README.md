@@ -6,13 +6,14 @@ The install.sh will rename your own configuration files and create a symbol link
 
 ## Dependencies
 
-### Python pkg
+### [Coc.nvim](https://github.com/neoclide/coc.nvim)
 
-* [pynvim](https://github.com/julia-vscode/LanguageServer.jl): deoplete required
-* neovim-remote: nvim vimtex backward search suppurt
+See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)
 
-### LSP
+### [LSP](https://microsoft.github.io/language-server-protocol)
+
+See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Language-servers). There are three language servers:
 
 * [pyls](https://github.com/palantir/python-language-server): Python language server
-* clangd: LLVM c/c++ language server
+* [clangd](https://clang.llvm.org/extra/clangd): LLVM c/c++ language server
 * [LanguageServer.jl](https://github.com/julia-vscode/LanguageServer.jl): Julia language server
