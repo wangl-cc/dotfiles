@@ -26,11 +26,11 @@ if [ -e ~/.config/nvim/init.vim ]; then
     echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after
     let &packpath = &runtimepath
     source ~/.vimrc" >> ~/.config/nvim/init.vim
-    nvim -c PlugInstall +qall
-    nvim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
-    nvim -c "call joinjson#Update()" +qall
+    nvim -c PlugInstall\
+	    -c "CocInstall -sync coc-git coc-vimlsp coc-json coc-vimtex coc-pairs"\
+	    -c "call joinjson#Update()" +qall
 else
-    vim -c PlugInstall +qall
-    vim -c "CocInstall coc-git coc-vimlsp coc-json coc-vimtex coc-pairs" +qall
-    vim -c "call joinjson#Update()" +qall
+    vim -c PlugInstall\
+	    -c "CocInstall -sync coc-git coc-vimlsp coc-json coc-vimtex coc-pairs"\
+	    -c "call joinjson#Update()" +qall
 fi
