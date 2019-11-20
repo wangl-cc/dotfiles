@@ -1,3 +1,10 @@
+" nvim config {{{
+if has('nvim')
+    set runtimepath^=~/.vim runtimepath+=~/.vim/after
+    let &packpath = &runtimepath
+endif
+" }}}
+
 " Install vim-plug {{{
 " If there is not plug.vim, install it and install plugins
 if empty(glob('~/.vim/autoload/plug.vim'))
