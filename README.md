@@ -32,13 +32,15 @@ for more information.
 In this configuration, four language servers are used, which should be
 install additionally.
 
-* [palantir/python-language-server](https://github.com/palantir/python-language-server): Python language server.
+* [palantir/python-language-server](
+  https://github.com/palantir/python-language-server): Python language
+  server.
 * [clangd](https://clang.llvm.org/extra/clangd): LLVM c/c++ language
   server.
 * [LanguageServer.jl](https://github.com/julia-vscode/LanguageServer.jl):
   Julia language server.
-* [mads-hartmann/bash-language-server]
-  (https://github.com/mads-hartmann/bash-language-server): Base language
+* [mads-hartmann/bash-language-server](
+  https://github.com/mads-hartmann/bash-language-server): Bash language
   server.
 
 See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Language-servers)
