@@ -69,19 +69,6 @@ set smartindent
 let mapleader=","
 let maplocalleader=";"
 
-" tab skip the brackets {{{
-inoremap <silent> <Tab> <C-R>=TabSkip()<CR>
-
-function! TabSkip()
-    let char = getline('.')[col('.') - 1]
-    if char == '}' || char == ')' || char == ']' || char == ';' || char == "'" || char == '`' || char == '"'
-        return "\<Right>"
-    else
-        return "\<Tab>"
-    endif
-endf
-" }}}
-
 " hlsearch
 set hlsearch
 nnoremap <silent> <leader>n :nohlsearch<CR>

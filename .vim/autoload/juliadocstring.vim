@@ -24,6 +24,14 @@ function! juliadocstring#FindCodeBlock()
     return max
 endfunction
 
+let s:autoload_path = fnamemodify("~/.vim/autoload/", ":p")
+
+if filereadable(s:autoload_path . "builddir/parse")
+    let s:parse_exe = s:autoload_path . "builddir/parse"
+else
+    let s:parse_exe = s:autoload_path . "parse_exec.jl"
+end
+
 function! juliadocstring#JuliaDocstring()
     let line = getline(".")
     if strridx(line, "=") || stridx(line, "function") != -1 || stridx(line, "macro") != -1 || stridx(line, "struct") != -1 || stridx(line, "abstract type") != -1
@@ -31,7 +39,7 @@ function! juliadocstring#JuliaDocstring()
         let e = juliadocstring#FindCodeBlock()
         let codestring = join(getline(s, e), "\n")
         echo codestring
-        let docstring = system(fnamemodify("~/.vim/autoload/builddir/parse", ":p"). " -p '" . codestring . "'")
+        let docstring = system(s:parse_exe . " -p '" . codestring . "'")
         call append(line(".")-1, split(docstring, "\n"))
     else
         echo "[Error] Cannot find target codes"

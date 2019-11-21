@@ -18,11 +18,14 @@ backup() {
 }
 
 recover() {
-    if [ -e $1"_backup" ]; then
-        rm $1
-        mv $1"_backup" $1
-        echo "  Recovered $1"
-    fi
+    if [ -e $1 ]; then
+		rm $1
+		echo "  Romoved link $1."
+		if [ -e $1"_backup" ]; then
+			mv $1"_backup" $1
+			echo "  Recovered $1"
+		fi
+	fi
 }
 
 readonly REALPWD=$(dirname $(realpath $0))
@@ -97,3 +100,5 @@ if [ $# -gt 0 ]; then
 else
     help
 fi
+
+# vim:ts=4:sw=4:tw=74

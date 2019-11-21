@@ -1,5 +1,4 @@
 {
-    "coc.preferences.jumpCommand": "vsplit",
     "suggest.enablePreview": true,
     "languageserver": {
         "clangd": {
