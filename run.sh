@@ -84,7 +84,7 @@ clean() {
     for var in $VIMRC $NVIMRC $VIMDIR; do
         local backupfile=$var"_backup"
         if [ -e $backupfile ]; then
-            rm $backupfile
+            rm -rf $backupfile
             echo "  Romoved $backupfile."
         fi
     done
