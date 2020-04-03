@@ -3,6 +3,7 @@ __pycache__
 vim/plugged
 vim/plugs.vim
 vim/config.vim
+vim/ftplugin/julia.vim
 vim/autoload/plug.vim
 vim/autoload/parse.jl
 vim/autoload/parse_exec.jl
