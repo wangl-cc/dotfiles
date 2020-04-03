@@ -1,4 +1,4 @@
-" nvim config {{{
+" Nvim compatibility {{{
 if has('nvim')
     set runtimepath^=~/.vim runtimepath+=~/.vim/after
     let &packpath = &runtimepath
@@ -14,106 +14,84 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 " }}}
 
-" Plug load {{{
+" Plugs load {{{
 call plug#begin('~/.vim/plugged')
-    " tree
+    " Tree explorer
     Plug 'scrooloose/nerdtree'
     " Comment
     Plug 'scrooloose/nerdcommenter'
-    " julia plugins
-    Plug 'JuliaEditorSupport/julia-vim'
-    " LSP and complete
+    " LSP
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    " tex
-    Plug 'lervag/vimtex'
-    " vim-indent-guides
+    " Indent guides
     Plug 'nathanaelkane/vim-indent-guides'
-    " BioSyntax
-    Plug 'bioSyntax/bioSyntax-vim'
-    " statusline
+    " Statusline
     Plug 'itchyny/lightline.vim'
-    " markdown
-    Plug 'plasticboy/vim-markdown'
-    " custom plugs
+    " Custom plugs
     if filereadable($HOME . "/.vim/plugs.vim")
         source ~/.vim/plugs.vim
     endif
 call plug#end()
 " }}}
 
-" Misc config {{{
+" General config {{{
 
-" filetype
+" Filetype
 filetype indent plugin on
 
-" line number config
+" Line number config
 set number
 set relativenumber
 
-" syntax highlight
+" Syntax highlight
 syntax on
 
-" confirm when quit
+" Confirm when quit
 set confirm
 
-" indent config{
+" Indent config{{{
 set tabstop=4
 set shiftwidth=4
 set expandtab
 set smarttab
 set autoindent
 set smartindent
-" }
+" }}}
 
 " leader
 let mapleader=","
 let maplocalleader=";"
 
-" hlsearch
+" highlight search
 set hlsearch
 nnoremap <silent> <leader>n :nohlsearch<CR>
 
-" showmatch
+" Show match
 set showmatch
 
-" novisualbell
-set novisualbell
-
-" showcmd
+" Show cmd
 set showcmd
 
-" encoding
+" File encoding
 set encoding=utf-8
 
-" shell
-set shell=/bin/zsh
-
-" split
+" Split flavor
 set splitbelow
 set splitright
 
-" julia version
-let g:default_julia_version = '1.1'
-
-" quickfix toggle
+" Quickfix toggle
 nnoremap <silent> <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
 
-" remove tariling blanks
+" Remove all tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
 
-" indent guides
-nnoremap <silent> <leader>it :IndentGuidesToggle<CR>
+" Indent guides toggle
+nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
 
 " }}}
 
 " NERDTree config {{{
 let NERDTreeShowHidden = 1
 nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
-" }}}
-
-" Tex config {{{
-let g:tex_flavor='latex'
-let g:vimtex_fold_enabled = 1
 " }}}
 
 " Comment config{{{
@@ -134,22 +112,6 @@ let g:NERDTrimTrailingWhitespace = 1
 
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
-" }}}
-
-" Markdown config{{{
-" fold
-let g:vim_markdown_folding_disabled = 1
-
-" latex extension
-let g:vim_markdown_math = 1
-
-" yaml extension for jekyll
-let g:vim_markdown_frontmatter = 1
-
-let g:markdown_fenced_languages = [
-      \ 'vim',
-      \ 'help'
-      \]
 " }}}
 
 " Coc config {{{

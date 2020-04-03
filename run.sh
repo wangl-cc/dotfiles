@@ -29,12 +29,12 @@ recover() {
 }
 
 readonly REALPWD=$(dirname $(realpath $0))
-readonly VIMRC_SRC=$REALPWD/.vimrc
-readonly VIMDIR_SRC=$REALPWD/.vim
+readonly VIMRC_SRC=$REALPWD/vimrc
+readonly VIMDIR_SRC=$REALPWD/vim
 readonly VIMRC=$HOME/.vimrc
 readonly VIMDIR=$HOME/.vim
 readonly NVIMRC=$HOME/.config/nvim/init.vim
-readonly COC_EXTS="coc-git coc-vimlsp coc-json coc-vimtex coc-pairs coc-snippets"
+readonly COC_EXTS="coc-git coc-json coc-pairs coc-snippets"
 readonly USAGE="
 Usage:
     $(basename $0) <command> [options]
@@ -66,7 +66,7 @@ install() {
         echo "  Install plugs."
         $vim -c PlugInstall\
              -c "CocInstall -sync $COC_EXTS"\
-             -c "call joinjson#Update()" +qall
+             +qall
     fi
     echo "Install finnish!"
 }
