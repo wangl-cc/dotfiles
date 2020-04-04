@@ -12,8 +12,8 @@ For more usage, you can run `run.sh help`.
 
 ## Custom
 
-Add you custom plugs to `.vim/plugs.vim` and your vim configuration to
-`.vim/config.vim`. 
+Add you custom plugs to `./vim/plugs.vim` and your vim configuration to
+`./vim/config.vim`. 
 
 ## Requirements
 
