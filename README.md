@@ -4,10 +4,10 @@ This is my own vim configuration with a shell script to install it.
 
 ## Requirements
 
-Most of plugs work independently and can be installed by vim itself,
+Most of plugs work independently and can be installed by vim itself
 but the plug [`coc.nvim`](https://github.com/neoclide/coc.nvim).
-Coc depends on [node.js](https://nodejs.org/), which must be installed to
-run `coc.nvim` and its extensions.
+`Coc.nvim` depends on [node.js](https://nodejs.org/), which must be
+installed to run `coc.nvim` and its extensions.
 See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)
 for more information.
 
@@ -26,11 +26,11 @@ cd my-vim-config
 ./run.sh install --nvim
 ```
 
-For more usage, run `run.sh help`.
+For more usage, run `./run.sh help`.
 
 ## Custom
 
-Add you custom plugs to `./vim/custom/plugs.vim`, vim configuration to
+Add your custom plugs to `./vim/custom/plugs.vim`, vim configuration to
 `./vim/custom/config.vim` and `coc.nvim` configuration to
 `./vim/coc-settings.json`.
 
@@ -38,7 +38,7 @@ Add you custom plugs to `./vim/custom/plugs.vim`, vim configuration to
 
 A language servers is a language-specific server which communicate with
 editor to provide various code editing features like autocompletion,
-diagnostics, formatting etc. You must install language servers and
+diagnostics, formatting etc. Install language servers and
 register them in `coc.nvim` configuration file for code editing features.
 
 See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Language-servers)
