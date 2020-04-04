@@ -156,7 +156,6 @@ function! LightlineFileInfo()
 endfunction
 
 let g:lightline = {
-    \ 'colorscheme' : 'one',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
     \             [ 'gitstatus' , 'fileinfo'],
