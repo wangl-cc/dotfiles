@@ -135,39 +135,49 @@ nmap <silent> <leader>f <Plug>(coc-format)
 " Lightline config {{{
 set laststatus=2
 
+function! LightlineCocStatus() abort
+    let status = coc#status()
+    return (winwidth(0) - len(status)) >= 80 ? status : ''
+endfunction
+
 function! LightlineGitStatus() abort
-    let status = get(b:, 'coc_git_status', '')
-    " return blame
-    return winwidth(0) > 120 ? status : ''
+    let status = get(g:, 'coc_git_status', '')
+    return winwidth(0) >= 75 ? status : ''
 endfunction
 
-function! LightlineReadonly()
-      return &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? 'RO' : ''
-endfunction
-
-function! LightlineFilename()
+function! LightlineFileInfo()
     let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
     let modified = &modified ? '*' : ''
-    return filename . modified
+    let RO = &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? ' [RO]' : ''
+    return RO . filename . modified
 endfunction
 
 let g:lightline = {
     \ 'colorscheme' : 'one',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'cocstatus', 'filename', 'readonly'] ],
+    \             [ 'gitstatus' , 'fileinfo'],
+    \             [ 'cocstatus' ] ],
     \   'right' : [
-    \     [ 'gitstatus'],
-    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell',
-    \       'lineinfo', 'percent' ],
+    \     [ 'percent' ],
+    \     [ 'lineinfo' ],
+    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell' ]
+    \   ],
+    \ },
+    \ 'inactive': {
+    \   'left': [ [ 'fileinfo' ] ],
+    \   'right' : [
+    \     [ 'percent' ],
+    \     [ 'lineinfo' ]
     \   ],
     \ },
     \ 'component_function': {
-    \   'cocstatus': 'coc#status',
-    \   'gitstatus' : 'LightlineGitStatus',
-    \   'readonly' : 'LightlineReadonly',
-    \   'filename' : 'LightlineFilename',
+    \   'cocstatus': 'LightlineCocStatus',
+    \   'gitstatus': 'LightlineGitStatus',
+    \   'fileinfo' : 'LightlineFileInfo',
     \ },
+    \ 'separator':  { 'left': '', 'right': ''},
+    \ 'subseparator':  { 'left': '', 'right': '|' }
     \ }
 " }}}
 
