@@ -1,8 +1,7 @@
 .netrwhist
 __pycache__
 vim/plugged
-vim/plugs.vim
-vim/config.vim
+vim/custom
 vim/ftplugin/julia.vim
 vim/autoload/plug.vim
 vim/autoload/parse.jl

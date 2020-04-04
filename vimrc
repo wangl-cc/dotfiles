@@ -27,8 +27,8 @@ call plug#begin('~/.vim/plugged')
     " Statusline
     Plug 'itchyny/lightline.vim'
     " Custom plugs
-    if filereadable($HOME . "/.vim/plugs.vim")
-        source ~/.vim/plugs.vim
+    if filereadable($HOME . "/.vim/custom/plugs.vim")
+        source ~/.vim/custom/plugs.vim
     endif
 call plug#end()
 " }}}
@@ -126,6 +126,8 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap <silent> <leader>l :CocList<CR>
 nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
+nmap <silent> [g <Plug>(coc-git-prevchunk)
+nmap <silent> ]g <Plug>(coc-git-nextchunk)
 nmap <silent> <leader>d <plug>(coc-definition)
 nmap <leader>rn <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
@@ -149,7 +151,8 @@ function! LightlineFileInfo()
     let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
     let modified = &modified ? '*' : ''
     let RO = &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? ' [RO]' : ''
-    return RO . filename . modified
+    let status = winwidth(0) >=  120 ? get(b:, 'coc_git_status', '') : ''
+    return RO . filename . modified . status
 endfunction
 
 let g:lightline = {
@@ -182,8 +185,8 @@ let g:lightline = {
 " }}}
 
 " custom config {{{
-if filereadable($HOME . "/.vim/config.vim")
-    source ~/.vim/config.vim
+if filereadable($HOME . "/.vim/custom/config.vim")
+    source ~/.vim/custom/config.vim
 endif
 " }}}
 
