@@ -26,11 +26,19 @@ call plug#begin('~/.vim/plugged')
     Plug 'nathanaelkane/vim-indent-guides'
     " Statusline
     Plug 'itchyny/lightline.vim'
+    " Some file command
+    Plug 'tpope/vim-eunuch'
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
     endif
 call plug#end()
+" }}}
+
+" custom config {{{
+if filereadable($HOME . "/.vim/custom/config.vim")
+    source ~/.vim/custom/config.vim
+endif
 " }}}
 
 " General config {{{
@@ -57,10 +65,6 @@ set autoindent
 set smartindent
 " }}}
 
-" leader
-let mapleader=","
-let maplocalleader=";"
-
 " highlight search
 set hlsearch
 nnoremap <silent> <leader>n :nohlsearch<CR>
@@ -78,11 +82,8 @@ set encoding=utf-8
 set splitbelow
 set splitright
 
-" Quickfix toggle
-nnoremap <silent> <leader>tq :call quickfixtoggle#ToggleQuickfixList()<CR>
-
 " Remove all tariling blanks
-nnoremap <silent> <leader>tb :%s/[ \t]+$//<CR>
+nnoremap <silent> <leader>tb :%s/[ \t]\+$//<CR>
 
 " Indent guides toggle
 nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
@@ -181,12 +182,6 @@ let g:lightline = {
     \ 'separator':  { 'left': '', 'right': ''},
     \ 'subseparator':  { 'left': '', 'right': '|' }
     \ }
-" }}}
-
-" custom config {{{
-if filereadable($HOME . "/.vim/custom/config.vim")
-    source ~/.vim/custom/config.vim
-endif
 " }}}
 
 " vim:tw=76:tw=4:sw=4:et:fdm=marker

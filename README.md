@@ -4,10 +4,11 @@ This is my own vim configuration with a shell script to install it.
 
 ## Requirements
 
-Most of plugs work independently and can be installed by vim itself
-but the plug [`coc.nvim`](https://github.com/neoclide/coc.nvim).
-`Coc.nvim` depends on [node.js](https://nodejs.org/), which must be
-installed to run `coc.nvim` and its extensions.
+Most of plugs work independently and can be installed by
+[`vim plug`](https://github.com/junegunn/vim-plug) but the plug
+[`coc.nvim`](https://github.com/neoclide/coc.nvim). `Coc.nvim` depends on
+[node.js](https://nodejs.org/), which must be installed to run `coc.nvim`
+and its extensions.
 See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)
 for more information.
 
@@ -20,30 +21,19 @@ plugs.
 ```bash
 git clone https://github.com/wangl-cc/my-vim-config.git
 cd my-vim-config
-# vim
+# install for vim
 ./run.sh install
-# neovim
+# install for vim and neovim
 ./run.sh install --nvim
 ```
 
 For more usage, run `./run.sh help`.
 
-## Custom
+## Customize
 
-Add your custom plugs to `./vim/custom/plugs.vim`, vim configuration to
-`./vim/custom/config.vim` and `coc.nvim` configuration to
-`./vim/coc-settings.json`.
+Add additional plugs to `./vim/custom/plugs.vim` by `Plug 'plugs'`,
+configuration to `./vim/custom/config.vim`.
 
-## [Language Server](https://microsoft.github.io/language-server-protocol)
-
-A language servers is a language-specific server which communicate with
-editor to provide various code editing features like autocompletion,
-diagnostics, formatting etc. Install language servers and
-register them in `coc.nvim` configuration file for code editing features.
-
-See [coc wiki](https://github.com/neoclide/coc.nvim/wiki/Language-servers)
-for more language server configuration tips.
-
-<!-- vim modeline
+<!-- vim mode line
 vim:ts=2:sw=2:tw=75
 -->

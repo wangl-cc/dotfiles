@@ -34,7 +34,7 @@ readonly VIMDIR_SRC=$REALPWD/vim
 readonly VIMRC=$HOME/.vimrc
 readonly VIMDIR=$HOME/.vim
 readonly NVIMRC=$HOME/.config/nvim/init.vim
-readonly COC_EXTS="coc-git coc-json coc-pairs coc-snippets"
+readonly COC_EXTS="coc-marketplace coc-git coc-json coc-pairs coc-snippets"
 readonly USAGE="
 Usage:
     $(basename $0) <command> [options]
