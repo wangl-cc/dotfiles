@@ -32,8 +32,7 @@ For more usage, run `./run.sh help`.
 ## Customize
 
 Add additional plugs to `./vim/custom/plugs.vim` by `Plug 'plugs'`,
-configuration to `./vim/custom/config.vim`.
+mapleader setting to `./vim/custom/leader.vim` and configuration to
+`./vim/custom/config.vim`.
 
-<!-- vim mode line
-vim:ts=2:sw=2:tw=75
--->
+<!-- vim:set ts=2 sw=2 tw=76: -->

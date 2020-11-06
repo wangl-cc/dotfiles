@@ -26,8 +26,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'nathanaelkane/vim-indent-guides'
     " Statusline
     Plug 'itchyny/lightline.vim'
-    " Some file command
+    " Some file commands like rename
     Plug 'tpope/vim-eunuch'
+    " Send code to terminal
+    Plug 'jpalardy/vim-slime'
+    " Some operations text object
+    Plug 'wellle/targets.vim'
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
@@ -35,9 +39,12 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 " }}}
 
-" custom config {{{
-if filereadable($HOME . "/.vim/custom/config.vim")
-    source ~/.vim/custom/config.vim
+" Leader config {{{
+if filereadable($HOME . "/.vim/custom/leader.vim")
+    source ~/.vim/custom/leader.vim
+endif
+if !exists("mapleader")
+    let mapleader=","
 endif
 " }}}
 
@@ -77,6 +84,9 @@ set showcmd
 
 " File encoding
 set encoding=utf-8
+
+" modeline
+set modelines=1
 
 " Split flavor
 set splitbelow
@@ -182,6 +192,24 @@ let g:lightline = {
     \ 'separator':  { 'left': '', 'right': ''},
     \ 'subseparator':  { 'left': '', 'right': '|' }
     \ }
+" }}}
+
+" Slime config {{{
+let g:slime_target = "vimterminal"
+let g:slime_no_mappings = 1
+let g:slime_vimterminal_config = {
+\   "term_finish": "close",
+\   "term_name"  : "Slime",
+\   "term_rows"  : 20,
+\ }
+xmap <leader><CR> <Plug>SlimeRegionSend
+nmap <leader><CR> <Plug>SlimeParagraphSend
+" }}}
+
+" Custom config {{{
+if filereadable($HOME . "/.vim/custom/config.vim")
+    source ~/.vim/custom/config.vim
+endif
 " }}}
 
 " vim:tw=76:tw=4:sw=4:et:fdm=marker
