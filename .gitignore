@@ -1,5 +1,6 @@
 .netrwhist
 __pycache__
+vim/coc-settings.json
 vim/autoload
 vim/after
 vim/custom

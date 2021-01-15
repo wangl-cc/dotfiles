@@ -32,6 +32,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'jpalardy/vim-slime'
     " Some operations text object
     Plug 'wellle/targets.vim'
+    " Text alignment
+    Plug 'godlygeek/tabular'
+    " fuzzy finder
+    Plug 'ctrlpvim/ctrlp.vim'
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
@@ -135,12 +139,12 @@ set shortmess+=c
 set signcolumn=yes
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap <silent> <leader>l :CocList<CR>
-nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
-nmap <silent> [g <Plug>(coc-git-prevchunk)
-nmap <silent> ]g <Plug>(coc-git-nextchunk)
-nmap <silent> <leader>d <plug>(coc-definition)
-nmap <leader>rn <Plug>(coc-rename)
+nmap <silent> <leader>[l <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>]l <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>[g <Plug>(coc-git-prevchunk)
+nmap <silent> <leader>]g <Plug>(coc-git-nextchunk)
+nmap <silent> <leader>gd <plug>(coc-definition)
+nmap <leader>cw <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
 " }}}
@@ -192,6 +196,11 @@ let g:lightline = {
     \ 'separator':  { 'left': '', 'right': ''},
     \ 'subseparator':  { 'left': '', 'right': '|' }
     \ }
+
+augroup LightlineUpdate
+    autocmd!
+    autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+augroup END
 " }}}
 
 " Slime config {{{
@@ -212,4 +221,4 @@ if filereadable($HOME . "/.vim/custom/config.vim")
 endif
 " }}}
 
-" vim:tw=76:tw=4:sw=4:et:fdm=marker
+" vim:tw=76:ts=4:sw=4:et:fdm=marker
