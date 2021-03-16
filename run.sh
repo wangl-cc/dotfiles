@@ -8,8 +8,7 @@ realpath() {
     local path=$PWD/$base
     cd $oldpwd
     echo $path
-}
-
+} 
 backup() {
     if [ -e $1 ]; then
         mv $1 $1"_backup"
@@ -34,6 +33,8 @@ readonly VIMDIR_SRC=$REALPWD/vim
 readonly VIMRC=$HOME/.vimrc
 readonly VIMDIR=$HOME/.vim
 readonly NVIMRC=$HOME/.config/nvim/init.vim
+readonly VIMCONFIG_SRC=$VIMDIR_SRC/coc-settings.json
+readonly NVIMCONFIG=$HOME/.config/nvim/coc-settings.json
 readonly COC_EXTS="coc-marketplace coc-git coc-json coc-pairs coc-snippets"
 readonly USAGE="
 Usage:
@@ -60,6 +61,7 @@ install() {
     if [[ $* =~ "--nvim" ]]; then
         backup $NVIMRC
         ln -s $VIMRC_SRC $NVIMRC
+        ln -s $VIMCONFIG $NVIMCONFIG
         local vim=nvim
     fi
     if [[ ! $* =~ "--no-plug" ]]; then
