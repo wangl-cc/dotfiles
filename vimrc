@@ -147,6 +147,8 @@ nmap <silent> <leader>gd <plug>(coc-definition)
 nmap <leader>cw <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
+" extensions
+let g:coc_global_extensions = ["coc-marketplace", "coc-git", "coc-json", "coc-snippets"]
 " }}}
 
 " Lightline config {{{
@@ -166,7 +168,7 @@ function! LightlineFileInfo()
     let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
     let modified = &modified ? '*' : ''
     let RO = &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? ' [RO]' : ''
-    let status = winwidth(0) >=  120 ? get(b:, 'coc_git_status', '') : ''
+    let status = winwidth(0) >=  100 ? get(b:, 'coc_git_status', '') : ''
     return RO . filename . modified . status
 endfunction
 
