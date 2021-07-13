@@ -48,7 +48,7 @@ Commands:
 
 Install options:
     --nvim          Install for neovim.
-    --no-plug       Install without installing plugs.
+    --plug          Install with plugs.
 "
 
 install() {
@@ -64,7 +64,7 @@ install() {
         ln -s $VIMCONFIG $NVIMCONFIG
         local vim=nvim
     fi
-    if [[ ! $* =~ "--no-plug" ]]; then
+    if [[ $* =~ "--plug" ]]; then
         echo "  Install plugs."
         $vim -c PlugInstall\
              -c "CocInstall -sync $COC_EXTS"\
