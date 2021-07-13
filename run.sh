@@ -19,7 +19,7 @@ backup() {
 recover() {
     if [ -e $1 ]; then
 		rm $1
-		echo "  Romoved link $1."
+		echo "  Removed link $1."
 		if [ -e $1"_backup" ]; then
 			mv $1"_backup" $1
 			echo "  Recovered $1"
@@ -87,7 +87,7 @@ clean() {
         local backupfile=$var"_backup"
         if [ -e $backupfile ]; then
             rm -rf $backupfile
-            echo "  Romoved $backupfile."
+            echo "  Removed $backupfile."
         fi
     done
     echo "Clean finnish!"
