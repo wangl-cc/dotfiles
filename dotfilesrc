@@ -6,3 +6,4 @@ ignore = [
     '*.swp',
     'README.md',
     'LICENSE']
+packages = ['config']
