@@ -50,7 +50,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -ri'
 alias vi='vim'
-alias vim='nvim'
 alias setproxy='export http_proxy="http://127.0.0.1:7890/";
                 export https_proxy="http://127.0.0.1:7890/";
                 export all_proxy="socks5://127.0.0.1:7891/"'

@@ -156,11 +156,6 @@ let g:coc_global_extensions = [
 \    "coc-pairs",
 \    "coc-julia",
 \ ]
-
-augroup CocPiarsDisable
-    autocmd!
-    autocmd FileType julia let b:coc_pairs_disabled = ['<']
-augroup END
 " }}}
 
 " Lightline config {{{
