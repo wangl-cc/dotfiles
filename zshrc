@@ -10,7 +10,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-plugins=(git vi-mode history-substring-search)
+plugins=(git gitignore pip vi-mode history-substring-search)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -54,32 +54,23 @@ alias setproxy='export http_proxy="http://127.0.0.1:7890/";
                 export https_proxy="http://127.0.0.1:7890/";
                 export all_proxy="socks5://127.0.0.1:7891/"'
 
-# pip zsh completion start
-function _pip_completion {
-  local words cword
-  read -Ac words
-  read -cn cword
-  reply=( $( COMP_WORDS="$words[*]" \
-             COMP_CWORD=$(( cword-1 )) \
-             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
-}
-compctl -K _pip_completion pip
-# pip zsh completion end
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/long/.miniconda/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_dir="$HOME/.miniconda"
+__conda_setup="$($__conda_dir/bin/conda shell.zsh hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/long/.miniconda/etc/profile.d/conda.sh" ]; then
-        . "/home/long/.miniconda/etc/profile.d/conda.sh"
+    if [ -f "$__conda_dir/etc/profile.d/conda.sh" ]; then
+        . "$__conda_dir/etc/profile.d/conda.sh"
     else
-        export PATH="/home/long/.miniconda/bin:$PATH"
+        export PATH="$__conda_dir/bin:$PATH"
     fi
 fi
+unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
