@@ -148,7 +148,19 @@ nmap <leader>cw <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
 " extensions
-let g:coc_global_extensions = ["coc-marketplace", "coc-git", "coc-json", "coc-snippets"]
+let g:coc_global_extensions = [
+\    "coc-marketplace",
+\    "coc-git",
+\    "coc-json",
+\    "coc-snippets",
+\    "coc-pairs",
+\    "coc-julia",
+\ ]
+
+augroup CocPiarsDisable
+    autocmd!
+    autocmd FileType julia let b:coc_pairs_disabled = ['<']
+augroup END
 " }}}
 
 " Lightline config {{{
