@@ -213,13 +213,17 @@ augroup END
 " }}}
 
 " Slime config {{{
-let g:slime_target = "vimterminal"
+if has('nvim')
+    let g:slime_target = "neovim"
+else
+    let g:slime_target = "vimterminal"
+    let g:slime_vimterminal_config = {
+    \   "term_finish": "close",
+    \   "term_name"  : "Slime",
+    \   "term_rows"  : 20,
+    \ }
+end
 let g:slime_no_mappings = 1
-let g:slime_vimterminal_config = {
-\   "term_finish": "close",
-\   "term_name"  : "Slime",
-\   "term_rows"  : 20,
-\ }
 xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
 " }}}
