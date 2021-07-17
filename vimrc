@@ -230,6 +230,12 @@ xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
 " }}}
 
+" Language configs {{{
+" LaTeX
+let g:tex_flavor = "latex"
+let g:vimtex_fold_enabled = 1
+" }}}
+
 " Custom config {{{
 if filereadable($HOME . "/.vim/custom/config.vim")
     source ~/.vim/custom/config.vim
