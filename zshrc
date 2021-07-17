@@ -50,9 +50,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -ri'
 alias vi='vim'
-alias setproxy='export http_proxy="http://127.0.0.1:7890/";
-                export https_proxy="http://127.0.0.1:7890/";
-                export all_proxy="socks5://127.0.0.1:7891/"'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
