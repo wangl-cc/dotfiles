@@ -10,7 +10,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-plugins=(git gitignore pip vi-mode history-substring-search)
+plugins=(git gitignore vi-mode history-substring-search)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -74,3 +74,14 @@ unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
 
+# pip zsh completion start
+function _pip_completion {
+  local words cword
+  read -Ac words
+  read -cn cword
+  reply=( $( COMP_WORDS="$words[*]" \
+             COMP_CWORD=$(( cword-1 )) \
+             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
+}
+compctl -K _pip_completion pip
+# pip zsh completion end
