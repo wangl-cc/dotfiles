@@ -22,33 +22,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 # aliases
 alias ...='../..'
-alias ls='ls --color=auto'
-alias da='du -sch'
-alias dir='command ls -lSrah'
-alias egrep='egrep --color=auto'
-alias grep='grep --color=auto'
-alias keep='noglob keep'
-alias l='command ls -l --color=auto'
-alias la='command ls -la --color=auto'
-alias lad='command ls -d .*(/)'
-alias lh='command ls -hAl --color=auto'
-alias ll='command ls -al --color=auto'
-alias llog=journalctl
-alias ls='command ls --color=auto'
-alias lsa='command ls -a .*(.)'
-alias lsbig='command ls -flh *(.OL[1,10])'
-alias lsd='command ls -d *(/)'
-alias lse='command ls -d *(/^F)'
-alias lsl='command ls -l *(@)'
-alias lsnew='command ls -rtlh *(D.om[1,10])'
-alias lsnewdir='command ls -rthdl *(/om[1,10]) .*(D/om[1,10])'
-alias lsold='command ls -rtlh *(D.Om[1,10])'
-alias lsolddir='command ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])'
-alias lss='command ls -l *(s,S,t)'
-alias lssmall='command ls -Srl *(.oL[1,10])'
-alias lsw='command ls -ld *(R,W,X.^ND/)'
-alias lsx='command ls -l *(*)'
-alias rm='rm -ri'
+alias rm='rm -i'
 alias vi='vim'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -56,7 +30,7 @@ alias vi='vim'
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_dir="$HOME/.miniconda"
+__conda_dir="$HOME/miniconda3"
 __conda_setup="$($__conda_dir/bin/conda shell.zsh hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
