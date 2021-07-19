@@ -37,7 +37,7 @@ call plug#begin('~/.vim/plugged')
     " fuzzy finder
     Plug 'ctrlpvim/ctrlp.vim'
     " JuliaLang
-    Plug 'JuliaEditorSupport/julia-vim
+    Plug 'JuliaEditorSupport/julia-vim'
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
