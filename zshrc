@@ -24,6 +24,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 alias ...='../..'
 alias rm='rm -i'
 alias vi='vim'
+alias julia='julia --project'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
