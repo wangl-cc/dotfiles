@@ -149,6 +149,9 @@ nmap <silent> <leader>gd <plug>(coc-definition)
 nmap <leader>cw <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
+" disable latex to unicode via tab for `julia-vim`
+" which does not work well with the `coc.nvim`
+let g:latex_to_unicode_tab = "off"
 " extensions
 let g:coc_global_extensions = [
 \    "coc-marketplace",
