@@ -1,7 +1,7 @@
 # Dotfiles
 
 Managing with [`jbernard/dotfiles`](https://github.com/jbernard/dotfiles),
-which can be install by
+which can be installed by
 ```
 pip install --user dotfiles
 ```
