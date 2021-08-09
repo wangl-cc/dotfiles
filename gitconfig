@@ -4,5 +4,5 @@
 [core]
 	editor = vim
 [filter "ignoreline"]
-	clean = "sed '/# gitignore$/d'"
+	clean = "sed '/ (git):ignore this line$/d'"
 	smudge = cat
