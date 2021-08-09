@@ -1,0 +1,8 @@
+[user]
+	name = Long Wang
+	email = wangl.cc@outlook.com
+[core]
+	editor = vim
+[filter "ignoreline"]
+	clean = "sed '/# gitignore$/d'"
+	smudge = cat
