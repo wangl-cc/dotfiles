@@ -1,8 +1,10 @@
 [user]
-	name = Long Wang
-	email = wangl.cc@outlook.com
+    name = Long Wang
+    email = wangl.cc@outlook.com
 [core]
-	editor = vim
+    editor = vim
 [filter "ignoreline"]
-	clean = "sed '/ (git):ignore this line$/d'"
-	smudge = cat
+    clean = "sed '/ (git): ignore this line$/d'"
+    smudge = cat
+[pull]
+    rebase = false
