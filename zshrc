@@ -23,6 +23,8 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
 # bindkey
 bindkey '^P' autosuggest-accept
 bindkey '^N' autosuggest-accept
