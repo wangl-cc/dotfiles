@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# check if yadm is installed
+if ! command -v yadm &> /dev/null; then
+    echo "Using yadm remotely to bootstrap"
+    yadm=remote_yadm
+fi
+
 # init yadm submodule
 yadm submodule update --init --recursive
 
