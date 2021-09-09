@@ -1,1 +1,1 @@
-../../vimrc
+/Users/loong/.vimrc
