@@ -1,0 +1,5 @@
+#!/use/bin/env bash
+
+# sparse checkout to avoid  README.md and LICENSE in HOME
+yadm gitconfig core.sparseCheckout true
+yadm sparse-checkout set '/*' '!README.md' '!LICENSE'
