@@ -28,8 +28,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'itchyny/lightline.vim'
     " Some file commands like rename
     Plug 'tpope/vim-eunuch'
-    " Send code to terminal
-    Plug 'jpalardy/vim-slime'
     " Some operations text object
     Plug 'wellle/targets.vim'
     " Text alignment
