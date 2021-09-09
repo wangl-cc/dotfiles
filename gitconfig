@@ -8,3 +8,5 @@
     smudge = cat
 [pull]
     rebase = false
+[diff]
+	tool = vimdiff3
