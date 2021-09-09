@@ -25,13 +25,12 @@ zinit light romkatv/powerlevel10k
 
 ### Plugin
 zinit wait lucid depth=1 light-mode for \
-    atinit"zicompinit; zicdreplay" \
-        zdharma/fast-syntax-highlighting \
     atload"_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions \
-        jeffreytse/zsh-vi-mode \
-        zinit-zsh/z-a-man \
-        zdharma/history-search-multi-word 
+        zsh-users/zsh-history-substring-search \
+        jeffreytse/zsh-vi-mode
+zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
+zinit light zdharma/fast-syntax-highlighting
 
 ### Completion
 zinit as"completion" wait lucid is-snippet for \
@@ -40,6 +39,13 @@ zinit as"completion" wait lucid is-snippet for \
 
 ### MISC
 zstyle ':completion:*' menu yes select
+
+### Keymaps
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
 
 # aliases
 alias ...='../..'
