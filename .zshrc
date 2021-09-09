@@ -51,7 +51,6 @@ bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-
 # aliases
 alias ...='../..'
 alias ls='ls --color'
@@ -85,6 +84,9 @@ alias vi='vim'
 alias julia='julia --project'
 
 # environment variables
+if [ -z ${HISTFILE+x} ]; then
+    export HISTFILE=$HOME/.zsh_history
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
