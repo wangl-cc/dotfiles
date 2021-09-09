@@ -12,19 +12,22 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 plugins=(
     git
+    pip
     gitignore
+    git-auto-fetch
     vi-mode
-    history-substring-search
     zsh-autosuggestions
+    zsh-syntax-highlighting
+    history-substring-search
 )
 
 source $ZSH/oh-my-zsh.sh
 
 # bindkey
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+bindkey '^P' autosuggest-accept
+bindkey '^N' autosuggest-accept
+bindkey -M vicmd 'k' autosuggest-accept
+bindkey -M vicmd 'j' autosuggest-accept
 
 # aliases
 alias ...='../..'
@@ -53,15 +56,3 @@ fi
 unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
-
-# pip zsh completion start
-function _pip_completion {
-  local words cword
-  read -Ac words
-  read -cn cword
-  reply=( $( COMP_WORDS="$words[*]" \
-             COMP_CWORD=$(( cword-1 )) \
-             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
-}
-compctl -K _pip_completion pip
-# pip zsh completion end
