@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # check if yadm is installed
 if ! command -v yadm &> /dev/null; then
