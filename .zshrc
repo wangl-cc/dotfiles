@@ -37,6 +37,11 @@ alias rm='rm -i'
 alias vi='vim'
 alias julia='julia --project'
 
+# yadm completion
+fpath=($HOME/.yadm-project/completion/zsh $fpath)
+autoload -U compinit
+compinit
+
 # environment variables
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
