@@ -1,4 +1,0 @@
-[dotfiles]
-repository = ~/Repos/dotfiles
-ignore = ['.git', '.gitignore', '*.swp', 'README.md', 'LICENSE']
-packages = ['config']
