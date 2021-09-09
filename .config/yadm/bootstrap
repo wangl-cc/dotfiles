@@ -1,11 +1,5 @@
 #!/usr/bin/env zsh
 
-# check if yadm is installed
-if ! command -v yadm &> /dev/null; then
-    echo "Using yadm remotely to bootstrap"
-    source <(curl -L bootstrap.yadm.io)
-fi
-
 # init yadm submodule
 yadm submodule update --init --recursive
 
