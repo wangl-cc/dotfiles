@@ -33,9 +33,14 @@ zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
 zinit light zdharma/fast-syntax-highlighting
 
 ### Completion
+
 zinit as"completion" wait lucid is-snippet for \
-    .yadm-project/completion/zsh/_yadm \
-    if"command -v brew &> /dev/null" $(brew --prefix)/share/zsh/site-functions/_brew
+    .yadm-project/completion/zsh/_yadm
+
+if command -v brew &> /dev/null; then
+    zinit ice as"completion" wait lucid
+    zinit snippet $(brew --prefix)/share/zsh/site-functions/_brew
+fi
 
 ### MISC
 zstyle ':completion:*' menu yes select
