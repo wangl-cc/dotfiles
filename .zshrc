@@ -5,42 +5,73 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
 
-plugins=(
-    git
-    pip
-    gitignore
-    git-auto-fetch
-    vi-mode
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    history-substring-search
-)
+### Theme
+zinit ice depth"1" # git clone depth
+zinit light romkatv/powerlevel10k
 
-source $ZSH/oh-my-zsh.sh
+### Plugin
+zinit wait lucid depth=1 light-mode for \
+    atinit"zicompinit; zicdreplay" \
+        zdharma/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+        zsh-users/zsh-autosuggestions \
+        jeffreytse/zsh-vi-mode \
+        zinit-zsh/z-a-man \
+        zdharma/history-search-multi-word 
 
-ZSH_AUTOSUGGEST_STRATEGY=(history)
+### Completion
+zinit as"completion" wait lucid is-snippet for \
+    .yadm-project/completion/zsh/_yadm \
+    if"command -v brew &> /dev/null" $(brew --prefix)/share/zsh/site-functions/_brew
 
-# bindkey
-bindkey '^P' autosuggest-accept
-bindkey '^N' autosuggest-accept
-bindkey -M vicmd 'k' autosuggest-accept
-bindkey -M vicmd 'j' autosuggest-accept
+### MISC
+zstyle ':completion:*' menu yes select
 
 # aliases
 alias ...='../..'
+alias ls='ls --color'
+alias da='du -sch'
+alias dir='command ls -lSrah'
+alias egrep='egrep --color'
+alias grep='grep --color'
+alias keep='noglob keep'
+alias l='command ls -l --color'
+alias la='command ls -la --color'
+alias lad='command ls -d .*(/)'
+alias lh='command ls -hAl --color'
+alias ll='command ls -al --color'
+alias llog=journalctl
+alias ls='command ls --color'
+alias lsa='command ls -a .*(.)'
+alias lsbig='command ls -flh *(.OL[1,10])'
+alias lsd='command ls -d *(/)'
+alias lse='command ls -d *(/^F)'
+alias lsl='command ls -l *(@)'
+alias lsnew='command ls -rtlh *(D.om[1,10])'
+alias lsnewdir='command ls -rthdl *(/om[1,10]) .*(D/om[1,10])'
+alias lsold='command ls -rtlh *(D.Om[1,10])'
+alias lsolddir='command ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])'
+alias lss='command ls -l *(s,S,t)'
+alias lssmall='command ls -Srl *(.oL[1,10])'
+alias lsw='command ls -ld *(R,W,X.^ND/)'
+alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
 alias julia='julia --project'
-
-# yadm completion
-fpath=($HOME/.yadm-project/completion/zsh $fpath)
-autoload -U compinit
-compinit
 
 # environment variables
 
