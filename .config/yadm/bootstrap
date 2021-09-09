@@ -1,8 +1,8 @@
 #!/bin/sh
 
 if ! command -v yadm &> /dev/null; then
-    echo "Use local yadm at ~/yadm, clean it after install"
-    yadm="sh ~/yadm"
+    echo "Use local yadm at $HOME/yadm"
+    yadm="sh $HOME/yadm"
 else
     yadm=yadm
 fi
