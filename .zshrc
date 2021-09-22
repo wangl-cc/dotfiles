@@ -33,7 +33,8 @@ zinit wait lucid depth=1 light-mode for \
     atload"_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions \
         zsh-users/zsh-history-substring-search \
-        jeffreytse/zsh-vi-mode
+        jeffreytse/zsh-vi-mode\
+        sobolevn/wakatime-zsh-plugin
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
 zinit light zdharma/fast-syntax-highlighting
 
@@ -89,6 +90,7 @@ alias vi='vim'
 alias julia='julia --project'
 
 # environment variables
+export JULIA_EDITOR="vim"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
