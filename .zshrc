@@ -28,8 +28,7 @@ zinit wait lucid depth=1 light-mode proto"git" for \
     atload"_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions \
         zsh-users/zsh-history-substring-search \
-        jeffreytse/zsh-vi-mode\
-        sobolevn/wakatime-zsh-plugin
+        jeffreytse/zsh-vi-mode
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" proto"git"
 zinit light zdharma/fast-syntax-highlighting
 
