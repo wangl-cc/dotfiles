@@ -9,7 +9,7 @@ fi
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    command git clone git@github.com:zdharma/zinit "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -20,17 +20,17 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 ### Theme
-zinit ice depth"1" # git clone depth
+zinit ice proto"git" depth"1" # git clone depth
 zinit light romkatv/powerlevel10k
 
 ### Plugin
-zinit wait lucid depth=1 light-mode for \
+zinit wait lucid depth=1 light-mode proto"git" for \
     atload"_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions \
         zsh-users/zsh-history-substring-search \
         jeffreytse/zsh-vi-mode\
         sobolevn/wakatime-zsh-plugin
-zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
+zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" proto"git"
 zinit light zdharma/fast-syntax-highlighting
 
 ### Completion
