@@ -28,7 +28,7 @@ export PATH
 
 export GITHUBURL=\"hub.fastgit.org\"
 export GITHUBUSERCONTENTURL=\"raw.fastgit.org\"
-""" >> ~/zshenv
+""" >> ~/.zshenv
 ```
 
 ## Installation
