@@ -7,8 +7,16 @@ else
     yadm=yadm
 fi
 
+if [ -n ${GITHUBURL+x} ]; then
+    yadm submodule foreach --recursive \
+        "git config --local url.\"https://$GITHUBURL/\".insteadOf \"https://github.com/\""
+    yadm config protocol.https.allow always
+fi
+
 # init yadm submodule
 $yadm submodule update --init --recursive
+
+yadm config --unset url."https://$GITHUBURL/".insteadOf
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
 rm -f ~/README.md LICENSE

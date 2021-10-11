@@ -5,11 +5,19 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Guthub mirrors used by zinit
+if [ -z ${GITHUBURL+x} ]; then
+    GITHUBURL='github.com'
+fi
+if [ -z ${GITHUBUSERCONTENTURL+x} ]; then
+    GITHUBUSERCONTENTURL='raw.githubusercontent.com'
+fi
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone git@github.com:zdharma/zinit "$HOME/.zinit/bin" && \
+    command git clone "https://$GITHUBURL/zdharma/zinit" "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -20,31 +28,35 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 ### Theme
-zinit ice proto"git" depth"1" # git clone depth
+zinit ice lucid depth"1" from"$GITHUBURL"
 zinit light romkatv/powerlevel10k
 
 ### Plugin
-zinit wait lucid depth=1 light-mode proto"git" for \
-    atload"_zsh_autosuggest_start" \
-        zsh-users/zsh-autosuggestions \
-        zsh-users/zsh-history-substring-search \
-        jeffreytse/zsh-vi-mode\
-        sobolevn/wakatime-zsh-plugin
-zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" proto"git"
+zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
+    atload"_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
+    zsh-users/zsh-history-substring-search \
+    jeffreytse/zsh-vi-mode \
+    sobolevn/wakatime-zsh-plugin
+
+zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
 zinit light zdharma/fast-syntax-highlighting
 
 ### Completion
 
 zinit as"completion" wait lucid is-snippet for \
-    .yadm-project/completion/zsh/_yadm
+    .yadm-project/completion/zsh/_yadm \
+    "https://$GITHUBUSERCONTENTURL/esc/conda-zsh-completion/master/_conda"
 
 if command -v brew &> /dev/null; then
     zinit ice as"completion" wait lucid
     zinit snippet $(brew --prefix)/share/zsh/site-functions/_brew
 fi
 
-### MISC
+### zstyle
+zstyle ':completion:*' verbose yes
 zstyle ':completion:*' menu yes select
+zstyle ':completion::complete:*' use-cache 1
+zstyle ":conda_zsh_completion:*" use-groups true
 
 ### Keymaps
 bindkey '^[[A' history-substring-search-up
