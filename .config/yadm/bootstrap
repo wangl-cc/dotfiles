@@ -14,7 +14,7 @@ if [ -n ${GITHUBURL+x} ]; then
     tempdir=$(mktemp -d)
     git clone "https://$GITHUBURL/TheLocehiliosan/yadm" $tempdir
     $yadm submodule update --init --recursive --reference $tempdir
-    rm $tempdir
+    rm -rf $tempdir
 else
     $yadm submodule update --init --recursive
 fi
