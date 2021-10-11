@@ -10,15 +10,14 @@ fi
 echo "Installing YADM"
 if [ -n ${GITHUBURL+x} ]; then
     echo "Use github url: $GITHUBURL"
-    $yadm submodule foreach --recursive \
-        "git config --local url.\"https://$GITHUBURL/\".insteadOf \"https://github.com/\""
-    $yadm config protocol.https.allow always
+    # use a tempdir from mirror as a reference to boost init
+    tempdir=$(mktemp -d)
+    git clone "https://$GITHUBURL/TheLocehiliosan/yadm" $tempdir
+    $yadm submodule update --init --recursive --reference $tempdir
+    rm $tempdir
+else
+    $yadm submodule update --init --recursive
 fi
-
-# init yadm submodule
-$yadm submodule update --init --recursive
-
-$yadm config --unset url."https://$GITHUBURL/".insteadOf
 echo "YADM installed"
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
