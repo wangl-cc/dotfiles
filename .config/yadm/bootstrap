@@ -13,7 +13,7 @@ if [ -n ${GITHUBURL+x} ]; then
     # use a tempdir from mirror as a reference to boost init
     tempdir=$(mktemp -d)
     git clone "https://$GITHUBURL/TheLocehiliosan/yadm" $tempdir
-    $yadm submodule update --init --recursive --reference $tempdir
+    $yadm submodule update --init --recursive --reference $tempdir --dissociate
     rm -rf $tempdir
 else
     $yadm submodule update --init --recursive
