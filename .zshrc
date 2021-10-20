@@ -1,3 +1,8 @@
+#### FIG ENV VARIABLES ####
+# Please make sure this block is at the start of this file.
+[ -s ~/.fig/shell/pre.sh ] && source ~/.fig/shell/pre.sh
+#### END FIG ENV VARIABLES ####
+#
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -35,8 +40,8 @@ zinit light romkatv/powerlevel10k
 zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
     atload"_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
     zsh-users/zsh-history-substring-search \
-    jeffreytse/zsh-vi-mode \
     sobolevn/wakatime-zsh-plugin
+    # jeffreytse/zsh-vi-mode (this plugin broken fig)
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
 zinit light zdharma/fast-syntax-highlighting
@@ -59,6 +64,7 @@ zstyle ':completion::complete:*' use-cache 1
 zstyle ":conda_zsh_completion:*" use-groups true
 
 ### Keymaps
+bindkey -v
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
@@ -125,3 +131,8 @@ fi
 unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
+
+#### FIG ENV VARIABLES ####
+# Please make sure this block is at the end of this file.
+[ -s ~/.fig/fig.sh ] && source ~/.fig/fig.sh
+#### END FIG ENV VARIABLES ####
