@@ -100,7 +100,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
-alias julia='julia --project'
 
 # environment variables
 SAVEHIST=10000
