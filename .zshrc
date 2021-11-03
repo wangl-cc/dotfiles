@@ -2,7 +2,7 @@
 # Please make sure this block is at the start of this file.
 [ -s ~/.fig/shell/pre.sh ] && source ~/.fig/shell/pre.sh
 #### END FIG ENV VARIABLES ####
-#
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -10,19 +10,17 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Guthub mirrors used by zinit
-if [ -z ${GITHUBURL+x} ]; then
-    GITHUBURL='github.com'
-fi
-if [ -z ${GITHUBUSERCONTENTURL+x} ]; then
-    GITHUBUSERCONTENTURL='raw.githubusercontent.com'
-fi
+# mirrors used by zinit
+GITHUBURL='gitee.com'
+zdharma='wangl-cc'
+zsh_users="wangl-cc"
+sobolevn="wangl-cc"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone "https://$GITHUBURL/zdharma/zinit" "$HOME/.zinit/bin" && \
+    command git clone "https://$GITHUBURL/$zdharma/zinit" "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -34,23 +32,21 @@ autoload -Uz _zinit
 
 ### Theme
 zinit ice lucid depth"1" from"$GITHUBURL"
-zinit light romkatv/powerlevel10k
+zinit light romkatv/powerlevel10k # there is an official mirror on gitee
 
 ### Plugin
 zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
-    atload"_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
-    zsh-users/zsh-history-substring-search \
-    sobolevn/wakatime-zsh-plugin
-    # jeffreytse/zsh-vi-mode (this plugin broken fig)
+    atload"_zsh_autosuggest_start" $zsh_users/zsh-autosuggestions \
+    $zsh_users/zsh-history-substring-search \
+    $sobolevn/wakatime-zsh-plugin
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
-zinit light zdharma/fast-syntax-highlighting
+zinit light $zdharma/fast-syntax-highlighting
 
 ### Completion
 
 zinit as"completion" wait lucid is-snippet for \
     .yadm-project/completion/zsh/_yadm \
-    "https://$GITHUBUSERCONTENTURL/esc/conda-zsh-completion/master/_conda"
 
 if command -v brew &> /dev/null; then
     zinit ice as"completion" wait lucid
