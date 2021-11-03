@@ -14,7 +14,6 @@ fi
 GITHUBURL='gitee.com'
 zdharma='wangl-cc'
 zsh_users="wangl-cc"
-sobolevn="wangl-cc"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
@@ -37,8 +36,7 @@ zinit light romkatv/powerlevel10k # there is an official mirror on gitee
 ### Plugin
 zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
     atload"_zsh_autosuggest_start" $zsh_users/zsh-autosuggestions \
-    $zsh_users/zsh-history-substring-search \
-    $sobolevn/wakatime-zsh-plugin
+    $zsh_users/zsh-history-substring-search
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
 zinit light $zdharma/fast-syntax-highlighting
