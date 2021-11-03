@@ -8,7 +8,6 @@ else
 fi
 
 echo "Installing YADM"
-echo "Use github url: $GITHUBURL"
 # use a tempdir from mirror as a reference to boost init
 tempdir=$(mktemp -d)
 git clone "https://gitee.com/wangl-cc/yadm" $tempdir
