@@ -115,8 +115,8 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # >>> conda initialize >>>
-# !!! Conda must be installed at ~/Applications/Conda
-__conda_dir="$HOME/Applications/Conda"
+# !!! Conda must be installed at ~/Conda
+__conda_dir="$HOME/Conda"
 __conda_setup="$($__conda_dir/bin/conda shell.zsh hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
