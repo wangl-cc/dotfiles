@@ -1,7 +1,6 @@
-#### FIG ENV VARIABLES ####
-# Please make sure this block is at the start of this file.
-[ -s ~/.fig/shell/pre.sh ] && source ~/.fig/shell/pre.sh
-#### END FIG ENV VARIABLES ####
+# Fig pre block. Keep at the top of this file.
+export PATH="${PATH}:${HOME}/.local/bin"
+eval "$(fig init zsh pre)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -13,6 +12,7 @@ fi
 # mirrors used by zinit
 GITHUBURL='gitee.com'
 zdharma='wangl-cc'
+sobolevn='wangl-cc'
 zsh_users="wangl-cc"
 
 ### Added by Zinit's installer
@@ -36,7 +36,8 @@ zinit light romkatv/powerlevel10k # there is an official mirror on gitee
 ### Plugin
 zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
     atload"_zsh_autosuggest_start" $zsh_users/zsh-autosuggestions \
-    $zsh_users/zsh-history-substring-search
+    $zsh_users/zsh-history-substring-search \
+    $sobolevn/wakatime-zsh-plugin
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
 zinit light $zdharma/fast-syntax-highlighting
@@ -125,7 +126,7 @@ unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
 
-#### FIG ENV VARIABLES ####
-# Please make sure this block is at the end of this file.
-[ -s ~/.fig/fig.sh ] && source ~/.fig/fig.sh
-#### END FIG ENV VARIABLES ####
+
+
+# Fig post block. Keep at the bottom of this file.
+eval "$(fig init zsh post)"
