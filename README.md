@@ -1,17 +1,21 @@
 # dotfiles
 
-Managed with [`TheLocehiliosan/yadm`](https://github.com/TheLocehiliosan/yadm).
-
-## Installation
-
+Managed with [`TheLocehiliosan/yadm`](https://github.com/TheLocehiliosan/yadm),
+which is required and can be installed manually:
 ```bash
-cd ~ # go to home dir
-# download temporary yadm
-curl -O https://raw.githubusercontent.com/TheLocehiliosan/yadm/master/yadm
+curl -o $HOME/.local/bin/yadm https://raw.githubusercontent.com/TheLocehiliosan/yadm/master/yadm
 # for users in China mainland, use this mirror instead to download yadm
-curl -O https://gitee.com/wangl-cc/yadm/raw/master/yadm
-sh ./yadm clone git@github.com:wangl-cc/dotfiles.git # replace the git repo url as your own
-rm ./yadm # clean local yadm if bootstrap succeed
+curl -o $HOME/.local/bin/yadm https://gitee.com/wangl-cc/yadm/raw/master/yadm
+```
+or installed by package managers like `brew`:
+```bash
+brew install yadm
+```
+more about installation see the [documents of yadm](https://yadm.io/docs/install#).
+
+Once `yadm` is installed, clone this repo with:
+```
+yadm clone git@github.com:wangl-cc/dotfiles.git  # replace the url as your own
 ```
 
 <!-- vim:set ts=2 sw=2 tw=76: -->
