@@ -110,6 +110,7 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
+alias vim='nvim'
 
 # environment variables
 SAVEHIST=10000
@@ -118,7 +119,7 @@ if [ -z ${HISTFILE+x} ]; then
 fi
 
 if [ -z ${JULIA_EDITOR+x} ]; then
-    export JULIA_EDITOR="vim"
+    export JULIA_EDITOR="nvim"
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
