@@ -6,6 +6,7 @@ which is required and can be installed manually:
 curl -o $HOME/.local/bin/yadm https://raw.githubusercontent.com/TheLocehiliosan/yadm/master/yadm
 # for users in China mainland, use this mirror instead to download yadm
 curl -o $HOME/.local/bin/yadm https://gitee.com/wangl-cc/yadm/raw/master/yadm
+chmod +x $HOME/.local/bin/yadm # make yadm executable
 ```
 or installed by package managers like `brew`:
 ```bash
