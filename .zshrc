@@ -14,6 +14,7 @@ GITHUBURL='gitee.com'
 zdharma='wangl-cc'
 sobolevn='wangl-cc'
 zsh_users="wangl-cc"
+YADM_RAW='gitee.com/wangl-cc/yadm/raw'
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
@@ -22,6 +23,20 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     command git clone "https://$GITHUBURL/$zdharma/zinit" "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
+
+### Installing yadm
+if test ! $(command -v yadm); then
+    yadm_target="$HOME/.local/bin/yadm"
+    if [[ ! -f $HOME/.local/bin/yadm ]]; then
+        print -P "Downloading %F{33}yadm%F{220} to %F{33}$HOME/.local/bin/yadm%F{220}, "
+        curl -o $yadm_target https://$YADM_RAW/master/yadm && \
+            echo "Download succeed." || \
+            echo "Download failed."
+        chmod +x $yadm_target
+    else
+        echo "yadm is found at $yadm_target, make sure it is in your PATH."
+    fi
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
@@ -45,7 +60,7 @@ zinit light $zdharma/fast-syntax-highlighting
 ### Completion
 
 zinit as"completion" wait lucid is-snippet for \
-    .yadm-project/completion/zsh/_yadm \
+    https://$YADM_RAW/master/completion/zsh/_yadm
 
 if command -v brew &> /dev/null; then
     zinit ice as"completion" wait lucid
@@ -125,8 +140,6 @@ fi
 unset __conda_dir
 unset __conda_setup
 # <<< conda initialize <<<
-
-
 
 # Fig post block. Keep at the bottom of this file.
 eval "$(fig init zsh post)"

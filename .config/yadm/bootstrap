@@ -1,20 +1,5 @@
 #!/bin/sh
 
-if ! command -v yadm &> /dev/null; then
-    echo "Use local yadm at $HOME/yadm"
-    yadm="sh $HOME/yadm"
-else
-    yadm=yadm
-fi
-
-echo "Installing YADM"
-# use a tempdir from mirror as a reference to boost init
-tempdir=$(mktemp -d)
-git clone "https://gitee.com/wangl-cc/yadm" $tempdir
-$yadm submodule update --init --recursive --reference $tempdir --dissociate
-rm -rf $tempdir
-echo "YADM installed"
-
 # sparse checkout to avoid  README.md and LICENSE in HOME
 rm -f ~/README.md LICENSE
 $yadm gitconfig core.sparseCheckout true
