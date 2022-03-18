@@ -2,7 +2,7 @@
     name = Long Wang
     email = wangl.cc@outlook.com
 [core]
-    editor = vim
+    editor = nvim
 [filter "ignoreline"]
     clean = "sed '/ (git): ignore this line$/d'"
     smudge = cat
