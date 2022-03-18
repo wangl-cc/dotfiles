@@ -9,12 +9,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# mirrors used by zinit
+# mirrors
 GITHUBURL='gitee.com'
 zdharma='wangl-cc'
 sobolevn='wangl-cc'
 zsh_users="wangl-cc"
 YADM_RAW='gitee.com/wangl-cc/yadm/raw'
+
+# YADM install path
+YADM_BIN="$HOME/.local/bin/yadm"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
@@ -26,18 +29,21 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 ### Installing yadm
+install_yadm() {
+    print -P "Downloading lastest %F{33}yadm%f to %F{33}$HOME/.local/bin/yadm%f..."
+    curl -sSLo $YADM_BIN https://$YADM_RAW/master/yadm && \
+        echo "Download succeed." || \
+        echo "Download failed."
+    chmod +x $YADM_BIN
+}
 if test ! $(command -v yadm); then
-    yadm_target="$HOME/.local/bin/yadm"
-    if [[ ! -f $HOME/.local/bin/yadm ]]; then
-        print -P "Downloading %F{33}yadm%F{220} to %F{33}$HOME/.local/bin/yadm%F{220}, "
-        curl -o $yadm_target https://$YADM_RAW/master/yadm && \
-            echo "Download succeed." || \
-            echo "Download failed."
-        chmod +x $yadm_target
+    if [[ ! -f $YADM_BIN ]]; then
+        install_yadm
     else
-        echo "yadm is found at $yadm_target, make sure it is in your PATH."
+        echo "yadm is found at $YADM_BIN, make sure it is in your PATH."
     fi
 fi
+
 
 source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
