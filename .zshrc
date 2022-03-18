@@ -9,29 +9,36 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# mirrors
-GITHUBURL='gitee.com'
+# mirror url function
+readonly GITHUB_DOMAIN="gitee.com"
+github_url_main(){echo "https://$GITHUB_DOMAIN/$1"}
+github_url_raw(){echo "https://$GITHUB_DOMAIN/$1/raw"}
+
+# some mirrors is belong to me
 zdharma='wangl-cc'
 sobolevn='wangl-cc'
 zsh_users="wangl-cc"
-YADM_RAW='gitee.com/wangl-cc/yadm/raw'
-
-# YADM install path
-YADM_BIN="$HOME/.local/bin/yadm"
+TheLocehiliosan="wangl-cc"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone "https://$GITHUBURL/$zdharma/zinit" "$HOME/.zinit/bin" && \
+    command git clone "$(github_url_main $zdharma/zinit)" "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-### Installing yadm
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
+ 
+### yadm
+YADM_BIN="$HOME/.local/bin/yadm"
 install_yadm() {
     print -P "Downloading lastest %F{33}yadm%f to %F{33}$HOME/.local/bin/yadm%f..."
-    curl -sSLo $YADM_BIN https://$YADM_RAW/master/yadm && \
+    curl -sSLo $YADM_BIN "$(github_url_raw $TheLocehiliosan/yadm)/master/yadm" && \
         echo "Download succeed." || \
         echo "Download failed."
     chmod +x $YADM_BIN
@@ -44,29 +51,23 @@ if test ! $(command -v yadm); then
     fi
 fi
 
-
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-### End of Zinit's installer chunk
-
 ### Theme
-zinit ice lucid depth"1" from"$GITHUBURL"
+zinit ice lucid depth"1" from"$GITHUB_DOMAIN"
 zinit light romkatv/powerlevel10k # there is an official mirror on gitee
 
 ### Plugin
-zinit wait lucid depth=1 light-mode from"$GITHUBURL" for \
+zinit wait lucid depth=1 light-mode from"$GITHUB_DOMAIN" for \
     atload"_zsh_autosuggest_start" $zsh_users/zsh-autosuggestions \
     $zsh_users/zsh-history-substring-search \
     $sobolevn/wakatime-zsh-plugin
 
-zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUBURL"
+zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUB_DOMAIN"
 zinit light $zdharma/fast-syntax-highlighting
 
 ### Completion
 
 zinit as"completion" wait lucid is-snippet for \
-    https://$YADM_RAW/master/completion/zsh/_yadm
+    "$(github_url_raw $TheLocehiliosan/yadm)/master/completion/zsh/_yadm"
 
 if command -v brew &> /dev/null; then
     zinit ice as"completion" wait lucid
