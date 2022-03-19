@@ -9,4 +9,4 @@
 [pull]
     rebase = false
 [diff]
-	tool = vimdiff3
+    tool = vimdiff3

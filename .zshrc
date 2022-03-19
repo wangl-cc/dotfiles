@@ -1,15 +1,19 @@
-# Fig pre block. Keep at the top of this file.
+# fig pre {{{
 export PATH="${PATH}:${HOME}/.local/bin"
 eval "$(fig init zsh pre)"
+# }}}
 
+# p10k pre {{{
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+# }}}
 
-# mirror url function
+# mirror url function {{{
+## github domain name
 readonly GITHUB_DOMAIN="gitee.com"
 ## some mirrors is belong to me, thus those repo owners should be changed
 typeset -A REPO_OWNERS=(
@@ -18,12 +22,14 @@ typeset -A REPO_OWNERS=(
     zsh-users       wangl-cc
     TheLocehiliosan wangl-cc
 )
+## echo new owner for owner in REPO_OWNERS, otherwise echo the original owner
 repo_owner(){ echo ${REPO_OWNERS[$1]-$1} }
+## echo github urls with given owner and repo
 github_url_main(){ echo "https://$GITHUB_DOMAIN/$(repo_owner $1)/$2" }
 github_url_raw(){ echo "https://$GITHUB_DOMAIN/$(repo_owner $1)/$2/raw" }
+# }}}
 
-
-### Added by Zinit's installer
+# zinit install and load {{{
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
@@ -35,10 +41,49 @@ fi
 source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-### End of Zinit's installer chunk
- 
-### yadm
-YADM_BIN="$HOME/.local/bin/yadm"
+# }}}
+
+# zinit plugins {{{
+## Theme
+zinit ice lucid depth"1" from"$GITHUB_DOMAIN"
+zinit light $(repo_owner romkatv)/powerlevel10k
+
+## Plugin
+zinit wait lucid depth=1 light-mode from"$GITHUB_DOMAIN" for \
+    atload"_zsh_autosuggest_start" $(repo_owner zsh-users)/zsh-autosuggestions \
+    $(repo_owner zsh-users)/zsh-history-substring-search \
+    $(repo_owner sobolevn)/wakatime-zsh-plugin
+
+zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUB_DOMAIN"
+zinit light $(repo_owner zdharma)/fast-syntax-highlighting
+
+## Completions
+zinit as"completion" wait lucid is-snippet for \
+    "$(github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
+
+if command -v brew &> /dev/null; then
+    zinit ice as"completion" wait lucid
+    zinit snippet $(brew --prefix)/share/zsh/site-functions/_brew
+fi
+# }}}
+
+# zstyle {{{
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' menu yes select
+zstyle ':completion::complete:*' use-cache 1
+zstyle ":conda_zsh_completion:*" use-groups true
+# }}}
+
+# keymaps {{{
+bindkey -v
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+# }}}
+
+# yadm installation {{{
+readonly YADM_BIN="$HOME/.local/bin/yadm"
 install_yadm() {
     print -P "Downloading lastest %F{33}yadm%f to %F{33}$YADM_BIN%f..."
     curl -sSLo $YADM_BIN "$(github_url_raw TheLocehiliosan yadm)/master/yadm" && \
@@ -53,43 +98,9 @@ if test ! $(command -v yadm); then
         echo "yadm is found at $YADM_BIN, make sure it is in your PATH."
     fi
 fi
+# }}}
 
-### Theme
-zinit ice lucid depth"1" from"$GITHUB_DOMAIN"
-zinit light $(repo_owner romkatv)/powerlevel10k
-
-### Plugin
-zinit wait lucid depth=1 light-mode from"$GITHUB_DOMAIN" for \
-    atload"_zsh_autosuggest_start" $(repo_owner zsh-users)/zsh-autosuggestions \
-    $(repo_owner zsh-users)/zsh-history-substring-search \
-    $(repo_owner sobolevn)/wakatime-zsh-plugin
-
-zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$GITHUB_DOMAIN"
-zinit light $(repo_owner zdharma)/fast-syntax-highlighting
-
-### Completions
-zinit as"completion" wait lucid is-snippet for \
-    "$(github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
-
-if command -v brew &> /dev/null; then
-    zinit ice as"completion" wait lucid
-    zinit snippet $(brew --prefix)/share/zsh/site-functions/_brew
-fi
-
-### zstyle
-zstyle ':completion:*' verbose yes
-zstyle ':completion:*' menu yes select
-zstyle ':completion::complete:*' use-cache 1
-zstyle ":conda_zsh_completion:*" use-groups true
-
-### Keymaps
-bindkey -v
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
-# aliases
+# aliases {{{
 alias ...='../..'
 alias ls='ls --color'
 alias da='du -sch'
@@ -120,8 +131,9 @@ alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
 alias vim='nvim'
+# }}}
 
-# environment variables
+# environment variables {{{
 SAVEHIST=10000
 if [ -z ${HISTFILE+x} ]; then
     HISTFILE=$HOME/.zsh_history
@@ -130,12 +142,10 @@ fi
 if [ -z ${JULIA_EDITOR+x} ]; then
     export JULIA_EDITOR="nvim"
 fi
+# }}}
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# >>> conda initialize >>>
-# !!! Conda must be installed at ~/Conda
+# conda initialize {{{
+ !!! Conda must be installed at ~/Conda
 __conda_dir="$HOME/Conda"
 __conda_setup="$($__conda_dir/bin/conda shell.zsh hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
@@ -149,7 +159,15 @@ else
 fi
 unset __conda_dir
 unset __conda_setup
-# <<< conda initialize <<<
+# }}}
 
-# Fig post block. Keep at the bottom of this file.
+# p10k post {{{
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# }}}
+
+# fig post {{{
 eval "$(fig init zsh post)"
+# }}}
+
+# vim:tw=76:ts=4:sw=4:et:fdm=marker
