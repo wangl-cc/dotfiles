@@ -1,5 +1,4 @@
 # fig pre {{{
-export PATH="${PATH}:${HOME}/.local/bin"
 eval "$(fig init zsh pre)"
 # }}}
 
