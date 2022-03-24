@@ -1,5 +1,4 @@
 # Fig pre block. Keep at the top of this file.
-export PATH="${PATH}:${HOME}/.local/bin"
 eval "$(fig init zsh pre)"
 
 if [ -f /opt/homebrew/bin/brew ]; then
