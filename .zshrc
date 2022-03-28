@@ -1,5 +1,7 @@
 # fig pre {{{
-eval "$(fig init zsh pre)"
+if command -v brew &> /dev/null; then
+    eval "$(fig init zsh pre)"
+fi
 # }}}
 
 # p10k pre {{{
@@ -167,7 +169,9 @@ unset __conda_setup
 # }}}
 
 # fig post {{{
-eval "$(fig init zsh post)"
+if command -v fig &> /dev/null; then
+    eval "$(fig init zsh post)"
+fi
 # }}}
 
 # vim:tw=76:ts=4:sw=4:et:fdm=marker
