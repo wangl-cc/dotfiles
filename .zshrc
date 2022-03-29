@@ -1,5 +1,5 @@
 # fig pre {{{
-if command -v brew &> /dev/null; then
+if command -v fig &> /dev/null; then
     eval "$(fig init zsh pre)"
 fi
 # }}}
