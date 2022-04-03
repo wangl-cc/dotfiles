@@ -144,7 +144,7 @@ if [ -z ${HISTFILE+x} ]; then
 fi
 
 if [ -z ${JULIA_EDITOR+x} ]; then
-    export JULIA_EDITOR="nvim"
+    export JULIA_EDITOR=${aliases[vim]-vim}
 fi
 # homebrew use aliyun mirror
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.aliyun.com/homebrew/homebrew-core.git"
