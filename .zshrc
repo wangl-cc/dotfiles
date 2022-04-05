@@ -146,9 +146,6 @@ fi
 if [ -z ${JULIA_EDITOR+x} ]; then
     export JULIA_EDITOR=${aliases[vim]-vim}
 fi
-# homebrew use aliyun mirror
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.aliyun.com/homebrew/homebrew-core.git"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.aliyun.com/homebrew/homebrew-bottles"
 # }}}
 
 # conda initialize {{{
