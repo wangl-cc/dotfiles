@@ -36,6 +36,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'ctrlpvim/ctrlp.vim'
     " JuliaLang
     Plug 'JuliaEditorSupport/julia-vim'
+    " Brackets pair colorizer
+    Plug 'luochen1990/rainbow'
+    " Color scheme
+    Plug 'rakr/vim-one'
+    " Github Copilot
+    if has('nvim-0.6')
+        Plug 'github/copilot.vim'
+    endif
+    if has('nvim') && has('mac')
+        Plug 'f-person/auto-dark-mode.nvim'
+    endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
@@ -53,6 +64,18 @@ endif
 " }}}
 
 " General config {{{
+" use gui color
+if !($TERM_PROGRAM =~ "Apple_Terminal")
+    set termguicolors
+endif
+
+" Syntax highlight
+syntax enable
+
+" colorscheme
+if !($TERM_PROGRAM =~ "Apple_Terminal")
+    colorscheme one
+endif
 
 " Filetype
 filetype indent plugin on
@@ -61,8 +84,10 @@ filetype indent plugin on
 set number
 set relativenumber
 
-" Syntax highlight
-syntax on
+" italic comments
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+highlight Comment cterm=italic
 
 " Confirm when quit
 set confirm
@@ -102,6 +127,61 @@ nnoremap <silent> <leader>tb :%s/[ \t]\+$//<CR>
 " Indent guides toggle
 nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
 
+" highlight of match of current word
+nnoremap <silent> <leader>hw :exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>
+" }}}
+
+" Plugs configs {{{
+
+" One color scheme {{{
+let g:one_allow_italics = 1
+" }}}
+
+" rainbow configs {{{
+let g:rainbow_active = 1
+if !&termguicolors
+    " term colors for termguicolors is off
+    let g:rainbow_colors_dark = [
+    \   'lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'
+    \ ]
+    let g:rainbow_colors_light = [
+    \   'darkblue', 'darkyellow', 'darkcyan', 'darkmagenta'
+    \ ]
+    if &background == 'dark'
+        let g:rainbow_conf = {'ctermfgs': g:rainbow_colors_dark}
+    else
+        let g:rainbow_conf = {'ctermfgs': g:rainbow_colors_light}
+    endif
+endif
+" }}}
+
+" auto dark mode config {{{
+lua << EOF
+local auto_dark_mode = require('auto-dark-mode')
+
+auto_dark_mode.setup({
+	update_interval = 3000,
+	set_dark_mode = function()
+		vim.api.nvim_set_option('background', 'dark')
+        if not vim.api.nvim_get_option('termguicolors') and
+            vim.call('exists', 'b:rainbow_confs') then
+            rainbow_colors_dark = vim.api.nvim_get_var('rainbow_colors_dark')
+            vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_dark})
+            vim.call('rainbow_main#load')
+        end
+	end,
+	set_light_mode = function()
+		vim.api.nvim_set_option('background', 'light')
+        if not vim.api.nvim_get_option('termguicolors') and
+            vim.call('exists', 'b:rainbow_confs') then
+            rainbow_colors_light = vim.api.nvim_get_var('rainbow_colors_light')
+            vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_light})
+            vim.call('rainbow_main#load')
+        end
+	end,
+})
+auto_dark_mode.init()
+EOF
 " }}}
 
 " NERDTree config {{{
@@ -228,6 +308,8 @@ end
 let g:slime_no_mappings = 1
 xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
+" }}}
+
 " }}}
 
 " Language configs {{{
