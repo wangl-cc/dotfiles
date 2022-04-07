@@ -77,6 +77,15 @@ if !($TERM_PROGRAM =~ "Apple_Terminal")
     colorscheme one
 endif
 
+" background color
+if has('nvim') && has('mac')
+    if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
+        set background=dark
+    else
+        set background=light
+    endif
+endif
+
 " Filetype
 filetype indent plugin on
 
@@ -156,7 +165,7 @@ endif
 " }}}
 
 " auto dark mode config {{{
-if has('nvim')
+if has('nvim') && has('mac')
 lua << EOF
 local auto_dark_mode = require('auto-dark-mode')
 auto_dark_mode.setup({
