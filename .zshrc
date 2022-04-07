@@ -132,9 +132,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
-if command -v nvim &> /dev/null; then
-    alias vim='nvim'
-fi
 # }}}
 
 # environment variables {{{
@@ -142,9 +139,23 @@ SAVEHIST=10000
 if [ -z ${HISTFILE+x} ]; then
     HISTFILE=$HOME/.zsh_history
 fi
-
-if [ -z ${JULIA_EDITOR+x} ]; then
-    export JULIA_EDITOR=${aliases[vim]-vim}
+if command -v nvim &> /dev/null; then
+    alias vim='nvim'
+    export GIT_DIFF_TOOL='nvimdiff'
+else
+    export GIT_DIFF_TOOL='vimdiff'
+fi
+if [ -z ${VISUAL+x} ]; then
+    export VISUAL=${aliases[vim]-vim}
+fi
+if [ -z ${EDITOR+x} ]; then
+    export EDITOR="${aliases[vim]-vim} -e"
+fi
+if [ -z ${JULIA_EDITION+x} ]; then
+    export JULIA_EDITION=$VISUAL
+fi
+if [ -z ${GIT_EDITOR+x} ]; then
+    export GIT_EDITOR=$VISUAL
 fi
 # }}}
 
