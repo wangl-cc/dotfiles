@@ -9,7 +9,7 @@ endif
 " If there is not plug.vim, install it and install plugins
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ http//raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 " }}}
@@ -45,7 +45,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'github/copilot.vim'
     endif
     if has('nvim') && has('mac')
-        Plug 'f-person/auto-dark-mode.nvim'
+        " Plug 'f-person/auto-dark-mode.nvim'
     endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
@@ -64,28 +64,8 @@ endif
 " }}}
 
 " General config {{{
-" use gui color
-if !($TERM_PROGRAM =~ "Apple_Terminal")
-    set termguicolors
-endif
 
-" Syntax highlight
-syntax enable
-
-" colorscheme
-if !($TERM_PROGRAM =~ "Apple_Terminal")
-    colorscheme one
-endif
-
-" background color
-if has('nvim') && has('mac')
-    if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
-        set background=dark
-    else
-        set background=light
-    endif
-endif
-
+" misc {{{
 " Filetype
 filetype indent plugin on
 
@@ -93,27 +73,8 @@ filetype indent plugin on
 set number
 set relativenumber
 
-" italic comments
-let &t_ZH="\e[3m"
-let &t_ZR="\e[23m"
-highlight Comment cterm=italic
-
 " Confirm when quit
 set confirm
-
-" Indent config{{{
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set smarttab
-set autoindent
-set smartindent
-" }}}
-
-" highlight search
-set hlsearch
-nnoremap <silent> <leader>n :nohlsearch<CR>
-
 " Show match
 set showmatch
 
@@ -129,18 +90,73 @@ set modelines=1
 " Split flavor
 set splitbelow
 set splitright
+" }}}
 
+" color scheme related {{{
+" use gui color
+if !($TERM_PROGRAM =~ "Apple_Terminal")
+    set termguicolors
+endif
+
+" Syntax highlight
+syntax enable
+
+" colorscheme
+if !($TERM_PROGRAM =~ "Apple_Terminal")
+    colorscheme one
+endif
+
+" italic comments
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+highlight Comment cterm=italic
+" }}}
+
+" Indent config{{{
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set smarttab
+set autoindent
+set smartindent
+" }}}
+
+" commands {{{
+" highlight search
+set hlsearch
+
+nnoremap <silent> <leader>n :nohlsearch<CR>
 " Remove all tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]\+$//<CR>
 
 " Indent guides toggle
 nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
 
-" highlight of match of current word
+" highlight all matches of current word
 nnoremap <silent> <leader>hw :exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>
+
+" replace all matches of current word
+nnoremap <leader>cW :%s/\<<C-r><C-w>\>/
+" }}}
 " }}}
 
 " Plugs configs {{{
+
+" set background color {{{
+function SetBackGround()
+    if has('mac')
+        if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
+            set background=dark
+            doautocmd User BackGroundDark
+        else
+            set background=light
+            doautocmd User BackGroundLight
+        endif
+    endif
+endfunction
+
+call SetBackGround() " set background color firstly
+" }}}
 
 " One color scheme {{{
 let g:one_allow_italics = 1
@@ -161,41 +177,84 @@ if !&termguicolors
     else
         let g:rainbow_conf = {'ctermfgs': g:rainbow_colors_light}
     endif
+    function s:rainbow_set_dark()
+        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
+        rainbow_main#load()
+    endfunction
+    function s:rainbow_set_light()
+        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
+        rainbow_main#load()
+    endfunction
 endif
 " }}}
 
-" auto dark mode config {{{
-if has('nvim') && has('mac')
-lua << EOF
-local auto_dark_mode = require('auto-dark-mode')
-auto_dark_mode.setup({
-	update_interval = 3000,
-	set_dark_mode = function()
-		vim.api.nvim_set_option('background', 'dark')
-        vim.call('lightline#colorscheme#one_auto#set_paletten')
-        vim.call('lightline#colorscheme')
-        if not vim.api.nvim_get_option('termguicolors') and
-            vim.call('exists', 'b:rainbow_confs') then
-            rainbow_colors_dark = vim.api.nvim_get_var('rainbow_colors_dark')
-            vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_dark})
-            vim.call('rainbow_main#load')
-        end
-	end,
-	set_light_mode = function()
-		vim.api.nvim_set_option('background', 'light')
-        vim.call('lightline#colorscheme#one_auto#set_paletten')
-        vim.call('lightline#colorscheme')
-        if not vim.api.nvim_get_option('termguicolors') and
-            vim.call('exists', 'b:rainbow_confs') then
-            rainbow_colors_light = vim.api.nvim_get_var('rainbow_colors_light')
-            vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_light})
-            vim.call('rainbow_main#load')
-        end
-	end,
-})
-auto_dark_mode.init()
-EOF
-endif
+" auto dark mode {{{
+" reset color when background changed {{{
+function s:lightline_update()
+    if g:lightline['colorscheme'] == 'one_auto'
+        call lightline#colorscheme#one_auto#set_paletten()
+        call lightline#init()
+        call lightline#colorscheme()
+        call lightline#update()
+    endif
+endfunction
+" }}}
+
+" autocmd when background changed {{{
+augroup BackGroundChange
+    autocmd!
+    autocmd User BackGroundDark set background=dark
+    autocmd User BackGroundLight set background=light
+    autocmd User BackGroundDark,BackGroundLight call s:lightline_update()
+    if !&termguicolors && exists('g:rainbow_conf')
+        autocmd User BackGroundDark call s:rainbow_set_dark()
+        autocmd User BackGroundLight call s:rainbow_set_light()
+    endif
+augroup END
+" }}}
+
+" best way to set background color {{{
+" if SIGWINCH is supported
+augroup CatchBackGround
+    autocmd!
+    autocmd Signal SIGWINCH call SetBackGround()
+augroup END
+" }}}
+
+" alternative way to set background {{{
+" " this require a auto dark mode plugin
+" if has('nvim') && has('mac')
+" lua << EOF
+" local auto_dark_mode = require('auto-dark-mode')
+" auto_dark_mode.setup({
+"     update_interval = 3000,
+"     set_dark_mode = function()
+"         vim.api.nvim_set_option('background', 'dark')
+"         vim.call('lightline#colorscheme#one_auto#set_paletten')
+"         vim.call('lightline#colorscheme')
+"         if not vim.api.nvim_get_option('termguicolors') and
+"             vim.call('exists', 'b:rainbow_confs') then
+"             rainbow_colors_dark = vim.api.nvim_get_var('rainbow_colors_dark')
+"             vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_dark})
+"             vim.call('rainbow_main#load')
+"         end
+"     end,
+"     set_light_mode = function()
+"         vim.api.nvim_set_option('background', 'light')
+"         vim.call('lightline#colorscheme#one_auto#set_paletten')
+"         vim.call('lightline#colorscheme')
+"         if not vim.api.nvim_get_option('termguicolors') and
+"             vim.call('exists', 'b:rainbow_confs') then
+"             rainbow_colors_light = vim.api.nvim_get_var('rainbow_colors_light')
+"             vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_light})
+"             vim.call('rainbow_main#load')
+"         end
+"     end,
+" })
+" auto_dark_mode.init()
+" EOF
+" endif
+" }}}
 " }}}
 
 " NERDTree config {{{
