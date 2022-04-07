@@ -156,13 +156,15 @@ endif
 " }}}
 
 " auto dark mode config {{{
+if has('nvim')
 lua << EOF
 local auto_dark_mode = require('auto-dark-mode')
-
 auto_dark_mode.setup({
 	update_interval = 3000,
 	set_dark_mode = function()
 		vim.api.nvim_set_option('background', 'dark')
+        vim.call('lightline#colorscheme#one_auto#set_paletten')
+        vim.call('lightline#colorscheme')
         if not vim.api.nvim_get_option('termguicolors') and
             vim.call('exists', 'b:rainbow_confs') then
             rainbow_colors_dark = vim.api.nvim_get_var('rainbow_colors_dark')
@@ -172,6 +174,8 @@ auto_dark_mode.setup({
 	end,
 	set_light_mode = function()
 		vim.api.nvim_set_option('background', 'light')
+        vim.call('lightline#colorscheme#one_auto#set_paletten')
+        vim.call('lightline#colorscheme')
         if not vim.api.nvim_get_option('termguicolors') and
             vim.call('exists', 'b:rainbow_confs') then
             rainbow_colors_light = vim.api.nvim_get_var('rainbow_colors_light')
@@ -182,6 +186,7 @@ auto_dark_mode.setup({
 })
 auto_dark_mode.init()
 EOF
+endif
 " }}}
 
 " NERDTree config {{{
@@ -262,6 +267,7 @@ function! LightlineFileInfo()
 endfunction
 
 let g:lightline = {
+    \ 'colorscheme': 'one_auto',
     \ 'active': {
     \   'left': [ [ 'mode', 'paste' ],
     \             [ 'gitstatus' , 'fileinfo'],
