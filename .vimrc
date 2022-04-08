@@ -44,8 +44,9 @@ call plug#begin('~/.vim/plugged')
     if has('nvim-0.6')
         Plug 'github/copilot.vim'
     endif
-    if has('nvim') && has('mac')
-        " Plug 'f-person/auto-dark-mode.nvim'
+    if has('nvim') && has('mac') &&
+        \ (!has('nvim-0.7') || $TERM_PROGRAM != 'iTerm.app')
+        Plug 'f-person/auto-dark-mode.nvim'
     endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
@@ -189,7 +190,7 @@ endif
 " }}}
 
 " auto dark mode {{{
-" reset color when background changed {{{
+" reset lightline color when background changed {{{
 function s:lightline_update()
     if g:lightline['colorscheme'] == 'one_auto'
         call lightline#colorscheme#one_auto#set_paletten()
@@ -213,49 +214,35 @@ augroup BackGroundChange
 augroup END
 " }}}
 
-" best way to set background color {{{
+" auto SetBackGround {{{
 " if SIGWINCH is supported
-augroup CatchBackGround
-    autocmd!
-    autocmd Signal SIGWINCH call SetBackGround()
-augroup END
-" }}}
+if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
+    augroup CatchBackGround
+        autocmd!
+        autocmd Signal SIGWINCH call SetBackGround()
+    augroup END
+elseif has('nvim') && has('mac')
+" this is the alternative way to set background
+" when SIGWINCH is not supported or terminal is not iTerm
+" this require the plug 'auto_dark_mode'
+lua << EOF
+local auto_dark_mode = require('auto-dark-mode')
+auto_dark_mode.setup({
+    update_interval = 3000,
+    set_dark_mode = function()
+        vim.call('SetBackGround')
+    end,
+    set_light_mode = function()
+        vim.call('SetBackGround')
+    end,
+})
+auto_dark_mode.init()
+EOF
+endif
+" }}} end of auto SetBackGround
 
-" alternative way to set background {{{
-" " this require a auto dark mode plugin
-" if has('nvim') && has('mac')
-" lua << EOF
-" local auto_dark_mode = require('auto-dark-mode')
-" auto_dark_mode.setup({
-"     update_interval = 3000,
-"     set_dark_mode = function()
-"         vim.api.nvim_set_option('background', 'dark')
-"         vim.call('lightline#colorscheme#one_auto#set_paletten')
-"         vim.call('lightline#colorscheme')
-"         if not vim.api.nvim_get_option('termguicolors') and
-"             vim.call('exists', 'b:rainbow_confs') then
-"             rainbow_colors_dark = vim.api.nvim_get_var('rainbow_colors_dark')
-"             vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_dark})
-"             vim.call('rainbow_main#load')
-"         end
-"     end,
-"     set_light_mode = function()
-"         vim.api.nvim_set_option('background', 'light')
-"         vim.call('lightline#colorscheme#one_auto#set_paletten')
-"         vim.call('lightline#colorscheme')
-"         if not vim.api.nvim_get_option('termguicolors') and
-"             vim.call('exists', 'b:rainbow_confs') then
-"             rainbow_colors_light = vim.api.nvim_get_var('rainbow_colors_light')
-"             vim.api.nvim_set_var('rainbow_conf', {ctermfgs = rainbow_colors_light})
-"             vim.call('rainbow_main#load')
-"         end
-"     end,
-" })
-" auto_dark_mode.init()
-" EOF
-" endif
-" }}}
-" }}}
+
+" }}} end of auto dark mode
 
 " NERDTree config {{{
 let NERDTreeShowHidden = 1
