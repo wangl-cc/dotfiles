@@ -165,6 +165,19 @@ nnoremap <leader>cW :%s/\<<C-r><C-w>\>/
 
 " Plugs configs {{{
 
+" automatically install missing plugs {{{
+function s:install_missing_plugs()
+    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        PlugInstall --sync | q
+    endif
+endfunction
+
+augroup AutoPlugInstall
+    autocmd!
+    autocmd VimEnter * call s:install_missing_plugs()
+augroup END
+" }}}
+
 " set background color {{{
 function SetBackGround()
     if has('mac')
