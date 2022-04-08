@@ -179,19 +179,23 @@ augroup END
 " }}}
 
 " set background color {{{
-function SetBackGround()
+function SetBackGround(...)
+    let init = get(a:, 1, 0) " init only the argument is given
     if has('mac')
         if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
-            set background=dark
-            doautocmd User BackGroundDark
-        else
+            " don't change background if already set or not init
+            if &background != 'dark' || !init
+                set background=dark
+                doautocmd User BackGroundDark
+            endif
+        elseif &background != 'light' || !init " the same for dark
             set background=light
             doautocmd User BackGroundLight
         endif
     endif
 endfunction
 
-call SetBackGround() " set background color firstly
+call SetBackGround(1) " init background color firstly
 " }}}
 
 " One color scheme {{{
