@@ -301,7 +301,11 @@ let g:coc_global_extensions = [
 " }}}
 
 " Lightline config {{{
-set laststatus=3
+if has('nvim-0.7')
+    set laststatus=3
+else
+    set laststatus=2
+endif
 
 function! LightlineCocStatus() abort
     let status = coc#status()
