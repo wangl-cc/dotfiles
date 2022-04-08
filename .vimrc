@@ -76,6 +76,7 @@ set relativenumber
 
 " Confirm when quit
 set confirm
+
 " Show match
 set showmatch
 
@@ -88,9 +89,31 @@ set encoding=utf-8
 " modeline
 set modelines=1
 
+" highlight search
+set hlsearch
+set incsearch
+
 " Split flavor
 set splitbelow
 set splitright
+
+" allow backspace in insert mode
+set backspace=indent,eol,start
+
+" enhance command-line completion
+set wildmenu
+
+" highlight current line
+set cursorline
+
+" keep 3 lines above and below the cursor
+set scrolloff=3
+
+" disable error bell
+set noerrorbells
+
+" always show tab line
+set showtabline=2
 " }}}
 
 " color scheme related {{{
@@ -123,10 +146,9 @@ set smartindent
 " }}}
 
 " commands {{{
-" highlight search
-set hlsearch
-
+" disable highlight for search
 nnoremap <silent> <leader>n :nohlsearch<CR>
+
 " Remove all tariling blanks
 nnoremap <silent> <leader>tb :%s/[ \t]\+$//<CR>
 
