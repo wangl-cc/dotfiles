@@ -159,7 +159,7 @@ nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
 nnoremap <silent> <leader>hw :exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>
 
 " replace all matches of current word
-nnoremap <leader>cW :%s/\<<C-r><C-w>\>/
+nnoremap <leader>cW :%s/\<<C-r><C-w>\>/<C-r><C-w>
 " }}}
 " }}}
 
