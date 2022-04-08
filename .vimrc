@@ -255,7 +255,7 @@ let g:coc_global_extensions = [
 " }}}
 
 " Lightline config {{{
-set laststatus=2
+set laststatus=3
 
 function! LightlineCocStatus() abort
     let status = coc#status()
