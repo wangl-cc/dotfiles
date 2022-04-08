@@ -145,7 +145,7 @@ set autoindent
 set smartindent
 " }}}
 
-" commands {{{
+" custom commands {{{
 " disable highlight for search
 nnoremap <silent> <leader>n :nohlsearch<CR>
 
@@ -215,11 +215,11 @@ if !&termguicolors
     endif
     function s:rainbow_set_dark()
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
-        rainbow_main#load()
+        call rainbow_main#load()
     endfunction
     function s:rainbow_set_light()
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
-        rainbow_main#load()
+        call rainbow_main#load()
     endfunction
 endif
 " }}}
@@ -332,6 +332,7 @@ let g:coc_global_extensions = [
 \    "coc-json",
 \    "coc-snippets",
 \    "coc-pairs",
+\    "coc-vimlsp",
 \ ]
 " }}}
 
@@ -349,15 +350,16 @@ endfunction
 
 function! LightlineGitStatus() abort
     let status = get(g:, 'coc_git_status', '')
-    return winwidth(0) >= 75 ? status : ''
+    return winwidth(0) - len(status) >= 70 ? status : ''
 endfunction
 
 function! LightlineFileInfo()
     let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
     let modified = &modified ? '*' : ''
     let RO = &readonly && &filetype !~# '\v(help|vimfiler|unite)' ? ' [RO]' : ''
-    let status = winwidth(0) >=  100 ? get(b:, 'coc_git_status', '') : ''
-    return RO . filename . modified . status
+    let status = get(b:, 'coc_git_status', '')
+    return RO . filename . modified .
+        \ ((winwidth(0) - len(status)) >= 70 ? status : '')
 endfunction
 
 let g:lightline = {
