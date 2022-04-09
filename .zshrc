@@ -151,8 +151,8 @@ fi
 if [ -z ${EDITOR+x} ]; then
     export EDITOR="${aliases[vim]-vim} -e"
 fi
-if [ -z ${JULIA_EDITION+x} ]; then
-    export JULIA_EDITION=$VISUAL
+if [ -z ${JULIA_EDITOR+x} ]; then
+    export JULIA_EDITOR=$VISUAL
 fi
 if [ -z ${GIT_EDITOR+x} ]; then
     export GIT_EDITOR=$VISUAL
