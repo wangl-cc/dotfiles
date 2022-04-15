@@ -40,6 +40,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'luochen1990/rainbow'
     " Color scheme
     Plug 'rakr/vim-one'
+    " wakaTime
+    Plug 'wakatime/vim-wakatime'
+    " vim-sneak
+    Plug 'justinmk/vim-sneak'
     " Github Copilot
     if has('nvim-0.6')
         Plug 'github/copilot.vim'
