@@ -1,10 +1,11 @@
 try
-    using Revise
+    using Revise, OhMyREPL
 catch e
     if e isa ArgumentError
         import Pkg
         Pkg.add("Revise")
-        using Revise
+        Pkg.add("OhMyREPL")
+        using Revise, OhMyREPL
     else
         rethrow()
     end
