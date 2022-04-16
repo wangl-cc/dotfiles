@@ -4,3 +4,9 @@
 rm -f ~/README.md LICENSE
 yadm gitconfig core.sparseCheckout true
 yadm sparse-checkout set '/*' '!README.md' '!LICENSE'
+
+# init iterm2
+if [ $(uname -s) = 'Darwin' ]; then
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.iterm"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
