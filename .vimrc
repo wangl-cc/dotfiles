@@ -192,11 +192,9 @@ function SetBackGround(...)
         if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
             " don't change background if already set or not init
             if &background != 'dark' || !init
-                set background=dark
                 doautocmd User BackGroundDark
             endif
         elseif &background != 'light' || !init " the same for dark
-            set background=light
             doautocmd User BackGroundLight
         endif
     endif
