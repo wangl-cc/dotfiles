@@ -16,16 +16,6 @@ endif
 
 " Plugs load {{{
 call plug#begin('~/.vim/plugged')
-    " Tree explorer
-    Plug 'scrooloose/nerdtree'
-    " Comment
-    Plug 'scrooloose/nerdcommenter'
-    " LSP
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    " Indent guides
-    Plug 'nathanaelkane/vim-indent-guides'
-    " Statusline
-    Plug 'itchyny/lightline.vim'
     " Some file commands like rename
     Plug 'tpope/vim-eunuch'
     " Some operations text object
@@ -34,23 +24,36 @@ call plug#begin('~/.vim/plugged')
     Plug 'godlygeek/tabular'
     " fuzzy finder
     Plug 'ctrlpvim/ctrlp.vim'
-    " JuliaLang
-    Plug 'JuliaEditorSupport/julia-vim'
-    " Brackets pair colorizer
-    Plug 'luochen1990/rainbow'
-    " Color scheme
-    Plug 'rakr/vim-one'
-    " wakaTime
-    Plug 'wakatime/vim-wakatime'
-    " vim-sneak
-    Plug 'justinmk/vim-sneak'
-    " Github Copilot
-    if has('nvim-0.6')
-        Plug 'github/copilot.vim'
-    endif
-    if has('nvim') && has('mac') &&
-        \ (!has('nvim-0.7') || $TERM_PROGRAM != 'iTerm.app')
-        Plug 'f-person/auto-dark-mode.nvim'
+    " plugs disable for vim code
+    if !exists("g:vscode")
+        " Tree explorer
+        Plug 'scrooloose/nerdtree'
+        " Comment
+        Plug 'scrooloose/nerdcommenter'
+        " LSP
+        Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        " Indent guides
+        Plug 'nathanaelkane/vim-indent-guides'
+        " Statusline
+        Plug 'itchyny/lightline.vim'
+        " JuliaLang
+        Plug 'JuliaEditorSupport/julia-vim'
+        " Brackets pair colorizer
+        Plug 'luochen1990/rainbow'
+        " Color scheme
+        Plug 'rakr/vim-one'
+        " wakaTime
+        Plug 'wakatime/vim-wakatime'
+        " vim-sneak
+        Plug 'justinmk/vim-sneak'
+        " Github Copilot
+        if has('nvim-0.6')
+            Plug 'github/copilot.vim'
+        endif
+        if has('nvim') && has('mac') &&
+            \ (!has('nvim-0.7') || $TERM_PROGRAM != 'iTerm.app')
+            Plug 'f-person/auto-dark-mode.nvim'
+        endif
     endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
@@ -180,6 +183,31 @@ augroup AutoPlugInstall
     autocmd!
     autocmd VimEnter * call s:install_missing_plugs()
 augroup END
+" }}}
+
+" if exists(g:vscode) and vscode configs {{{
+" vscode only configs 
+if exists("g:vscode")
+    " Language features
+    nmap <silent> <leader>]  <Cmd>call VSCodeCall("editor.action.marker.next")<CR>
+    nmap <silent> <leader>[  <Cmd>call VSCodeCall("editor.action.marker.prev")<CR>
+    nmap <silent> <leader>-  <Cmd>call VSCodeCall("editor.action.dirtydiff.prev")<CR>
+    nmap <silent> <leader>+  <Cmd>call VSCodeCall("editor.action.dirtydiff.next")<CR>
+    nmap <silent> <leader>gd <Cmd>call VSCodeCall("editor.action.revealDefinition")<CR>
+    nmap <silent> <leader>gD <Cmd>call VSCodeCall("editor.action.goToDeclaration")<CR>
+    nmap <silent> <leader>gr <Cmd>call VSCodeCall("editor.action.goToReferences")<CR>
+    nmap <silent> <leader>pd <Cmd>call VSCodeCall("editor.action.peekDefinition")<CR>
+    nmap <silent> <leader>ph <Cmd>call VSCodeCall("editor.action.showHover")<CR>
+    nmap          <leader>cw <Cmd>call VSCodeCall("editor.action.rename")<CR>
+    nmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
+    vmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
+    " Comments
+    xmap <silent> <leader>c<space> <Plug>VSCodeCommentary
+    nmap <silent> <leader>c<space> <Plug>VSCodeCommentary
+    omap <silent> <leader>c<space> <Plug>VSCodeCommentary
+    " Explore
+    nmap <silent> <leader>tt <Plug>call VSCodeCall("workbench.view.explorer")<CR>
+else
 " }}}
 
 " set background color {{{
@@ -322,12 +350,12 @@ set shortmess+=c
 set signcolumn=yes
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap <silent> <leader>l :CocList<CR>
-nmap <silent> <leader>[l <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>]l <Plug>(coc-diagnostic-next)
-nmap <silent> <leader>[g <Plug>(coc-git-prevchunk)
-nmap <silent> <leader>]g <Plug>(coc-git-nextchunk)
+nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>- <Plug>(coc-git-prevchunk)
+nmap <silent> <leader>+ <Plug>(coc-git-nextchunk)
 nmap <silent> <leader>gd <plug>(coc-definition)
-nmap <leader>cw <Plug>(coc-rename)
+nmap          <leader>cw <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
 " disable latex to unicode via tab for `julia-vim`
@@ -418,6 +446,10 @@ end
 let g:slime_no_mappings = 1
 xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
+" }}}
+
+" endif exists(g:vscode) {{{
+endif " 
 " }}}
 
 " }}}
