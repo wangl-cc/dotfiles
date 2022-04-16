@@ -15,6 +15,9 @@ endif
 " }}}
 
 " Plugs load {{{
+" force use ssh to download plugs
+let g:plug_url_format = 'git@github.com:%s.git'
+
 call plug#begin('~/.vim/plugged')
     " Tree explorer
     Plug 'scrooloose/nerdtree'
