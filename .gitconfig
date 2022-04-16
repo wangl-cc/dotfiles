@@ -10,3 +10,5 @@
     tool = $GIT_DIFF_TOOL
 [merge]
     tool = $GIT_DIFF_TOOL
+[url "git@github.com:"]
+    insteadOf = "https://github.com/"
