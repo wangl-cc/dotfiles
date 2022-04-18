@@ -16,6 +16,7 @@ typeset -A __RC_REPO_OWNERS=(
     sobolevn        wangl-cc
     zsh-users       wangl-cc
     TheLocehiliosan wangl-cc
+    romkatv         wangl-cc
 )
 ## echo new owner for owner in REPO_OWNERS, otherwise echo the original owner
 __repo_owner(){ echo ${__RC_REPO_OWNERS[$1]-$1} }
