@@ -128,6 +128,7 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
+'@vim'() {vim $1 $2}
 # }}}
 
 # environment variables {{{

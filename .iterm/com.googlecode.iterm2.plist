@@ -1944,6 +1944,13 @@
 				<key>Red Component</key>
 				<real>0.89803921568627454</real>
 			</dict>
+			<key>Semantic History</key>
+			<dict>
+				<key>action</key>
+				<string>coprocess</string>
+				<key>text</key>
+				<string>echo @vim \"\1\" \2</string>
+			</dict>
 			<key>Send Code When Idle</key>
 			<false/>
 			<key>Shortcut</key>

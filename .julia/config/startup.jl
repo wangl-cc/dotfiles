@@ -12,3 +12,7 @@ catch e
         rethrow()
     end
 end
+
+macro vim(file, line)
+    edit(file, line)
+end
