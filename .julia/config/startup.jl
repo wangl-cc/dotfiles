@@ -1,13 +1,13 @@
 try
-    using Revise, OhMyREPL
+    using Revise
 catch e
     if e isa ArgumentError
         import Pkg
         current_project = Pkg.project().path
         Pkg.activate()
-        Pkg.add(["Revise", "OhMyREPL"])
+        Pkg.add(["Revise"])
         Pkg.activate(current_project)
-        using Revise, OhMyREPL
+        using Revise
     else
         rethrow()
     end
