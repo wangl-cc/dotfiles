@@ -5,8 +5,49 @@ rm -f ~/README.md LICENSE
 yadm gitconfig core.sparseCheckout true
 yadm sparse-checkout set '/*' '!README.md' '!LICENSE'
 
-# init iterm2
+# macOS defaults, those changes require a restart to take effect
 if [ $(uname -s) = 'Darwin' ]; then
+    # iterm2
+    ## set iterm2 config folder
     defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.iterm"
+    ## enable custom folder
     defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+
+    # disbale some annoying input automation
+    defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+    # trackpad
+    for domain in com.apple.driver.AppleBluetoothMultitouch.trackpad com.apple.AppleMultitouchTrackpad; do
+        ## enable tap to click
+        defaults write "$domain" Clicking -bool true
+        ## twi finger tap to emulate right click
+        defaults write "$domain" TrackpadRightClick -bool true
+        defaults write "$domain" TrackpadTwoFingerDoubleTapGesture -bool true
+        ## two finger edge swipe
+        defaults write "$domain" TrackpadTwoFingerFromRightEdgeSwipeGesture -int 3
+        ## three finger drag
+        defaults write "$domain" TrackpadThreeFingerDrag -int 1
+        defaults write "$domain" TrackpadThreeFingerHorizSwipeGesture -int 0
+        defaults write "$domain" TrackpadThreeFingerVertSwipeGesture -int 0
+        ## three finger tap for search
+        defaults write "$domain" TrackpadThreeFingerTapGesture -int 2
+        ## four finger swipe gestures
+        defaults write "$domain" TrackpadFourFingerHorizSwipeGesture -int 2
+        defaults write "$domain" TrackpadFourFingerVertSwipeGesture -int 2
+        ## four finger pinch gestures
+        defaults write "$domain" TrackpadFourFingerPinchGesture -int 2
+    done
+
+    # dock
+    ## disbale magnification
+    defaults write com.apple.dock magnification -bool false
+
+    # vscode
+    ## enable keys repeat when hold 
+    defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 fi
+
+# vim:ts=4:sw=4:et:fdm=marker
