@@ -67,8 +67,8 @@ fi
 # zstyle {{{
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' menu yes select
+zstyle ':completion:*' ignore-case yes
 zstyle ':completion::complete:*' use-cache 1
-zstyle ":conda_zsh_completion:*" use-groups true
 # }}}
 
 # keymaps {{{
