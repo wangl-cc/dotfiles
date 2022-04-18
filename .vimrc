@@ -65,6 +65,20 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 " }}}
 
+" automatically install missing plugs {{{
+" install missing plugs should before any plug config
+function s:install_missing_plugs()
+    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        PlugInstall --sync | q
+    endif
+endfunction
+
+augroup AutoPlugInstall
+    autocmd!
+    autocmd VimEnter * call s:install_missing_plugs()
+augroup END
+" }}}
+
 " Leader config {{{
 if filereadable($HOME . "/.vim/custom/leader.vim")
     source ~/.vim/custom/leader.vim
@@ -127,6 +141,7 @@ set showtabline=2
 " }}}
 
 " color scheme related {{{
+
 " use gui color
 if !($TERM_PROGRAM =~ "Apple_Terminal")
     set termguicolors
@@ -144,6 +159,23 @@ endif
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 highlight Comment cterm=italic
+
+" set background color {{{
+function SetBackGround(...)
+    let init = get(a:, 1, 0) " init only the argument is given
+    if has('mac')
+        if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
+            " don't change background if already set or not init
+            if &background != 'dark' || !init
+                doautocmd User BackGroundDark
+            endif
+        elseif &background != 'light' || !init " the same for dark
+            doautocmd User BackGroundLight
+        endif
+    endif
+endfunction
+" }}}
+
 " }}}
 
 " Indent config{{{
@@ -167,29 +199,20 @@ nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
 
 " highlight all matches of current word
 nnoremap <silent> <leader>hw :exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>
+nnoremap <silent> <leader>ha :exec 'match Search /\V' . expand('<cWORD>') . '/'<CR>
 
 " replace all matches of current word
-nnoremap <leader>cW :%s/\<<C-r><C-w>\>/<C-r><C-w>
+"" replace current word for all
+nnoremap <leader>ca :<C-u>%s/\V\<<C-r><C-w>\>/<C-r><C-w>
+nnoremap <leader>cA :<C-u>%s/\V<C-r><C-a>/<C-r><C-a>
+nnoremap <leader>cw :s/\V\<<C-r><C-w>\>/<C-r><C-w>
+nnoremap <leader>cW :s/\V<C-r><C-a>/<C-r><C-a>
 " }}}
 " }}}
 
 " Plugs configs {{{
 
-" automatically install missing plugs {{{
-function s:install_missing_plugs()
-    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-        PlugInstall --sync | q
-    endif
-endfunction
-
-augroup AutoPlugInstall
-    autocmd!
-    autocmd VimEnter * call s:install_missing_plugs()
-augroup END
-" }}}
-
-" if exists(g:vscode) and vscode configs {{{
-" vscode only configs 
+" vscode only configs " {{{
 if exists("g:vscode")
     " Language features
     nmap <silent> <leader>]  <Cmd>call VSCodeCall("editor.action.marker.next")<CR>
@@ -201,7 +224,7 @@ if exists("g:vscode")
     nmap <silent> <leader>gr <Cmd>call VSCodeCall("editor.action.goToReferences")<CR>
     nmap <silent> <leader>pd <Cmd>call VSCodeCall("editor.action.peekDefinition")<CR>
     nmap <silent> <leader>ph <Cmd>call VSCodeCall("editor.action.showHover")<CR>
-    nmap          <leader>cw <Cmd>call VSCodeCall("editor.action.rename")<CR>
+    nmap          <leader>rn <Cmd>call VSCodeCall("editor.action.rename")<CR>
     nmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
     vmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
     " Comments
@@ -211,24 +234,6 @@ if exists("g:vscode")
     " Explore
     nmap <silent> <leader>tt <Plug>call VSCodeCall("workbench.view.explorer")<CR>
 else
-" }}}
-
-" set background color {{{
-function SetBackGround(...)
-    let init = get(a:, 1, 0) " init only the argument is given
-    if has('mac')
-        if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
-            " don't change background if already set or not init
-            if &background != 'dark' || !init
-                doautocmd User BackGroundDark
-            endif
-        elseif &background != 'light' || !init " the same for dark
-            doautocmd User BackGroundLight
-        endif
-    endif
-endfunction
-
-call SetBackGround(1) " init background color firstly
 " }}}
 
 " One color scheme {{{
@@ -261,67 +266,18 @@ if !&termguicolors
 endif
 " }}}
 
-" auto dark mode {{{
-" reset lightline color when background changed {{{
-function s:lightline_update()
-    if g:lightline['colorscheme'] == 'one_auto'
-        call lightline#colorscheme#one_auto#set_paletten()
-        call lightline#init()
-        call lightline#colorscheme()
-        call lightline#update()
-    endif
-endfunction
-" }}}
-
-" autocmd when background changed {{{
-augroup BackGroundChange
-    autocmd!
-    autocmd User BackGroundDark set background=dark
-    autocmd User BackGroundLight set background=light
-    autocmd User BackGroundDark,BackGroundLight call s:lightline_update()
-    if !&termguicolors && exists('g:rainbow_conf')
-        autocmd User BackGroundDark call s:rainbow_set_dark()
-        autocmd User BackGroundLight call s:rainbow_set_light()
-    endif
-augroup END
-" }}}
-
-" auto SetBackGround {{{
-" if SIGWINCH is supported
-if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
-    augroup CatchBackGround
-        autocmd!
-        autocmd Signal SIGWINCH call SetBackGround()
-    augroup END
-elseif has('nvim') && has('mac')
-" this is the alternative way to set background
-" when SIGWINCH is not supported or terminal is not iTerm
-" this require the plug 'auto_dark_mode'
-lua << EOF
-local auto_dark_mode = require('auto-dark-mode')
-auto_dark_mode.setup({
-    update_interval = 3000,
-    set_dark_mode = function()
-        vim.call('SetBackGround')
-    end,
-    set_light_mode = function()
-        vim.call('SetBackGround')
-    end,
-})
-auto_dark_mode.init()
-EOF
-endif
-" }}} end of auto SetBackGround
-
-
-" }}} end of auto dark mode
-
 " NERDTree config {{{
 let NERDTreeShowHidden = 1
 nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 " }}}
 
 " Comment config{{{
+" disbale default mappings
+let g:NERDCreateDefaultMappings = 0
+nnoremap <silent> <leader>c<space> <Plug>NERDCommenterToggle
+onoremap <silent> <leader>c<space> <Plug>NERDCommenterToggle
+xnoremap <silent> <leader>c<space> <Plug>NERDCommenterToggle
+
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
@@ -356,7 +312,9 @@ nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>- <Plug>(coc-git-prevchunk)
 nmap <silent> <leader>+ <Plug>(coc-git-nextchunk)
 nmap <silent> <leader>gd <plug>(coc-definition)
-nmap          <leader>cw <Plug>(coc-rename)
+nmap <silent> <leader>gD <Plug>(coc-declaration)
+nmap <silent> <leader>gr <Plug>(coc-references)
+nmap          <leader>cn <Plug>(coc-rename)
 vmap <silent> <leader>f <Plug>(coc-format-selected)
 nmap <silent> <leader>f <Plug>(coc-format)
 " disable latex to unicode via tab for `julia-vim`
@@ -450,7 +408,7 @@ nmap <leader><CR> <Plug>SlimeParagraphSend
 " }}}
 
 " endif exists(g:vscode) {{{
-endif " 
+endif "
 " }}}
 
 " }}}
@@ -465,6 +423,64 @@ let g:vimtex_fold_enabled = 1
 if filereadable($HOME . "/.vim/custom/config.vim")
     source ~/.vim/custom/config.vim
 endif
+" }}}
+
+" auto dark mode {{{
+" reset lightline color when background changed {{{
+function s:lightline_update()
+    if g:lightline['colorscheme'] == 'one_auto'
+        call lightline#colorscheme#one_auto#set_paletten()
+        call lightline#init()
+        call lightline#colorscheme()
+        call lightline#update()
+    endif
+endfunction
+" }}}
+
+" autocmd when background changed {{{
+augroup BackGroundChange
+    autocmd!
+    autocmd User BackGroundDark set background=dark
+    autocmd User BackGroundLight set background=light
+    autocmd User BackGroundDark,BackGroundLight call s:lightline_update()
+    if !&termguicolors && exists('g:rainbow_conf')
+        autocmd User BackGroundDark call s:rainbow_set_dark()
+        autocmd User BackGroundLight call s:rainbow_set_light()
+    endif
+augroup END
+" }}}
+
+" auto SetBackGround {{{
+" if SIGWINCH is supported
+if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
+    augroup CatchBackGround
+        autocmd!
+        autocmd Signal SIGWINCH call SetBackGround()
+    augroup END
+elseif has('nvim') && has('mac')
+" this is the alternative way to set background
+" when SIGWINCH is not supported or terminal is not iTerm
+" this require the plug 'auto_dark_mode'
+lua << EOF
+local auto_dark_mode = require('auto-dark-mode')
+auto_dark_mode.setup({
+    update_interval = 3000,
+    set_dark_mode = function()
+        vim.call('SetBackGround')
+    end,
+    set_light_mode = function()
+        vim.call('SetBackGround')
+    end,
+})
+auto_dark_mode.init()
+EOF
+endif
+" }}} end of auto SetBackGround
+
+" }}} end of auto dark mode
+
+" init background color {{{
+call SetBackGround(1)
 " }}}
 
 " vim:tw=76:ts=4:sw=4:et:fdm=marker
