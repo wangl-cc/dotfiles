@@ -24,18 +24,18 @@ typeset -A __RC_REPO_OWNERS=(
     TheLocehiliosan wangl-cc
 )
 ## echo new owner for owner in REPO_OWNERS, otherwise echo the original owner
-repo_owner(){ echo ${__RC_REPO_OWNERS[$1]-$1} }
+__repo_owner(){ echo ${__RC_REPO_OWNERS[$1]-$1} }
 ## echo github urls with given owner and repo
 ### Arguments: original owner, repo
-github_url_git(){ echo "https://$__RC_GITHUB_DOMAIN/$(repo_owner $1)/$2.git" }
-github_url_raw(){ echo "https://$__RC_GITHUB_DOMAIN/$(repo_owner $1)/$2/raw" }
+__github_url_git(){ echo "https://$__RC_GITHUB_DOMAIN/$(__repo_owner $1)/$2.git" }
+__github_url_raw(){ echo "https://$__RC_GITHUB_DOMAIN/$(__repo_owner $1)/$2/raw" }
 # }}}
 
 # zinit install and load {{{
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone $(github_url_git zdharma zinit) "$HOME/.zinit/bin" && \
+    command git clone $(__github_url_git zdharma zinit) "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -48,20 +48,20 @@ autoload -Uz _zinit
 # zinit plugins {{{
 ## Theme
 zinit ice lucid depth"1" from"$__RC_GITHUB_DOMAIN"
-zinit light $(repo_owner romkatv)/powerlevel10k
+zinit light $(__repo_owner romkatv)/powerlevel10k
 
 ## Plugin
 zinit wait lucid depth=1 light-mode from"$__RC_GITHUB_DOMAIN" for \
-    atload"_zsh_autosuggest_start" $(repo_owner zsh-users)/zsh-autosuggestions \
-    $(repo_owner zsh-users)/zsh-history-substring-search \
-    $(repo_owner sobolevn)/wakatime-zsh-plugin
+    atload"_zsh_autosuggest_start" $(__repo_owner zsh-users)/zsh-autosuggestions \
+    $(__repo_owner zsh-users)/zsh-history-substring-search \
+    $(__repo_owner sobolevn)/wakatime-zsh-plugin
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$__RC_GITHUB_DOMAIN"
-zinit light $(repo_owner zdharma)/fast-syntax-highlighting
+zinit light $(__repo_owner zdharma)/fast-syntax-highlighting
 
 ## Completions
 zinit as"completion" wait lucid is-snippet for \
-    "$(github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
+    "$(__github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
 
 if command -v brew &> /dev/null; then
     zinit ice as"completion" wait lucid
@@ -88,7 +88,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 __RC_YADM_PATH="$HOME/.local/bin/yadm"
 install_yadm() {
     print -P "Downloading lastest %F{33}yadm%f to %F{33}$__RC_YADM_PATH%f..."
-    curl -sSLo $__RC_YADM_PATH "$(github_url_raw TheLocehiliosan yadm)/master/yadm" && \
+    curl -sSLo $__RC_YADM_PATH "$(__github_url_raw TheLocehiliosan yadm)/master/yadm" && \
         echo "Download succeed." || \
         echo "Download failed."
     chmod +x $__RC_YADM_PATH
