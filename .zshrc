@@ -15,9 +15,9 @@ fi
 
 # mirror url function {{{
 ## github domain name
-readonly __RC_GITHUB_DOMAIN="gitee.com"
+__RC_GITHUB_DOMAIN="gitee.com"
 ## some mirrors is belong to me, thus those repo owners should be changed
-readonly -A __RC_REPO_OWNERS=(
+typeset -A __RC_REPO_OWNERS=(
     zdharma         wangl-cc
     sobolevn        wangl-cc
     zsh-users       wangl-cc
@@ -85,7 +85,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 # }}}
 
 # yadm installation {{{
-readonly __RC_YADM_PATH="$HOME/.local/bin/yadm"
+__RC_YADM_PATH="$HOME/.local/bin/yadm"
 install_yadm() {
     print -P "Downloading lastest %F{33}yadm%f to %F{33}$__RC_YADM_PATH%f..."
     curl -sSLo $__RC_YADM_PATH "$(github_url_raw TheLocehiliosan yadm)/master/yadm" && \
