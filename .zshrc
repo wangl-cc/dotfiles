@@ -1,9 +1,3 @@
-# fig pre {{{
-if command -v fig &> /dev/null; then
-    eval "$(fig init zsh pre)"
-fi
-# }}}
-
 # p10k pre {{{
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -179,12 +173,6 @@ unset __conda_setup
 # p10k post {{{
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-# }}}
-
-# fig post {{{
-if command -v fig &> /dev/null; then
-    eval "$(fig init zsh post)"
-fi
 # }}}
 
 # vim:tw=76:ts=4:sw=4:et:fdm=marker
