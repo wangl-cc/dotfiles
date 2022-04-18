@@ -68,6 +68,7 @@ fi
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' ignore-case yes
+zstyle ':completion:*' list-colors ''
 zstyle ':completion::complete:*' use-cache 1
 # }}}
 
