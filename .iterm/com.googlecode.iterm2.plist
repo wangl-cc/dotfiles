@@ -4,6 +4,8 @@
 <dict>
 	<key>AlternateMouseScroll</key>
 	<true/>
+	<key>AlwaysOpenWindowAtStartup</key>
+	<false/>
 	<key>CheckTestRelease</key>
 	<true/>
 	<key>Custom Color Presets</key>
@@ -570,10 +572,41 @@
 	<false/>
 	<key>EnableAPIServer</key>
 	<true/>
+	<key>EnableDivisionView</key>
+	<false/>
 	<key>EnableProxyIcon</key>
 	<false/>
 	<key>EnableRendezvous</key>
 	<false/>
+	<key>GlobalTouchBarMap</key>
+	<dict>
+		<key>touchbar:19C95CF5-FDCD-4696-BEE5-63BD57FA4F6C</key>
+		<dict>
+			<key>Action</key>
+			<integer>1</integer>
+			<key>Escaping</key>
+			<integer>2</integer>
+			<key>Label</key>
+			<string>←</string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>2</integer>
+		</dict>
+		<key>touchbar:E88F5E09-C79A-4138-BAF2-68EF26D70213</key>
+		<dict>
+			<key>Action</key>
+			<integer>3</integer>
+			<key>Escaping</key>
+			<integer>2</integer>
+			<key>Label</key>
+			<string>→</string>
+			<key>Text</key>
+			<string></string>
+			<key>Version</key>
+			<integer>2</integer>
+		</dict>
+	</dict>
 	<key>HapticFeedbackForEsc</key>
 	<false/>
 	<key>HideScrollbar</key>
@@ -586,6 +619,10 @@
 	<true/>
 	<key>MaxVertically</key>
 	<false/>
+	<key>NeverWarnAboutShortLivedSessions_CB4C52D5-7B82-42F2-94D1-315791B1491A</key>
+	<true/>
+	<key>NeverWarnAboutShortLivedSessions_CB4C52D5-7B82-42F2-94D1-315791B1491A_selection</key>
+	<integer>0</integer>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -1826,7 +1863,9 @@
 			<key>Screen</key>
 			<integer>-1</integer>
 			<key>Scrollback Lines</key>
-			<integer>1000</integer>
+			<integer>10000</integer>
+			<key>Scrollback in Alternate Screen</key>
+			<false/>
 			<key>Selected Text Color</key>
 			<dict>
 				<key>Alpha Component</key>
@@ -1925,6 +1964,8 @@
 			<string>xterm-256color</string>
 			<key>Transparency</key>
 			<real>0.0</real>
+			<key>Unicode Version</key>
+			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
 			<false/>
 			<key>Use Bold Font</key>
@@ -2011,9 +2052,13 @@
 	<key>SeparateStatusBarsPerPane</key>
 	<false/>
 	<key>SmartPlacement</key>
-	<false/>
+	<true/>
 	<key>SoundForEsc</key>
 	<false/>
+	<key>TabStyleWithAutomaticOption</key>
+	<integer>4</integer>
+	<key>TabViewType</key>
+	<integer>0</integer>
 	<key>UseBorder</key>
 	<false/>
 	<key>UseLionStyleFullscreen</key>

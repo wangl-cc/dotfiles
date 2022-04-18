@@ -48,6 +48,8 @@ if [ $(uname -s) = 'Darwin' ]; then
     # vscode
     ## enable keys repeat when hold 
     defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+    # don't save to iCloud by default
+    defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 fi
 
 # vim:ts=4:sw=4:et:fdm=marker
