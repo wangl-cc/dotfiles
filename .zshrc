@@ -128,7 +128,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
-'@vim'() {vim $1 $2}
 # }}}
 
 # environment variables {{{
@@ -154,6 +153,7 @@ fi
 if [ -z ${GIT_EDITOR+x} ]; then
     export GIT_EDITOR=$VISUAL
 fi
+'@vim'() {vim $1 $2}
 # }}}
 
 # conda initialize {{{

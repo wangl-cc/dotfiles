@@ -426,6 +426,7 @@ endif
 " }}}
 
 " auto dark mode {{{
+if !exists('g:vscode')
 " reset lightline color when background changed {{{
 function s:lightline_update()
     if g:lightline['colorscheme'] == 'one_auto'
@@ -476,7 +477,7 @@ auto_dark_mode.init()
 EOF
 endif
 " }}} end of auto SetBackGround
-
+endif
 " }}} end of auto dark mode
 
 " init background color {{{
