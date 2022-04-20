@@ -572,6 +572,8 @@
 	<integer>0</integer>
 	<key>DisableFullscreenTransparency</key>
 	<false/>
+	<key>DockIconTogglesWindow</key>
+	<true/>
 	<key>EnableAPIServer</key>
 	<false/>
 	<key>EnableDivisionView</key>
@@ -3513,6 +3515,8 @@
 	<key>SmartPlacement</key>
 	<true/>
 	<key>SoundForEsc</key>
+	<false/>
+	<key>StatusBarIcon</key>
 	<false/>
 	<key>TabStyleWithAutomaticOption</key>
 	<integer>4</integer>
