@@ -46,10 +46,15 @@ zinit ice lucid depth"1" from"$__RC_GITHUB_DOMAIN"
 zinit light $(__repo_owner romkatv)/powerlevel10k
 
 ## Plugin
+# plugin use mirrors
 zinit wait lucid depth=1 light-mode from"$__RC_GITHUB_DOMAIN" for \
     atload"_zsh_autosuggest_start" $(__repo_owner zsh-users)/zsh-autosuggestions \
     $(__repo_owner zsh-users)/zsh-history-substring-search \
     $(__repo_owner sobolevn)/wakatime-zsh-plugin
+
+# plugin don't use mirrors
+zinit wait lucid depth=1 light-mode for \
+    jeffreytse/zsh-vi-mode
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$__RC_GITHUB_DOMAIN"
 zinit light $(__repo_owner zdharma)/fast-syntax-highlighting
@@ -128,7 +133,6 @@ alias lsw='command ls -ld *(R,W,X.^ND/)'
 alias lsx='command ls -l *(*)'
 alias rm='rm -i'
 alias vi='vim'
-'@vim'() {vim $1 $2}
 # }}}
 
 # environment variables {{{
@@ -154,6 +158,7 @@ fi
 if [ -z ${GIT_EDITOR+x} ]; then
     export GIT_EDITOR=$VISUAL
 fi
+'@vim'() {vim $1 $2}
 # }}}
 
 # conda initialize {{{

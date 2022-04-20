@@ -7,7 +7,9 @@
 	<key>AlwaysOpenWindowAtStartup</key>
 	<false/>
 	<key>CheckTestRelease</key>
-	<true/>
+	<false/>
+	<key>Coprocess MRU</key>
+	<integer>0</integer>
 	<key>Custom Color Presets</key>
 	<dict>
 		<key>One Dark</key>
@@ -571,7 +573,7 @@
 	<key>DisableFullscreenTransparency</key>
 	<false/>
 	<key>EnableAPIServer</key>
-	<true/>
+	<false/>
 	<key>EnableDivisionView</key>
 	<false/>
 	<key>EnableProxyIcon</key>
