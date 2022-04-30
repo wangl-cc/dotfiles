@@ -261,28 +261,25 @@ let g:rainbow_conf = {
 \       }
 \   }
 \ }
-if !&termguicolors
-    " term colors for termguicolors is off
-    let g:rainbow_colors_dark = [
-    \   'lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'
-    \ ]
-    let g:rainbow_colors_light = [
-    \   'darkblue', 'darkyellow', 'darkcyan', 'darkmagenta'
-    \ ]
-    if &background == 'dark'
+" term colors for termguicolors is off
+let g:rainbow_colors_dark = [
+\   'lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'
+\ ]
+let g:rainbow_colors_light = [
+\   'darkblue', 'darkyellow', 'darkcyan', 'darkmagenta'
+\ ]
+function s:rainbow_set_dark()
+    if !&termguicolors
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
-    else
+    endif
+    call rainbow_main#load()
+endfunction
+function s:rainbow_set_light()
+    if !&termguicolors
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
     endif
-    function s:rainbow_set_dark()
-        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
-        call rainbow_main#load()
-    endfunction
-    function s:rainbow_set_light()
-        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
-        call rainbow_main#load()
-    endfunction
-endif
+    call rainbow_main#load()
+endfunction
 " }}}
 
 " NERDTree config {{{
@@ -464,10 +461,8 @@ augroup BackgroundChange
     autocmd User BackGroundDark set background=dark
     autocmd User BackGroundLight set background=light
     autocmd User BackGroundDark,BackGroundLight call s:lightline_update()
-    if !&termguicolors && exists('g:rainbow_conf')
-        autocmd User BackGroundDark call s:rainbow_set_dark()
-        autocmd User BackGroundLight call s:rainbow_set_light()
-    endif
+    autocmd User BackGroundDark call s:rainbow_set_dark()
+    autocmd User BackGroundLight call s:rainbow_set_light()
 augroup END
 " }}}
 
