@@ -219,6 +219,7 @@ nnoremap <leader>cA :<C-u>%s/\V<C-r><C-a>/<C-r><C-a>
 nnoremap <leader>cw :s/\V\<<C-r><C-w>\>/<C-r><C-w>
 nnoremap <leader>cW :s/\V<C-r><C-a>/<C-r><C-a>
 " }}}
+
 " }}}
 
 " Plugs configs {{{
@@ -251,8 +252,15 @@ else
 let g:one_allow_italics = 1
 " }}}
 
-" rainbow configs {{{
+" Rainbow configs {{{
 let g:rainbow_active = 1
+let g:rainbow_conf = {
+\   'separately': {
+\       'julia': {
+\             'parentheses_options': 'containedin=ALLBUT,juliaCommentL,juliaCommentM',
+\       }
+\   }
+\ }
 if !&termguicolors
     " term colors for termguicolors is off
     let g:rainbow_colors_dark = [
@@ -262,9 +270,9 @@ if !&termguicolors
     \   'darkblue', 'darkyellow', 'darkcyan', 'darkmagenta'
     \ ]
     if &background == 'dark'
-        let g:rainbow_conf = {'ctermfgs': g:rainbow_colors_dark}
+        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
     else
-        let g:rainbow_conf = {'ctermfgs': g:rainbow_colors_light}
+        g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
     endif
     function s:rainbow_set_dark()
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
