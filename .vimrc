@@ -49,13 +49,11 @@ call plug#begin('~/.vim/plugged')
         Plug 'wakatime/vim-wakatime'
         " vim-sneak
         Plug 'justinmk/vim-sneak'
+        " zinit highlight
+        Plug 'zdharma-continuum/zinit-vim-syntax'
         " Github Copilot
         if has('nvim-0.6')
             Plug 'github/copilot.vim'
-        endif
-        if has('nvim') && has('mac') &&
-            \ (!has('nvim-0.7') || $TERM_PROGRAM != 'iTerm.app')
-            Plug 'f-person/auto-dark-mode.nvim'
         endif
     endif
     " Custom plugs
@@ -161,9 +159,13 @@ let &t_ZR="\e[23m"
 highlight Comment cterm=italic
 
 " set background color {{{
-function SetBackGround(...)
+" add a lock for SetBackground to aviod recursive call
+" if we send a SIGWINCH signal to nvim inside of SetBackground
+let s:set_background_lock = 0
+function SetBackground(...)
     let init = get(a:, 1, 0) " init only the argument is given
-    if has('mac')
+    if has('mac') && !s:set_background_lock
+        let s:set_background_lock = 1
         if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
             " don't change background if already set or not init
             if &background != 'dark' || !init
@@ -172,8 +174,17 @@ function SetBackGround(...)
         elseif &background != 'light' || !init " the same for dark
             doautocmd User BackGroundLight
         endif
+        let s:set_background_lock = 0
     endif
 endfunction
+" if SIGWINCH is supported, trigger it when receive a SIGWINCH signal
+" otherwise, it's needed to call SetBackground manually
+if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
+    augroup AutoSetBackground
+        autocmd!
+        autocmd Signal SIGWINCH call SetBackground()
+    augroup END
+endif
 " }}}
 
 " }}}
@@ -427,6 +438,7 @@ endif
 
 " auto dark mode {{{
 if !exists('g:vscode')
+
 " reset lightline color when background changed {{{
 function s:lightline_update()
     if g:lightline['colorscheme'] == 'one_auto'
@@ -439,7 +451,7 @@ endfunction
 " }}}
 
 " autocmd when background changed {{{
-augroup BackGroundChange
+augroup BackgroundChange
     autocmd!
     autocmd User BackGroundDark set background=dark
     autocmd User BackGroundLight set background=light
@@ -451,37 +463,11 @@ augroup BackGroundChange
 augroup END
 " }}}
 
-" auto SetBackGround {{{
-" if SIGWINCH is supported
-if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
-    augroup CatchBackGround
-        autocmd!
-        autocmd Signal SIGWINCH call SetBackGround()
-    augroup END
-elseif has('nvim') && has('mac')
-" this is the alternative way to set background
-" when SIGWINCH is not supported or terminal is not iTerm
-" this require the plug 'auto_dark_mode'
-lua << EOF
-local auto_dark_mode = require('auto-dark-mode')
-auto_dark_mode.setup({
-    update_interval = 3000,
-    set_dark_mode = function()
-        vim.call('SetBackGround')
-    end,
-    set_light_mode = function()
-        vim.call('SetBackGround')
-    end,
-})
-auto_dark_mode.init()
-EOF
-endif
-" }}} end of auto SetBackGround
 endif
 " }}} end of auto dark mode
 
 " init background color {{{
-call SetBackGround(1)
+call SetBackground(1)
 " }}}
 
 " vim:tw=76:ts=4:sw=4:et:fdm=marker
