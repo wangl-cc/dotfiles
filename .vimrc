@@ -1,4 +1,4 @@
-" Nvim compatibility {{{
+" Nvim Compatibility {{{
 if has('nvim')
     set runtimepath^=~/.vim runtimepath+=~/.vim/after
     let &packpath = &runtimepath
@@ -14,10 +14,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 " }}}
 
-" Plugs load {{{
+" Install and Load Plugs {{{
 " force use ssh to download plugs
 let g:plug_url_format = 'git@github.com:%s.git'
-
 call plug#begin('~/.vim/plugged')
     " Some file commands like rename
     Plug 'tpope/vim-eunuch'
@@ -27,43 +26,39 @@ call plug#begin('~/.vim/plugged')
     Plug 'godlygeek/tabular'
     " fuzzy finder
     Plug 'ctrlpvim/ctrlp.vim'
-    " plugs disable for vim code
-    if !exists("g:vscode")
-        " Tree explorer
-        Plug 'scrooloose/nerdtree'
-        " Comment
-        Plug 'scrooloose/nerdcommenter'
-        " LSP
-        Plug 'neoclide/coc.nvim', {'branch': 'release'}
-        " Indent guides
-        Plug 'nathanaelkane/vim-indent-guides'
-        " Statusline
-        Plug 'itchyny/lightline.vim'
-        " JuliaLang
-        Plug 'JuliaEditorSupport/julia-vim'
-        " Brackets pair colorizer
-        Plug 'luochen1990/rainbow'
-        " Color scheme
-        Plug 'rakr/vim-one'
-        " wakaTime
-        Plug 'wakatime/vim-wakatime'
-        " vim-sneak
-        Plug 'justinmk/vim-sneak'
-        " zinit highlight
-        Plug 'zdharma-continuum/zinit-vim-syntax'
-        " Github Copilot
-        if has('nvim-0.6')
-            Plug 'github/copilot.vim'
-        endif
+    " Tree explorer
+    Plug 'scrooloose/nerdtree'
+    " Comment
+    Plug 'scrooloose/nerdcommenter'
+    " LSP
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " Indent guides
+    Plug 'nathanaelkane/vim-indent-guides'
+    " Statusline
+    Plug 'itchyny/lightline.vim'
+    " JuliaLang
+    Plug 'JuliaEditorSupport/julia-vim'
+    " Brackets pair colorizer
+    Plug 'luochen1990/rainbow'
+    " Color scheme
+    Plug 'rakr/vim-one'
+    " wakaTime
+    Plug 'wakatime/vim-wakatime'
+    " vim-sneak
+    Plug 'justinmk/vim-sneak'
+    " zinit highlight
+    Plug 'zdharma-continuum/zinit-vim-syntax'
+    " Github Copilot
+    if has('nvim-0.6')
+        Plug 'github/copilot.vim'
     endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
         source ~/.vim/custom/plugs.vim
     endif
 call plug#end()
-" }}}
 
-" automatically install missing plugs {{{
+" Install missing plugs {{{
 " install missing plugs should before any plug config
 function s:install_missing_plugs()
     if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
@@ -77,7 +72,11 @@ augroup AutoPlugInstall
 augroup END
 " }}}
 
-" Leader config {{{
+" }}}
+
+" Vim config {{{
+
+" Leader {{{
 if filereadable($HOME . "/.vim/custom/leader.vim")
     source ~/.vim/custom/leader.vim
 endif
@@ -86,34 +85,30 @@ if !exists("mapleader")
 endif
 " }}}
 
-" General config {{{
-
 " misc {{{
-" Filetype
+" filetype
 filetype indent plugin on
 
-" Line number config
+" line number config
 set number
 set relativenumber
 
-" Confirm when quit
+" confirm when quit
 set confirm
 
-" Show match
+" show match
 set showmatch
 
-" Show cmd
+" show cmd
 set showcmd
 
-" File encoding
+" file encoding
 set encoding=utf-8
-
-" modeline
-set modelines=1
 
 " highlight search
 set hlsearch
 set incsearch
+nohlsearch " don't highlight last search after load this file
 
 " Split flavor
 set splitbelow
@@ -134,18 +129,31 @@ set scrolloff=3
 " disable error bell
 set noerrorbells
 
+" check modeline
+set modelines=1
+
 " always show tab line
 set showtabline=2
+
+" status line
+if has('nvim-0.7')
+    " always show a global status line, requir nvim-0.7
+    set laststatus=3
+else
+    " always show status line
+    set laststatus=2
+endif
+
 " }}}
 
-" color scheme related {{{
+" Syntax highlight & Colors {{{
 
 " use gui color
 if !($TERM_PROGRAM =~ "Apple_Terminal")
     set termguicolors
 endif
 
-" Syntax highlight
+" syntax highlight
 syntax enable
 
 " colorscheme
@@ -157,12 +165,13 @@ endif
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 highlight Comment cterm=italic
+let g:one_allow_italics = 1 " for vim-one
 
 " set background color {{{
 " add a lock for SetBackground to aviod recursive call
 " if we send a SIGWINCH signal to nvim inside of SetBackground
 let s:set_background_lock = 0
-function SetBackground(...)
+function! SetBackground(...)
     let init = get(a:, 1, 0) " init only the argument is given
     if has('mac') && !s:set_background_lock
         let s:set_background_lock = 1
@@ -195,7 +204,6 @@ set shiftwidth=4
 set expandtab
 set smarttab
 set autoindent
-set smartindent
 " }}}
 
 " custom commands {{{
@@ -224,35 +232,7 @@ nnoremap <leader>cW :s/\V<C-r><C-a>/<C-r><C-a>
 
 " Plugs configs {{{
 
-" vscode only configs " {{{
-if exists("g:vscode")
-    " Language features
-    nmap <silent> <leader>]  <Cmd>call VSCodeCall("editor.action.marker.next")<CR>
-    nmap <silent> <leader>[  <Cmd>call VSCodeCall("editor.action.marker.prev")<CR>
-    nmap <silent> <leader>-  <Cmd>call VSCodeCall("editor.action.dirtydiff.prev")<CR>
-    nmap <silent> <leader>+  <Cmd>call VSCodeCall("editor.action.dirtydiff.next")<CR>
-    nmap <silent> <leader>gd <Cmd>call VSCodeCall("editor.action.revealDefinition")<CR>
-    nmap <silent> <leader>gD <Cmd>call VSCodeCall("editor.action.goToDeclaration")<CR>
-    nmap <silent> <leader>gr <Cmd>call VSCodeCall("editor.action.goToReferences")<CR>
-    nmap <silent> <leader>pd <Cmd>call VSCodeCall("editor.action.peekDefinition")<CR>
-    nmap <silent> <leader>ph <Cmd>call VSCodeCall("editor.action.showHover")<CR>
-    nmap          <leader>rn <Cmd>call VSCodeCall("editor.action.rename")<CR>
-    nmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
-    vmap <silent> <leader>fd <Cmd>call VSCodeCall("editor.action.formatDocument")<CR>
-    " Comments
-    xmap <silent> <leader>c<space> <Plug>VSCodeCommentary
-    nmap <silent> <leader>c<space> <Plug>VSCodeCommentary
-    omap <silent> <leader>c<space> <Plug>VSCodeCommentary
-    " Explore
-    nmap <silent> <leader>tt <Plug>call VSCodeCall("workbench.view.explorer")<CR>
-else
-" }}}
-
-" One color scheme {{{
-let g:one_allow_italics = 1
-" }}}
-
-" Rainbow configs {{{
+" Rainbow {{{
 let g:rainbow_active = 1
 let g:rainbow_conf = {
 \   'separately': {
@@ -268,13 +248,13 @@ let g:rainbow_colors_dark = [
 let g:rainbow_colors_light = [
 \   'darkblue', 'darkyellow', 'darkcyan', 'darkmagenta'
 \ ]
-function s:rainbow_set_dark()
+function! s:rainbow_set_dark()
     if !&termguicolors
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_dark
     endif
     call rainbow_main#load()
 endfunction
-function s:rainbow_set_light()
+function! s:rainbow_set_light()
     if !&termguicolors
         g:rainbow_conf['ctermfgs'] = g:rainbow_colors_light
     endif
@@ -282,12 +262,12 @@ function s:rainbow_set_light()
 endfunction
 " }}}
 
-" NERDTree config {{{
+" NERDTree {{{
 let NERDTreeShowHidden = 1
 nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
 " }}}
 
-" Comment config{{{
+" NERDCommenter {{{
 " disbale default mappings
 let g:NERDCreateDefaultMappings = 0
 nnoremap <silent> <leader>c<space> <Plug>NERDCommenterToggle
@@ -313,7 +293,7 @@ let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 " }}}
 
-" Coc config {{{
+" COC {{{
 set hidden
 set nobackup
 set nowritebackup
@@ -323,16 +303,16 @@ set shortmess+=c
 set signcolumn=yes
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap <silent> <leader>l :CocList<CR>
-nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
-nmap <silent> <leader>- <Plug>(coc-git-prevchunk)
-nmap <silent> <leader>+ <Plug>(coc-git-nextchunk)
+nmap <silent> <leader>[  <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>]  <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>-  <Plug>(coc-git-prevchunk)
+nmap <silent> <leader>+  <Plug>(coc-git-nextchunk)
 nmap <silent> <leader>gd <plug>(coc-definition)
 nmap <silent> <leader>gD <Plug>(coc-declaration)
 nmap <silent> <leader>gr <Plug>(coc-references)
 nmap          <leader>cn <Plug>(coc-rename)
-vmap <silent> <leader>f <Plug>(coc-format-selected)
-nmap <silent> <leader>f <Plug>(coc-format)
+vmap <silent> <leader>f  <Plug>(coc-format-selected)
+nmap <silent> <leader>f  <Plug>(coc-format)
 " disable latex to unicode via tab for `julia-vim`
 " which does not work well with the `coc.nvim`
 let g:latex_to_unicode_tab = "off"
@@ -347,13 +327,7 @@ let g:coc_global_extensions = [
 \ ]
 " }}}
 
-" Lightline config {{{
-if has('nvim-0.7')
-    set laststatus=3
-else
-    set laststatus=2
-endif
-
+" Lightline {{{
 function! LightlineCocStatus() abort
     let status = coc#status()
     return (winwidth(0) - len(status)) >= 80 ? status : ''
@@ -374,32 +348,32 @@ function! LightlineFileInfo()
 endfunction
 
 let g:lightline = {
-    \ 'colorscheme': 'one_auto',
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'gitstatus' , 'fileinfo'],
-    \             [ 'cocstatus' ] ],
-    \   'right' : [
-    \     [ 'percent' ],
-    \     [ 'lineinfo' ],
-    \     [ 'filetype', 'fileformat', 'fileencoding', 'spell' ]
-    \   ],
-    \ },
-    \ 'inactive': {
-    \   'left': [ [ 'fileinfo' ] ],
-    \   'right' : [
-    \     [ 'percent' ],
-    \     [ 'lineinfo' ]
-    \   ],
-    \ },
-    \ 'component_function': {
-    \   'cocstatus': 'LightlineCocStatus',
-    \   'gitstatus': 'LightlineGitStatus',
-    \   'fileinfo' : 'LightlineFileInfo',
-    \ },
-    \ 'separator':  { 'left': '', 'right': ''},
-    \ 'subseparator':  { 'left': '', 'right': '|' }
-    \ }
+\   'colorscheme': 'one_auto',
+\   'active': {
+\     'left': [ [ 'mode', 'paste' ],
+\               [ 'gitstatus', 'fileinfo'],
+\               [ 'cocstatus' ] ],
+\     'right' : [
+\       [ 'percent' ],
+\       [ 'lineinfo' ],
+\       [ 'filetype', 'fileformat', 'fileencoding', 'spell' ]
+\     ],
+\   },
+\   'inactive': {
+\     'left': [ [ 'fileinfo' ] ],
+\     'right' : [
+\       [ 'percent' ],
+\       [ 'lineinfo' ]
+\     ],
+\   },
+\   'component_function': {
+\     'cocstatus': 'LightlineCocStatus',
+\     'gitstatus': 'LightlineGitStatus',
+\     'fileinfo' : 'LightlineFileInfo',
+\   },
+\   'separator':  { 'left': '', 'right': ''},
+\   'subseparator':  { 'left': '', 'right': '|' }
+\ }
 
 augroup LightlineUpdate
     autocmd!
@@ -407,7 +381,7 @@ augroup LightlineUpdate
 augroup END
 " }}}
 
-" Slime config {{{
+" Slime {{{
 if has('nvim')
     let g:slime_target = "neovim"
 else
@@ -421,10 +395,6 @@ end
 let g:slime_no_mappings = 1
 xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
-" }}}
-
-" endif exists(g:vscode) {{{
-endif "
 " }}}
 
 " }}}
