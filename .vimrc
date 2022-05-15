@@ -83,6 +83,9 @@ endif
 if !exists("mapleader")
     let mapleader=","
 endif
+if !exists("maplocalleader")
+    let maplocalleader=";"
+endif
 " }}}
 
 " misc {{{
@@ -144,6 +147,8 @@ else
     set laststatus=2
 endif
 
+" tex flavor
+let g:tex_flavor = "latex"
 " }}}
 
 " Syntax highlight & Colors {{{
@@ -237,8 +242,14 @@ let g:rainbow_active = 1
 let g:rainbow_conf = {
 \   'separately': {
 \       'julia': {
-\             'parentheses_options': 'containedin=ALLBUT,juliaCommentL,juliaCommentM',
-\       }
+\           'parentheses_options': 'containedin=ALLBUT,juliaCommentL,juliaCommentM',
+\       },
+\       'latex': {
+\           'parentheses': [
+\               'start=/{/ end=/}/ fold',
+\           ]
+\       },
+\       'help': 0,
 \   }
 \ }
 " term colors for termguicolors is off
@@ -399,12 +410,6 @@ nmap <leader><CR> <Plug>SlimeParagraphSend
 
 " }}}
 
-" Language configs {{{
-" LaTeX
-let g:tex_flavor = "latex"
-let g:vimtex_fold_enabled = 1
-" }}}
-
 " Custom config {{{
 if filereadable($HOME . "/.vim/custom/config.vim")
     source ~/.vim/custom/config.vim
@@ -412,8 +417,6 @@ endif
 " }}}
 
 " auto dark mode {{{
-if !exists('g:vscode')
-
 " reset lightline color when background changed {{{
 function s:lightline_update()
     if g:lightline['colorscheme'] == 'one_auto'
@@ -435,8 +438,6 @@ augroup BackgroundChange
     autocmd User BackGroundLight call s:rainbow_set_light()
 augroup END
 " }}}
-
-endif
 " }}} end of auto dark mode
 
 " init background color {{{
