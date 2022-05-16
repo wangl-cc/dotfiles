@@ -1,0 +1,16 @@
+[user]
+	name = Long Wang
+	email = wangl.cc@outlook.com
+[filter "ignoreline"]
+	clean = "sed '/ (git): ignore this line$/d'"
+	smudge = cat
+[pull]
+	rebase = false
+[diff]
+	tool = $GIT_DIFF_TOOL
+[merge]
+	tool = $GIT_DIFF_TOOL
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
+
+# vim:ts=4:sw=4:noet
