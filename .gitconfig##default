@@ -1,7 +1,6 @@
 [user]
 	name = Long Wang
 	email = wangl.cc@outlook.com
-	signingkey = B4AA0F55DD21CF6A
 [filter "ignoreline"]
 	clean = "sed '/ (git): ignore this line$/d'"
 	smudge = cat
@@ -13,9 +12,5 @@
 	tool = $GIT_DIFF_TOOL
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
-[commit]
-	gpgsign = true
-[gpg]
-	program = gpg
 
 # vim:ts=4:sw=4:noet
