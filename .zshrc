@@ -158,9 +158,6 @@ fi
 if [ -z ${GIT_EDITOR+x} ]; then
     export GIT_EDITOR=$VISUAL
 fi
-if [ -z ${GPG_TTY+x} ]; then
-    export GPG_TTY=$(tty)
-fi
 '@vim'() {vim $1 $2}
 # }}}
 
