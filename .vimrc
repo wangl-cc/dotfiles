@@ -359,7 +359,7 @@ function! LightlineFileInfo()
 endfunction
 
 let g:lightline = {
-\   'colorscheme': 'one_auto',
+\   'colorscheme': 'one_dynamic',
 \   'active': {
 \     'left': [ [ 'mode', 'paste' ],
 \               [ 'gitstatus', 'fileinfo'],
@@ -419,8 +419,8 @@ endif
 " auto dark mode {{{
 " reset lightline color when background changed {{{
 function s:lightline_update()
-    if g:lightline['colorscheme'] == 'one_auto'
-        call lightline#colorscheme#one_auto#set_paletten()
+    if g:lightline['colorscheme'] == 'one_dynamic'
+        call lightline#colorscheme#one_dynamic#set_paletten()
         call lightline#init()
         call lightline#colorscheme()
         call lightline#update()

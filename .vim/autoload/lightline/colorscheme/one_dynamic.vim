@@ -1,8 +1,10 @@
 " =============================================================================
-" Filename: autoload/lightline/colorscheme/one_auto.vim
+" A modified 'one' colorscheme for lightline
+" allowing dynamic reloading at runtime
+" =============================================================================
 " Original Author: Zoltan Dalmadi
-" Author: Loong Wang
 " License: MIT License
+" Modified by: Loong Wang
 " =============================================================================
 
 " Common colors
@@ -14,7 +16,7 @@ let s:red2   = [ '#be5046', 168 ]
 let s:yellow = [ '#e5c07b', 180 ]
 
 " this 
-function! lightline#colorscheme#one_auto#set_paletten()
+function! lightline#colorscheme#one_dynamic#set_paletten()
     let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
     if lightline#colorscheme#background() ==# 'light'
       " Light variant
@@ -58,7 +60,7 @@ function! lightline#colorscheme#one_auto#set_paletten()
     let s:p.tabline.middle = [ [ s:gray3, s:gray2 ] ]
     let s:p.tabline.right  = copy(s:p.normal.right)
 
-    let g:lightline#colorscheme#one_auto#palette = lightline#colorscheme#flatten(s:p)
+    let g:lightline#colorscheme#one_dynamic#palette = lightline#colorscheme#flatten(s:p)
 endfunction
 
-call lightline#colorscheme#one_auto#set_paletten()
+call lightline#colorscheme#one_dynamic#set_paletten()
