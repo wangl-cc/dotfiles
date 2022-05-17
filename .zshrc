@@ -63,7 +63,7 @@ zinit light $(__repo_owner zdharma)/fast-syntax-highlighting
 zinit as"completion" wait lucid is-snippet for \
     "$(__github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
 
-if [ -n ${HOMEBREW_PREFIX+x} ]; then
+if [ -n "${HOMEBREW_PREFIX+x}" ]; then
     zinit ice as"completion" wait lucid
     zinit snippet $HOMEBREW_PREFIX/share/zsh/site-functions/_brew
 fi
