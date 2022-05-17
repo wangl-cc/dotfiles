@@ -1,7 +1,7 @@
 [user]
 	name = Long Wang
 	email = wangl.cc@outlook.com
-	signingkey = C795A77E57F47DDA
+	signingkey = C4DB9705
 [filter "ignoreline"]
 	clean = "sed '/ (git): ignore this line$/d'"
 	smudge = cat
