@@ -11,7 +11,7 @@ if [ $(uname -s) = "Darwin" ]; then
         export HOMEBREW_REPOSITORY=$(/usr/local/bin/brew --repository)
     fi
     path=("$HOME/.local/bin" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "$path[@]")
-elif
+else
     path=("$HOME/.local/bin" "$path[@]")
 fi
 
