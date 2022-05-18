@@ -104,63 +104,93 @@ fi
 # }}}
 
 # aliases {{{
-alias ...='../..'
-alias ls='ls --color'
-alias da='du -sch'
-alias dir='command ls -lSrah'
-alias egrep='egrep --color'
-alias grep='grep --color'
-alias keep='noglob keep'
-alias l='command ls -l --color'
-alias la='command ls -la --color'
-alias lad='command ls -d .*(/)'
-alias lh='command ls -hAl --color'
-alias ll='command ls -al --color'
-alias llog=journalctl
+# ls
+## normal ls
 alias ls='command ls --color'
-alias lsa='command ls -a .*(.)'
-alias lsbig='command ls -flh *(.OL[1,10])'
-alias lsd='command ls -d *(/)'
-alias lse='command ls -d *(/^F)'
-alias lsl='command ls -l *(@)'
-alias lsnew='command ls -rtlh *(D.om[1,10])'
-alias lsnewdir='command ls -rthdl *(/om[1,10]) .*(D/om[1,10])'
-alias lsold='command ls -rtlh *(D.Om[1,10])'
-alias lsolddir='command ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])'
-alias lss='command ls -l *(s,S,t)'
-alias lssmall='command ls -Srl *(.oL[1,10])'
-alias lsw='command ls -ld *(R,W,X.^ND/)'
-alias lsx='command ls -l *(*)'
+## ls all =======================================
+alias la='command ls -Alh --color'
+alias lar='command ls -Alhr --color'
+alias lat='command ls -Alht --color'
+alias latr='command ls -Alhtr --color'
+alias laz='command ls -AlhS --color'
+alias lazr='command ls -AlhSr --color'
+## ls all files ---------------------------------
+alias laf='command ls -dlh --color .*(^/) *(^/)'
+alias lafr='command ls -dlhr --color .*(^/) *(^/)'
+alias laft='command ls -dlht --color .*(^/) *(^/)'
+alias laftr='command ls -dlhtr --color .*(^/) *(^/)'
+alias lafz='command ls -dlhS --color .*(^/) *(^/)'
+alias lafzr='command ls -dlhSr --color .*(^/) *(^/)'
+## ls all dirs ----------------------------------
+alias lad='command ls -dlh --color .*(^/) *(^/)'
+alias ladr='command ls -dlhr --color .*(^/) *(^/)'
+alias ladt='command ls -dlht --color .*(^/) *(^/)'
+alias ladr='command ls -dlhtr --color .*(^/) *(^/)'
+alias ladz='command ls -dlhS --color .*(^/) *(^/)'
+alias ladzr='command ls -dlhSr --color .*(^/) *(^/)'
+## ls no hiddens ================================
+alias l='command ls -lh --color'
+alias ll='command ls -lh --color'
+alias lr='command ls -lhr --color'
+alias lt='command ls -lht --color'
+alias ltr='command ls -lhtr --color'
+alias lz='command ls -lhS --color'
+alias lzr='command ls -lhSr --color'
+## ls no hidden files ---------------------------
+alias lf='command ls -dlh --color *(^/)'
+alias lfr='command ls -dlhr --color *(^/)'
+alias lft='command ls -dlht --color *(^/)'
+alias lftr='command ls -dlhtr --color *(^/)'
+alias lfz='command ls -dlhS --color *(^/)'
+alias lfzr='command ls -dlhSr --color *(^/)'
+## ls no hidden dirs ----------------------------
+alias ld='command ls -dlh --color *(/)'
+alias ldr='command ls -dlhr --color *(/)'
+alias ldt='command ls -dlht --color *(/)'
+alias ldtr='command ls -dlhtr --color *(/)'
+alias ldz='command ls -dlhS --color *(/)'
+alias ldzr='command ls -dlhSr --color *(/)'
+## ls hiddens ===================================
+alias lh='command ls -dlh --color .*'
+alias lhr='command ls -dlhr --color .*'
+alias lht='command ls -dlht --color .*'
+alias lhtr='command ls -dlhtr --color .*'
+alias lhz='command ls -dlhS --color .*'
+alias lhzr='command ls -dlhSr --color .*'
+## ls hidden files ------------------------------
+alias lhf='command ls -dlh --color .*(^/)'
+alias lhfr='command ls -dlhr --color .*(^/)'
+alias lhft='command ls -dlht --color .*(^/)'
+alias lhftr='command ls -dlhtr --color .*(^/)'
+alias lhfz='command ls -dlhS --color .*(^/)'
+alias lhfzr='command ls -dlhSr --color .*(^/)'
+## ls hidden dirs --------------------------------
+alias lhd='command ls -dlh --color .*(/)'
+alias lhdr='command ls -dlhr --color .*(/)'
+alias lhdt='command ls -dlht --color .*(/)'
+alias lhdtr='command ls -dlhtr --color .*(/)'
+alias lhdz='command ls -dlhS --color .*(/)'
+alias lhdzr='command ls -dlhSr --color .*(/)'
+# misc
+alias ...='../..'
+alias cgrep='command grep --color'
 alias rm='rm -i'
 alias vi='vim'
+if command -v nvim &> /dev/null; then
+    alias vim='nvim'
+    alias vimdiff='nvimdiff'
+fi
 # }}}
 
 # environment variables {{{
 SAVEHIST=10000
-if [ -z ${HISTFILE+x} ]; then
-    HISTFILE=$HOME/.zsh_history
-fi
-if command -v nvim &> /dev/null; then
-    alias vim='nvim'
-    export GIT_DIFF_TOOL='nvimdiff'
-else
-    export GIT_DIFF_TOOL='vimdiff'
-fi
-if [ -z ${VISUAL+x} ]; then
-    export VISUAL=${aliases[vim]-vim}
-fi
-if [ -z ${EDITOR+x} ]; then
-    export EDITOR="${aliases[vim]-vim} -e"
-fi
-if [ -z ${JULIA_EDITOR+x} ]; then
-    export JULIA_EDITOR=$VISUAL
-fi
-if [ -z ${GIT_EDITOR+x} ]; then
-    export GIT_EDITOR=$VISUAL
-fi
-'@vim'() {vim $1 $2}
+HISTFILE=${HISTFILE-"$HOME/.zsh_history"}
+export VISUAL=${VISUAL-${aliases[vim]-vim}}
+export EDITOR=${EDITOR-"${aliases[vim]-vim} -e"}
+export GIT_DIFF_TOOL=${GIT_DIFF_TOOL-${aliases[vimdiff]-vimdiff}}
+export GIT_EDITOR=${GIT_EDITOR-$VISUAL}
+export JULIA_EDITOR=${JULIA_EDITOR-$VISUAL}
 # }}}
-
 # conda initialize {{{
 # !!! Conda must be installed at ~/Conda
 __conda_dir="$HOME/Conda"
