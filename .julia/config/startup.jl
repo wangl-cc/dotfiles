@@ -13,6 +13,4 @@ catch e
     end
 end
 
-macro vim(file, line)
-    edit(file, line)
-end
+dumpi(arg, i::Integer=1) = dump(arg; maxdepth=i)
