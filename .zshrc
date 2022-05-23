@@ -172,7 +172,7 @@ alias lhdtr='command ls -dlhtr --color .*(/)'
 alias lhdz='command ls -dlhS --color .*(/)'
 alias lhdzr='command ls -dlhSr --color .*(/)'
 # misc
-alias ...='../..'
+alias ...='cd ../..'
 alias cgrep='command grep --color'
 alias rm='rm -i'
 alias vi='vim'
@@ -191,6 +191,7 @@ export GIT_DIFF_TOOL=${GIT_DIFF_TOOL-${aliases[vimdiff]-vimdiff}}
 export GIT_EDITOR=${GIT_EDITOR-$VISUAL}
 export JULIA_EDITOR=${JULIA_EDITOR-$VISUAL}
 # }}}
+
 # conda initialize {{{
 # !!! Conda must be installed at ~/Conda
 __conda_dir="$HOME/Conda"
