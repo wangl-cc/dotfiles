@@ -13,4 +13,6 @@ catch e
     end
 end
 
-dumpi(arg, i::Integer=1) = dump(arg; maxdepth=i)
+dump1(arg) = dump(arg; maxdepth=1)
+dumpi(arg, i::Integer) = dump(arg; maxdepth=i)
+dumpi(i::Integer) = arg -> dump(arg; maxdepth=i)
