@@ -64,8 +64,10 @@ zinit as"completion" wait lucid is-snippet for \
     "$(__github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
 
 if [ -n "${HOMEBREW_PREFIX+x}" ]; then
-    zinit ice as"completion" wait lucid
-    zinit snippet $HOMEBREW_PREFIX/share/zsh/site-functions/_brew
+    for completion in $HOMEBREW_PREFIX/share/zsh/site-functions/*; do
+        zinit ice as"completion" wait lucid
+        zinit snippet $completion
+    done
 fi
 # }}}
 
