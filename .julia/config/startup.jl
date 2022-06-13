@@ -13,6 +13,8 @@ catch e
     end
 end
 
+ENV["JULIA_COC_NVIM_DISABLE"] = "false"
+
 dump1(arg) = dump(arg; maxdepth=1)
 dumpi(arg, i::Integer) = dump(arg; maxdepth=i)
 dumpi(i::Integer) = arg -> dump(arg; maxdepth=i)

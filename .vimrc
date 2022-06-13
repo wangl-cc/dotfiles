@@ -346,6 +346,11 @@ let g:coc_global_extensions = [
 \    "coc-pairs",
 \    "coc-vimlsp",
 \ ]
+
+augroup DisableCoc
+    autocmd!
+    autocmd BufEnter *.jl if $JULIA_COC_NVIM_DISABLE == "false" | let b:coc_enabled=0 | endif
+augroup END
 " }}}
 
 " Lightline {{{
