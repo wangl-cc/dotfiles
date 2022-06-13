@@ -323,7 +323,12 @@ let g:NERDToggleCheckAllLines = 1
 
 " COC {{{
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-nnoremap <silent> <leader>l :CocList<CR>
+
+nnoremap <silent> <leader>ll :CocList<CR>
+nnoremap <silent> <leader>lc :CocList commands<CR>
+nnoremap <silent> <leader>ld :CocList diagnostics<CR>
+nnoremap <silent> <leader>le :CocList extensions<CR>
+
 nmap <silent> <leader>[  <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>]  <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>-  <Plug>(coc-git-prevchunk)
