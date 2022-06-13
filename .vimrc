@@ -147,6 +147,23 @@ else
     set laststatus=2
 endif
 
+" disable backup, required by coc.nvim
+set nobackup
+set nowritebackup
+
+" shorter update time to aviod noticeable delay
+set updatetime=300
+
+" don't give ins-completion-menu messages, required by coc.nvim
+set shortmess+=c
+
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
 " tex flavor
 let g:tex_flavor = "latex"
 " }}}
@@ -305,13 +322,6 @@ let g:NERDToggleCheckAllLines = 1
 " }}}
 
 " COC {{{
-set hidden
-set nobackup
-set nowritebackup
-set cmdheight=2
-set updatetime=300
-set shortmess+=c
-set signcolumn=yes
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap <silent> <leader>l :CocList<CR>
 nmap <silent> <leader>[  <Plug>(coc-diagnostic-prev)
