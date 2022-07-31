@@ -22,7 +22,7 @@ function _safe_using(pkgs...)
         installed = false
         for env in Base.load_path()
             found = Base.project_deps_get(env, name_s)
-            if found !== nothing && (uuid === nothing || found.uuid == uuid) 
+            if found !== nothing && (uuid === nothing || found.uuid == uuid)
                 installed = true
                 break
             end
@@ -33,9 +33,9 @@ function _safe_using(pkgs...)
         ex = quote
             import Pkg
             current_project = Base.active_project()
-            Pkg.active()
+            Pkg.activate()
             Pkg.add($missing_pkgs)
-            Pkg.active(; current_project)
+            Pkg.activate(current_project)
             $using_pkgs
         end
     else
@@ -45,6 +45,8 @@ function _safe_using(pkgs...)
 end
 
 @safe_using LazyStartup
+
+@lazy_startup using Base.Meta: @dump, @lower
 
 @lazy_startup @safe_using(Revise) import * using * include(*)
 
