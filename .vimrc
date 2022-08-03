@@ -428,6 +428,12 @@ xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
 " }}}
 
+" Copilot {{{
+if has('mac') " default node in brew is too new for copilot
+    let g:copilot_node_command = $HOMEBREW_PREFIX . "/opt/node@16/bin/node"
+endif
+" }}}
+
 " }}}
 
 " Custom config {{{
