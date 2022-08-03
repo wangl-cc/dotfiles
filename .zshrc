@@ -184,6 +184,7 @@ if command -v nvim &> /dev/null; then
     alias vim='nvim'
     alias vimdiff='nvimdiff'
 fi
+alias yadm='yadm --yadm-repo $HOME/.git'
 # }}}
 
 # environment variables {{{
