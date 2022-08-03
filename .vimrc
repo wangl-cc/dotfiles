@@ -51,7 +51,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'zdharma-continuum/zinit-vim-syntax'
     " Github Copilot
     if has('nvim-0.6')
-        Plug 'github/copilot.vim'
+        Plug 'github/copilot.vim', { 'do': ':Copilot setup'}
     endif
     " Custom plugs
     if filereadable($HOME . "/.vim/custom/plugs.vim")
