@@ -322,7 +322,8 @@ let g:NERDToggleCheckAllLines = 1
 " }}}
 
 " COC {{{
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <C-x><C-z> coc#pum#visible() ? coc#pum#stop() : "\<C-x>\<C-z>"
 
 nnoremap <silent> <leader>ll :CocList<CR>
 nnoremap <silent> <leader>lc :CocList commands<CR>
