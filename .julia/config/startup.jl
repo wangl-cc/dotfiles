@@ -31,6 +31,7 @@ function _safe_using(pkgs...)
     end
     if !isempty(missing_pkgs.args)
         ex = quote
+            @info "Installing missing pacakges"
             import Pkg
             current_project = Base.active_project()
             Pkg.activate()
