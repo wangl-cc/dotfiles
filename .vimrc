@@ -25,7 +25,8 @@ call plug#begin('~/.vim/plugged')
     " Text alignment
     Plug 'godlygeek/tabular'
     " fuzzy finder
-    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
     " Tree explorer
     Plug 'scrooloose/nerdtree'
     " Comment
