@@ -60,9 +60,11 @@ zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$__RC_GITHUB
 zinit light $(__repo_owner zdharma)/fast-syntax-highlighting
 
 ## Completions
-zinit as"completion" wait lucid is-snippet for \
+if [ -z "${HOMEBREW_PREFIX+x}" ] || \
+    [ ! -f "$HOMEBREW_PREFIX/share/zsh/site-functions/_yadm" ]; then
+    zinit as"completion" wait lucid is-snippet for \
     "$(__github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
-
+fi
 if [ -n "${HOMEBREW_PREFIX+x}" ]; then
     for completion in $HOMEBREW_PREFIX/share/zsh/site-functions/*; do
         zinit ice as"completion" wait lucid
