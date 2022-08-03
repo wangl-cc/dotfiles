@@ -28,17 +28,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     " Tree explorer
-    Plug 'scrooloose/nerdtree'
+    Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
     " Comment
-    Plug 'scrooloose/nerdcommenter'
+    Plug 'scrooloose/nerdcommenter', { 'on': 'NERDCommenterToggle' }
     " LSP
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Indent guides
-    Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'nathanaelkane/vim-indent-guides', { 'on': 'IndentGuidesToggle' }
     " Statusline
     Plug 'itchyny/lightline.vim'
     " JuliaLang
-    Plug 'JuliaEditorSupport/julia-vim'
+    Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia' }
     " Brackets pair colorizer
     Plug 'luochen1990/rainbow'
     " Color scheme
@@ -48,7 +48,7 @@ call plug#begin('~/.vim/plugged')
     " vim-sneak
     Plug 'justinmk/vim-sneak'
     " zinit highlight
-    Plug 'zdharma-continuum/zinit-vim-syntax'
+    Plug 'zdharma-continuum/zinit-vim-syntax', { 'for': 'zsh' }
     " Github Copilot
     if has('nvim-0.6')
         Plug 'github/copilot.vim', { 'do': ':Copilot setup'}
