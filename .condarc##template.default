@@ -1,0 +1,12 @@
+show_channel_urls: true
+channels:
+  - defaults
+default_channels:
+  - https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/pkgs/main
+  - https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/pkgs/free
+  - https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/pkgs/r
+  - https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/cloud
+  msys2: https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/cloud
+  bioconda: https://mirrors.{{ env.CONDARC_MIRROR }}/anaconda/cloud

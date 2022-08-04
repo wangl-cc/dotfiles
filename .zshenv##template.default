@@ -1,0 +1,24 @@
+typeset -U PATH path
+
+{% if yadm.os == "Darwin" %}
+{% if yadm.arch == "arm64" %}
+export CONDARC_MIRROR="bfsu.edu.cn"
+if [ -f /opt/homebrew/bin/brew ]; then
+    export HOMEBREW_PREFIX=$(/opt/homebrew/bin/brew --prefix)
+    export HOMEBREW_CELLAR=$(/opt/homebrew/bin/brew --cellar)
+    export HOMEBREW_REPOSITORY=$(/opt/homebrew/bin/brew --repository)
+    path=("$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "$path[@]")
+fi
+{% else %}
+export CONDARC_MIRROR="aliyun.com"
+if [ -f /usr/local/bin/brew ]; then
+    export HOMEBREW_PREFIX=$(/usr/local/bin/brew --prefix)
+    export HOMEBREW_CELLAR=$(/usr/local/bin/brew --cellar)
+    export HOMEBREW_REPOSITORY=$(/usr/local/bin/brew --repository)
+    path=("$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "$path[@]")
+fi
+{% else %}
+export CONDARC_MIRROR="aliyun.com"
+{% endif %}
+path=("$HOME/.local/bin" "$path[@]")
+export PATH
