@@ -30,7 +30,7 @@ call plug#begin('~/.vim/plugged')
     " Tree explorer
     Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
     " Comment
-    Plug 'scrooloose/nerdcommenter', { 'on': 'NERDCommenterToggle' }
+    Plug 'scrooloose/nerdcommenter'
     " LSP
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Indent guides
