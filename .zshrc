@@ -70,15 +70,15 @@ __rc_install() {
 __rc_install_bin() { __rc_install $1 $__RC_BINPATH 755 }
 __rc_install_comp() { __rc_install $1 $__RC_COMPPATH 644 }
 __rc_install_man() {
-    __rc_manpath="__RC_MANPATH/man${1##*.}"
+    __rc_manpath="$__RC_MANPATH/man${1##*.}"
     if ! [ -d $__rc_manpath ]; then
         mkdir -p $__rc_manpath
     fi
     __rc_install $1 $__rc_manpath 644
 }
 # install yadm
+__RC_YADM_TAG="3.2.1"
 if test ! $(command -v yadm); then
-    __RC_YADM_TAG="3.2.1"
     read -q "__RC_YADM_INSTALL?Install yadm? [y/n]"
     if [ $__RC_YADM_INSTALL = "y" ]; then
         __rc_install_bin "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm"
@@ -89,8 +89,8 @@ if test ! $(command -v yadm); then
     fi
 fi
 # install esh
+__RC_ESH_TAG="v0.3.2"
 if test ! $(command -v esh); then
-    __RC_ESH_TAG="v0.3.2"
     read -q "__RC_ESH_INSTALL?Install esh? [y/n]"
     if [ $__RC_ESH_INSTALL = "y" ]; then
         __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
