@@ -1,5 +1,5 @@
 [core]
-	excludesFile = ~/.gitignore_global
+	excludesFile = ~/.gitignore.d/global
 [user]
 	name = Long Wang
 	email = wangl.cc@outlook.com
