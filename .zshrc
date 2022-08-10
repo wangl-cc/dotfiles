@@ -17,6 +17,7 @@ typeset -A __RC_REPO_OWNERS=(
     zsh-users       wangl-cc
     TheLocehiliosan wangl-cc
     romkatv         wangl-cc
+    jirutka         wangl-cc
 )
 ## echo new owner for owner in REPO_OWNERS, otherwise echo the original owner
 __repo_owner(){ echo ${__RC_REPO_OWNERS[$1]-$1} }
@@ -40,6 +41,65 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 # }}}
 
+# misc install {{{
+__RC_PREFIX="$HOME/.local"
+__RC_BINPATH="$__RC_PREFIX/bin"
+__RC_MANPATH="$__RC_PREFIX/share/man"
+__RC_COMPPATH="$__RC_PREFIX/share/zsh/site-functions"
+if ! [ -d $__RC_COMPPATH ]; then
+    mkdir -p $__RC_COMPPATH
+fi
+__RC_CACHEPATH="$TMPDIR/zshrc_download_cache"
+if ! [ -d $__RC_CACHEPATH ]; then
+    mktemp -d zshrc_download_cache
+fi
+__rc_install() {
+    url="$1"
+    dest="$2"
+    mod="$3"
+    name=$(basename $url)
+    print -P "Installing %F{33}$name%F{34}%f:"
+    print -P "URL: %F{33}$url%f"
+    print -P "Destination: %F{33}$dest/$name%f"
+    print -P "Mode: %F{33}$mod%f"
+    curl -sSLo "$__RC_CACHEPATH/$name" "$url" && \
+        install -m $mod "$__RC_CACHEPATH/$name" "$dest" && \
+        print -P "Installation successful.%b" || \
+        print -P "Installation failed.%b"
+}
+__rc_install_bin() { __rc_install $1 $__RC_BINPATH 755 }
+__rc_install_comp() { __rc_install $1 $__RC_COMPPATH 644 }
+__rc_install_man() {
+    __rc_manpath="__RC_MANPATH/man${1##*.}"
+    if ! [ -d $__rc_manpath ]; then
+        mkdir -p $__rc_manpath
+    fi
+    __rc_install $1 $__rc_manpath 644
+}
+# install yadm
+if test ! $(command -v yadm); then
+    __RC_YADM_TAG="3.2.1"
+    read -q "__RC_YADM_INSTALL?Install yadm? [y/n]"
+    if [ $__RC_YADM_INSTALL = "y" ]; then
+        __rc_install_bin "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm"
+        __rc_install_comp "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/completion/zsh/_yadm"
+        __rc_install_man "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm.1"
+    else
+        echo "yadm not installed."
+    fi
+fi
+# install esh
+if test ! $(command -v esh); then
+    __RC_ESH_TAG="v0.3.2"
+    read -q "__RC_ESH_INSTALL?Install esh? [y/n]"
+    if [ $__RC_ESH_INSTALL = "y" ]; then
+        __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
+    else
+        echo "esh not installed."
+    fi
+fi
+# }}}
+
 # zinit plugins {{{
 ## Theme
 zinit ice lucid depth"1" from"$__RC_GITHUB_DOMAIN"
@@ -60,17 +120,16 @@ zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay" from"$__RC_GITHUB
 zinit light $(__repo_owner zdharma)/fast-syntax-highlighting
 
 ## Completions
-if [ -z "${HOMEBREW_PREFIX+x}" ] || \
-    [ ! -f "$HOMEBREW_PREFIX/share/zsh/site-functions/_yadm" ]; then
-    zinit as"completion" wait lucid is-snippet for \
-    "$(__github_url_raw TheLocehiliosan yadm)/master/completion/zsh/_yadm"
-fi
 if [ -n "${HOMEBREW_PREFIX+x}" ]; then
     for completion in $HOMEBREW_PREFIX/share/zsh/site-functions/*; do
         zinit ice as"completion" wait lucid
         zinit snippet $completion
     done
 fi
+for completion in $__RC_COMPPATH/*; do
+    zinit ice as"completion" wait lucid
+    zinit snippet $completion
+done
 # }}}
 
 # zstyle {{{
@@ -87,24 +146,6 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
-# }}}
-
-# yadm installation {{{
-__RC_YADM_PATH="$HOME/.local/bin/yadm"
-install_yadm() {
-    print -P "Downloading lastest %F{33}yadm%f to %F{33}$__RC_YADM_PATH%f..."
-    curl -sSLo $__RC_YADM_PATH "$(__github_url_raw TheLocehiliosan yadm)/master/yadm" && \
-        echo "Download succeed." || \
-        echo "Download failed."
-    chmod +x $__RC_YADM_PATH
-}
-if test ! $(command -v yadm); then
-    if [[ ! -f $__RC_YADM_PATH ]]; then
-        install_yadm
-    else
-        echo "yadm is found at $__RC_YADM_PATH, make sure it is in your PATH."
-    fi
-fi
 # }}}
 
 # aliases {{{
