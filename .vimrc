@@ -251,6 +251,29 @@ nnoremap <leader>cw :s/\V\<<C-r><C-w>\>/<C-r><C-w>
 nnoremap <leader>cW :s/\V<C-r><C-a>/<C-r><C-a>
 " }}}
 
+" switch to alternative file {{{
+augroup AutoSwitchFile
+    autocmd!
+    autocmd BufEnter * call s:switch_alt(expand('<afile>'))
+augroup END
+function! s:switch_alt(file)
+    let dir = getcwd()
+    let pat = a:file . "##*"
+    let alts = split(globpath(dir, pat))
+    if len(alts) == 0
+        return
+    elseif len(alts) == 1
+        let alt = substitute(alts[0], '#', '\\#', 'g')
+        let ft = &filetype
+        execute 'edit ' . alt
+        execute 'set filetype =' . ft
+        return
+    else
+        echom "Found multiple alternatives, please sepcify name"
+    endif
+endfunction
+" }}}
+
 " }}}
 
 " Plugs configs {{{
