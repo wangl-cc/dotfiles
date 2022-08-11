@@ -49,9 +49,9 @@ __RC_COMPPATH="$__RC_PREFIX/share/zsh/site-functions"
 if ! [ -d $__RC_COMPPATH ]; then
     mkdir -p $__RC_COMPPATH
 fi
-__RC_CACHEPATH="$TMPDIR/zshrc_download_cache"
+__RC_CACHEPATH="$HOME/.cache/zshrc"
 if ! [ -d $__RC_CACHEPATH ]; then
-    mktemp -d zshrc_download_cache
+    mkdir -p $__RC_CACHEPATH
 fi
 __rc_install() {
     url="$1"
