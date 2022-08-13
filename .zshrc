@@ -78,22 +78,28 @@ __rc_install_man() {
 }
 # install yadm
 __RC_YADM_TAG="3.2.1"
+__rc_install_yadm() {
+    __rc_install_bin "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm"
+    __rc_install_comp "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/completion/zsh/_yadm"
+    __rc_install_man "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm.1"
+}
 if test ! $(command -v yadm); then
     read -q "__RC_YADM_INSTALL?Install yadm? [y/n]"
     if [ $__RC_YADM_INSTALL = "y" ]; then
-        __rc_install_bin "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm"
-        __rc_install_comp "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/completion/zsh/_yadm"
-        __rc_install_man "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm.1"
+        __rc_install_yadm
     else
         echo "yadm not installed."
     fi
 fi
 # install esh
 __RC_ESH_TAG="v0.3.2"
+__rc_install_esh() {
+    __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
+}
 if test ! $(command -v esh); then
     read -q "__RC_ESH_INSTALL?Install esh? [y/n]"
     if [ $__RC_ESH_INSTALL = "y" ]; then
-        __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
+        __rc_install_esh
     else
         echo "esh not installed."
     fi
