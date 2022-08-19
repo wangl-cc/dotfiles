@@ -1,4 +1,5 @@
 using Base.Meta: isexpr
+import Base.Meta: @dump, @lower
 
 macro safe_using(pkgs...)
     return _safe_using(pkgs...)
@@ -46,8 +47,6 @@ function _safe_using(pkgs...)
 end
 
 @safe_using LazyStartup
-
-@lazy_startup using Base.Meta: @dump, @lower
 
 @lazy_startup @safe_using(Revise) import * using * include(*)
 
