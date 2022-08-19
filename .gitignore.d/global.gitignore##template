@@ -1,5 +1,5 @@
 {% if yadm.os == "Darwin" %}
-{% include "./{{ yadm.os }}" %}
+{% include "./{{ yadm.os }}.gitignore" %}
 {% endif %}
 # ============================== vim =============================== #
 # ============= github/gitignore/Global/Vim.gitignore ============== #
