@@ -171,7 +171,7 @@ endif
 syntax enable
 
 " colorscheme
-if !($TERM_PROGRAM =~ "Apple_Terminal")
+if !($TERM_PROGRAM =~ "Apple_Terminal") && !empty(globpath(&rtp, "colors/one.vim"))
     colorscheme one
 endif
 
