@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
-rm -f ~/README.md LICENSE
-yadm gitconfig core.sparseCheckout true
-yadm sparse-checkout set '/*' '!README.md' '!LICENSE'
+rm -f ~/README.md LICENSE install.sh
+yadm config core.sparseCheckout true
+yadm sparse-checkout set '/*' '!README.md' '!LICENSE' '!install.sh'
 
 # macOS defaults, those changes require a restart to take effect
 if [ $(uname -s) = 'Darwin' ]; then
