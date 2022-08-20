@@ -40,18 +40,20 @@ __rc_install_man() {
 
 # install yadm
 __RC_YADM_TAG="3.2.1"
+__RC_YADM_RAW=${__RC_YADM_RAW-"https://raw.githubusercontent.com/TheLocehiliosan/yadm"}
 __rc_install_yadm() {
-    __rc_install_bin "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm"
-    __rc_install_comp "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/completion/zsh/_yadm"
-    __rc_install_man "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm.1"
+    __rc_install_bin "$__RC_YADM_RAW/$__RC_YADM_TAG/yadm"
+    __rc_install_comp "$__RC_YADM_RAW/$__RC_YADM_TAG/completion/zsh/_yadm"
+    __rc_install_man "$__RC_YADM_RAW/$__RC_YADM_TAG/yadm.1"
 }
 if test ! $(command -v yadm); then
     __rc_install_yadm
 fi
 # install esh
 __RC_ESH_TAG="v0.3.2"
+__RC_ESH_RAW=${__RC_ESH_RAW-"https://raw.githubusercontent.com/jirutka/esh/"}
 __rc_install_esh() {
-    __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
+    __rc_install_bin "$__RC_ESH_RAW/$__RC_ESH_TAG/esh"
 }
 if test ! $(command -v esh); then
     __rc_install_esh
