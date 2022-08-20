@@ -5,15 +5,6 @@ if has('nvim')
 endif
 " }}}
 
-" Install vim-plug {{{
-" If there is not plug.vim, install it and install plugins
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ http//raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-" }}}
-
 " Install and Load Plugs {{{
 " force use ssh to download plugs
 let g:plug_url_format = 'git@github.com:%s.git'
@@ -180,7 +171,7 @@ endif
 syntax enable
 
 " colorscheme
-if !($TERM_PROGRAM =~ "Apple_Terminal")
+if !($TERM_PROGRAM =~ "Apple_Terminal") && !empty(globpath(&rtp, "colors/one.vim"))
     colorscheme one
 endif
 
