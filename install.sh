@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# prepare paths
 __RC_PREFIX="$HOME/.local"
 __RC_BINPATH="$__RC_PREFIX/bin"
 __RC_MANPATH="$__RC_PREFIX/share/man"
@@ -11,6 +12,8 @@ __RC_CACHEPATH="$HOME/.cache/zshrc"
 if ! [ -d $__RC_CACHEPATH ]; then
     mkdir -p $__RC_CACHEPATH
 fi
+
+# install functions
 __rc_install() {
     url="$1"
     dest="$2"
@@ -34,6 +37,7 @@ __rc_install_man() {
     fi
     __rc_install $1 $__rc_manpath 644
 }
+
 # install yadm
 __RC_YADM_TAG="3.2.1"
 __rc_install_yadm() {
@@ -42,12 +46,7 @@ __rc_install_yadm() {
     __rc_install_man "$(__github_url_raw TheLocehiliosan yadm)/$__RC_YADM_TAG/yadm.1"
 }
 if test ! $(command -v yadm); then
-    read -q "__RC_YADM_INSTALL?Install yadm? [y/n]"
-    if [ $__RC_YADM_INSTALL = "y" ]; then
-        __rc_install_yadm
-    else
-        echo "yadm not installed."
-    fi
+    __rc_install_yadm
 fi
 # install esh
 __RC_ESH_TAG="v0.3.2"
@@ -55,15 +54,15 @@ __rc_install_esh() {
     __rc_install_bin "$(__github_url_raw jirutka esh)/$__RC_ESH_TAG/esh"
 }
 if test ! $(command -v esh); then
-    read -q "__RC_ESH_INSTALL?Install esh? [y/n]"
-    if [ $__RC_ESH_INSTALL = "y" ]; then
-        __rc_install_esh
-    else
-        echo "esh not installed."
-    fi
+    __rc_install_esh
 fi
+
+# set PATH
 typeset -U PATH path
 path=("$__RC_BINPATH" "$path[@]")
 export PATH
 
+# clone repo
 yadm clone git@github.com:wangl-cc/dotfiles.git --bootstrap
+# move repo
+mv $HOME/.local/share/yadm/repo.git $HOME/.git
