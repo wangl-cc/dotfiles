@@ -2,8 +2,14 @@
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
 rm -f ~/README.md LICENSE
-yadm gitconfig core.sparseCheckout true
-yadm sparse-checkout set '/*' '!README.md' '!LICENSE'
+yadm --yadm-repo $HOME/.git config core.sparseCheckout true
+yadm --yadm-repo $HOME/.git sparse-checkout set '/*' '!README.md' '!LICENSE'
+
+# Install vim-plug
+__VIM_PLUG=${VIM_PLUG-"https://gitee.com/wangl-cc/vim-plug/raw/master/plug.vim"}
+echo "Install vim-plug from $__VIM_PLUG"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs $__VIM_PLUG
+vim +PlugInstall +qall
 
 # macOS defaults, those changes require a restart to take effect
 if [ $(uname -s) = 'Darwin' ]; then
@@ -46,7 +52,7 @@ if [ $(uname -s) = 'Darwin' ]; then
     defaults write com.apple.dock magnification -bool false
 
     # vscode
-    ## enable keys repeat when hold 
+    ## enable keys repeat when hold
     defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
     # don't save to iCloud by default
     defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
