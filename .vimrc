@@ -7,7 +7,6 @@ endif
 
 " Install and Load Plugs {{{
 " force use ssh to download plugs
-let g:plug_url_format = 'git@github.com:%s.git'
 call plug#begin('~/.vim/plugged')
     " Some file commands like rename
     Plug 'tpope/vim-eunuch'
