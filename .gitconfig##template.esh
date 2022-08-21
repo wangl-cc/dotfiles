@@ -3,13 +3,13 @@
 [user]
 	name = Long Wang
 	email = wangl.cc@outlook.com
-{% if yadm.os == "Darwin" %}
+<% if [ "$YADM_OS"  == "Darwin" ]; then -%>
 	signingkey = 57F47DDA!
 [commit]
 	gpgsign = true
 [gpg]
 	program = gpg
-{% endif %}
+<% fi -%>
 [filter "ignoreline"]
 	clean = "sed '/ (git): ignore this line$/d'"
 	smudge = cat
@@ -19,7 +19,9 @@
 	tool = $GIT_DIFF_TOOL
 [merge]
 	tool = $GIT_DIFF_TOOL
+<% if compgen -G "$HOME/.ssh/id*" > /dev/null; then -%>
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
+<% fi -%>
 
 # vim:ts=4:sw=4:noet
