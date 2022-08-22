@@ -153,6 +153,7 @@ export EDITOR=${EDITOR-"${aliases[vim]-vim} -e"}
 export GIT_DIFF_TOOL=${GIT_DIFF_TOOL-${aliases[vimdiff]-vimdiff}}
 export GIT_EDITOR=${GIT_EDITOR-$VISUAL}
 export JULIA_EDITOR=${JULIA_EDITOR-$VISUAL}
+export ESH_SHELL=${ESH_SHELL-"/bin/bash"}
 # }}}
 
 # conda initialize {{{
