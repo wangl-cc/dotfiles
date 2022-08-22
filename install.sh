@@ -33,11 +33,11 @@ install_base() {
 install_bin() { install_base $1 $BINPATH 755; }
 install_comp() { install_base $1 $COMPPATH 644; }
 install_man() {
-    MANPATH="$MANPATH/man${1##*.}"
-    if ! [ -d $MANPATH ]; then
-        mkdir -p $MANPATH
+    man="$MANPATH/man${1##*.}"
+    if ! [ -d $man]; then
+        mkdir -p $man
     fi
-    install_base $1 $MANPATH 644
+    install_base $1 $man 644
 }
 
 # install yadm
@@ -52,7 +52,7 @@ if test ! $(command -v yadm); then
     install_yadm
 fi
 # install esh
-ESH_TAG=${YADM_TAG-"v0.3.2"}
+ESH_TAG=${ESH_TAG-"v0.3.2"}
 ESH_RAW=${ESH_RAW-'https://raw.githubusercontent.com/jirutka/esh'}
 install_esh() {
     install_bin "$ESH_RAW/$ESH_TAG/esh"
@@ -67,15 +67,21 @@ path=("$BINPATH" "$path[@]")
 export PATH
 
 # clone repo
-if [ -f "$HOME/.zshrc" ]; then
-    echo "Found existing .zshrc file, backing up to .zshrc.bak"
-    mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+if [ -d "$HOME/.git" ]; then
+    source $HOME/.zshrc
+    yadm --yadm-repo "$HOME/.git" pull
+else
+    if [ -f "$HOME/.zshrc" ]; then
+        echo "Found existing .zshrc file, backing up to .zshrc.bak"
+        mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+    fi
+    GITHUB=${GITHUB-"https://github.com/"}
+    OWNER=${OWNER-"wangl-cc"}
+    REPO=${REPO-"dotfiles"}
+    REPO_URL=${REPO_URL-"$GITHUB$OWNER/$REPO.git"}
+    yadm clone $REPO_URL --no-bootstrap
+    source $HOME/.zshrc
+    # move repo
+    mv $HOME/.local/share/yadm/repo.git $HOME/.git
+    yadm --yadm-repo $HOME/.git bootstrap
 fi
-GITHUB=${GITHUB-"git@github.com:"}
-OWNER=${OWNER-"wangl-cc"}
-REPO=${REPO-"dotfiles"}
-REPO_URL=${REPO_URL-"$GITHUB$OWNER/$REPO.git"}
-yadm clone $REPO_URL --no-bootstrap
-# move repo
-mv $HOME/.local/share/yadm/repo.git $HOME/.git
-yadm --yadm-repo $HOME/.git bootstrap
