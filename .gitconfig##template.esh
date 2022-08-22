@@ -24,4 +24,4 @@
 	insteadOf = "https://github.com/"
 <% fi -%>
 
-# vim:ts=4:sw=4:noet
+# vim:ts=8:sw=8:noet
