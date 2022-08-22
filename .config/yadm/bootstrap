@@ -6,10 +6,12 @@ yadm --yadm-repo $HOME/.git config core.sparseCheckout true
 yadm --yadm-repo $HOME/.git sparse-checkout set '/*' '!README.md' '!LICENSE'
 
 # Install vim-plug
-__VIM_PLUG=${VIM_PLUG-"https://gitee.com/wangl-cc/vim-plug/raw/master/plug.vim"}
-echo "Install vim-plug from $__VIM_PLUG"
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs $__VIM_PLUG
-vim +PlugInstall +qall
+if [ ! -f ~/.vim/autoload/plug.vim ]; then
+    __VIM_PLUG=${VIM_PLUG-"https://gitee.com/wangl-cc/vim-plug/raw/master/plug.vim"}
+    echo "Install vim-plug from $__VIM_PLUG"
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs $__VIM_PLUG
+    vim +PlugInstall +qall
+fi
 
 # macOS defaults, those changes require a restart to take effect
 if [ $(uname -s) = 'Darwin' ]; then
