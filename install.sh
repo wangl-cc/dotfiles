@@ -67,21 +67,13 @@ path=("$BINDIR" "$path[@]")
 export PATH
 
 # clone repo
-if [ -d "$HOME/.git" ]; then
-    source $HOME/.zshrc
+REPO_DEST=${REPO_DEST-"$HOME/.git"}
+if [ -d "$REPO_DEST" ]; then
     yadm --yadm-repo "$HOME/.git" pull
 else
-    if [ -f "$HOME/.zshrc" ]; then
-        echo "Found existing .zshrc file, backing up to .zshrc.bak"
-        mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
-    fi
     GITHUB=${GITHUB-"https://github.com/"}
     OWNER=${OWNER-"wangl-cc"}
     REPO=${REPO-"dotfiles"}
     REPO_URL=${REPO_URL-"$GITHUB$OWNER/$REPO.git"}
-    yadm clone $REPO_URL --no-bootstrap
-    source $HOME/.zshrc
-    # move repo
-    mv $HOME/.local/share/yadm/repo.git $HOME/.git
-    yadm --yadm-repo $HOME/.git bootstrap
+    yadm --yadm-repo "$REPO_DEST" clone $REPO_URL --bootstrap
 fi
