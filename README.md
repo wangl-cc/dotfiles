@@ -1,22 +1,27 @@
 # dotfiles
 
-Managed with [`TheLocehiliosan/yadm`](https://github.com/TheLocehiliosan/yadm),
-which is required and can be installed manually:
-```bash
-curl -o $HOME/.local/bin/yadm https://raw.githubusercontent.com/TheLocehiliosan/yadm/master/yadm
-# for users in China mainland, use this mirror instead to download yadm
-curl -o $HOME/.local/bin/yadm https://gitee.com/wangl-cc/yadm/raw/master/yadm
-chmod +x $HOME/.local/bin/yadm # make yadm executable
-```
-or installed by package managers like `brew`:
-```bash
-brew install yadm
-```
-more about installation see the [documents of yadm](https://yadm.io/docs/install#).
+Dotfiles for myself.
 
-Once `yadm` is installed, clone this repo with:
+## Requirements
+
+This repo is managed with [`TheLocehiliosan/yadm`](https://github.com/TheLocehiliosan/yadm),
+and templates are processed by [`jirutka/esh`](https://github.com/jirutka/esh).
+Those dependencies can be installed with your favourite package manager,
+or with the `install.sh` script:
+```bash
+zsh -c "$(curl https://raw.githubusercontent.com/wangl-cc/dotfiles/master/install.sh)
 ```
-yadm clone git@github.com:wangl-cc/dotfiles.git  # replace the url as your own
+
+This will install all dependencies and clone this repo to `$HOME/.git` and run bootstrap script of YADM. If you install dependencies other way, you need to clone this repo to `$HOME/.git` manually:
+```bash
+yadm --yadm-repo "$HOME/.git" clone $REPOSITORY # replace $REPOSITORY with your repository url
+```
+
+For users in China mainland, download from Gitee instead:
+```bash
+YADM_RAW="https://gitee.com/wangl-cc/yadm/raw" \
+ESH_RAW="https://gitee.com/wangl-cc/esh/raw" \
+zsh -c "$(curl https://gitee.com/wangl-cc/dotfiles/raw/master/install.sh)"
 ```
 
 <!-- vim:set ts=2 sw=2 tw=76: -->
