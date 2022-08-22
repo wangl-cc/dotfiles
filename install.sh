@@ -1,18 +1,18 @@
 #!/bin/zsh
 
 PREFIX=${PREFIX-"$HOME/.local"}
-BINPATH=${BINPATH-"$PREFIX/bin"}
-if ! [ -d "$BINPATH" ]; then
-    mkdir -p "$BINPATH"
+BINDIR=${BINDIR-"$PREFIX/bin"}
+if ! [ -d "$BINDIR" ]; then
+    mkdir -p "$BINDIR"
 fi
-MANPATH=${MANPATH-"$PREFIX/share/man"}
-COMPPATH=${COMPPATH-"$PREFIX/share/zsh/site-functions"}
-if ! [ -d $COMPPATH ]; then
-    mkdir -p $COMPPATH
+MANDIR=${MANDIR-"$PREFIX/share/man"}
+COMDIR=${COMDIR-"$PREFIX/share/zsh/site-functions"}
+if ! [ -d $COMDIR ]; then
+    mkdir -p $COMDIR
 fi
-CACHEPATH=${CACHEPATH-"$HOME/.cache/zshrc"}
-if ! [ -d $CACHEPATH ]; then
-    mkdir -p $CACHEPATH
+CACHEDIR=${CACHEDIR-"$(mktemp -d)"}
+if ! [ -d $CACHEDIR ]; then
+    mkdir -p $CACHEDIR
 fi
 
 # install functions
@@ -25,16 +25,16 @@ install_base() {
     print -P "URL: %F{33}$url%f"
     print -P "Destination: %F{33}$dest/$name%f"
     print -P "Mode: %F{33}$mod%f"
-    curl -sSLo "$CACHEPATH/$name" "$url" && \
-        install -m $mod "$CACHEPATH/$name" "$dest" && \
+    curl -sSLo "$CACHEDIR/$name" "$url" && \
+        install -m $mod "$CACHEDIR/$name" "$dest" && \
         print -P "Installation successful.%b" || \
         print -P "Installation failed.%b"
 }
-install_bin() { install_base $1 $BINPATH 755; }
-install_comp() { install_base $1 $COMPPATH 644; }
+install_bin() { install_base $1 $BINDIR 755; }
+install_comp() { install_base $1 $COMDIR 644; }
 install_man() {
-    man="$MANPATH/man${1##*.}"
-    if ! [ -d $man]; then
+    man="$MANDIR/man${1##*.}"
+    if ! [ -d $man ]; then
         mkdir -p $man
     fi
     install_base $1 $man 644
@@ -63,7 +63,7 @@ fi
 
 # set PATH
 typeset -U PATH path
-path=("$BINPATH" "$path[@]")
+path=("$BINDIR" "$path[@]")
 export PATH
 
 # clone repo
