@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
-rm -f ~/README.md LICENSE install.sh
+rm -f ~/README.md ~/LICENSE ~/install.sh
 yadm --yadm-repo $HOME/.git config core.sparseCheckout true
 yadm --yadm-repo $HOME/.git sparse-checkout set '/*' '!README.md' '!LICENSE' '!install.sh'
 
