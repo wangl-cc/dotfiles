@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # sparse checkout to avoid  README.md and LICENSE in HOME
-rm -f ~/README.md LICENSE
+rm -f ~/README.md LICENSE install.sh
 yadm --yadm-repo $HOME/.git config core.sparseCheckout true
-yadm --yadm-repo $HOME/.git sparse-checkout set '/*' '!README.md' '!LICENSE'
+yadm --yadm-repo $HOME/.git sparse-checkout set '/*' '!README.md' '!LICENSE' '!install.sh'
 
 # Install vim-plug
 if [ ! -f ~/.vim/autoload/plug.vim ]; then
