@@ -10,7 +10,7 @@ COMDIR=${COMDIR-"$PREFIX/share/zsh/site-functions"}
 if ! [ -d $COMDIR ]; then
     mkdir -p $COMDIR
 fi
-CACHEDIR=${CACHEDIR-"$(mktemp -d)"}
+CACHEDIR=${CACHEDIR-"$HOME/.cache/dotfiles_install"}
 if ! [ -d $CACHEDIR ]; then
     mkdir -p $CACHEDIR
 fi
@@ -18,15 +18,21 @@ fi
 # install functions
 install_base() {
     url="$1"
-    dest="$2"
     mod="$3"
     name=$(basename $url)
+    cache="$CACHEDIR/$name"
+    dest="$2/$name"
+    [ -f $dest ] && return 0
     print -P "Installing %F{33}$name%F{34}%f:"
-    print -P "URL: %F{33}$url%f"
-    print -P "Destination: %F{33}$dest/$name%f"
+    print -P "Destination: %F{33}$dest%f"
     print -P "Mode: %F{33}$mod%f"
-    curl -sSLo "$CACHEDIR/$name" "$url" && \
-        install -m $mod "$CACHEDIR/$name" "$dest" && \
+    if [ ! -f $cache ]; then
+        print -P "Download form %F{33}$url%f..."
+        curl -sSLo "$cache" "$url" && \
+            print -P "Download successful." || \
+            print -P "Download failed."
+    fi
+    install -m $mod "$cache" "$dest" && \
         print -P "Installation successful.%b" || \
         print -P "Installation failed.%b"
 }
@@ -43,23 +49,13 @@ install_man() {
 # install yadm
 YADM_TAG=${YADM_TAG-"3.2.1"}
 YADM_RAW=${YADM_RAW-'https://raw.githubusercontent.com/TheLocehiliosan/yadm'}
-install_yadm() {
-    install_bin "$YADM_RAW/$YADM_TAG/yadm"
-    install_comp "$YADM_RAW/$YADM_TAG/completion/zsh/_yadm"
-    install_man "$YADM_RAW/$YADM_TAG/yadm.1"
-}
-if test ! $(command -v yadm); then
-    install_yadm
-fi
+install_bin "$YADM_RAW/$YADM_TAG/yadm"
+install_comp "$YADM_RAW/$YADM_TAG/completion/zsh/_yadm"
+install_man "$YADM_RAW/$YADM_TAG/yadm.1"
 # install esh
 ESH_TAG=${ESH_TAG-"v0.3.2"}
 ESH_RAW=${ESH_RAW-'https://raw.githubusercontent.com/jirutka/esh'}
-install_esh() {
-    install_bin "$ESH_RAW/$ESH_TAG/esh"
-}
-if test ! $(command -v esh); then
-    install_esh
-fi
+install_bin "$ESH_RAW/$ESH_TAG/esh"
 
 # set PATH
 typeset -U PATH path
@@ -69,8 +65,10 @@ export PATH
 # clone repo
 REPO_DEST=${REPO_DEST-"$HOME/.git"}
 if [ -d "$REPO_DEST" ]; then
+    print -P "Repository already exists, pull latest changes."
     yadm --yadm-repo "$HOME/.git" pull
 else
+    print -P "Clone repository."
     GITHUB=${GITHUB-"https://github.com/"}
     OWNER=${OWNER-"wangl-cc"}
     REPO=${REPO-"dotfiles"}
