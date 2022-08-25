@@ -9,7 +9,7 @@ and templates are processed by [`jirutka/esh`](https://github.com/jirutka/esh).
 Those dependencies can be installed with your favourite package manager,
 or with the `install.sh` script:
 ```bash
-zsh -c "$(curl https://raw.githubusercontent.com/wangl-cc/dotfiles/master/install.sh)
+zsh -c "$(curl https://raw.githubusercontent.com/wangl-cc/dotfiles/master/install.sh)"
 ```
 
 This will install all dependencies and clone this repo to `$HOME/.git` and run bootstrap script of YADM. If you install dependencies other way, you need to clone this repo to `$HOME/.git` manually:
