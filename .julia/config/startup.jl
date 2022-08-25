@@ -1,6 +1,12 @@
 using Base.Meta: isexpr
 import Base.Meta: @dump, @lower
 
+"""
+    @safe_using Pkg Pkg = UUID ...
+
+Simmilar to using Pkg, but check if the given pacakges is installed
+and install them when needed.
+"""
 macro safe_using(pkgs...)
     return _safe_using(pkgs...)
 end
@@ -48,7 +54,11 @@ end
 
 @safe_using LazyStartup
 
-@lazy_startup @safe_using(Revise) import * using * include(*)
+@lazy_startup @safe_using(Revise) import * using * include(*) includet(*)
+
+@lazy_startup @safe_using(BenchmarkTools) @btime() @benchmark()
+
+@lazy_startup @safe_using(Cthulhu) @descend() @descend_code_typed() @descend_code_warntyp()
 
 ENV["JULIA_COC_NVIM_DISABLE"] = "false"
 
