@@ -4,8 +4,9 @@ import Base.Meta: @dump, @lower
 """
     @safe_using Pkg Pkg = UUID ...
 
-Simmilar to using Pkg, but check if the given pacakges is installed
-and install them when needed.
+Simmilar to `using`, but you can specify the package UUID.
+Besides if given pacakges is not installed,
+install them into ` @v#.#` environment.
 """
 macro safe_using(pkgs...)
     return _safe_using(pkgs...)
