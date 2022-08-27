@@ -49,13 +49,17 @@ install_man() {
 # install yadm
 YADM_TAG=${YADM_TAG-"3.2.1"}
 YADM_RAW=${YADM_RAW-'https://raw.githubusercontent.com/TheLocehiliosan/yadm'}
-install_bin "$YADM_RAW/$YADM_TAG/yadm"
-install_comp "$YADM_RAW/$YADM_TAG/completion/zsh/_yadm"
-install_man "$YADM_RAW/$YADM_TAG/yadm.1"
+if [[ ! $(command -v yadm) || $(command -v yadm) = "$BINDIR/yadm" ]]; then
+    install_bin "$YADM_RAW/$YADM_TAG/yadm"
+    install_comp "$YADM_RAW/$YADM_TAG/completion/zsh/_yadm"
+    install_man "$YADM_RAW/$YADM_TAG/yadm.1"
+fi
 # install esh
 ESH_TAG=${ESH_TAG-"v0.3.2"}
 ESH_RAW=${ESH_RAW-'https://raw.githubusercontent.com/jirutka/esh'}
-install_bin "$ESH_RAW/$ESH_TAG/esh"
+if test ! $(command -v esh); then
+    install_bin "$ESH_RAW/$ESH_TAG/esh"
+fi
 
 # set PATH
 typeset -U PATH path
