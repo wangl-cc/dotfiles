@@ -38,15 +38,17 @@ zinit light zdharma/fast-syntax-highlighting
 
 ## Completions
 if [ -n "${HOMEBREW_PREFIX+x}" ]; then
-    for completion in $HOMEBREW_PREFIX/share/zsh/site-functions/*; do
+    for __completion in $HOMEBREW_PREFIX/share/zsh/site-functions/*; do
         zinit ice as"completion" wait lucid
-        zinit snippet $completion
+        zinit snippet $__completion
     done
 fi
-for completion in $HOME/.local/share/zsh/site-functions/*; do
-    zinit ice as"completion" wait lucid
-    zinit snippet $completion
-done
+if [ ! -z "$(ls $HOME/.local/share/zsh/site-functions)" ]; then
+    for __completion in $HOME/.local/share/zsh/site-functions/*; do
+        zinit ice as"completion" wait lucid
+        zinit snippet $__completion
+    done
+fi
 # }}}
 
 # zstyle {{{
