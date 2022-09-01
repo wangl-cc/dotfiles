@@ -24,7 +24,7 @@ call plug#begin('~/.vim/plugged')
     " LSP
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     " Indent guides
-    Plug 'nathanaelkane/vim-indent-guides', { 'on': 'IndentGuidesToggle' }
+    Plug 'Yggdroot/indentLine'
     " Statusline
     Plug 'itchyny/lightline.vim'
     " JuliaLang
@@ -227,7 +227,7 @@ nnoremap <silent> <leader>n :nohlsearch<CR>
 nnoremap <silent> <leader>tb :%s/[ \t]\+$//<CR>
 
 " Indent guides toggle
-nnoremap <silent> <leader>ti :IndentGuidesToggle<CR>
+nnoremap <silent> <leader>ti :IndentLinesToggle<CR>
 
 " highlight all matches of current word
 nnoremap <silent> <leader>hw :exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>
@@ -267,6 +267,10 @@ endfunction
 " }}}
 
 " Plugs configs {{{
+
+" indentLine {{{
+let g:indentLine_char = '┆'
+" }}}
 
 " Rainbow {{{
 let g:rainbow_active = 1
