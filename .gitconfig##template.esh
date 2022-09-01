@@ -19,6 +19,12 @@
 	tool = $GIT_DIFF_TOOL
 [merge]
 	tool = $GIT_DIFF_TOOL
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	st = status
 <% if compgen -G "$HOME/.ssh/id*" > /dev/null; then -%>
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
