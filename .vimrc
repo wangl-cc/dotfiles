@@ -186,9 +186,11 @@ let g:one_allow_italics = 1 " for vim-one
 let s:set_background_lock = 0
 function! SetBackground(...)
     let init = get(a:, 1, 0) " init only the argument is given
-    if has('mac') && !s:set_background_lock
+    if !s:set_background_lock &&
+        \   (has('mac') || (s:is_sshr() && $LC_OS =~ "Darwin"))
         let s:set_background_lock = 1
-        if system('defaults read -g AppleInterfaceStyle') =~ "Dark"
+        let cmd='defaults read -g AppleInterfaceStyle'
+        if system(cmd) =~ "Dark" || (s:is_sshr() && s:remote_system(cmd) =~ "Dark")
             " don't change background if already set or not init
             if &background != 'dark' || !init
                 doautocmd User BackGroundDark
@@ -198,6 +200,13 @@ function! SetBackground(...)
         endif
         let s:set_background_lock = 0
     endif
+endfunction
+" check if it's a SSH session
+function! s:is_sshr()
+    return !empty($SSHR_PORT)
+endfunction
+function! s:remote_system(cmd)
+    return system("ssh " . $LC_USER . "@localhost -o StrictHostKeyChecking=no -p " . $SSHR_PORT . " '" . a:cmd . "'")
 endfunction
 " if SIGWINCH is supported, trigger it when receive a SIGWINCH signal
 " otherwise, it's needed to call SetBackground manually

@@ -145,6 +145,18 @@ if command -v nvim &> /dev/null; then
     alias vimdiff='nvimdiff'
 fi
 alias yadm='yadm --yadm-repo $HOME/.git'
+sshr(){
+    # ssh to host firstly to get an aviailable port
+    # this solution is from https://unix.stackexchange.com/a/164948
+    sshr_port=$(ssh -t -R 0:localhost:22 $1 -o RemoteCommand='exit' 2>&1 |
+        grep 'Allocated port' | awk '/port/ {print $3;}')
+    echo "Use port $sshr_port for remote forward to localhost:22"
+    ssh -t -R ${sshr_port}:localhost:22 $1 -o RemoteCommand="
+        export SHELL=/home/%r/.local/bin/zsh;
+        export SSHR_PORT=$sshr_port;
+        export LC_USER=$USER LC_OS=$(uname -s) TERM_PROGRAM=$TERM_PROGRAM;
+        exec \$SHELL -l"
+}
 # }}}
 
 # environment variables {{{
