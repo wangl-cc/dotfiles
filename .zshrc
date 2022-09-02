@@ -145,6 +145,14 @@ if command -v nvim &> /dev/null; then
     alias vimdiff='nvimdiff'
 fi
 alias yadm='yadm --yadm-repo $HOME/.git'
+sshr(){
+    sshr_port=$(((RANDOM % 10000) + 10000))
+    ssh -t -R ${sshr_port}:localhost:22 $1 -o RemoteCommand="
+        export SHELL=/home/%r/.local/bin/zsh;
+        export SSHR_PORT=$sshr_port;
+        export LC_USER=$USER LC_OS=$(uname -s) TERM_PROGRAM=$TERM_PROGRAM;
+        exec \$SHELL -l"
+}
 # }}}
 
 # environment variables {{{
