@@ -24,6 +24,10 @@ call plug#begin('~/.vim/plugged')
     else
         Plug 'scrooloose/nerdtree'
     endif
+    " Terminal
+    if has('nvim-0.7')
+        Plug 'akinsho/toggleterm.nvim', {'tag' : 'v2.*'}
+    endif
     " Comment
     Plug 'scrooloose/nerdcommenter'
     " LSP
@@ -340,10 +344,28 @@ lua << EOF
         },
     })
 EOF
-    nnoremap <silent> <leader>tt :NvimTreeToggle<CR>
+    nnoremap <silent> <leader>te :NvimTreeToggle<CR>
 else
     let NERDTreeShowHidden = 1
-    nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
+    nnoremap <silent> <leader>te :NERDTreeToggle<CR>
+endif
+" }}}
+
+" Toggle terminal {{{
+if has('nvim-0.7')
+lua << EOF
+    require("toggleterm").setup({
+        size = 15,
+        open_mapping = [[<leader>tt]],
+        shade_terminals = false,
+        start_in_insert = true,
+        insert_mappings = true,
+        terminal_mappings = true,
+        direction = 'horizontal',
+        close_on_exit = true,
+        shell = vim.o.shell,
+    })
+EOF
 endif
 " }}}
 
