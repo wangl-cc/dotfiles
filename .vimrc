@@ -385,7 +385,7 @@ nnoremap <silent> <leader>le :CocList extensions<CR>
 nmap <silent> <leader>[  <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>]  <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>-  <Plug>(coc-git-prevchunk)
-nmap <silent> <leader>+  <Plug>(coc-git-nextchunk)
+nmap <silent> <leader>=  <Plug>(coc-git-nextchunk)
 nmap <silent> <leader>gd <plug>(coc-definition)
 nmap <silent> <leader>gD <Plug>(coc-declaration)
 nmap <silent> <leader>gr <Plug>(coc-references)
