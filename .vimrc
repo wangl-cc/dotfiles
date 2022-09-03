@@ -17,8 +17,13 @@ call plug#begin('~/.vim/plugged')
     " fuzzy finder
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    " Tree explorer
-    Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+    " File Explorer
+    if has('nvim-0.7')
+        Plug 'kyazdani42/nvim-web-devicons'
+        Plug 'kyazdani42/nvim-tree.lua'
+    else
+        Plug 'scrooloose/nerdtree'
+    endif
     " Comment
     Plug 'scrooloose/nerdcommenter'
     " LSP
@@ -317,9 +322,29 @@ function! s:rainbow_set_light()
 endfunction
 " }}}
 
-" NERDTree {{{
-let NERDTreeShowHidden = 1
-nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
+" File Explorer {{{
+if has('nvim-0.7')
+lua << EOF
+    require("nvim-tree").setup({
+        sort_by = "case_sensitive",
+        renderer = {
+            group_empty = true,
+        },
+        filters = {
+            dotfiles = true,
+            custom = {
+                "^\\.git",
+                "^\\.DS_Store",
+                "^Icon\r",
+            },
+        },
+    })
+EOF
+    nnoremap <silent> <leader>tt :NvimTreeToggle<CR>
+else
+    let NERDTreeShowHidden = 1
+    nnoremap <silent> <leader>tt :NERDTreeToggle<CR>
+endif
 " }}}
 
 " NERDCommenter {{{
