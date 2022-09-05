@@ -354,6 +354,7 @@ packer.startup(function(use)
     config = function()
       local cmp = require('cmp')
       local types = require('cmp.types')
+      local luasnip = require('luasnip')
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -368,8 +369,19 @@ packer.startup(function(use)
               cmp.select_next_item({
                 behavior = types.cmp.SelectBehavior.Insert
               })
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
             else
               cmp.mapping.complete(fallback)
+            end
+          end),
+          ["<C-p>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
             end
           end),
           ['<CR>'] = cmp.mapping.confirm { select = true },
