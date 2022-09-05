@@ -12,7 +12,7 @@ local cmd_full
 if is_sshr then
   cmd_full = { 'ssh', env.LC_HOST, '-o', 'StrictHostKeyChecking=no', '-p', env.SSHR_PORT, cmd_core }
 else
-  cmd_full = { cmd_core }
+  cmd_full = vim.fn.split(cmd_core)
 end
 
 local function auto_bg()
