@@ -392,7 +392,6 @@ packer.startup(function(use)
     run = ':TSUpdate',
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'lua', 'julia' },
         highlight = {
           enable = true,
         },
