@@ -71,6 +71,8 @@ packer.startup(function(use)
   use 'godlygeek/tabular'
   --- Additional emotions
   use 'justinmk/vim-sneak'
+  --- Auto tabstop and shiftwidth
+  use 'tpope/vim-sleuth'
 
   -- UI
   --- File explorer
