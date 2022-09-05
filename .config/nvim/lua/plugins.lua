@@ -76,6 +76,9 @@ packer.startup(function(use)
   --- File explorer
   use {
     'kyazdani42/nvim-tree.lua',
+    opt = true,
+    keys = '<leader>te',
+    cmd = 'NvimTreeToggle',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function()
       require('nvim-tree').setup {
@@ -103,6 +106,8 @@ packer.startup(function(use)
   use {
     'akinsho/toggleterm.nvim',
     tag = 'v2.*',
+    opt = true,
+    keys = '<leader>tt',
     config = function()
       require('toggleterm').setup {
         size = 12,
@@ -120,6 +125,9 @@ packer.startup(function(use)
   --- Diagnostics list
   use {
     "folke/trouble.nvim",
+    opt = true,
+    keys = '<leader>tp',
+    cmd = 'TroubleToggle',
     requires = "kyazdani42/nvim-web-devicons",
     config = function()
       require("trouble").setup {
@@ -332,6 +340,7 @@ packer.startup(function(use)
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
+      'dmitmel/cmp-cmdline-history',
       "zbirenbaum/copilot-cmp",
       'L3MON4D3/LuaSnip',
       'saadparwaiz1/cmp_luasnip'
@@ -351,7 +360,8 @@ packer.startup(function(use)
           ['<C-n>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item({
-                behavior = types.cmp.SelectBehavior.Insert })
+                behavior = types.cmp.SelectBehavior.Insert
+              })
             else
               cmp.mapping.complete(fallback)
             end
@@ -372,11 +382,18 @@ packer.startup(function(use)
           { name = 'buffer' },
         },
       })
+      cmp.setup.cmdline('?', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' },
+        },
+      })
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           { name = 'path' },
           { name = 'cmdline' },
+          { name = 'cmdline_history' },
         },
       })
     end
