@@ -96,10 +96,8 @@ packer.startup(function(use)
         },
         update_cwd = true,
       }
-      vim.keymap.set('n', '<leader>te', ':NvimTreeToggle<CR>',
-        { noremap = true, silent = true })
-      vim.keymap.set('t', '<leader>te', '<C-\\><C-n>:NvimTreeToggle<CR>',
-        { noremap = true, silent = true })
+      vim.keymap.set({'n', 't', 'i', 'v', 'o'}, '<leader>te',
+        '<Cmd>NvimTreeToggle<CR>', { noremap = true, silent = true })
     end,
   }
   --- Terminal toggle
@@ -144,7 +142,7 @@ packer.startup(function(use)
         },
         use_diagnostic_signs = false
       }
-      vim.keymap.set('n', '<leader>tp', ':TroubleToggle<CR>',
+      vim.keymap.set('n', '<leader>tp', '<Cmd>TroubleToggle<CR>',
         { noremap = true, silent = true })
     end
   }
@@ -178,13 +176,19 @@ packer.startup(function(use)
   }
   --- Indent guides
   use {
-    'Yggdroot/indentLine',
+    'lukas-reineke/indent-blankline.nvim',
     config = function()
-      vim.g.indentLine_char = '┆'
-      vim.g.indentLine_bufTypeExclude = { 'terminal', 'help' }
-      vim.g.indentLine_fileTypeExclude = { 'NvimTree' }
-      vim.keymap.set('n', '<leader>ti', ':IndentLineToggle<CR>',
+      require("indent_blankline").setup {
+        char = '│',
+      }
+      vim.keymap.set('n', '<leader>ti', '<Cmd>IndentBlanklineToggle<CR>',
         { noremap = true, silent = true })
+      for _, keymap in pairs({ 'zo', 'zO', 'zc', 'zC', 'za', 'zA', 'zv',
+        'zx', 'zX', 'zm', 'zM', 'zr', 'zR' }) do
+        vim.keymap.set('n', keymap,
+          keymap .. '<Cmd>IndentBlanklineRefresh<CR>',
+          { noremap = true, silent = true })
+      end
     end,
   }
   --- Colorscheme
@@ -204,7 +208,7 @@ packer.startup(function(use)
         options = {
           theme = 'tokyonight',
           globalstatus = true,
-          component_separators = { left = '', right = '|' },
+          component_separators = { left = '', right = '│' },
           section_separators = { left = '', right = '' },
         },
         extensions = {
@@ -305,8 +309,8 @@ packer.startup(function(use)
             return '<Ignore>'
           end, { expr = true })
           -- Actions
-          map({ 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>')
-          map({ 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+          map({ 'n', 'v' }, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>')
+          map({ 'n', 'v' }, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>')
           map('n', '<leader>hS', gs.stage_buffer)
           map('n', '<leader>hu', gs.undo_stage_hunk)
           map('n', '<leader>hR', gs.reset_buffer)
