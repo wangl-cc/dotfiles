@@ -201,10 +201,10 @@ function! SetBackground(...)
         let cmd='defaults read -g AppleInterfaceStyle'
         if system(cmd) =~ "Dark" || (s:is_sshr() && s:remote_system(cmd) =~ "Dark")
             " don't change background if already set or not init
-            if &background != 'dark' || !init
+            if &background != 'dark' || init
                 doautocmd User BackGroundDark
             endif
-        elseif &background != 'light' || !init " the same for dark
+        elseif &background != 'light' || init " the same for dark
             doautocmd User BackGroundLight
         endif
         let s:set_background_lock = 0
@@ -215,7 +215,7 @@ function! s:is_sshr()
     return !empty($SSHR_PORT)
 endfunction
 function! s:remote_system(cmd)
-    return system("ssh " . $LC_USER . "@localhost -o StrictHostKeyChecking=no -p " . $SSHR_PORT . " '" . a:cmd . "'")
+    return system(["ssh", $LC_HOST, "-o",  "StrictHostKeyChecking=no", "-p", $SSHR_PORT,  a:cmd)
 endfunction
 " if SIGWINCH is supported, trigger it when receive a SIGWINCH signal
 " otherwise, it's needed to call SetBackground manually
@@ -288,6 +288,8 @@ endfunction
 
 " indentLine {{{
 let g:indentLine_char = '┆'
+let g:indentLine_bufTypeExclude = ['terminal', 'help']
+let g:indentLine_fileTypeExclude = ['NvimTree']
 " }}}
 
 " Rainbow {{{

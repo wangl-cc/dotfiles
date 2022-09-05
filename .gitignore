@@ -3,5 +3,8 @@
 
 !*##*
 !.*##*
-
+!.config/nvim
+!.config/pip
+!.config/pip
+!.config/yadm
 !.gitignore.d

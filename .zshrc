@@ -154,7 +154,7 @@ sshr(){
     ssh -t -R ${sshr_port}:localhost:22 $1 -o RemoteCommand="
         export SHELL=/home/%r/.local/bin/zsh;
         export SSHR_PORT=$sshr_port;
-        export LC_USER=$USER LC_OS=$(uname -s) TERM_PROGRAM=$TERM_PROGRAM;
+        export LC_HOST=$USER\@localhost LC_OS=$(uname -s) TERM_PROGRAM=$TERM_PROGRAM;
         exec \$SHELL -l"
 }
 # }}}
