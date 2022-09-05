@@ -3,7 +3,7 @@ local M = {}
 M.sections = {
   lualine_a = {
     function()
-      return 'Help'
+      return 'HELP'
     end,
   },
   lualine_b = { { 'filename', file_status = false } },

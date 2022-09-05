@@ -39,9 +39,6 @@ packer.startup(function(use)
   }
   --- Git commands
   use { 'tpope/vim-fugitive', opt = true, cmd = { 'Git' } }
-  --- Fuzzy finder
-  use { 'junegunn/fzf', run = vim.fn['fzf#install'] }
-  use 'junegunn/fzf.vim'
   --- Commenting
   use {
     'preservim/nerdcommenter',
@@ -98,7 +95,7 @@ packer.startup(function(use)
         },
         update_cwd = true,
       }
-      vim.keymap.set({'n', 't', 'i', 'v', 'o'}, '<leader>te',
+      vim.keymap.set({ 'n', 't', 'i', 'v', 'o' }, '<leader>te',
         '<Cmd>NvimTreeToggle<CR>', { noremap = true, silent = true })
     end,
   }
@@ -121,32 +118,6 @@ packer.startup(function(use)
         shell = vim.o.shell,
       }
     end,
-  }
-  --- Diagnostics list
-  use {
-    "folke/trouble.nvim",
-    opt = true,
-    keys = '<leader>tp',
-    cmd = 'TroubleToggle',
-    requires = "kyazdani42/nvim-web-devicons",
-    config = function()
-      require("trouble").setup {
-        position = 'bottom',
-        height = 12,
-        icons = true,
-        signs = {
-          -- icons / text used for a diagnostic
-          error = '',
-          warning = '',
-          hint = '',
-          information = '',
-          other = '﫠'
-        },
-        use_diagnostic_signs = false
-      }
-      vim.keymap.set('n', '<leader>tp', '<Cmd>TroubleToggle<CR>',
-        { noremap = true, silent = true })
-    end
   }
   --- Input and select
   use {
@@ -171,7 +142,7 @@ packer.startup(function(use)
         },
         select = {
           enabled = true,
-          backend = { 'fzf', 'builtin' },
+          backend = { 'telescope', 'builtin' },
         }
       }
     end
@@ -197,15 +168,29 @@ packer.startup(function(use)
   use {
     'folke/tokyonight.nvim',
     config = function()
-      vim.g.tokyonight_sidebars = { 'packer', 'trouble', 'toggleterm' }
+      vim.g.tokyonight_sidebars = { 'packer', 'toggleterm' }
       vim.cmd [[colorscheme tokyonight]]
     end,
   }
   --- Statusline
   use {
     'nvim-lualine/lualine.nvim',
-    requires = 'kyazdani42/nvim-web-devicons',
+    requires = {
+      'kyazdani42/nvim-web-devicons',
+      'arkav/lualine-lsp-progress',
+    },
     config = function()
+      local telescope = {
+        sections = { lualine_a = { 'mode' } },
+        filetypes = { 'TelescopePrompt', 'TelescopeResults' },
+      }
+      local uppercase_filetype = function()
+        return vim.bo.filetype:upper()
+      end
+      local filetype_only = {
+        sections = { lualine_a = { uppercase_filetype } },
+        filetypes = { 'lspinfo', 'packer' }
+      }
       require('lualine').setup {
         options = {
           theme = 'tokyonight',
@@ -215,12 +200,10 @@ packer.startup(function(use)
         },
         extensions = {
           'nvim-tree',
-          'fzf',
           'quickfix',
           'toggleterm',
-          'trouble',
-          'lspinfo',
-          'packer',
+          telescope,
+          filetype_only,
           'help',
         },
         sections = {
@@ -239,8 +222,6 @@ packer.startup(function(use)
               error = '', warn = '', info = '', hint = ''
             } },
           },
-          lualine_e = { 'progress' },
-          lualine_f = { 'location' },
         },
         tabline = {
           lualine_a = {
@@ -254,16 +235,16 @@ packer.startup(function(use)
                 directory = '', -- Text to show when the buffer is a directory
               },
               filetype_names = {
-                ['NvimTree'] = '',
-                ['toggleterm'] = '',
-                ['trouble'] = 'Diagnostics',
+                ['NvimTree'] = 'File Explorer',
+                ['toggleterm'] = 'Terminal',
                 ['packer'] = 'Packer',
+                ['lspinfo'] = 'Lsp Info',
               },
             }
           },
           lualine_b = {},
           lualine_c = {},
-          lualine_x = {},
+          lualine_x = { 'lsp_progress' },
           lualine_y = {},
           lualine_z = { 'tabs' }
         }
@@ -326,6 +307,39 @@ packer.startup(function(use)
         yadm = {
           enable = true,
         },
+      }
+    end
+  }
+  --- Telescope (fuzzy finder)
+  use {
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    requires = {
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+    },
+    config = function()
+      local actions = require("telescope.actions")
+      require('telescope').setup {
+        defaults = {
+          mappings = {
+            i = {
+              ['<esc>'] = actions.close, -- quit but esc
+              ['<C-u>'] = false, -- clear promote
+              ['<C-b>'] = actions.preview_scrolling_up,
+              ['<C-f>'] = actions.preview_scrolling_down,
+            },
+          },
+          file_ignore_patterns = { 'node_modules', 'vendor' },
+        },
+        extensions = {
+          fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = 'smart_case',
+          }
+        }
       }
     end
   }
@@ -450,6 +464,7 @@ packer.startup(function(use)
               ['ab'] = '@block.outer',
             },
           },
+          -- TODO: add textobjects move
           swap = {
             enable = true,
             swap_next = {
