@@ -1,10 +1,15 @@
-*
-.*
+/*
+/.*
 
 !*##*
 !.*##*
-!.config/nvim
-!.config/pip
-!.config/pip
-!.config/yadm
-!.gitignore.d
+!/.zshrc
+!/.zprofile
+!/.vim
+!/.vimrc
+!/.iterm
+!/.gnupg
+!/.config
+!/.julia/config/startup.jl
+!/.gitignore
+!/.gitignore.d
