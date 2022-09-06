@@ -164,6 +164,9 @@ SAVEHIST=10000
 HISTFILE=${HISTFILE-"$HOME/.zsh_history"}
 export VISUAL=${VISUAL-${aliases[vim]-vim}}
 export EDITOR=${EDITOR-"${aliases[vim]-vim} -e"}
+if command -v difft &> /dev/null; then
+    export GIT_EXTERNAL_DIFF=difft
+fi
 export GIT_DIFF_TOOL=${GIT_DIFF_TOOL-${aliases[vimdiff]-vimdiff}}
 export GIT_EDITOR=${GIT_EDITOR-$VISUAL}
 export JULIA_EDITOR=${JULIA_EDITOR-$VISUAL}
