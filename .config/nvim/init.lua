@@ -1,3 +1,5 @@
+require 'impatient'
+
 -- plugins
 require 'plugins'
 
