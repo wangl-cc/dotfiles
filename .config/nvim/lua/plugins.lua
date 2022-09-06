@@ -168,7 +168,9 @@ packer.startup(function(use)
   use {
     'folke/tokyonight.nvim',
     config = function()
-      vim.g.tokyonight_sidebars = { 'packer', 'toggleterm' }
+      require("tokyonight").setup {
+        sidebars = { 'packer', 'toggleterm' },
+      }
       vim.cmd [[colorscheme tokyonight]]
     end,
   }
