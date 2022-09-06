@@ -465,11 +465,10 @@ packer.startup(function(use)
               ['if'] = '@function.inner',
               ['ac'] = '@class.outer',
               ['ic'] = '@class.inner',
-              ['ib'] = '@block.inner',
               ['ab'] = '@block.outer',
+              ['ib'] = '@block.inner',
             },
           },
-          -- TODO: add textobjects move
           swap = {
             enable = true,
             swap_next = {
@@ -481,6 +480,20 @@ packer.startup(function(use)
           },
         },
       }
+    end,
+  }
+  use {
+    'nvim-treesitter/nvim-treesitter-context',
+    opt = true,
+    cmd = 'TSContextToggle',
+    keys = '<leader>tcc',
+    requires = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('treesitter-context').setup {
+        enable = true,
+      }
+      vim.keymap.set('n', '<leader>tc', '<Cmd>TSContextToggle<CR>',
+        { silent = true, noremap = true })
     end,
   }
   --- Copilot
