@@ -90,11 +90,40 @@ g.tex_flavor = 'latex'
 -- commands
 --- Remove all tariling blanks
 map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap)
+
+-- hightlight and replace <cword>(w) or <cWORD>(W)
 --- highlight all matching words under cursor
+--- <leader>hw/W
 map('n', '<leader>hw',
   [[:exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>]],
   silent_noremap)
 map('n', '<leader>hW',
   [[:exec 'match Search /\V' . expand('<cWORD>') . '/'<CR>]],
   silent_noremap)
---- TODO: replace of current cword and cWORD with vim.ui.input
+--- replace all matching words under cursor
+--- [count]<leader>cw/W
+--- if [count] is not given, replace all matching
+--- if [count] is given, replace matchings in [count] lines
+local function create_replace(pattern, count)
+  return function(nword)
+    if nword and #nword > 0 then
+      if not count or count == 0 then
+        cmd([[%s/\V]] .. pattern .. [[/]] .. nword .. [[/g]])
+      else
+        cmd([[s/\V]] .. pattern .. [[/]] .. nword .. [[/g ]] .. count)
+      end
+      cmd [[let @/ = '']]
+    end
+  end
+end
+map('n', '<leader>cw', function()
+  local cword = vim.fn.expand('<cword>')
+  local pattern = [[\<]] .. cword .. [[\>]]
+  local replace = create_replace(pattern, vim.v.count)
+  vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
+end, silent_noremap)
+map('n', '<leader>cW', function()
+  local cword = vim.fn.expand('<cWORD>')
+  local replace = create_replace(cword, vim.v.count)
+  vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
+end, silent_noremap)
