@@ -405,9 +405,10 @@ packer.startup(function(use)
         sources = {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
-          { name = 'buffer' },
-          { name = 'path' },
-          { name = 'copilot' },
+          { name = 'nvim_lsp', max_item_count = 10 },
+          { name = 'copilot', max_item_count = 5 },
+          { name = 'buffer', max_item_count = 5 },
+          { name = 'path', max_item_count = 5 },
         },
       }
       cmp.setup.cmdline('/', {
@@ -425,9 +426,9 @@ packer.startup(function(use)
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
-          { name = 'path' },
-          { name = 'cmdline' },
-          { name = 'cmdline_history' },
+          { name = 'path', max_item_count = 5 },
+          { name = 'cmdline', max_item_count = 5 },
+          { name = 'cmdline_history', max_item_count = 5 },
         },
       })
     end
