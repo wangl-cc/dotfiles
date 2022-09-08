@@ -169,7 +169,7 @@ packer.startup(function(use)
   }
   --- Colorscheme
   use {
-    'folke/tokyonight.nvim',
+    '~/Repos/tokyonight.nvim',
     config = function()
       require("tokyonight").setup {
         sidebars = { 'packer', 'toggleterm' },
@@ -233,7 +233,7 @@ packer.startup(function(use)
             { 'buffers',
               show_modified_status = true,
               show_filename_only = true,
-              mode = '2',
+              mode = 0,
               symbols = {
                 modified = ' ●', -- Text to show when the buffer is modified
                 alternate_file = '', -- Text to show to identify the alternate file
