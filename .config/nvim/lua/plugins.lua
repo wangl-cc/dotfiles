@@ -363,18 +363,60 @@ packer.startup(function(use)
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
       'dmitmel/cmp-cmdline-history',
-      "zbirenbaum/copilot-cmp",
+      'zbirenbaum/copilot-cmp',
       'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip'
+      'saadparwaiz1/cmp_luasnip',
     },
     config = function()
       local cmp = require('cmp')
       local types = require('cmp.types')
       local luasnip = require('luasnip')
+      local icons = {
+        Text = "",
+        Method = "",
+        Function = "",
+        Constructor = "",
+        Field = "",
+        Variable = "",
+        Class = "",
+        Interface = "",
+        Module = "",
+        Property = "",
+        Unit = "",
+        Value = "",
+        Enum = "",
+        Keyword = "",
+        Snippet = "",
+        Color = "",
+        File = "",
+        Reference = "",
+        Folder = "",
+        EnumMember = "",
+        Constant = "",
+        Struct = "",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+        Copilot = "",
+      }
       cmp.setup {
+        window = {
+          completion = {
+            col_offset = -3,
+            side_padding = 0,
+          },
+        },
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(_, vim_item)
+            vim_item.menu = vim_item.kind
+            vim_item.kind = icons[vim_item.kind] or ''
+            return vim_item
+          end
+        },
         snippet = {
           expand = function(args)
-            require('luasnip').lsp_expand(args.body)
+            luasnip.lsp_expand(args.body)
           end,
         },
         mapping = cmp.mapping.preset.insert {
@@ -403,7 +445,6 @@ packer.startup(function(use)
           ['<CR>'] = cmp.mapping.confirm { select = true },
         },
         sources = {
-          { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'nvim_lsp', max_item_count = 10 },
           { name = 'copilot', max_item_count = 5 },
