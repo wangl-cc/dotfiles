@@ -402,7 +402,7 @@ packer.startup(function(use)
       cmp.setup {
         window = {
           completion = {
-            col_offset = -3,
+            col_offset = -1,
             side_padding = 0,
           },
         },
