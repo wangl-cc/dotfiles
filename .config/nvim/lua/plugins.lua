@@ -169,7 +169,7 @@ packer.startup(function(use)
   }
   --- Colorscheme
   use {
-    '~/Repos/tokyonight.nvim',
+    'folke/tokyonight.nvim',
     config = function()
       require("tokyonight").setup {
         sidebars = { 'packer', 'toggleterm' },
