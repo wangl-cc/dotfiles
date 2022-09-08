@@ -483,7 +483,7 @@ packer.startup(function(use)
     'nvim-treesitter/nvim-treesitter-context',
     opt = true,
     cmd = 'TSContextToggle',
-    keys = '<leader>tcc',
+    keys = '<leader>tc',
     requires = { 'nvim-treesitter/nvim-treesitter' },
     config = function()
       require('treesitter-context').setup {
