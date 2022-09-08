@@ -25,9 +25,6 @@ packer.startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- optional, speeds up startup time
-  use 'lewis6991/impatient.nvim'
-
   -- Useful commands and mappings
   --- UNIX shell commands like: Remove, Delete, Rename, Move
   use {
