@@ -49,7 +49,80 @@ if vim.fn.executable('lua-language-server') == 1 then
   }
 end
 
--- TODO: add more lsp servers: julia
+if vim.fn.executable('julia') == 1 then
+  local julia_img_default = vim.fn.system(
+    [[julia --startup-file=no --history-file=no -e "Base.JLOptions().image_file |> unsafe_string |> print"]]
+  )
+  local file_extension = julia_img_default:match([[sys(.*)]])
+  local julia_img_user = vim.fn.expand('~/.config/julials/sys') .. file_extension
+  local julia_cmd = {
+    'julia', '--startup-file=no', '--history-file=no',
+    '--sysimage', vim.fn.filereadable(julia_img_user) and julia_img_user or julia_img_default,
+    '-e',
+    [[
+      pushfirst!(LOAD_PATH, "@nvim_lsp")
+      using LanguageServer
+      popfirst!(LOAD_PATH)
+      project_path = dirname(something(
+        # current activated project, false to avoid search LOAD_PATH
+        Base.active_project(false),
+        # look Project.toml in the current working directory,
+        # or parent directories, with $HOME as an upper boundary
+        Base.current_project(),
+        # current actived project, but search LOAD_PATH
+        Base.active_project(),
+        # use julia's default project
+        ""
+      ))
+      depot_path = get(ENV, "JULIA_DEPOT_PATH", "")
+      symserver_store_path = joinpath(homedir(), ".config", "julials", "symbolstore")
+      isdir(symserver_store_path) || mkpath(symserver_store_path)
+      server = LanguageServer.LanguageServerInstance(
+        stdin, stdout, project_path, depot_path, nothing, symserver_store_path, false
+      )
+      run(server)
+    ]]
+  }
+  -- from wiki of LanguageServer.jl
+  local julia_capabilities = vim.lsp.protocol.make_client_capabilities()
+  julia_capabilities.textDocument.completion.completionItem.snippetSupport = true
+  julia_capabilities.textDocument.completion.completionItem.preselectSupport = true
+  julia_capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
+  julia_capabilities.textDocument.completion.completionItem.deprecatedSupport = true
+  julia_capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
+  julia_capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
+  julia_capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
+  julia_capabilities.textDocument.completion.completionItem.resolveSupport = {
+    properties = { "documentation", "detail", "additionalTextEdits" },
+  }
+  julia_capabilities.textDocument.completion.completionItem.documentationFormat = { "markdown" }
+  julia_capabilities.textDocument.codeAction = {
+    dynamicRegistration = true,
+    codeActionLiteralSupport = {
+      codeActionKind = {
+        valueSet = (function()
+          local res = vim.tbl_values(vim.lsp.protocol.CodeActionKind)
+          table.sort(res)
+          return res
+        end)(),
+      },
+    },
+  }
+  lspconfig.julials.setup {
+    cmd = julia_cmd,
+    on_attach = on_attach_common,
+    capabilities = julia_capabilities,
+    settings = {
+      julia = {
+        lint = {
+          run = true,
+          disabledDirs = { "test", "docs" },
+        },
+      },
+    },
+  }
+end
+
 return lspconfig
 
 -- vim:tw=76:ts=2:sw=2:et
