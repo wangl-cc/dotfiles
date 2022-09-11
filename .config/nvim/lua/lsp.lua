@@ -57,7 +57,7 @@ if vim.fn.executable('julia') == 1 then
   local julia_img_user = vim.fn.expand('~/.config/julials/sys') .. file_extension
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
-    '--sysimage', vim.fn.filereadable(julia_img_user) and julia_img_user or julia_img_default,
+    '--sysimage', vim.fn.filereadable(julia_img_user) ~= 0 and julia_img_user or julia_img_default,
     '-e',
     [[
       pushfirst!(LOAD_PATH, "@nvim_lsp")
