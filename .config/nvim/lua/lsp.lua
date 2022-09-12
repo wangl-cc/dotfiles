@@ -1,6 +1,9 @@
+local lspconfig = require('lspconfig')
+local telescope = require('telescope.builtin')
+
 -- shortcuts for the most common functions
 local map = vim.keymap.set
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 
 -- mapping
 map('n', '<leader>e', vim.diagnostic.open_float, opts)
@@ -11,12 +14,13 @@ map('n', '<leader>q', vim.diagnostic.setloclist, opts)
 local on_attach_common = function(_, bufnr)
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  map('n', '<leader>gD', vim.lsp.buf.declaration, bufopts)
-  map('n', '<leader>gd', vim.lsp.buf.definition, bufopts)
-  map('n', '<leader>gr', vim.lsp.buf.references, bufopts)
-  map('n', '<leader>gi', vim.lsp.buf.implementation, bufopts)
-  map('n', '<leader>gt', vim.lsp.buf.type_definition, bufopts)
+  local bufopts = { noremap = true, silent = true, buffer = bufnr }
+  map('n', '<leader>gd', telescope.lsp_definitions, bufopts)
+  map('n', '<leader>gr', telescope.lsp_references, bufopts)
+  map('n', '<leader>gi', telescope.lsp_implementations, bufopts)
+  map('n', '<leader>gt', telescope.lsp_type_definitions, bufopts)
+  map('n', '<leader>ld', telescope.diagnostics, bufopts)
+  map('n', '<leader>ls', telescope.lsp_document_symbols, bufopts)
   map('n', '<leader>k', vim.lsp.buf.hover, bufopts)
   map('n', '<leader>K', vim.lsp.buf.signature_help, bufopts)
   map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
@@ -28,8 +32,6 @@ local on_attach_common = function(_, bufnr)
   map('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   map('n', '<leader>f', vim.lsp.buf.formatting, bufopts)
 end
-
-local lspconfig = require('lspconfig')
 
 if vim.fn.executable('lua-language-server') == 1 then
   lspconfig.sumneko_lua.setup {

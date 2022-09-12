@@ -14,7 +14,7 @@ local bootstrap = ensure_packer()
 
 -- Auto compile when there are changes in plugins.lua
 vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = 'plugins.lua',
+  pattern = { 'plugins.lua', 'lsp.lua' },
   command = 'source <afile> | PackerCompile',
   group = vim.api.nvim_create_augroup('PackerUserConfig', { clear = true })
 })
@@ -297,13 +297,13 @@ packer.startup(function(use)
           map({ 'n', 'v' }, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>')
           map({ 'n', 'v' }, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>')
           map('n', '<leader>hS', gs.stage_buffer)
-          map('n', '<leader>hu', gs.undo_stage_hunk)
           map('n', '<leader>hR', gs.reset_buffer)
+          map('n', '<leader>hu', gs.undo_stage_hunk)
           map('n', '<leader>hp', gs.preview_hunk)
           map('n', '<leader>hb', function() gs.blame_line { full = true } end)
-          map('n', '<leader>tb', gs.toggle_current_line_blame)
           map('n', '<leader>hd', gs.diffthis)
           map('n', '<leader>hD', function() gs.diffthis('~') end)
+          map('n', '<leader>tb', gs.toggle_current_line_blame)
           map('n', '<leader>td', gs.toggle_deleted)
         end,
         yadm = {
@@ -322,6 +322,8 @@ packer.startup(function(use)
     },
     config = function()
       local actions = require("telescope.actions")
+      local builtins = require("telescope.builtin")
+      local map = vim.keymap.set
       require('telescope').setup {
         defaults = {
           mappings = {
@@ -343,9 +345,17 @@ packer.startup(function(use)
           }
         }
       }
+      local mapopts = { noremap = true, silent = true }
+      map('n', '<leader>lf', builtins.find_files, mapopts)
+      map('n', '<leader>lk', builtins.keymaps, mapopts)
+      map('n', '<leader>lb', builtins.buffers, mapopts)
+      map('n', '<leader>lh', builtins.help_tags, mapopts)
+      map('n', '<leader>lw', builtins.live_grep, mapopts)
+      map('n', '<leader>lgc', builtins.git_commits, mapopts)
+      map('n', '<leader>lgb', builtins.git_bcommits, mapopts)
+      map('n', '<leader>lgs', builtins.git_status, mapopts)
     end
   }
-
   -- Code support
   --- Language server
   use {
