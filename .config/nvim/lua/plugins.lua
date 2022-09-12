@@ -25,6 +25,9 @@ packer.startup(function(use)
     cmd = 'StartupTime'
   }
 
+  -- speed up loading Lua modules
+  use 'lewis6991/impatient.nvim'
+
   -- Useful commands and mappings
   --- UNIX shell commands like: Remove, Delete, Rename, Move
   use {

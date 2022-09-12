@@ -1,3 +1,5 @@
+pcall(require, 'impatient')
+
 -- Auto compile when there are changes in plugins.lua
 local autosource = vim.api.nvim_create_augroup('AutoSource', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePost', {
