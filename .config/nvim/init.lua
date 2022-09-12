@@ -1,5 +1,21 @@
+-- Auto compile when there are changes in plugins.lua
+local autosource = vim.api.nvim_create_augroup('AutoSource', { clear = true })
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = { 'init', 'lsp.lua', 'options.lua', 'autobg.lua' },
+  command = 'source <afile>',
+  group = autosource,
+})
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = { 'plugins.lua' },
+  command = 'source <afile> | PackerCompile',
+  group = autosource,
+})
+
 -- plugins
-require 'plugins'
+Packer = require 'plugins'
+
+-- lsp configs
+LSP = require 'lsp'
 
 -- vim options and keymaps
 require 'options'

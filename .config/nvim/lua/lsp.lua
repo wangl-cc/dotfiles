@@ -1,5 +1,8 @@
 local lspconfig = require('lspconfig')
 local telescope = require('telescope.builtin')
+local Job = require 'plenary.job'
+
+local M = {}
 
 -- shortcuts for the most common functions
 local map = vim.keymap.set
@@ -52,6 +55,7 @@ if vim.fn.executable('lua-language-server') == 1 then
 end
 
 if vim.fn.executable('julia') == 1 then
+  local julials_env = '@nvim_lsp'
   local julia_img_default = vim.fn.system(
     [[julia --startup-file=no --history-file=no -e "Base.JLOptions().image_file |> unsafe_string |> print"]]
   )
@@ -59,10 +63,9 @@ if vim.fn.executable('julia') == 1 then
   local julia_img_user = vim.fn.expand('~/.config/julials/sys') .. file_extension
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
-    '--sysimage', vim.fn.filereadable(julia_img_user) ~= 0 and julia_img_user or julia_img_default,
+    '-J', vim.fn.filereadable(julia_img_user) ~= 0 and julia_img_user or julia_img_default,
     '-e',
-    [[
-      pushfirst!(LOAD_PATH, "@nvim_lsp")
+    [[pushfirst!(LOAD_PATH, "]] .. julials_env .. [[")
       using LanguageServer
       popfirst!(LOAD_PATH)
       project_path = dirname(something(
@@ -110,6 +113,7 @@ if vim.fn.executable('julia') == 1 then
       },
     },
   }
+
   lspconfig.julials.setup {
     cmd = julia_cmd,
     on_attach = on_attach_common,
@@ -123,8 +127,25 @@ if vim.fn.executable('julia') == 1 then
       },
     },
   }
+
+  function M.install_julials()
+    return Job:new {
+      command = 'julia',
+      args = {
+        '--startup-file=no', '--history-file=no', '--project=' .. julials_env,
+        '-e', [[using Pkg; Pkg.add("LanguageServer")]]
+      },
+      on_exit = function(_, code)
+        if code == 0 then
+          print('julials installed.')
+        else
+          print('julials installation failed.')
+        end
+      end,
+    }:start()
+  end
 end
 
-return lspconfig
+return M
 
 -- vim:tw=76:ts=2:sw=2:et

@@ -12,13 +12,6 @@ end
 
 local bootstrap = ensure_packer()
 
--- Auto compile when there are changes in plugins.lua
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = { 'plugins.lua', 'lsp.lua' },
-  command = 'source <afile> | PackerCompile',
-  group = vim.api.nvim_create_augroup('PackerUserConfig', { clear = true })
-})
-
 local packer = require('packer')
 
 packer.startup(function(use)
@@ -358,12 +351,7 @@ packer.startup(function(use)
   }
   -- Code support
   --- Language server
-  use {
-    'neovim/nvim-lspconfig',
-    config = function()
-      require('lsp')
-    end
-  }
+  use 'neovim/nvim-lspconfig'
   --- Auto completion
   use {
     'hrsh7th/nvim-cmp',
