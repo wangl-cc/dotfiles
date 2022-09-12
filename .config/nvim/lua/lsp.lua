@@ -55,17 +55,13 @@ if vim.fn.executable('lua-language-server') == 1 then
 end
 
 if vim.fn.executable('julia') == 1 then
-  local julials_env = '@nvim_lsp'
-  local julia_img_default = vim.fn.system(
-    [[julia --startup-file=no --history-file=no -e "Base.JLOptions().image_file |> unsafe_string |> print"]]
-  )
-  local file_extension = julia_img_default:match([[sys(.*)]])
-  local julia_img_user = vim.fn.expand('~/.config/julials/sys') .. file_extension
+  local os_name = vim.loop.os_uname().sysname
+  local julia_img_user = os_name == 'Darwin' and
+    vim.fn.expand('~/.config/julials/sys.dylib') or
+    vim.fn.expand('~/.config/julials/sys.so') -- not works for windows
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
-    '-J', vim.fn.filereadable(julia_img_user) ~= 0 and julia_img_user or julia_img_default,
-    '-e',
-    [[pushfirst!(LOAD_PATH, "]] .. julials_env .. [[")
+    '-e', [[pushfirst!(LOAD_PATH, "@nvim_lsp")
       using LanguageServer
       popfirst!(LOAD_PATH)
       project_path = dirname(something(
@@ -88,6 +84,10 @@ if vim.fn.executable('julia') == 1 then
       run(server)
     ]]
   }
+  if vim.fn.filereadable(julia_img_user) then
+    table.insert(julia_cmd, 4, '-J')
+    table.insert(julia_cmd, 5, julia_img_user)
+  end
   -- from wiki of LanguageServer.jl
   local julia_capabilities = vim.lsp.protocol.make_client_capabilities()
   julia_capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -132,7 +132,7 @@ if vim.fn.executable('julia') == 1 then
     return Job:new {
       command = 'julia',
       args = {
-        '--startup-file=no', '--history-file=no', '--project=' .. julials_env,
+        '--startup-file=no', '--history-file=no', '--project=@nvim_lsp',
         '-e', [[using Pkg; Pkg.add("LanguageServer")]]
       },
       on_exit = function(_, code)
