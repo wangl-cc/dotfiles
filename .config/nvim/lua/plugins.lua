@@ -18,6 +18,13 @@ packer.startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
+  -- startup time
+  use {
+    'dstein64/vim-startuptime',
+    opt = true,
+    cmd = 'StartupTime'
+  }
+
   -- Useful commands and mappings
   --- UNIX shell commands like: Remove, Delete, Rename, Move
   use {
