@@ -57,8 +57,8 @@ end
 if vim.fn.executable('julia') == 1 then
   local os_name = vim.loop.os_uname().sysname
   local julia_img_user = os_name == 'Darwin' and
-    vim.fn.expand('~/.config/julials/sys.dylib') or
-    vim.fn.expand('~/.config/julials/sys.so') -- not works for windows
+      vim.fn.expand('~/.config/julials/sys.dylib') or
+      vim.fn.expand('~/.config/julials/sys.so') -- not works for windows
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
     '-e', [[pushfirst!(LOAD_PATH, "@nvim_lsp")
@@ -98,9 +98,9 @@ if vim.fn.executable('julia') == 1 then
   julia_capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
   julia_capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
   julia_capabilities.textDocument.completion.completionItem.resolveSupport = {
-    properties = { "documentation", "detail", "additionalTextEdits" },
+    properties = { 'documentation', 'detail', 'additionalTextEdits' },
   }
-  julia_capabilities.textDocument.completion.completionItem.documentationFormat = { "markdown" }
+  julia_capabilities.textDocument.completion.completionItem.documentationFormat = { 'markdown' }
   julia_capabilities.textDocument.codeAction = {
     dynamicRegistration = true,
     codeActionLiteralSupport = {
@@ -122,7 +122,7 @@ if vim.fn.executable('julia') == 1 then
       julia = {
         lint = {
           run = true,
-          disabledDirs = { "test", "docs" },
+          disabledDirs = { 'test', 'docs' },
         },
       },
     },

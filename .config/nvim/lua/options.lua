@@ -48,7 +48,7 @@ opt.hlsearch = true
 opt.incsearch = true
 opt.smartcase = true
 --- clear search regiser and match with <leader>/
-map('n', '<leader>/', [[:let @/=""<CR>:match<CR>]], silent_noremap)
+map('n', '<leader>/', [[:let @/=''<CR>:match<CR>]], silent_noremap)
 
 -- split
 opt.splitbelow = true
@@ -116,6 +116,7 @@ local function create_replace(pattern, count)
     end
   end
 end
+
 map('n', '<leader>cw', function()
   local cword = vim.fn.expand('<cword>')
   local pattern = [[\<]] .. cword .. [[\>]]

@@ -154,7 +154,7 @@ packer.startup(function(use)
   use {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
-      require("indent_blankline").setup {
+      require('indent_blankline').setup {
         char = '│',
       }
       vim.keymap.set('n', '<leader>ti', '<Cmd>IndentBlanklineToggle<CR>',
@@ -171,7 +171,7 @@ packer.startup(function(use)
   use {
     'folke/tokyonight.nvim',
     config = function()
-      require("tokyonight").setup {
+      require('tokyonight').setup {
         sidebars = { 'packer', 'toggleterm' },
       }
       vim.cmd [[colorscheme tokyonight]]
@@ -324,8 +324,8 @@ packer.startup(function(use)
       { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
     },
     config = function()
-      local actions = require("telescope.actions")
-      local builtins = require("telescope.builtin")
+      local actions = require('telescope.actions')
+      local builtins = require('telescope.builtin')
       local map = vim.keymap.set
       require('telescope').setup {
         defaults = {
@@ -380,32 +380,32 @@ packer.startup(function(use)
       local types = require('cmp.types')
       local luasnip = require('luasnip')
       local icons = {
-        Text = "",
-        Method = "",
-        Function = "",
-        Constructor = "",
-        Field = "",
-        Variable = "",
-        Class = "",
-        Interface = "",
-        Module = "",
-        Property = "",
-        Unit = "",
-        Value = "",
-        Enum = "",
-        Keyword = "",
-        Snippet = "",
-        Color = "",
-        File = "",
-        Reference = "",
-        Folder = "",
-        EnumMember = "",
-        Constant = "",
-        Struct = "",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
-        Copilot = "",
+        Text = '',
+        Method = '',
+        Function = '',
+        Constructor = '',
+        Field = '',
+        Variable = '',
+        Class = '',
+        Interface = '',
+        Module = '',
+        Property = '',
+        Unit = '',
+        Value = '',
+        Enum = '',
+        Keyword = '',
+        Snippet = '',
+        Color = '',
+        File = '',
+        Reference = '',
+        Folder = '',
+        EnumMember = '',
+        Constant = '',
+        Struct = '',
+        Event = '',
+        Operator = '',
+        TypeParameter = '',
+        Copilot = '',
       }
       cmp.setup {
         window = {
@@ -441,7 +441,7 @@ packer.startup(function(use)
               cmp.mapping.complete(fallback)
             end
           end),
-          ["<C-p>"] = cmp.mapping(function(fallback)
+          ['<C-p>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
             elseif luasnip.jumpable(-1) then
@@ -545,11 +545,11 @@ packer.startup(function(use)
   }
   --- Copilot
   use {
-    "zbirenbaum/copilot.lua",
+    'zbirenbaum/copilot.lua',
     after = 'lualine.nvim',
     config = function()
       vim.defer_fn(function()
-        require("copilot").setup()
+        require('copilot').setup()
       end, 100)
     end
   }

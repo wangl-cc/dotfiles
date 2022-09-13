@@ -33,9 +33,10 @@ local function auto_bg()
     auto_bg_lock = false
   end
 end
+
 local id_auto_bg = augroup('AutoBackground', { clear = true })
 autocmd('Signal', {
-    pattern = 'SIGWINCH', callback = auto_bg, group = id_auto_bg
+  pattern = 'SIGWINCH', callback = auto_bg, group = id_auto_bg
 })
 
 return auto_bg
