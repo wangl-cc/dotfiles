@@ -1,3 +1,14 @@
+#=
+This file should execute with project which contains LanguageServer,
+and PackageCompiler should be installed at ~/.julia/environments/compiler,
+the image file will be saved at this __DIR__ by default.
+
+Example:
+```bash
+julia --project=@nvim_lsp ./compile.jl
+```
+=#
+
 pushfirst!(LOAD_PATH, "@compiler") # load PackageCompiler
 using PackageCompiler
 popfirst!(LOAD_PATH)
