@@ -23,3 +23,6 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# ============================== misc =============================== #
+lcov.info
