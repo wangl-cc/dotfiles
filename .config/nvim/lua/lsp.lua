@@ -4,15 +4,13 @@ local Job = require 'plenary.job'
 
 local M = {}
 
--- shortcuts for the most common functions
+-- global mapping
 local map = vim.keymap.set
-local opts = { noremap = true, silent = true }
-
--- mapping
-map('n', '<leader>e', vim.diagnostic.open_float, opts)
-map('n', '[d', vim.diagnostic.goto_prev, opts)
-map('n', ']d', vim.diagnostic.goto_next, opts)
-map('n', '<leader>q', vim.diagnostic.setloclist, opts)
+local mapopts = { noremap = true, silent = true }
+map('n', '<leader>e', vim.diagnostic.open_float, mapopts)
+map('n', '[d', vim.diagnostic.goto_prev, mapopts)
+map('n', ']d', vim.diagnostic.goto_next, mapopts)
+map('n', '<leader>q', vim.diagnostic.setloclist, mapopts)
 
 local on_attach_common = function(_, bufnr)
   -- Mappings.
@@ -22,7 +20,11 @@ local on_attach_common = function(_, bufnr)
   map('n', '<leader>gr', telescope.lsp_references, bufopts)
   map('n', '<leader>gi', telescope.lsp_implementations, bufopts)
   map('n', '<leader>gt', telescope.lsp_type_definitions, bufopts)
-  map('n', '<leader>ld', telescope.diagnostics, bufopts)
+  map('n', '<leader>ld', function(opts)
+    opts = opts or {}
+    opts.bufnr = 0
+    return telescope.diagnostics(opts)
+  end, bufopts)
   map('n', '<leader>ls', telescope.lsp_document_symbols, bufopts)
   map('n', '<leader>k', vim.lsp.buf.hover, bufopts)
   map('n', '<leader>K', vim.lsp.buf.signature_help, bufopts)
