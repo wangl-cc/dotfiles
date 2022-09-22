@@ -217,7 +217,7 @@ packer.startup(function(use)
     'folke/tokyonight.nvim',
     config = function()
       require('tokyonight').setup {
-        sidebars = { 'packer', 'toggleterm' },
+        sidebars = { 'packer' },
       }
       vim.cmd [[colorscheme tokyonight]]
     end,
@@ -230,17 +230,9 @@ packer.startup(function(use)
       'arkav/lualine-lsp-progress',
     },
     config = function()
-      local telescope = {
-        sections = { lualine_a = { 'mode' } },
-        filetypes = { 'TelescopePrompt', 'TelescopeResults' },
-      }
       local uppercase_filetype = function()
         return vim.bo.filetype:upper()
       end
-      local filetype_only = {
-        sections = { lualine_a = { uppercase_filetype } },
-        filetypes = { 'lspinfo', 'packer' }
-      }
       require('lualine').setup {
         options = {
           theme = 'tokyonight',
@@ -252,9 +244,36 @@ packer.startup(function(use)
           'nvim-tree',
           'quickfix',
           'toggleterm',
-          telescope,
-          filetype_only,
-          'help',
+          {
+            sections = { lualine_a = { 'mode' } },
+            filetypes = { 'TelescopePrompt', 'TelescopeResults' },
+          },
+          {
+            sections = {
+              lualine_a = { 'mode' },
+              lualine_b = {
+                { 'filename', file_status = false }
+              }
+            },
+            filetypes = { 'iron' },
+          },
+          {
+            sections = { lualine_a = { uppercase_filetype } },
+            filetypes = { 'lspinfo', 'packer' }
+          },
+          {
+            sections = {
+              lualine_a = {
+                function()
+                  return 'HELP'
+                end,
+              },
+              lualine_b = { { 'filename', file_status = false } },
+              lualine_y = { 'progress' },
+              lualine_z = { 'location' },
+            },
+            filetypes = { 'help' },
+          },
         },
         sections = {
           lualine_a = {
@@ -285,10 +304,11 @@ packer.startup(function(use)
                 directory = '', -- Text to show when the buffer is a directory
               },
               filetype_names = {
-                ['NvimTree'] = 'File Explorer',
-                ['toggleterm'] = 'Terminal',
-                ['packer'] = 'Packer',
-                ['lspinfo'] = 'Lsp Info',
+                NvimTree = 'File Explorer',
+                toggleterm = 'Terminal',
+                packer = 'Packer',
+                lspinfo = 'Lsp Info',
+                iron = 'REPL',
               },
             }
           },
