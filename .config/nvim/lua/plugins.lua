@@ -619,6 +619,17 @@ packer.startup(function(use)
         { silent = true, noremap = true })
     end,
   }
+  --- auto pair
+  use {
+    'windwp/nvim-autopairs',
+    config = function()
+      local npairs = require('nvim-autopairs')
+      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+      local cmp = require('cmp')
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+      npairs.setup {}
+    end
+  }
   --- Copilot
   use {
     'zbirenbaum/copilot.lua',
