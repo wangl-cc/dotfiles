@@ -448,6 +448,7 @@ packer.startup(function(use)
       'zbirenbaum/copilot-cmp',
       'L3MON4D3/LuaSnip',
       'saadparwaiz1/cmp_luasnip',
+      'rafamadriz/friendly-snippets'
     },
     config = function()
       local cmp = require('cmp')
@@ -554,6 +555,7 @@ packer.startup(function(use)
           { name = 'cmdline_history', max_item_count = 5 },
         },
       })
+      require("luasnip/loaders/from_vscode").lazy_load()
     end
   }
   --- Treesitter
