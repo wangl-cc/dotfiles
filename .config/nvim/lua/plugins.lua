@@ -624,7 +624,10 @@ packer.startup(function(use)
     after = 'lualine.nvim',
     config = function()
       vim.defer_fn(function()
-        require('copilot').setup()
+        require('copilot').setup {
+          copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
+              vim.fn.expand('$HOMEBREW_PREFIX/opt/node@16/bin/node') or 'node',
+        }
       end, 100)
     end
   }
