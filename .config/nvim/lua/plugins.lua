@@ -126,6 +126,16 @@ packer.startup(function(use)
   use {
     'hkupty/iron.nvim',
     tag = '*',
+    opt = true,
+    keys = {
+      '<leader>tr',
+      '<leader>sc',
+      '<leader>sl',
+      '<leader>sf',
+      '<leader>sm',
+      '<leader>mc',
+      '<leader>md',
+    },
     config = function()
       local iron = require('iron.core')
       iron.setup {
