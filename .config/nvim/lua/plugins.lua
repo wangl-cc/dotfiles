@@ -237,7 +237,6 @@ packer.startup(function(use)
     'nvim-lualine/lualine.nvim',
     requires = {
       'kyazdani42/nvim-web-devicons',
-      'arkav/lualine-lsp-progress',
     },
     config = function()
       local uppercase_filetype = function()
@@ -324,7 +323,7 @@ packer.startup(function(use)
           },
           lualine_b = {},
           lualine_c = {},
-          lualine_x = { 'lsp_progress' },
+          lualine_x = {},
           lualine_y = {},
           lualine_z = { 'tabs' }
         }
