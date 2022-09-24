@@ -439,16 +439,17 @@ packer.startup(function(use)
   --- Auto completion
   use {
     'hrsh7th/nvim-cmp',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     requires = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'dmitmel/cmp-cmdline-history',
-      'zbirenbaum/copilot-cmp',
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      'rafamadriz/friendly-snippets'
+      { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
+      { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
+      { 'zbirenbaum/copilot-cmp', after = 'nvim-cmp' },
+      { 'L3MON4D3/LuaSnip', after = 'nvim-cmp' },
+      { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+      { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' }
     },
     config = function()
       local cmp = require('cmp')
