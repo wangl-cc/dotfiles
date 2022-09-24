@@ -623,12 +623,42 @@ packer.startup(function(use)
   --- auto pair
   use {
     'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    after = 'nvim-cmp',
     config = function()
       local npairs = require('nvim-autopairs')
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-      local cmp = require('cmp')
-      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+      local Rule = require('nvim-autopairs.rule')
       npairs.setup {}
+      npairs.add_rules {
+        Rule(' ', ' ')
+            :with_pair(function(opts)
+              local pair = opts.line:sub(opts.col - 1, opts.col)
+              return vim.tbl_contains({ '()', '[]', '{}' }, pair)
+            end),
+        Rule('( ', ' )')
+            :with_pair(function() return false end)
+            :with_move(function(opts)
+              return opts.prev_char:match('.%)') ~= nil
+            end)
+            :use_key(')'),
+        Rule('{ ', ' }')
+            :with_pair(function() return false end)
+            :with_move(function(opts)
+              return opts.prev_char:match('.%}') ~= nil
+            end)
+            :use_key('}'),
+        Rule('[ ', ' ]')
+            :with_pair(function() return false end)
+            :with_move(function(opts)
+              return opts.prev_char:match('.%]') ~= nil
+            end)
+            :use_key(']')
+      }
+      local succeed, cmp = pcall(require, 'cmp')
+      if succeed then
+        cmp.event:on('confirm_done',
+          require('nvim-autopairs.completion.cmp').on_confirm_done())
+      end
     end
   }
   --- Copilot
