@@ -14,7 +14,7 @@ local bootstrap = ensure_packer()
 
 local packer = require('packer')
 
-packer.startup(function(use)
+packer.startup({ function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
@@ -226,9 +226,7 @@ packer.startup(function(use)
   use {
     'folke/tokyonight.nvim',
     config = function()
-      require('tokyonight').setup {
-        sidebars = { 'packer' },
-      }
+      require('tokyonight').setup {}
       vim.cmd [[colorscheme tokyonight]]
     end,
   }
@@ -680,7 +678,29 @@ packer.startup(function(use)
   -- Misc
   --- Waka time
   use 'wakatime/vim-wakatime'
-end)
+end,
+  config = {
+    disable_commands = true,
+    display = {
+      open_fn = function()
+        local result, win, buf = require('packer.util').float {
+          border = {
+            { '╭', 'FloatBorder' },
+            { '─', 'FloatBorder' },
+            { '╮', 'FloatBorder' },
+            { '│', 'FloatBorder' },
+            { '╯', 'FloatBorder' },
+            { '─', 'FloatBorder' },
+            { '╰', 'FloatBorder' },
+            { '│', 'FloatBorder' },
+          },
+        }
+        vim.api.nvim_win_set_option(win, 'winhighlight', 'NormalFloat:Normal')
+        return result, win, buf
+      end,
+    },
+  }
+})
 
 if bootstrap then
   packer.sync()
