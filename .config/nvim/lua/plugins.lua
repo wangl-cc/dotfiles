@@ -686,20 +686,10 @@ packer.startup({ function(use)
   use 'wakatime/vim-wakatime'
 end,
   config = {
-    disable_commands = true,
     display = {
       open_fn = function()
         local result, win, buf = require('packer.util').float {
-          border = {
-            { '╭', 'FloatBorder' },
-            { '─', 'FloatBorder' },
-            { '╮', 'FloatBorder' },
-            { '│', 'FloatBorder' },
-            { '╯', 'FloatBorder' },
-            { '─', 'FloatBorder' },
-            { '╰', 'FloatBorder' },
-            { '│', 'FloatBorder' },
-          },
+          border = 'rounded',
         }
         vim.api.nvim_win_set_option(win, 'winhighlight', 'NormalFloat:Normal')
         return result, win, buf
