@@ -287,6 +287,18 @@ packer.startup({ function(use)
             },
             filetypes = { 'help' },
           },
+          {
+            sections = {
+              lualine_a = {
+                function()
+                  return 'Playground'
+                end,
+              },
+              lualine_y = { 'progress' },
+              lualine_z = { 'location' },
+            },
+            filetypes = { 'tsplayground' },
+          },
         },
         sections = {
           lualine_a = {
@@ -322,6 +334,7 @@ packer.startup({ function(use)
                 packer = 'Packer',
                 lspinfo = 'Lsp Info',
                 iron = 'REPL',
+                tsplayground = 'Playground',
               },
             }
           },
@@ -570,6 +583,7 @@ packer.startup({ function(use)
       -- rainbow parentheses
       { 'p00f/nvim-ts-rainbow', after = 'nvim-treesitter' },
       { 'nvim-treesitter/nvim-treesitter-textobjects', after = 'nvim-treesitter' },
+      { 'nvim-treesitter/playground', after = 'nvim-treesitter', cmd = 'TSPlaygroundToggle' },
     },
     run = ':TSUpdate',
     config = function()
@@ -583,6 +597,9 @@ packer.startup({ function(use)
         rainbow = {
           enable = true,
           extended_mode = true,
+        },
+        playground = {
+          enable = true,
         },
         textobjects = {
           select = {
