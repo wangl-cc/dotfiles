@@ -350,13 +350,42 @@ packer.startup({ function(use)
   --- Floating statuslines
   use {
     'b0o/incline.nvim',
+    requires = { 'nvim-treesitter', 'nvim-web-devicons' },
     config = function()
+      local ts_statusline = require('nvim-treesitter/statusline').statusline
+      local get_icon_color = require("nvim-web-devicons").get_icon_color
       require('incline').setup {
+        render = function(props)
+          local bufname = vim.api.nvim_buf_get_name(props.buf)
+          local filename = vim.fn.fnamemodify(bufname, ":t")
+          local filetype_icon, color = get_icon_color(filename)
+          local status = {
+            { filetype_icon, guifg = color },
+            ' ',
+            filename,
+          }
+          if vim.fn.bufnr('%') == props.buf then
+            local ts_context = ts_statusline {
+              separator = ' → ',
+              type_patterns = { 'definition' },
+              indicator_size = vim.fn.winwidth('%') - filename:len() - 5,
+            }
+            if ts_context then
+              table.insert(status, ' → ')
+              table.insert(status, ts_context)
+            end
+          end
+          return status
+        end,
         window = {
           margin = {
             horizontal = 0,
             vertical = 0,
           },
+          placement = {
+            horizontal = 'left',
+            vertical = 'top',
+          }
         },
       }
     end
