@@ -208,11 +208,17 @@ packer.startup({ function(use)
   --- Indent guides
   use {
     'lukas-reineke/indent-blankline.nvim',
+    requires = 'nvim-treesitter',
+    after = 'nvim-treesitter',
     config = function()
       require('indent_blankline').setup {
-        char = '│',
+        char = '▏',
+        context_char = '▏',
+        show_current_context = true,
+        show_current_context_start = true,
       }
-      vim.keymap.set('n', '<leader>ti', '<Cmd>IndentBlanklineToggle<CR>',
+      local cmds = require('indent_blankline.commands')
+      vim.keymap.set('n', '<leader>ti', cmds.toggle,
         { noremap = true, silent = true })
       for _, keymap in pairs({ 'zo', 'zO', 'zc', 'zC', 'za', 'zA', 'zv',
         'zx', 'zX', 'zm', 'zM', 'zr', 'zR' }) do
