@@ -370,7 +370,7 @@ packer.startup({ function(use)
               type_patterns = { 'definition' },
               indicator_size = vim.fn.winwidth('%') - filename:len() - 5,
             }
-            if ts_context then
+            if ts_context and ts_context ~= '' then
               table.insert(status, ' → ')
               table.insert(status, ts_context)
             end
