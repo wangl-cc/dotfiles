@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 readonly UPPERCASE_CHARS="QWERTYUIOPASDFGHJKLZXCVBNM"
@@ -6,7 +5,7 @@ readonly LOWERCASE_CHARS="qwertyuiopasdfghjklzxcvbnm"
 readonly ALPHABET_CHARS="$UPPERCASE_CHARS$LOWERCASE_CHARS"
 readonly DIGIT_CHARS="1234567890"
 readonly NORMAL_CHARS="$ALPHABET_CHARS$DIGIT_CHARS"
-readonly SPECIAL_CHARS=${PWGEN_SPECIAL_CHARS-'_-'}
+readonly SPECIAL_CHARS="${PWGEN_SPECIAL_CHARS-'_-'}"
 readonly SPECIAL_CHARS_NUMBER=${#SPECIAL_CHARS}
 readonly ALL_CHARS="$NORMAL_CHARS$SPECIAL_CHARS"
 readonly ALL_CHARS_NUMBER=${#ALL_CHARS}
@@ -14,28 +13,28 @@ readonly ALL_CHARS_NUMBER=${#ALL_CHARS}
 charset2char(){
     case $1 in
         u)
-            echo ${UPPERCASE_CHARS:$(($RANDOM % 26)):1}
+            echo "${UPPERCASE_CHARS:$((RANDOM % 26)):1}"
             ;;
         l)
-            echo ${LOWERCASE_CHARS:$(($RANDOM % 26)):1}
+            echo "${LOWERCASE_CHARS:$((RANDOM % 26)):1}"
             ;;
         W)
-            echo ${ALPHABET_CHARS:$(($RANDOM % 52)):1}
+            echo "${ALPHABET_CHARS:$((RANDOM % 52)):1}"
             ;;
         d)
-            echo ${DIGIT_CHARS:$(($RANDOM % 10)):1}
+            echo "${DIGIT_CHARS:$((RANDOM % 10)):1}"
             ;;
         w)
-            echo ${NORMAL_CHARS:$(($RANDOM % 62)):1}
+            echo "${NORMAL_CHARS:$((RANDOM % 62)):1}"
             ;;
         s)
-            echo ${NORMAL_CHARS:$(($RANDOM % $SPECIAL_CHARS_NUMBER)):1}
+            echo "${NORMAL_CHARS:$((RANDOM % SPECIAL_CHARS_NUMBER)):1}"
             ;;
         a)
-            echo ${ALL_CHARS:$(($RANDOM % $ALL_CHARS_NUMBER)):1}
+            echo "${ALL_CHARS:$((RANDOM % ALL_CHARS_NUMBER)):1}"
             ;;
         *)
-            echo $1
+            echo "$1"
             ;;
     esac
 }
@@ -43,34 +42,39 @@ charset2char(){
 genpw_repeat(){
     pw=""
     for (( i=0; i<${1}; i++ )); do
-        pw="$pw$(charset2char $2)"
+        pw="$pw$(charset2char "$2")"
     done
-    echo $pw
+    echo "$pw"
 }
 
 genpw_pattern(){
     pattern="$1"
     pw=""
     for (( i=0; i<${#pattern}; i++ )); do
-        pw="$pw$(charset2char ${pattern:$i:1})"
+        pw="$pw$(charset2char "${pattern:$i:1}")"
     done
-    echo $pw
+    echo "$pw"
 }
 
 help() {
 cat << EOM
-Usage: $(basename $0) [-h | --help]
-       $(basename $0) [-p | --pattern <pattern>]
-       $(basename $0) [-l | --length <length>] [-c | --charset <charset>]
+Usage: $(basename "$0") [-h | --help]
+       $(basename "$0") [-p | --pattern <pattern>]
+       $(basename "$0") [-l | --length <length>] [-c | --charset <charset>]
 
 Options:
     -h, --help              Show this help message.
-    -p, --pattern <pattern> Generate passwrod with given pattern, details
-                            about pattern see below.
-    -l, --length <length>   Generate password with given length, conflict
-                            with `-p` or `--pattern`. `12` by default.
-    -c, --charset <charset> Generate password the given with charset,
-                            more about charset see below.
+    -e, --example           Show examples.
+    -p, --pattern <pattern> Generate passwrod with given pattern;
+                            characters in pattern is considered as 'charset's,
+                            which will be convert to random characters
+                            in charsets; details about pattern see below.
+    -l, --length <length>   Generate password with given length,
+                            conflict with pattern. '12' by default.
+    -c, --charset <charset> Generate password with given charset;
+                            characters in generated passwd should in the
+                            charset; if the charset is not specified,
+                            use 'a' by default, more about charset see below.
 
 Charsets:
     Charsets is used in pattern string, or as a charset:
@@ -83,21 +87,24 @@ Charsets:
          and can be override by set enviroment variable 'PWGEN_SPECIAL_CHARS';
     'a': an union of 'w' and special characters.
 
-    If charset is not specified by `-c, --char`, use 'a' by default.
     If other charsets occurs in pattern, which will be return as is.
+EOM
+}
 
+example() {
+cat << EOM
 Examples:
 
-\$ $(basename $0) -p wwww-wwww-wwww
+\$ $(basename "$0") -p wwww-wwww-wwww
 AGm4-iODv-wUAx
 
-\$ $(basename $0) -l 16
+\$ $(basename "$0") -l 16
 ufzm7QUDZMyln6-D
 
-\$ $(basename $0) -l 16 -c u
+\$ $(basename "$0") -l 16 -c u
 ZALOKIHUGTDSWAQO
 
-\$ PWGEN_SPECIAL_CHARS='_-/@' passwdgen -l 16
+\$ PWGEN_SPECIAL_CHARS='_-/@' $(basename "$0") -l 16
 rYG5/hbMoA0Rz2U@
 EOM
 }
@@ -121,6 +128,10 @@ main(){
                 help
                 exit 0
                 ;;
+            -e| --example)
+                example
+                exit 0
+                ;;
             *)
                 echo "Unknown option $1"
                 exit 1
@@ -128,9 +139,9 @@ main(){
         esac
     done
     if [ -z ${pattern+x} ]; then
-        genpw_repeat ${length-12} ${charset-a}
+        genpw_repeat "${length-12}" "${charset-a}"
     else
-        genpw_pattern ${pattern}
+        genpw_pattern "${pattern}"
     fi
 }
 
