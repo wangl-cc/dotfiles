@@ -1,0 +1,139 @@
+
+#!/bin/bash
+
+readonly UPPERCASE_CHARS="QWERTYUIOPASDFGHJKLZXCVBNM"
+readonly LOWERCASE_CHARS="qwertyuiopasdfghjklzxcvbnm"
+readonly ALPHABET_CHARS="$UPPERCASE_CHARS$LOWERCASE_CHARS"
+readonly DIGIT_CHARS="1234567890"
+readonly NORMAL_CHARS="$ALPHABET_CHARS$DIGIT_CHARS"
+readonly SPECIAL_CHARS=${PWGEN_SPECIAL_CHARS-'_-'}
+readonly SPECIAL_CHARS_NUMBER=${#SPECIAL_CHARS}
+readonly ALL_CHARS="$NORMAL_CHARS$SPECIAL_CHARS"
+readonly ALL_CHARS_NUMBER=${#ALL_CHARS}
+
+charset2char(){
+    case $1 in
+        u)
+            echo ${UPPERCASE_CHARS:$(($RANDOM % 26)):1}
+            ;;
+        l)
+            echo ${LOWERCASE_CHARS:$(($RANDOM % 26)):1}
+            ;;
+        W)
+            echo ${ALPHABET_CHARS:$(($RANDOM % 52)):1}
+            ;;
+        d)
+            echo ${DIGIT_CHARS:$(($RANDOM % 10)):1}
+            ;;
+        w)
+            echo ${NORMAL_CHARS:$(($RANDOM % 62)):1}
+            ;;
+        s)
+            echo ${NORMAL_CHARS:$(($RANDOM % $SPECIAL_CHARS_NUMBER)):1}
+            ;;
+        a)
+            echo ${ALL_CHARS:$(($RANDOM % $ALL_CHARS_NUMBER)):1}
+            ;;
+        *)
+            echo $1
+            ;;
+    esac
+}
+
+genpw_repeat(){
+    pw=""
+    for (( i=0; i<${1}; i++ )); do
+        pw="$pw$(charset2char $2)"
+    done
+    echo $pw
+}
+
+genpw_pattern(){
+    pattern="$1"
+    pw=""
+    for (( i=0; i<${#pattern}; i++ )); do
+        pw="$pw$(charset2char ${pattern:$i:1})"
+    done
+    echo $pw
+}
+
+help() {
+cat << EOM
+Usage: $(basename $0) [-h | --help]
+       $(basename $0) [-p | --pattern <pattern>]
+       $(basename $0) [-l | --length <length>] [-c | --charset <charset>]
+
+Options:
+    -h, --help              Show this help message.
+    -p, --pattern <pattern> Generate passwrod with given pattern, details
+                            about pattern see below.
+    -l, --length <length>   Generate password with given length, conflict
+                            with `-p` or `--pattern`. `12` by default.
+    -c, --charset <charset> Generate password the given with charset,
+                            more about charset see below.
+
+Charsets:
+    Charsets is used in pattern string, or as a charset:
+    'u': uppercase characters;
+    'l': lowercase characters;
+    'W': an union of 'l' and 'u';
+    'd': digital characters;
+    'w': an union of 'l', 'u' and 'd';
+    's': special characters, which only incloud '_' and '-' by default,
+         and can be override by set enviroment variable 'PWGEN_SPECIAL_CHARS';
+    'a': an union of 'w' and special characters.
+
+    If charset is not specified by `-c, --char`, use 'a' by default.
+    If other charsets occurs in pattern, which will be return as is.
+
+Examples:
+
+\$ $(basename $0) -p wwww-wwww-wwww
+AGm4-iODv-wUAx
+
+\$ $(basename $0) -l 16
+ufzm7QUDZMyln6-D
+
+\$ $(basename $0) -l 16 -c u
+ZALOKIHUGTDSWAQO
+
+\$ PWGEN_SPECIAL_CHARS='_-/@' passwdgen -l 16
+rYG5/hbMoA0Rz2U@
+EOM
+}
+
+main(){
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -p|--pattern)
+                pattern="$2"
+                shift 2
+                ;;
+            -l|--length)
+                length=$2
+                shift 2
+                ;;
+            -c|--charset)
+                charset="$2"
+                shift 2
+                ;;
+            -h|--help)
+                help
+                exit 0
+                ;;
+            *)
+                echo "Unknown option $1"
+                exit 1
+                ;;
+        esac
+    done
+    if [ -z ${pattern+x} ]; then
+        genpw_repeat ${length-12} ${charset-a}
+    else
+        genpw_pattern ${pattern}
+    fi
+}
+
+main "$@"
+
+# vim:tw=80:ts=4:sw=4:et:ft=bash
