@@ -163,6 +163,12 @@ if vim.fn.executable('julia') == 1 then
   end
 end
 
+if vim.fn.executable('bash-language-server') then
+  require'lspconfig'.bashls.setup {
+    filetypes = { 'bash', 'sh' }
+  }
+end
+
 return M
 
 -- vim:tw=76:ts=2:sw=2:et
