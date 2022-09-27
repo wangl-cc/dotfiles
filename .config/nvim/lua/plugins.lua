@@ -1,5 +1,5 @@
 -- install packer.nvim if not installed
-local ensure_packer = function()
+local function ensure_packer()
   local fn = vim.fn
   local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if fn.empty(fn.glob(install_path)) > 0 then
@@ -14,7 +14,7 @@ local bootstrap = ensure_packer()
 
 local packer = require('packer')
 
-packer.startup({ function(use)
+local function startup(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
@@ -352,8 +352,9 @@ packer.startup({ function(use)
     'b0o/incline.nvim',
     requires = { 'nvim-treesitter', 'nvim-web-devicons' },
     config = function()
-      local ts_statusline = require('nvim-treesitter/statusline').statusline
-      local get_icon_color = require("nvim-web-devicons").get_icon_color
+      local ts_statusline = require('ts_statusline')
+      local get_icon_color = require('nvim-web-devicons').get_icon_color
+
       require('incline').setup {
         render = function(props)
           local bufname = vim.api.nvim_buf_get_name(props.buf)
@@ -365,15 +366,12 @@ packer.startup({ function(use)
             filename,
           }
           if vim.fn.bufnr('%') == props.buf then
-            local ts_context = ts_statusline {
-              separator = ' → ',
-              type_patterns = { 'definition' },
+            return ts_statusline {
+              start = status,
+              separator = ' ← ',
+              reverse = true,
               indicator_size = vim.fn.winwidth('%') - filename:len() - 5,
             }
-            if ts_context and ts_context ~= '' then
-              table.insert(status, ' → ')
-              table.insert(status, ts_context)
-            end
           end
           return status
         end,
@@ -382,10 +380,6 @@ packer.startup({ function(use)
             horizontal = 0,
             vertical = 0,
           },
-          placement = {
-            horizontal = 'left',
-            vertical = 'top',
-          }
         },
       }
     end
@@ -501,34 +495,7 @@ packer.startup({ function(use)
       local cmp = require('cmp')
       local types = require('cmp.types')
       local luasnip = require('luasnip')
-      local icons = {
-        Text = '',
-        Method = '',
-        Function = '',
-        Constructor = '',
-        Field = '',
-        Variable = '',
-        Class = '',
-        Interface = '',
-        Module = '',
-        Property = '',
-        Unit = '',
-        Value = '',
-        Enum = '',
-        Keyword = '',
-        Snippet = '',
-        Color = '',
-        File = '',
-        Reference = '',
-        Folder = '',
-        EnumMember = '',
-        Constant = '',
-        Struct = '',
-        Event = '',
-        Operator = '',
-        TypeParameter = '',
-        Copilot = '',
-      }
+      local icons = require('icons').icons
       cmp.setup {
         window = {
           completion = {
@@ -730,7 +697,10 @@ packer.startup({ function(use)
   -- Misc
   --- Waka time
   use 'wakatime/vim-wakatime'
-end,
+end
+
+packer.startup {
+  startup,
   config = {
     display = {
       open_fn = function()
@@ -742,7 +712,7 @@ end,
       end,
     },
   }
-})
+}
 
 if bootstrap then
   packer.sync()
