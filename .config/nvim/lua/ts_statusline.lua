@@ -30,7 +30,7 @@ end
 
 local function ts_statusline(opt)
   if not parsers.has_parser() then
-    return
+    return opt.start
   end
   local buffer = opt.buffer or 0
   -- If reverse, separator should to change
