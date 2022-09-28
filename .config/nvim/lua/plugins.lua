@@ -701,7 +701,11 @@ local function startup(use)
 
   -- Misc
   --- Waka time
-  use 'wakatime/vim-wakatime'
+  use {
+    'wakatime/vim-wakatime',
+    opt = true,
+    event = 'VimEnter',
+  }
 end
 
 packer.startup {
