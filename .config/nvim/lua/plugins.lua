@@ -236,6 +236,8 @@ local function startup(use)
       vim.cmd [[colorscheme tokyonight]]
     end,
   }
+  --- icons
+  use 'kyazdani42/nvim-web-devicons'
   --- Statusline
   use {
     'nvim-lualine/lualine.nvim',
@@ -350,7 +352,10 @@ local function startup(use)
   --- Floating statuslines
   use {
     'b0o/incline.nvim',
-    requires = { 'nvim-treesitter', 'nvim-web-devicons' },
+    requires = {
+      'nvim-treesitter/nvim-treesitter',
+      'kyazdani42/nvim-web-devicons',
+    },
     config = function()
       local ts_statusline = require('ts_statusline')
       local get_icon_color = require('nvim-web-devicons').get_icon_color
