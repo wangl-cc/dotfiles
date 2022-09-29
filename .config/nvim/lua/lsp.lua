@@ -78,7 +78,7 @@ if vim.fn.executable('julia') == 1 then
       vim.fn.expand('~/.config/julials/sys.so') -- not works for windows
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
-    '-e', [[pushfirst!(LOAD_PATH, "@nvim_lsp")
+    '-e', [[pushfirst!(LOAD_PATH, "$(homedir())/.julia/environments/nvim_lsp")
       using LanguageServer
       popfirst!(LOAD_PATH)
       project_path = dirname(something(
@@ -149,7 +149,8 @@ if vim.fn.executable('julia') == 1 then
     return Job:new {
       command = 'julia',
       args = {
-        '--startup-file=no', '--history-file=no', '--project=@nvim_lsp',
+        '--startup-file=no', '--history-file=no',
+        '--project=~/.julia/environments/nvim_lsp',
         '-e', [[using Pkg; Pkg.add("LanguageServer")]]
       },
       on_exit = function(_, code)
