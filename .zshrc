@@ -43,7 +43,7 @@ if [ -n "${HOMEBREW_PREFIX+x}" ]; then
         zinit snippet $__completion
     done
 fi
-if [ ! -z "$(ls $HOME/.local/share/zsh/site-functions)" ]; then
+if [ ! -z "$(ls --color=no $HOME/.local/share/zsh/site-functions)" ]; then
     for __completion in $HOME/.local/share/zsh/site-functions/*; do
         zinit ice as"completion" wait lucid
         zinit snippet $__completion
@@ -160,6 +160,7 @@ sshr(){
 # environment variables {{{
 SAVEHIST=10000
 HISTFILE=${HISTFILE-"$HOME/.zsh_history"}
+unset LS_COLORS
 export VISUAL=${VISUAL-${aliases[vim]-vim}}
 export EDITOR=${EDITOR-"${aliases[vim]-vim} -e"}
 export GIT_DIFF_TOOL=${GIT_DIFF_TOOL-${aliases[vimdiff]-vimdiff}}
