@@ -101,7 +101,7 @@ if vim.fn.executable('julia') == 1 then
       run(server)
     ]]
   }
-  if vim.fn.filereadable(julia_img_user) then
+  if vim.fn.filereadable(julia_img_user) == 1 then
     table.insert(julia_cmd, 4, '-J')
     table.insert(julia_cmd, 5, julia_img_user)
   end
@@ -163,7 +163,7 @@ if vim.fn.executable('julia') == 1 then
   end
 end
 
-if vim.fn.executable('bash-language-server') then
+if vim.fn.executable('bash-language-server') == 1 then
   require'lspconfig'.bashls.setup {
     filetypes = { 'bash', 'sh' }
   }
