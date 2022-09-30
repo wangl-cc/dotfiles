@@ -431,7 +431,7 @@ let g:coc_global_extensions = [
 
 augroup DisableCoc
     autocmd!
-    autocmd BufEnter *.jl if $JULIA_COC_NVIM_DISABLE == "false" | let b:coc_enabled=0 | endif
+    autocmd BufEnter *.jl if $__JULIA_LSP_DISABLE == "true" | let b:coc_enabled=0 | endif
 augroup END
 " }}}
 

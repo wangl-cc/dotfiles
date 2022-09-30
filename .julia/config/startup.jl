@@ -60,7 +60,7 @@ end
 
 @lazy_startup @safe_using(Cthulhu) @descend() @descend_code_typed() @descend_code_warntyp()
 
-ENV["JULIA_COC_NVIM_DISABLE"] = "false"
+ENV["__JULIA_LSP_DISABLE"] = "true"
 
 dump1(arg) = dump(arg; maxdepth=1)
 dumpi(arg, i::Integer) = dump(arg; maxdepth=i)

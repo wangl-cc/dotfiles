@@ -71,7 +71,7 @@ if vim.fn.executable('lua-language-server') == 1 then
   }
 end
 
-if vim.fn.executable('julia') == 1 then
+if vim.fn.executable('julia') == 1 and vim.env.__JULIA_LSP_DISABLE ~= 'true' then
   local os_name = vim.loop.os_uname().sysname
   local julia_img_user = os_name == 'Darwin' and
       vim.fn.expand('~/.config/julials/sys.dylib') or
