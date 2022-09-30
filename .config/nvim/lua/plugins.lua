@@ -480,7 +480,13 @@ local function startup(use)
   }
   -- Code support
   --- Language server
-  use 'neovim/nvim-lspconfig'
+  use {
+    'neovim/nvim-lspconfig',
+    config = function()
+      -- This is just config for ui, config for lsp in lsp.lua
+      require('lspconfig.ui.windows').default_options.border = 'rounded'
+    end
+  }
   --- Auto completion
   use {
     'hrsh7th/nvim-cmp',
