@@ -145,6 +145,9 @@ if command -v nvim &> /dev/null; then
     alias vimdiff='nvimdiff'
 fi
 alias yadm='yadm --yadm-repo $HOME/.git'
+# set LD_LIBRARY_PATH for julia to avoid use wrong lib
+__JULIA_LIBRARY="$(dirname $(readlink -f $(which julia)))/../lib/julia"
+alias julia="LD_LIBRARY_PATH='$__JULIA_LIBRARY:$LD_LIBRARY_PATH' julia"
 sshr(){
     # use a random port from 30000 to 40000
     sshr_port=$((30000 + $RANDOM % 10000)) 
