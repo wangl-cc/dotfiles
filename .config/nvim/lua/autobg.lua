@@ -4,6 +4,7 @@ local fn = vim.fn
 local env = vim.env
 local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
+local doautocmd = vim.api.nvim_exec_autocmds
 
 local auto_bg_lock = false
 local is_sshr = env.SSHR_PORT ~= nil
@@ -22,12 +23,12 @@ local function auto_bg()
     if fn.system(cmd_full) == 'Dark\n' then
       if o.background ~= 'dark' then
         o.background = 'dark'
-        require('lualine').setup()
+        doautocmd('OptionSet', { pattern = 'background' })
       end
     else
       if o.background ~= 'light' then
         o.background = 'light'
-        require('lualine').setup()
+        doautocmd('OptionSet', { pattern = 'background' })
       end
     end
     auto_bg_lock = false
