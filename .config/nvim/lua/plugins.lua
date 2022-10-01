@@ -497,7 +497,6 @@ local function startup(use)
       { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
       { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
-      { 'zbirenbaum/copilot-cmp', after = 'nvim-cmp' },
       { 'L3MON4D3/LuaSnip', after = 'nvim-cmp' },
       { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
       { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' }
@@ -507,6 +506,7 @@ local function startup(use)
       local types = require('cmp.types')
       local luasnip = require('luasnip')
       local icons = require('icons').icons
+      local copilot = require('copilot.suggestion')
       cmp.setup {
         window = {
           completion = {
@@ -550,12 +550,35 @@ local function startup(use)
               fallback()
             end
           end),
+          -- <Tab> and <S-Tab> are simmilar to <C-n> and <C-p>
+          -- But <Tab> can trigger copilot suggestion while <C-n> not
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if copilot.is_visible() then
+              copilot.accept()
+            elseif cmp.visible() then
+              cmp.select_next_item({
+                behavior = types.cmp.SelectBehavior.Insert
+              })
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              cmp.mapping.complete(fallback)
+            end
+          end),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end),
           ['<CR>'] = cmp.mapping.confirm { select = true },
         },
         sources = {
           { name = 'luasnip' },
           { name = 'nvim_lsp', max_item_count = 10 },
-          { name = 'copilot', max_item_count = 5 },
           { name = 'buffer', max_item_count = 5 },
           { name = 'path', max_item_count = 5 },
         },
@@ -692,6 +715,17 @@ local function startup(use)
         require('copilot').setup {
           copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
               vim.fn.expand('$HOMEBREW_PREFIX/opt/node@16/bin/node') or 'node',
+          panel = {
+            enabled = false,
+          },
+          suggestion = {
+            enabled = true,
+            auto_trigger = true,
+            keymap = {
+              next = '<C-]>',
+              prev = '<C-[>',
+            }
+          },
         }
       end, 100)
     end
