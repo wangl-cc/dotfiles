@@ -560,13 +560,7 @@ local function startup(use)
           { name = 'path', max_item_count = 5 },
         },
       }
-      cmp.setup.cmdline('/', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = 'buffer' },
-        },
-      })
-      cmp.setup.cmdline('?', {
+      cmp.setup.cmdline({ '/', '?' }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           { name = 'buffer' },
