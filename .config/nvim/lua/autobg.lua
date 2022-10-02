@@ -16,17 +16,21 @@ else
   cmd_full = vim.fn.split(cmd_core)
 end
 
-local function auto_bg()
+local tokyonight = require('tokyonight.config')
+
+local function auto_bg(force)
   if not auto_bg_lock and
       (fn.has('mac') or (is_sshr and env.LC_OS == 'Darwin')) then
     auto_bg_lock = true
     if fn.system(cmd_full) == 'Dark\n' then
-      if o.background ~= 'dark' then
+      if o.background ~= 'dark' or force then
+        tokyonight.options.style = 'storm'
         o.background = 'dark'
         doautocmd('OptionSet', { pattern = 'background' })
       end
     else
-      if o.background ~= 'light' then
+      if o.background ~= 'light' or force then
+        tokyonight.options.style = 'day'
         o.background = 'light'
         doautocmd('OptionSet', { pattern = 'background' })
       end
@@ -34,10 +38,16 @@ local function auto_bg()
     auto_bg_lock = false
   end
 end
+local function auto_bg_init()
+  auto_bg(true)
+end
 
 local id_auto_bg = augroup('AutoBackground', { clear = true })
 autocmd('Signal', {
   pattern = 'SIGWINCH', callback = auto_bg, group = id_auto_bg
+})
+autocmd('VimEnter', {
+  callback = auto_bg_init, group = id_auto_bg
 })
 
 return auto_bg
