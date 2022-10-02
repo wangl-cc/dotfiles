@@ -72,8 +72,8 @@ local function ts_statusline(opt)
         table.insert(entrys, entry)
         table.insert(entrys, separator)
       else
-        table.insert(entrys, 1, separator)
         table.insert(entrys, 1, entry)
+        table.insert(entrys, 1, separator)
       end
     end
     node = node:parent()
@@ -83,6 +83,12 @@ local function ts_statusline(opt)
       table.insert(entrys, opt.start)
     else
       table.insert(entrys, 1, opt.start)
+    end
+  else
+    if reverse then
+      table.remove(entrys)
+    else
+      table.remove(entrys, 1)
     end
   end
   return entrys
