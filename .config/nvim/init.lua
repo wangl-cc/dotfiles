@@ -3,7 +3,7 @@ pcall(require, 'impatient')
 -- Auto compile when there are changes in plugins.lua
 local autosource = vim.api.nvim_create_augroup('AutoSource', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = { 'init.lua', 'lsp.lua', 'options.lua', 'autobg.lua' },
+  pattern = { 'init.lua', 'lsp.lua', 'options.lua' },
   command = 'source <afile>',
   group = autosource,
 })
@@ -21,8 +21,5 @@ LSP = require 'lsp'
 
 -- vim options and keymaps
 require 'options'
-
--- auto background color switch
-require 'autobg'
 
 -- vim:tw=76:ts=2:sw=2:et
