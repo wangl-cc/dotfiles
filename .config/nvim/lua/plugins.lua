@@ -360,7 +360,7 @@ local function startup(use)
       'kyazdani42/nvim-web-devicons',
     },
     config = function()
-      local ts_statusline = require('ts_statusline')
+      local ts_statusline = require('ts_statusline').ts_statusline
       local get_icon_color = require('nvim-web-devicons').get_icon_color
 
       require('incline').setup {

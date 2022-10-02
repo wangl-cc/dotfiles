@@ -16,7 +16,7 @@ local function get_node_name(buffer, node)
       break
     end
   end
- -- for lua function like local f = function() end
+  -- for lua function like local f = function() end
   if not node_name then
     local prev = node:prev_named_sibling()
     if prev:type() == 'identifier' then
@@ -28,7 +28,9 @@ local function get_node_name(buffer, node)
   return node_name
 end
 
-local function ts_statusline(opt)
+local M = {}
+
+function M.ts_statusline(opt)
   if not parsers.has_parser() then
     return opt.start
   end
@@ -94,4 +96,20 @@ local function ts_statusline(opt)
   return entrys
 end
 
-return ts_statusline
+function M.ts_statusline_string(opt)
+  local entrys = M.ts_statusline(opt)
+  if not entrys then
+    return ''
+  end
+  local string_entrys = {}
+  for _, entry in ipairs(entrys) do
+    if type(entry) == 'table' then
+      table.insert(string_entrys, table.concat(entry, ' '))
+    else
+      table.insert(string_entrys, entry)
+    end
+  end
+  return table.concat(string_entrys, '')
+end
+
+return M
