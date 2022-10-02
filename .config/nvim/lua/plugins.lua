@@ -721,10 +721,6 @@ local function startup(use)
           suggestion = {
             enabled = true,
             auto_trigger = true,
-            keymap = {
-              next = '<C-]>',
-              prev = '<C-[>',
-            }
           },
         }
       end, 100)
