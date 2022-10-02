@@ -232,7 +232,9 @@ local function startup(use)
   use {
     'folke/tokyonight.nvim',
     config = function()
-      require('tokyonight').setup {}
+      require('tokyonight').setup {
+        sidebars = { 'qf' },
+      }
       vim.cmd [[colorscheme tokyonight]]
     end,
   }
