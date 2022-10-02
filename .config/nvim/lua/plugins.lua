@@ -233,6 +233,7 @@ local function startup(use)
     'folke/tokyonight.nvim',
     config = function()
       require('tokyonight').setup {
+        style = vim.o.background == 'dark' and 'storm' or 'day',
         sidebars = { 'qf' },
       }
       vim.cmd [[colorscheme tokyonight]]
