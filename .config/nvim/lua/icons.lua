@@ -22,7 +22,7 @@ M.icons = {
   Value = '',
   Enum = '',
   Keyword = '',
-  Snippet = "",
+  Snippet = '',
   Color = '',
   File = '',
   Reference = '',
@@ -33,7 +33,6 @@ M.icons = {
   Struct = 'פּ',
   Operator = '',
   TypeParameter = '',
-  Copilot = '', -- use for Github Copilot
 }
 
 M.ts_icons = {
