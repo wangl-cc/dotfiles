@@ -191,7 +191,9 @@ unset __conda_setup
 # }}}
 
 # iterm2 shell integration {{{
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+test -e "${HOME}/.iterm2_shell_integration.zsh" &&
+    [ "$TERM_PROGRAM" = "iTerm.app" ] &&
+    source "${HOME}/.iterm2_shell_integration.zsh"
 # }}}
 
 # p10k post {{{
