@@ -9,11 +9,11 @@ fi
 
 # zinit install and load {{{
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    print -P "%F{12}▓▒░ Installing Plugin Manager %F{13}zdharma-continuum/zinit%F{12}...%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
     command git clone "https://github.com/zdharma-continuum/zinit.git" "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+        print -P "%F{12}▓▒░ %F{14}Installation successful.%f%b" || \
+        print -P "%F{12}▓▒░ %F{09}The clone has failed.%f%b"
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
@@ -34,7 +34,7 @@ zinit wait lucid depth=1 light-mode for \
     jeffreytse/zsh-vi-mode
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
-zinit light zdharma/fast-syntax-highlighting
+zinit light zdharma-continuum/fast-syntax-highlighting
 
 ## Completions
 if [ -n "${HOMEBREW_PREFIX+x}" ]; then
