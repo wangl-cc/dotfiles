@@ -2263,6 +2263,8 @@
 			<real>1</real>
 			<key>Idle Code</key>
 			<integer>0</integer>
+			<key>Initial Use Transparency</key>
+			<false/>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -2611,7 +2613,7 @@
 			<key>Non-ASCII Ligatures</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>JetBrainsMonoNerdFontCompleteM-Regular 11</string>
+			<string>JetBrainsMonoNerdFontCompleteM-Regular 12</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -2621,7 +2623,7 @@
 			<key>Rows</key>
 			<integer>25</integer>
 			<key>Screen</key>
-			<integer>-1</integer>
+			<integer>-2</integer>
 			<key>Scrollback Lines</key>
 			<integer>10000</integer>
 			<key>Scrollback in Alternate Screen</key>
@@ -3493,7 +3495,7 @@
 			<key>Blur</key>
 			<true/>
 			<key>Blur Radius</key>
-			<real>2</real>
+			<real>5.3653008643617026</real>
 			<key>Bold Color</key>
 			<dict>
 				<key>Alpha Component</key>
@@ -3744,11 +3746,11 @@
 			<key>HotKey Window Animates</key>
 			<true/>
 			<key>HotKey Window AutoHides</key>
-			<true/>
+			<false/>
 			<key>HotKey Window Dock Click Action</key>
 			<integer>2</integer>
 			<key>HotKey Window Floats</key>
-			<false/>
+			<true/>
 			<key>HotKey Window Reopens On Activation</key>
 			<false/>
 			<key>Idle Code</key>
@@ -4114,7 +4116,7 @@
 			<key>Non-ASCII Ligatures</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>JetBrainsMonoNerdFontCompleteM-Regular 11</string>
+			<string>JetBrainsMonoNerdFontCompleteM-Regular 12</string>
 			<key>Only The Default BG Color Uses Transparency</key>
 			<false/>
 			<key>Open Toolbelt</key>
@@ -4236,7 +4238,7 @@
 			<key>Terminal Type</key>
 			<string>xterm-256color</string>
 			<key>Transparency</key>
-			<real>0.029317523063497344</real>
+			<real>0.052755023063497344</real>
 			<key>Unicode Version</key>
 			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
