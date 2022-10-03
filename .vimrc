@@ -1,10 +1,3 @@
-" Nvim Compatibility {{{
-if has('nvim')
-    set runtimepath^=~/.vim runtimepath+=~/.vim/after
-    let &packpath = &runtimepath
-endif
-" }}}
-
 " Install and Load Plugs {{{
 " force use ssh to download plugs
 call plug#begin('~/.vim/plugged')
@@ -18,16 +11,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     " File Explorer
-    if has('nvim-0.7')
-        Plug 'kyazdani42/nvim-web-devicons'
-        Plug 'kyazdani42/nvim-tree.lua'
-    else
-        Plug 'scrooloose/nerdtree'
-    endif
-    " Terminal
-    if has('nvim-0.7')
-        Plug 'akinsho/toggleterm.nvim', {'tag' : 'v2.*'}
-    endif
+    Plug 'scrooloose/nerdtree'
     " Comment
     Plug 'scrooloose/nerdcommenter'
     " LSP
@@ -49,7 +33,7 @@ call plug#begin('~/.vim/plugged')
     " zinit highlight
     Plug 'zdharma-continuum/zinit-vim-syntax', { 'for': 'zsh' }
     " Github Copilot
-    if has('nvim-0.6')
+    if has('patch-9.0.0185')
         Plug 'github/copilot.vim', { 'do': ':Copilot setup'}
     endif
     " Custom plugs
@@ -138,14 +122,8 @@ set modelines=1
 " always show tab line
 set showtabline=2
 
-" status line
-if has('nvim-0.7')
-    " always show a global status line, requir nvim-0.7
-    set laststatus=3
-else
-    " always show status line
-    set laststatus=2
-endif
+" status line always show status line
+set laststatus=2
 
 " disable backup, required by coc.nvim
 set nobackup
@@ -157,12 +135,7 @@ set updatetime=300
 " don't give ins-completion-menu messages, required by coc.nvim
 set shortmess+=c
 
-if has("nvim-0.5.0") || has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=yes
 
 " tex flavor
 let g:tex_flavor = "latex"
@@ -188,44 +161,6 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 highlight Comment cterm=italic
 let g:one_allow_italics = 1 " for vim-one
-
-" set background color {{{
-" add a lock for SetBackground to aviod recursive call
-" if we send a SIGWINCH signal to nvim inside of SetBackground
-let s:set_background_lock = 0
-function! SetBackground(...)
-    let init = get(a:, 1, 0) " init only the argument is given
-    if !s:set_background_lock &&
-        \   (has('mac') || (s:is_sshr() && $LC_OS =~ "Darwin"))
-        let s:set_background_lock = 1
-        let cmd='defaults read -g AppleInterfaceStyle'
-        if system(cmd) =~ "Dark" || (s:is_sshr() && s:remote_system(cmd) =~ "Dark")
-            " don't change background if already set or not init
-            if &background != 'dark' || init
-                doautocmd User BackGroundDark
-            endif
-        elseif &background != 'light' || init " the same for dark
-            doautocmd User BackGroundLight
-        endif
-        let s:set_background_lock = 0
-    endif
-endfunction
-" check if it's a SSH session
-function! s:is_sshr()
-    return !empty($SSHR_PORT)
-endfunction
-function! s:remote_system(cmd)
-    return system(["ssh", $LC_HOST, "-o",  "StrictHostKeyChecking=no", "-p", $SSHR_PORT,  a:cmd)
-endfunction
-" if SIGWINCH is supported, trigger it when receive a SIGWINCH signal
-" otherwise, it's needed to call SetBackground manually
-if has('nvim-0.7') && $TERM_PROGRAM =~ "iTerm.app"
-    augroup AutoSetBackground
-        autocmd!
-        autocmd Signal SIGWINCH call SetBackground()
-    augroup END
-endif
-" }}}
 
 " }}}
 
@@ -328,49 +263,6 @@ function! s:rainbow_set_light()
 endfunction
 " }}}
 
-" File Explorer {{{
-if has('nvim-0.7')
-lua << EOF
-    require("nvim-tree").setup({
-        sort_by = "case_sensitive",
-        renderer = {
-            group_empty = true,
-        },
-        filters = {
-            dotfiles = true,
-            custom = {
-                "^\\.git",
-                "^\\.DS_Store",
-                "^Icon\r",
-            },
-        },
-    })
-EOF
-    nnoremap <silent> <leader>te :NvimTreeToggle<CR>
-else
-    let NERDTreeShowHidden = 1
-    nnoremap <silent> <leader>te :NERDTreeToggle<CR>
-endif
-" }}}
-
-" Toggle terminal {{{
-if has('nvim-0.7')
-lua << EOF
-    require("toggleterm").setup({
-        size = 15,
-        open_mapping = [[<leader>tt]],
-        shade_terminals = false,
-        start_in_insert = true,
-        insert_mappings = true,
-        terminal_mappings = true,
-        direction = 'horizontal',
-        close_on_exit = true,
-        shell = vim.o.shell,
-    })
-EOF
-endif
-" }}}
-
 " NERDCommenter {{{
 " disbale default mappings
 let g:NERDCreateDefaultMappings = 0
@@ -424,7 +316,6 @@ let g:coc_global_extensions = [
 \    "coc-marketplace",
 \    "coc-git",
 \    "coc-json",
-\    "coc-snippets",
 \    "coc-pairs",
 \    "coc-vimlsp",
 \ ]
@@ -490,16 +381,12 @@ augroup END
 " }}}
 
 " Slime {{{
-if has('nvim')
-    let g:slime_target = "neovim"
-else
-    let g:slime_target = "vimterminal"
-    let g:slime_vimterminal_config = {
-    \   "term_finish": "close",
-    \   "term_name"  : "Slime",
-    \   "term_rows"  : 20,
-    \ }
-end
+let g:slime_target = "vimterminal"
+let g:slime_vimterminal_config = {
+\   "term_finish": "close",
+\   "term_name"  : "Slime",
+\   "term_rows"  : 20,
+\ }
 let g:slime_no_mappings = 1
 xmap <leader><CR> <Plug>SlimeRegionSend
 nmap <leader><CR> <Plug>SlimeParagraphSend
@@ -517,34 +404,6 @@ endif
 if filereadable($HOME . "/.vim/custom/config.vim")
     source ~/.vim/custom/config.vim
 endif
-" }}}
-
-" auto dark mode {{{
-" reset lightline color when background changed {{{
-function s:lightline_update()
-    if g:lightline['colorscheme'] == 'one_dynamic'
-        call lightline#colorscheme#one_dynamic#set_paletten()
-        call lightline#init()
-        call lightline#colorscheme()
-        call lightline#update()
-    endif
-endfunction
-" }}}
-
-" autocmd when background changed {{{
-augroup BackgroundChange
-    autocmd!
-    autocmd User BackGroundDark set background=dark
-    autocmd User BackGroundLight set background=light
-    autocmd User BackGroundDark,BackGroundLight call s:lightline_update()
-    autocmd User BackGroundDark call s:rainbow_set_dark()
-    autocmd User BackGroundLight call s:rainbow_set_light()
-augroup END
-" }}}
-" }}} end of auto dark mode
-
-" init background color {{{
-call SetBackground(1)
 " }}}
 
 " vim:tw=76:ts=4:sw=4:et:fdm=marker
