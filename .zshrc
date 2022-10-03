@@ -30,7 +30,6 @@ zinit light romkatv/powerlevel10k
 zinit wait lucid depth=1 light-mode for \
     atload"_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
     zsh-users/zsh-history-substring-search \
-    sobolevn/wakatime-zsh-plugin \
     jeffreytse/zsh-vi-mode
 
 zinit ice wait"1" lucid depth=1 atinit"zicompinit; zicdreplay"
