@@ -113,11 +113,13 @@ map('n', '<leader>hW',
 local function create_replace(pattern, count)
   return function(nword)
     if nword and #nword > 0 then
+      local cmds
       if not count or count == 0 then
-        cmd([[%s/\V]] .. pattern .. [[/]] .. nword .. [[/g]])
+        cmds = { [[:%s/\V]], pattern, [[/]], nword, [[/g]] }
       else
-        cmd([[s/\V]] .. pattern .. [[/]] .. nword .. [[/g ]] .. count)
+        cmds = { [[s/\V]], pattern, [[/]], nword, [[/g ]], count }
       end
+      cmd(table.concat(cmds))
       cmd [[let @/ = '']]
     end
   end
