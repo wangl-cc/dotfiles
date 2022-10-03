@@ -84,6 +84,12 @@ opt.laststatus = 3
 -- display sign in number column
 opt.signcolumn = 'number'
 
+-- gui cursor, only works when termguicolors is on
+-- The guicursor don't use the highlight group by default,
+-- this is a modified version of the default guicursor with highlight group
+-- more see: h 'guicursor'
+opt.guicursor = 'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver25-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor'
+
 -- tex flavor
 g.tex_flavor = 'latex'
 
