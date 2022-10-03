@@ -50,7 +50,11 @@ local on_attach_common = function(_, bufnr)
   end, bufopts)
   map('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
   map('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  map('n', '<leader>f', vim.lsp.buf.formatting, bufopts)
+  map({ 'n', 'v' }, '<leader>f', function(opts)
+    opts = opts or {}
+    opts.async = true
+    vim.lsp.buf.format(opts)
+  end, bufopts)
 end
 
 if vim.fn.executable('lua-language-server') == 1 then
@@ -165,7 +169,7 @@ if vim.fn.executable('julia') == 1 and vim.env.__JULIA_LSP_DISABLE ~= 'true' the
 end
 
 if vim.fn.executable('bash-language-server') == 1 then
-  require'lspconfig'.bashls.setup {
+  lspconfig.bashls.setup {
     filetypes = { 'bash', 'sh' }
   }
 end
