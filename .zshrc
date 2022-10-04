@@ -9,11 +9,13 @@ fi
 
 # zinit install and load {{{
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{12}▓▒░ Installing Plugin Manager %F{13}zdharma-continuum/zinit%F{12}...%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone "https://github.com/zdharma-continuum/zinit.git" "$HOME/.zinit/bin" && \
-        print -P "%F{12}▓▒░ %F{14}Installation successful.%f%b" || \
-        print -P "%F{12}▓▒░ %F{09}The clone has failed.%f%b"
+    __zinit="zdharma-continuum/zinit"
+    print -P "%F{12}▓▒ Installing Plugin Manager %F{13}${__zinit}%F{12}...%f"
+    mkdir -p "$HOME/.zinit"
+    git clone "https://github.com/${__zinit}.git" "$HOME/.zinit/bin" && \
+        print -P "%F{12}▓▒ %F{14}Installation successful.%f%b" || \
+        print -P "%F{12}▓▒ %F{09}The clone has failed.%f%b"
+    unset __zinit
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
@@ -41,12 +43,14 @@ if [ -n "${HOMEBREW_PREFIX+x}" ]; then
         zinit ice as"completion" wait lucid
         zinit snippet $__completion
     done
+    unset __completion
 fi
-if [ ! -z "$(ls --color=no $HOME/.local/share/zsh/site-functions)" ]; then
+if [ -n "$(ls --color=no $HOME/.local/share/zsh/site-functions)" ]; then
     for __completion in $HOME/.local/share/zsh/site-functions/*; do
         zinit ice as"completion" wait lucid
         zinit snippet $__completion
     done
+    unset __completion
 fi
 # }}}
 
@@ -154,9 +158,10 @@ sshr(){
     sshr_port=$((30000 + $RANDOM % 10000)) 
     echo "Use port $sshr_port for remote forward to localhost:22"
     ssh -t -R ${sshr_port}:localhost:22 $1 -o RemoteCommand="
-        export SHELL=/home/%r/.local/bin/zsh;
-        export SSHR_PORT=$sshr_port;
-        export LC_HOST=$USER\@localhost LC_OS=$(uname -s) TERM_PROGRAM=$TERM_PROGRAM;
+        export SHELL=/home/%r/.local/bin/zsh \
+               SSHR_PORT=$sshr_port \
+               LC_HOST=$USER\@localhost LC_OS=$(uname -s) \
+               TERM_PROGRAM=$TERM_PROGRAM;
         exec \$SHELL -l"
 }
 # }}}
