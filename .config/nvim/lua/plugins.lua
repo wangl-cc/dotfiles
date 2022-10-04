@@ -50,7 +50,8 @@ local function startup(use)
       vim.g.NERDCreateDefaultMappings = 0
       -- use <leader>c<space> to toggle comments
       vim.keymap.set({ 'n', 'o', 'x' }, [[<leader>c<space>]],
-        '<Plug>NERDCommenterToggle', { noremap = true, silent = true })
+        '<Plug>NERDCommenterToggle', { noremap = true, silent = true,
+        desc = 'Toggles the comment state' })
       -- add a space after comment delimiters by default
       vim.g.NERDSpaceDelims = 1
       -- align
@@ -99,7 +100,8 @@ local function startup(use)
         update_cwd = true,
       }
       vim.keymap.set({ 'n', 't', 'i', 'v', 'o' }, '<leader>te',
-        '<Cmd>NvimTreeToggle<CR>', { noremap = true, silent = true })
+        '<Cmd>NvimTreeToggle<CR>', { noremap = true, silent = true,
+        desc = 'Toggle the file explorer' })
     end,
   }
   --- Terminal toggle
@@ -180,7 +182,7 @@ local function startup(use)
         else
           iron.repl_for(vim.bo.ft)
         end
-      end, { silent = true, noremap = true })
+      end, { desc = 'Toggle REPL' })
     end
   }
   --- Input and select
@@ -225,7 +227,7 @@ local function startup(use)
       }
       local cmds = require('indent_blankline.commands')
       vim.keymap.set('n', '<leader>ti', cmds.toggle,
-        { noremap = true, silent = true })
+        { desc = 'Toggle indent guides' })
       for _, keymap in pairs({ 'zo', 'zO', 'zc', 'zC', 'za', 'zA', 'zv',
         'zx', 'zX', 'zm', 'zM', 'zr', 'zR' }) do
         vim.keymap.set('n', keymap,
@@ -440,24 +442,27 @@ local function startup(use)
             if vim.wo.diff then return ']c' end
             vim.schedule(function() gs.next_hunk() end)
             return '<Ignore>'
-          end, { expr = true })
+          end, { expr = true, desc = 'Next change hunk' })
           map('n', '[c', function()
             if vim.wo.diff then return '[c' end
             vim.schedule(function() gs.prev_hunk() end)
             return '<Ignore>'
-          end, { expr = true })
+          end, { expr = true, desc = 'Previous change hunk' })
           -- Actions
-          map({ 'n', 'v' }, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>')
-          map({ 'n', 'v' }, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>')
-          map('n', '<leader>hS', gs.stage_buffer)
-          map('n', '<leader>hR', gs.reset_buffer)
-          map('n', '<leader>hu', gs.undo_stage_hunk)
-          map('n', '<leader>hp', gs.preview_hunk)
-          map('n', '<leader>hb', function() gs.blame_line { full = true } end)
-          map('n', '<leader>hd', gs.diffthis)
-          map('n', '<leader>hD', function() gs.diffthis('~') end)
-          map('n', '<leader>tb', gs.toggle_current_line_blame)
-          map('n', '<leader>td', gs.toggle_deleted)
+          map({ 'n', 'v' }, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>',
+            { desc = 'Stage hunk' })
+          map({ 'n', 'v' }, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>',
+            { desc = 'Reset hunk' })
+          map('n', '<leader>hS', gs.stage_buffer, { desc = 'Stage buffer' })
+          map('n', '<leader>hR', gs.reset_buffer, { desc = 'Reset buffer' })
+          map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'Undo stage hunk' })
+          map('n', '<leader>hp', gs.preview_hunk, { desc = 'Preview hunk' })
+          map('n', '<leader>hb', function() gs.blame_line { full = true } end,
+            { desc = 'Blame line' })
+          map('n', '<leader>hd', gs.diffthis, { desc = 'Diff against the index' })
+          map('n', '<leader>hD', function() gs.diffthis('~') end, { desc = 'Diff against the last commit' })
+          map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'Toggle blame of current line' })
+          map('n', '<leader>td', gs.toggle_deleted, { desc = 'Toggle deleted lines' })
         end,
         yadm = {
           enable = true,
@@ -498,15 +503,14 @@ local function startup(use)
           }
         }
       }
-      local mapopts = { noremap = true, silent = true }
-      map('n', '<leader>lf', builtins.find_files, mapopts)
-      map('n', '<leader>lk', builtins.keymaps, mapopts)
-      map('n', '<leader>lb', builtins.buffers, mapopts)
-      map('n', '<leader>lh', builtins.help_tags, mapopts)
-      map('n', '<leader>lw', builtins.live_grep, mapopts)
-      map('n', '<leader>lgc', builtins.git_commits, mapopts)
-      map('n', '<leader>lgb', builtins.git_bcommits, mapopts)
-      map('n', '<leader>lgs', builtins.git_status, mapopts)
+      map('n', '<leader>lf', builtins.find_files, { desc = 'List files in CWD' })
+      map('n', '<leader>lk', builtins.keymaps, { desc = 'List keymaps' })
+      map('n', '<leader>lb', builtins.buffers, { desc = 'List buffers' })
+      map('n', '<leader>lh', builtins.help_tags, { desc = 'List help tags' })
+      map('n', '<leader>lw', builtins.live_grep, { desc = 'Live grep' })
+      map('n', '<leader>lgc', builtins.git_commits, { desc = 'Show git log' })
+      map('n', '<leader>lgb', builtins.git_bcommits, { desc = 'Show git log of current file' })
+      map('n', '<leader>lgs', builtins.git_status, { desc = 'Show git status' })
     end
   }
   -- WhichKey (keybindings)
@@ -700,7 +704,7 @@ local function startup(use)
         enable = true,
       }
       vim.keymap.set('n', '<leader>tc', '<Cmd>TSContextToggle<CR>',
-        { silent = true, noremap = true })
+        { silent = true, noremap = true, desc = 'Toggle treesitter context' })
     end,
   }
   --- auto pair

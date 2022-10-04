@@ -4,7 +4,9 @@ local opt = vim.opt
 local cmd = vim.cmd
 local map = vim.keymap.set
 
-local silent_noremap = { noremap = true, silent = true }
+local function silent_noremap(desc)
+  return { noremap = true, silent = true, desc = desc }
+end
 
 -- leader key
 g.mapleader = ','
@@ -48,7 +50,7 @@ opt.hlsearch = true
 opt.incsearch = true
 opt.smartcase = true
 --- clear search regiser and match with <leader>/
-map('n', '<leader>/', [[:let @/=''<CR>:match<CR>]], silent_noremap)
+map('n', '<leader>/', [[:let @/=''<CR>:match<CR>]], silent_noremap 'Clear search register and match')
 
 -- split
 opt.splitbelow = true
@@ -95,17 +97,17 @@ g.tex_flavor = 'latex'
 
 -- commands
 --- Remove all tariling blanks
-map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap)
+map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing blanks')
 
 -- hightlight and replace <cword>(w) or <cWORD>(W)
 --- highlight all matching words under cursor
 --- <leader>hw/W
 map('n', '<leader>hw',
   [[:exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>]],
-  silent_noremap)
+  silent_noremap 'Highlight matching words under cursor')
 map('n', '<leader>hW',
   [[:exec 'match Search /\V' . expand('<cWORD>') . '/'<CR>]],
-  silent_noremap)
+  silent_noremap 'Highlight matching WORDS under cursor')
 --- replace all matching words under cursor
 --- [count]<leader>cw/W
 --- if [count] is not given, replace all matching
@@ -130,9 +132,9 @@ map('n', '<leader>cw', function()
   local pattern = [[\<]] .. cword .. [[\>]]
   local replace = create_replace(pattern, vim.v.count)
   vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, silent_noremap)
+end, { desc = 'Replace matching words under cursor' })
 map('n', '<leader>cW', function()
   local cword = vim.fn.expand('<cWORD>')
   local replace = create_replace(cword, vim.v.count)
   vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, silent_noremap)
+end, { desc = 'Replace matching WORDS under cursor' })

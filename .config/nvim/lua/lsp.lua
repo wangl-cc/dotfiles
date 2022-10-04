@@ -6,28 +6,26 @@ local M = {}
 
 -- global mapping
 local map = vim.keymap.set
-local mapopts = { noremap = true, silent = true }
-map('n', '<leader>e', vim.diagnostic.open_float, mapopts)
-map('n', '[d', vim.diagnostic.goto_prev, mapopts)
-map('n', ']d', vim.diagnostic.goto_next, mapopts)
-map('n', '<leader>q', vim.diagnostic.setloclist, mapopts)
+map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
+map('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
 
 local on_attach_common = function(_, bufnr)
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap = true, silent = true, buffer = bufnr }
-  map('n', '<leader>gd', telescope.lsp_definitions, bufopts)
-  map('n', '<leader>gr', telescope.lsp_references, bufopts)
-  map('n', '<leader>gi', telescope.lsp_implementations, bufopts)
-  map('n', '<leader>gt', telescope.lsp_type_definitions, bufopts)
+  map('n', '<leader>gd', telescope.lsp_definitions, { desc = 'Go to definition' })
+  map('n', '<leader>gr', telescope.lsp_references, { desc = 'Go to references' })
+  map('n', '<leader>gi', telescope.lsp_implementations, { desc = 'Go to implementations' })
+  map('n', '<leader>gt', telescope.lsp_type_definitions, { desc = 'Go to type definitions' })
   map('n', '<leader>ld', function(opts)
     opts = opts or {}
     opts.bufnr = 0
     return telescope.diagnostics(opts)
-  end, bufopts)
-  map('n', '<leader>ls', telescope.lsp_document_symbols, bufopts)
-  map('n', '<leader>k', vim.lsp.buf.hover, bufopts)
-  map('n', '<leader>K', vim.lsp.buf.signature_help, bufopts)
+  end, { buffer = bufnr, desc = 'List all diagnostics if current buffer' })
+  map('n', '<leader>ls', telescope.lsp_document_symbols,
+    { buffer = bufnr, desc = 'List all symbols in current buffer' })
+  map('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
+  map('n', '<leader>K', vim.lsp.buf.signature_help,
+    { buffer = bufnr, desc = 'Show signature help' })
   map('n', '<leader>wa', function()
     vim.ui.input({
       prompt = 'Workspace folder to be added',
@@ -37,7 +35,7 @@ local on_attach_common = function(_, bufnr)
         vim.lsp.buf.add_workspace_folder(dir)
       end
     end)
-  end, bufopts)
+  end, { buffer = bufnr, desc = 'Add workspace folder' })
   map('n', '<leader>wr', function()
     vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
       prompt = 'Workspace folder to be removed'
@@ -47,14 +45,14 @@ local on_attach_common = function(_, bufnr)
       end
     end
     )
-  end, bufopts)
-  map('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  map('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+  end, { buffer = bufnr, desc = 'Remove workspace folder' })
+  map('n', '<leader>rn', vim.lsp.buf.rename, { buffer = bufnr, desc = 'Rename variable' })
+  map('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Show code action' })
   map({ 'n', 'v' }, '<leader>f', function(opts)
     opts = opts or {}
     opts.async = true
     vim.lsp.buf.format(opts)
-  end, bufopts)
+  end, { buffer = bufnr, desc = 'Format code' })
 end
 
 if vim.fn.executable('lua-language-server') == 1 then
