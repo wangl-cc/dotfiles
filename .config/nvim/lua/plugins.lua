@@ -116,7 +116,13 @@ local function startup(use)
         start_in_insert = true,
         insert_mappings = true,
         terminal_mappings = true,
-        direction = 'horizontal',
+        direction = 'float',
+        float_opts = {
+          border = 'rounded',
+          winblend = 10,
+          width = math.floor(vim.o.columns * 0.8),
+          height = math.floor(vim.o.lines * 0.8),
+        },
         close_on_exit = true,
         shell = vim.o.shell,
       }
