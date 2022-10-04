@@ -387,7 +387,7 @@ local function startup(use)
       require('incline').setup {
         render = function(props)
           local bufname = vim.api.nvim_buf_get_name(props.buf)
-          local filename = vim.fn.fnamemodify(bufname, ":t")
+          local filename = vim.fn.fnamemodify(bufname, ':t')
           local filetype_icon, color = get_icon_color(filename)
           local status = {
             { filetype_icon, guifg = color },
@@ -628,7 +628,7 @@ local function startup(use)
           { name = 'cmdline_history', max_item_count = 5 },
         },
       })
-      require("luasnip/loaders/from_vscode").lazy_load()
+      require('luasnip/loaders/from_vscode').lazy_load()
     end
   }
   --- Treesitter

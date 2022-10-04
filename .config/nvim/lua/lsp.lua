@@ -30,7 +30,7 @@ local on_attach_common = function(_, bufnr)
   map('n', '<leader>K', vim.lsp.buf.signature_help, bufopts)
   map('n', '<leader>wa', function()
     vim.ui.input({
-      prompt = "Workspace folder to be added",
+      prompt = 'Workspace folder to be added',
       default = vim.fn.expand('%:p:h'),
     }, function(dir)
       if dir then
