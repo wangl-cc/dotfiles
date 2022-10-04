@@ -502,6 +502,13 @@ local function startup(use)
       map('n', '<leader>lgs', builtins.git_status, mapopts)
     end
   }
+  -- WhichKey (keybindings)
+  use {
+    'folke/which-key.nvim',
+    config = function()
+      require('which-key').setup {}
+    end
+  }
   -- Code support
   --- Language server
   use {
