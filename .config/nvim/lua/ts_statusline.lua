@@ -44,7 +44,7 @@ function M.options.name_parser(node)
     local parent = node:parent()
     if parent:type() == 'field' then
       local prev = node:prev_named_sibling()
-      if identifiers[prev:type()] then
+      if prev and identifiers[prev:type()] then
         -- for lua function like:
         -- local M = { f = function() end }
         local sr, sc, er, ec = prev:range()
