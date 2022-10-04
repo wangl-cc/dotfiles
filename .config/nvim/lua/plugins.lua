@@ -125,7 +125,6 @@ local function startup(use)
   --- Interactive REPL
   use {
     'hkupty/iron.nvim',
-    tag = '*',
     opt = true,
     keys = {
       '<leader>tr',
