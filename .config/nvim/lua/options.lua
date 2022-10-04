@@ -49,8 +49,7 @@ opt.fileencoding = 'utf-8'
 opt.hlsearch = true
 opt.incsearch = true
 opt.smartcase = true
---- clear search regiser and match with <leader>/
-map('n', '<leader>/', [[:let @/=''<CR>:match<CR>]], silent_noremap 'Clear search register and match')
+map('n', '<leader>/', [[:nohlsearch<CR>:match<CR>]], silent_noremap 'nohlsearch and clear match')
 
 -- split
 opt.splitbelow = true
