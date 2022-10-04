@@ -35,16 +35,4 @@ M.icons = {
   TypeParameter = '',
 }
 
-M.ts_icons = {
-  function_definition = ' ',
-  function_declaration = ' ',
-  macro_definition = '@',
-  macro_declaration = '@',
-  module_definition = ' ',
-  class_definition = 'פּ ',
-  class_declaration = 'פּ ',
-  struct_definition = 'פּ ',
-  struct_declaration = 'פּ ',
-}
-
 return M
