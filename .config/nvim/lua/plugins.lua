@@ -586,7 +586,7 @@ local function startup(use)
             elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
             else
-              cmp.mapping.complete(fallback)
+              fallback()
             end
           end),
           ['<S-Tab>'] = cmp.mapping(function(fallback)
