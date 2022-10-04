@@ -108,6 +108,7 @@ local function startup(use)
     tag = 'v2.*',
     opt = true,
     keys = '<leader>tt',
+    cmd = 'ToggleTerm',
     config = function()
       require('toggleterm').setup {
         size = 12,
