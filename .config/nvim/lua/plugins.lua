@@ -560,8 +560,8 @@ local function startup(use)
     config = function()
       local notify = require('notify')
       notify.setup {
-        stages = 'fade_in_slide_out',
-        level = 0, -- minimum level to display
+        stages = 'fade',
+        level = vim.log.levels.INFO,
         icons = {
           ERROR = '',
           WARN  = '',
