@@ -533,15 +533,15 @@ local function startup(use)
   use {
     'hrsh7th/nvim-cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
+    after = { 'nvim-lspconfig', 'LuaSnip' },
     requires = {
       { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
       { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
-      { 'L3MON4D3/LuaSnip', after = 'nvim-cmp' },
+      { 'L3MON4D3/LuaSnip' },
       { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
-      { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' }
     },
     config = function()
       local cmp = require('cmp')
@@ -639,6 +639,13 @@ local function startup(use)
           { name = 'cmdline_history', max_item_count = 5 },
         },
       })
+    end
+  }
+   --- Snippets
+  use {
+    'L3MON4D3/LuaSnip',
+    requires = 'rafamadriz/friendly-snippets',
+    config = function()
       require('luasnip/loaders/from_vscode').lazy_load()
     end
   }
