@@ -268,7 +268,7 @@ local function startup(use)
         sidebars = { 'qf' },
         on_highlights = function(hi, c)
           -- LspInfo
-          hi.LspInfoBorder = { fg = c.border_highlight, bg = c.bg_float }
+          hi.LspInfoBorder     = { fg = c.border_highlight, bg = c.bg_float }
           -- Notify
           --- Border
           hi.NotifyERRORBorder = { fg = util.darken(c.error, 0.3), bg = c.bg }
@@ -762,7 +762,7 @@ local function startup(use)
       })
     end
   }
-   --- Snippets
+  --- Snippets
   use {
     'L3MON4D3/LuaSnip',
     requires = 'rafamadriz/friendly-snippets',
