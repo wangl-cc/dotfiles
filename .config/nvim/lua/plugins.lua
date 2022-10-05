@@ -795,7 +795,6 @@ packer.startup {
         local result, win, buf = require('packer.util').float {
           border = 'rounded',
         }
-        vim.api.nvim_win_set_option(win, 'winhighlight', 'NormalFloat:Normal')
         return result, win, buf
       end,
     },
