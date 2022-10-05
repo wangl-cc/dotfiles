@@ -271,11 +271,11 @@ local function startup(use)
           hi.LspInfoBorder = { fg = c.border_highlight, bg = c.bg_float }
           -- Notify
           --- Border
-          hi.NotifyERRORBorder = { fg = util.darken(c.error, 0.3), bg = c.bg_float }
-          hi.NotifyWARNBorder  = { fg = util.darken(c.warning, 0.3), bg = c.bg_float }
-          hi.NotifyINFOBorder  = { fg = util.darken(c.info, 0.3), bg = c.bg_float }
-          hi.NotifyDEBUGBorder = { fg = util.darken(c.comment, 0.3), bg = c.bg_float }
-          hi.NotifyTRACEBorder = { fg = util.darken(c.purple, 0.3), bg = c.bg_float }
+          hi.NotifyERRORBorder = { fg = util.darken(c.error, 0.3), bg = c.bg }
+          hi.NotifyWARNBorder  = { fg = util.darken(c.warning, 0.3), bg = c.bg }
+          hi.NotifyINFOBorder  = { fg = util.darken(c.info, 0.3), bg = c.bg }
+          hi.NotifyDEBUGBorder = { fg = util.darken(c.comment, 0.3), bg = c.bg }
+          hi.NotifyTRACEBorder = { fg = util.darken(c.purple, 0.3), bg = c.bg }
           --- Icons
           hi.NotifyERRORIcon   = { fg = c.error }
           hi.NotifyWARNIcon    = { fg = c.warning }
@@ -289,11 +289,11 @@ local function startup(use)
           hi.NotifyDEBUGTitle  = { fg = c.comment }
           hi.NotifyTRACETitle  = { fg = c.purple }
           --- Body
-          hi.NotifyERRORBody   = { fg = c.fg, bg = c.bg_float }
-          hi.NotifyWARNBody    = { fg = c.fg, bg = c.bg_float }
-          hi.NotifyINFOBody    = { fg = c.fg, bg = c.bg_float }
-          hi.NotifyDEBUGBody   = { fg = c.fg, bg = c.bg_float }
-          hi.NotifyTRACEBody   = { fg = c.fg, bg = c.bg_float }
+          hi.NotifyERRORBody   = { fg = c.fg, bg = c.bg }
+          hi.NotifyWARNBody    = { fg = c.fg, bg = c.bg }
+          hi.NotifyINFOBody    = { fg = c.fg, bg = c.bg }
+          hi.NotifyDEBUGBody   = { fg = c.fg, bg = c.bg }
+          hi.NotifyTRACEBody   = { fg = c.fg, bg = c.bg }
         end,
       }
       vim.cmd [[colorscheme tokyonight]]
