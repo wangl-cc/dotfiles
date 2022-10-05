@@ -561,6 +561,14 @@ local function startup(use)
       local notify = require('notify')
       notify.setup {
         stages = 'fade_in_slide_out',
+        level = 0, -- minimum level to display
+        icons = {
+          ERROR = '',
+          WARN  = '',
+          INFO  = '',
+          DEBUG = '',
+          TRACE = '✎',
+        },
       }
       -- This is a copy of notify.__call to avoid lsp diagnostics
       vim.notify = function(msg, l, opt)
