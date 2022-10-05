@@ -479,6 +479,9 @@ local function startup(use)
         current_line_blame_opts = {
           delay = 100,
         },
+        diff_opts = {
+          internal = true,
+        },
         on_attach = function(bufnr)
           local gs = package.loaded.gitsigns
 
@@ -514,6 +517,9 @@ local function startup(use)
           map('n', '<leader>hD', function() gs.diffthis('~') end, { desc = 'Diff against the last commit' })
           map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'Toggle blame of current line' })
           map('n', '<leader>td', gs.toggle_deleted, { desc = 'Toggle deleted lines' })
+          map('n', '<leader>ts', gs.toggle_signs, { desc = 'Toggle git signcolumn' })
+          map('n', '<leader>tl', gs.toggle_linehl, { desc = 'Toggle git line highlight' })
+          map('n', '<leader>tw', gs.toggle_word_diff, { desc = 'Toggle word diff' })
         end,
         yadm = {
           enable = true,
