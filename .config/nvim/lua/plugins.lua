@@ -719,6 +719,7 @@ local function startup(use)
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
     after = 'nvim-cmp',
+    require = 'hrsh7th/nvim-cmp',
     config = function()
       local npairs = require('nvim-autopairs')
       local Rule = require('nvim-autopairs.rule')
@@ -748,11 +749,8 @@ local function startup(use)
             end)
             :use_key(']')
       }
-      local succeed, cmp = pcall(require, 'cmp')
-      if succeed then
-        cmp.event:on('confirm_done',
-          require('nvim-autopairs.completion.cmp').on_confirm_done())
-      end
+      require('cmp').event:on('confirm_done',
+        require('nvim-autopairs.completion.cmp').on_confirm_done())
     end
   }
   --- Copilot
