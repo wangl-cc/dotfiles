@@ -315,6 +315,7 @@ local function startup(use)
       local uppercase_filetype = function()
         return vim.bo.filetype:upper()
       end
+      local noice = require('noice.status')
       require('lualine').setup {
         options = {
           theme = 'tokyonight',
@@ -384,6 +385,19 @@ local function startup(use)
             { 'diagnostics', sources = { 'nvim_lsp' }, symbols = {
               error = '', warn = '', info = '', hint = ''
             } },
+          },
+          lualine_x = {
+            {
+              noice.search.get,
+              cond = noice.search.has,
+            },
+            {
+              noice.hunk.get,
+              cond = noice.hunk.has,
+            },
+            { 'encoding' },
+            { 'fileformat' },
+            { 'filetype', icon_only = true },
           },
         },
         tabline = {
@@ -598,6 +612,29 @@ local function startup(use)
             [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
           },
         },
+        status = {
+          hunk = { find = "Hunk" },
+        },
+        routes = {
+          {
+            view = "cmdline_popup",
+            filter = { kind = "confirm" },
+          },
+          {
+            opts = { skip = true },
+            filter = {
+              any = {
+                { kind = "search_count" },
+                { find = "Hunk" },
+                { find = "go up one level" },
+              }
+            }
+          },
+          {
+            view = "popup",
+            filter = { event = "msg_show", min_height = 10 },
+          },
+        }
       }
     end
   }
