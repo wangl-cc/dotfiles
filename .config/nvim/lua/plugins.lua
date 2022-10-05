@@ -582,6 +582,25 @@ local function startup(use)
       end
     end
   }
+  -- cmdline and handle messages
+  use {
+    'folke/noice.nvim',
+    requires = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    config = function()
+      require('noice').setup {
+        cmdline = {
+          icons = {
+            ["/"] = { icon = " ", hl_group = "DiagnosticWarn", firstc = false },
+            ["?"] = { icon = " ", hl_group = "DiagnosticWarn", firstc = false },
+            [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
+          },
+        },
+      }
+    end
+  }
   -- Code support
   --- Language server
   use {
