@@ -554,6 +554,26 @@ local function startup(use)
       require('which-key').setup {}
     end
   }
+  -- Notify (notifications)
+  use {
+    'rcarriga/nvim-notify',
+    config = function()
+      local notify = require('notify')
+      notify.setup {
+        stages = 'fade_in_slide_out',
+      }
+      -- This is a copy of notify.__call to avoid lsp diagnostics
+      vim.notify = function(msg, l, opt)
+        if vim.in_fast_event() then
+          vim.schedule(function()
+            notify.notify(msg, l, opt)
+          end)
+        else
+          return notify.notify(msg, l, opt)
+        end
+      end
+    end
+  }
   -- Code support
   --- Language server
   use {
