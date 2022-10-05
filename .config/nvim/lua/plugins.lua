@@ -126,6 +126,10 @@ local function startup(use)
           width = math.floor(vim.o.columns * 0.8),
           height = math.floor(vim.o.lines * 0.8),
         },
+        highlights = {
+          NormalFloat = { link = 'NormalFloat' },
+          FloatBorder = { link = 'FloatBorder' },
+        },
         close_on_exit = true,
         shell = vim.o.shell,
       }
