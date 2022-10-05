@@ -263,11 +263,37 @@ local function startup(use)
       end
 
       local tokyonight = require('tokyonight.config')
+      local util = require('tokyonight.util')
       tokyonight.setup {
         sidebars = { 'qf' },
         on_highlights = function(hi, c)
           -- LspInfo
           hi.LspInfoBorder = { fg = c.border_highlight, bg = c.bg_float }
+          -- Notify
+          --- Border
+          hi.NotifyERRORBorder = { fg = util.darken(c.error, 0.3), bg = c.bg_float }
+          hi.NotifyWARNBorder  = { fg = util.darken(c.warning, 0.3), bg = c.bg_float }
+          hi.NotifyINFOBorder  = { fg = util.darken(c.info, 0.3), bg = c.bg_float }
+          hi.NotifyDEBUGBorder = { fg = util.darken(c.comment, 0.3), bg = c.bg_float }
+          hi.NotifyTRACEBorder = { fg = util.darken(c.purple, 0.3), bg = c.bg_float }
+          --- Icons
+          hi.NotifyERRORIcon   = { fg = c.error }
+          hi.NotifyWARNIcon    = { fg = c.warning }
+          hi.NotifyINFOIcon    = { fg = c.info }
+          hi.NotifyDEBUGIcon   = { fg = c.comment }
+          hi.NotifyTRACEIcon   = { fg = c.purple }
+          --- Title
+          hi.NotifyERRORTitle  = { fg = c.error }
+          hi.NotifyWARNTitle   = { fg = c.warning }
+          hi.NotifyINFOTitle   = { fg = c.info }
+          hi.NotifyDEBUGTitle  = { fg = c.comment }
+          hi.NotifyTRACETitle  = { fg = c.purple }
+          --- Body
+          hi.NotifyERRORBody   = { fg = c.fg, bg = c.bg_float }
+          hi.NotifyWARNBody    = { fg = c.fg, bg = c.bg_float }
+          hi.NotifyINFOBody    = { fg = c.fg, bg = c.bg_float }
+          hi.NotifyDEBUGBody   = { fg = c.fg, bg = c.bg_float }
+          hi.NotifyTRACEBody   = { fg = c.fg, bg = c.bg_float }
         end,
       }
       vim.cmd [[colorscheme tokyonight]]
