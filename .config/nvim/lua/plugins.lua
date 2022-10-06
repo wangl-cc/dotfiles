@@ -265,6 +265,9 @@ local function startup(use)
       local tokyonight = require('tokyonight.config')
       tokyonight.setup {
         sidebars = { 'qf' },
+        on_highlights = function(hl, c)
+          hl.rainbowcol6 = { fg = c.magenta2 }
+        end,
       }
       vim.cmd [[colorscheme tokyonight]]
       require('autobg').setup {
