@@ -598,7 +598,13 @@ local function startup(use)
         views = {
           cmdline_popup = {
             position = {
-              row = "10%",
+              row = "20%",
+              col = "50%",
+            }
+          },
+          confirm = {
+            position = {
+              row = "80%",
               col = "50%",
             }
           },
@@ -616,10 +622,6 @@ local function startup(use)
           hunk = { find = "Hunk" },
         },
         routes = {
-          {
-            view = "cmdline_popup",
-            filter = { kind = "confirm" },
-          },
           {
             opts = { skip = true },
             filter = {
