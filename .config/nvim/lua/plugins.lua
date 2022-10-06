@@ -591,6 +591,17 @@ local function startup(use)
             [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
           },
         },
+        views = {
+          popup = {
+            border = {
+              style = 'rounded',
+              text = {
+                top = " Noice ",
+                top_align = "center",
+              }
+            },
+          },
+        },
         status = {
           hunk = { find = "Hunk" },
         },
