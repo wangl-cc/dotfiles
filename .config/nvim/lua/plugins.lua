@@ -592,6 +592,12 @@ local function startup(use)
           },
         },
         views = {
+          cmdline_popup = {
+            position = {
+              row = "10%",
+              col = "50%",
+            }
+          },
           popup = {
             border = {
               style = 'rounded',
