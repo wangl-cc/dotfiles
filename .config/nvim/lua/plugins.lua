@@ -591,6 +591,7 @@ local function startup(use)
             [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
           },
         },
+        history = { view = "popup" },
         views = {
           cmdline_popup = {
             position = {
@@ -628,7 +629,12 @@ local function startup(use)
           },
           {
             view = "popup",
-            filter = { event = "msg_show", min_height = 10 },
+            filter = {
+              any = {
+                { event = "msg_history_show" },
+                { event = "msg_show", min_height = 10 },
+              }
+            }
           },
         }
       }
