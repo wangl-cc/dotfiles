@@ -752,6 +752,8 @@ local function startup(use)
   --- Snippets
   use {
     'L3MON4D3/LuaSnip',
+    opt = true,
+    event = { 'InsertEnter', 'CmdLineEnter' },
     requires = 'rafamadriz/friendly-snippets',
     config = function()
       require('luasnip/loaders/from_vscode').lazy_load()
