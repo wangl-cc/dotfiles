@@ -631,6 +631,38 @@ local function startup(use)
             }
           },
           {
+            view = "notify",
+            filter = {
+              any = {
+                { error = true },
+                { find = '^Error' },
+                { find = '^E%d+:' }
+              }
+            },
+            opts = {
+              title = 'Error',
+              level = vim.log.levels.ERROR,
+              merge = false,
+              replace = false,
+            }
+          },
+          {
+            view = "notify",
+            filter = {
+              any = {
+                { warning = true },
+                { find = '^Warn' },
+                { find = '^W%d+:' }
+              }
+            },
+            opts = {
+              title = 'Warning',
+              level = vim.log.levels.WARN,
+              merge = false,
+              replace = false,
+            }
+          },
+          {
             view = "popup",
             filter = {
               any = {
