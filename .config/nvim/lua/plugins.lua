@@ -593,6 +593,7 @@ local function startup(use)
             [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
           },
         },
+        notify = { enabled = false },
         history = { view = "popup" },
         views = {
           cmdline_popup = {
@@ -616,6 +617,18 @@ local function startup(use)
               }
             },
           },
+          notify_error = {
+            backend = "notify",
+            level = vim.log.levels.ERROR,
+            replace = false,
+            format = "notify",
+          },
+          notify_warn = {
+            backend = "notify",
+            level = vim.log.levels.WARN,
+            replace = false,
+            format = "notify",
+          },
         },
         status = {
           hunk = { find = "Hunk" },
@@ -628,39 +641,38 @@ local function startup(use)
                 { kind = "search_count" },
                 { find = "Hunk" },
                 { find = "go up one level" },
+                { find = "^<$" }, -- This occurs frequently but I don't know why
               }
             }
           },
           {
-            view = "notify",
+            view = "notify_error",
             filter = {
               any = {
                 { error = true },
                 { find = '^Error' },
-                { find = '^E%d+:' }
+                { find = '^E%d+:' },
+                { find = '^RPC%[ERROR%]' },
               }
             },
             opts = {
               title = 'Error',
-              level = vim.log.levels.ERROR,
               merge = false,
-              replace = false,
             }
           },
           {
-            view = "notify",
+            view = "notify_warn",
             filter = {
               any = {
                 { warning = true },
                 { find = '^Warn' },
-                { find = '^W%d+:' }
+                { find = '^W%d+:' },
+                { find = '^No hunks$' },
               }
             },
             opts = {
               title = 'Warning',
-              level = vim.log.levels.WARN,
               merge = false,
-              replace = false,
             }
           },
           {
