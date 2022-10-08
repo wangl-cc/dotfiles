@@ -76,36 +76,15 @@ end
 if vim.fn.executable('julia') == 1 and vim.env.__JULIA_LSP_DISABLE ~= 'true' then
   local os_name = vim.loop.os_uname().sysname
   local julia_img_user = os_name == 'Darwin' and
-      vim.fn.expand('~/.config/julials/sys.dylib') or
+      vim.fn.expand('~/.config/julials/compiler/sys.dylib') or
       vim.fn.expand('~/.config/julials/sys.so') -- not works for windows
   local julia_cmd = {
     'julia', '--startup-file=no', '--history-file=no',
-    '-e', [[pushfirst!(LOAD_PATH, "$(homedir())/.julia/environments/nvim_lsp")
-      using LanguageServer
-      popfirst!(LOAD_PATH)
-      project_path = dirname(something(
-        # current activated project, false to avoid search LOAD_PATH
-        Base.active_project(false),
-        # look Project.toml in the current working directory,
-        # or parent directories, with $HOME as an upper boundary
-        Base.current_project(),
-        # current actived project, but search LOAD_PATH
-        Base.active_project(),
-        # use julia's default project
-        ""
-      ))
-      depot_path = get(ENV, "JULIA_DEPOT_PATH", "")
-      symserver_store_path = joinpath(homedir(), ".config", "julials", "symbolstore")
-      isdir(symserver_store_path) || mkpath(symserver_store_path)
-      server = LanguageServer.LanguageServerInstance(
-        stdin, stdout, project_path, depot_path, nothing, symserver_store_path, false
-      )
-      run(server)
-    ]]
+    vim.fn.expand('~/.config/julials/nvim_lsp/julials.jl'),
   }
   if vim.fn.filereadable(julia_img_user) == 1 then
-    table.insert(julia_cmd, 4, '-J')
-    table.insert(julia_cmd, 5, julia_img_user)
+    table.insert(julia_cmd, '-J')
+    table.insert(julia_cmd, julia_img_user)
   end
   -- from wiki of LanguageServer.jl
   local julia_capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -152,14 +131,32 @@ if vim.fn.executable('julia') == 1 and vim.env.__JULIA_LSP_DISABLE ~= 'true' the
       command = 'julia',
       args = {
         '--startup-file=no', '--history-file=no',
-        '--project=~/.julia/environments/nvim_lsp',
-        '-e', [[using Pkg; Pkg.add("LanguageServer")]]
+        '--project=~/.config/julials/nvim_lsp',
+        '-e', [[using Pkg; Pkg.insantiate()]]
       },
       on_exit = function(_, code)
         if code == 0 then
           print('julials installed.')
         else
           print('julials installation failed.')
+        end
+      end,
+    }:start()
+  end
+
+  function M.compile_julials()
+    return Job:new {
+      command = 'julia',
+      args = {
+        '--history-file=no',
+        '--project=~/.config/julials/nvim_lsp',
+        vim.fn.expand('~/.config/julials/compiler/compile.jl'),
+      },
+      on_exit = function(_, code)
+        if code == 0 then
+          print('julials compiled.')
+        else
+          print('julials compilation failed.')
         end
       end,
     }:start()
