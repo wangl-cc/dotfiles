@@ -932,6 +932,10 @@ local function startup(use)
         require('copilot').setup {
           copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
               vim.fn.expand('$HOMEBREW_PREFIX/opt/node@16/bin/node') or 'node',
+          filetypes = {
+            help = false,
+            ['*'] = true,
+          },
           panel = {
             enabled = false,
           },
