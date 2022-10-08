@@ -710,6 +710,7 @@ local function startup(use)
       { 'dmitmel/cmp-cmdline-history', after = 'nvim-cmp' },
       { 'L3MON4D3/LuaSnip' },
       { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-omni', after = 'nvim-cmp' },
     },
     config = function()
       local cmp = require('cmp')
@@ -788,6 +789,7 @@ local function startup(use)
         },
         sources = {
           { name = 'luasnip' },
+          { name = 'omni' },
           { name = 'nvim_lsp', max_item_count = 10 },
           { name = 'buffer', max_item_count = 5 },
           { name = 'path', max_item_count = 5 },
@@ -950,6 +952,8 @@ local function startup(use)
   }
   --- Zinit
   use { 'zdharma-continuum/zinit-vim-syntax', opt = true, ft = 'zsh' }
+  --- LaTeX
+  use { 'lervag/vimtex', opt = true, ft = 'tex' }
 
   -- Misc
   --- Waka time
