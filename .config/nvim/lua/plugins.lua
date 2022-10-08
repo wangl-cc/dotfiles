@@ -953,7 +953,17 @@ local function startup(use)
   --- Zinit
   use { 'zdharma-continuum/zinit-vim-syntax', opt = true, ft = 'zsh' }
   --- LaTeX
-  use { 'lervag/vimtex', opt = true, ft = 'tex' }
+  use {
+    'lervag/vimtex',
+    opt = true,
+    ft = 'tex',
+    cmd = 'VimtexInverseSearch', -- for inverse search
+    config = function()
+      vim.g.vimtex_view_method = 'skim'
+      vim.g.vimtex_view_skim_sync = 1
+      vim.g.vimtex_view_skim_reading_bar = 1
+    end
+  }
 
   -- Misc
   --- Waka time
