@@ -566,16 +566,6 @@ local function startup(use)
           TRACE = '✎',
         },
       }
-      -- This is a copy of notify.__call to avoid lsp diagnostics
-      vim.notify = function(msg, l, opt)
-        if vim.in_fast_event() then
-          vim.schedule(function()
-            notify.notify(msg, l, opt)
-          end)
-        else
-          return notify.notify(msg, l, opt)
-        end
-      end
     end
   }
   -- cmdline and handle messages
@@ -594,7 +584,8 @@ local function startup(use)
             [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
           },
         },
-        notify = { enabled = false },
+        notify = { enabled = true },
+        lsp_progress = { enabled = true },
         history = { view = "popup" },
         views = {
           cmdline_popup = {
