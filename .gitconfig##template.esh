@@ -15,6 +15,8 @@
 	smudge = cat
 [pull]
 	rebase = false
+[push]
+	autoSetupRemote = true
 [diff]
 	tool = $GIT_DIFF_TOOL
 [merge]
