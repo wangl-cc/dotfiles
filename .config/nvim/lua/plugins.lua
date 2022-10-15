@@ -284,6 +284,7 @@ local function startup(use)
     requires = {
       'kyazdani42/nvim-web-devicons',
     },
+    after = 'noice.nvim', -- after noice to ensure statusline functions are loaded
     config = function()
       local uppercase_filetype = function()
         return vim.bo.filetype:upper()
