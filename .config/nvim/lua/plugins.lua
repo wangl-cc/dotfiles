@@ -609,18 +609,6 @@ local function startup(use)
               }
             },
           },
-          notify_error = {
-            backend = "notify",
-            level = vim.log.levels.ERROR,
-            replace = false,
-            format = "notify",
-          },
-          notify_warn = {
-            backend = "notify",
-            level = vim.log.levels.WARN,
-            replace = false,
-            format = "notify",
-          },
         },
         status = {
           hunk = { find = "Hunk" },
@@ -638,33 +626,37 @@ local function startup(use)
             }
           },
           {
-            view = "notify_error",
+            view = "notify",
             filter = {
               any = {
                 { error = true },
-                { find = '^Error' },
-                { find = '^E%d+:' },
-                { find = '^RPC%[ERROR%]' },
+                { event = 'msg_show', find = '^Error' },
+                { event = 'msg_show', find = '^E%d+:' },
+                { event = 'msg_show', find = '^RPC%[Error%]' },
               }
             },
             opts = {
               title = 'Error',
+              level = vim.log.levels.ERROR,
               merge = false,
+              replace = false,
             }
           },
           {
-            view = "notify_warn",
+            view = "notify",
             filter = {
               any = {
                 { warning = true },
-                { find = '^Warn' },
-                { find = '^W%d+:' },
-                { find = '^No hunks$' },
+                { event = 'msg_show', find = '^Warn' },
+                { event = 'msg_show', find = '^W%d+:' },
+                { event = 'msg_show', find = '^No hunks$' },
               }
             },
             opts = {
               title = 'Warning',
+              level = vim.log.levels.WARN,
               merge = false,
+              replace = false,
             }
           },
           {
