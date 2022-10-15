@@ -371,7 +371,7 @@ local function startup(use)
             },
             { 'encoding' },
             { 'fileformat' },
-            { 'filetype', icon_only = true },
+            { 'filetype' },
           },
         },
         tabline = {
