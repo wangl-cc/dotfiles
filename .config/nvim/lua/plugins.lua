@@ -610,6 +610,10 @@ local function startup(use)
         },
         notify = { enabled = true },
         lsp_progress = { enabled = true },
+        messages = {
+          enabled = true,
+          view_search = false,
+        },
         history = { view = "popup" },
         views = {
           cmdline_popup = {
@@ -643,7 +647,6 @@ local function startup(use)
             opts = { skip = true },
             filter = {
               any = {
-                { kind = "search_count" },
                 { find = "Hunk" },
                 { find = "go up one level" },
                 { find = "^<$" }, -- This occurs frequently but I don't know why
