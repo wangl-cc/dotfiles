@@ -132,7 +132,7 @@ if vim.fn.executable('julia') == 1 and vim.env.__JULIA_LSP_DISABLE ~= 'true' the
       args = {
         '--startup-file=no', '--history-file=no',
         '--project=~/.config/julials/nvim_lsp',
-        '-e', [[using Pkg; Pkg.insantiate()]]
+        '-e', [[using Pkg; Pkg.instantiate()]]
       },
       on_exit = function(_, code)
         if code == 0 then
