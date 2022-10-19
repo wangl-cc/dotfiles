@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AlternateMouseScroll</key>
-	<true/>
+	<false/>
 	<key>AlwaysOpenWindowAtStartup</key>
 	<false/>
 	<key>CheckTestRelease</key>
