@@ -579,9 +579,9 @@ local function startup(use)
       require('noice').setup {
         cmdline = {
           icons = {
-            ["/"] = { icon = " ", hl_group = "DiagnosticWarn", firstc = false },
-            ["?"] = { icon = " ", hl_group = "DiagnosticWarn", firstc = false },
-            [":"] = { icon = " ", hl_group = "DiagnosticInfo", firstc = false },
+            ["/"] = { icon = " ", firstc = false },
+            ["?"] = { icon = " ", firstc = false },
+            [":"] = { icon = " ", firstc = false },
           },
         },
         notify = { enabled = true },
