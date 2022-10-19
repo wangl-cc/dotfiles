@@ -284,7 +284,10 @@ local function startup(use)
     requires = {
       'kyazdani42/nvim-web-devicons',
     },
-    after = 'noice.nvim', -- after noice to ensure statusline functions are loaded
+    after = {
+      'noice.nvim', -- after noice to ensure status line functions are loaded
+      'gitsigns.nvim', -- after gitsigns to ensure b.gitsigns_status_dict is seted
+    },
     config = function()
       local uppercase_filetype = function()
         return vim.bo.filetype:upper()
@@ -350,7 +353,11 @@ local function startup(use)
           },
           lualine_b = {
             { 'branch', icons_enabled = true },
-            { 'diff', symbols = { added = ' ', modified = '柳', removed = ' ' } },
+            { 'diff', symbols = { added = ' ', modified = '柳', removed = ' ' },
+              source = function()
+                local gs_st = vim.b.gitsigns_status_dict
+                return gs_st and { added = gs_st.added, modified = gs_st.changed, removed = gs_st.removed }
+              end },
             { 'filename', file_status = true, symbols = {
               modified = '●', readonly = '', new = '',
             } },
