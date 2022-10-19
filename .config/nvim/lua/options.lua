@@ -60,6 +60,9 @@ opt.expandtab = true
 opt.smarttab = true
 opt.autoindent = true
 
+-- spell
+opt.spelloptions = 'camel,noplainbuffer'
+
 -- folding
 opt.foldexpr = 'nvim_treesitter#foldexpr()'
 opt.foldnestmax = 3
