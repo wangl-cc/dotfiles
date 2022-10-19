@@ -70,8 +70,18 @@ local function startup(use)
   use 'tpope/vim-surround'
   --- Text alignment (not used)
   use 'godlygeek/tabular'
-  --- Additional emotions
-  use 'justinmk/vim-sneak'
+  --- Enhance search
+  use {
+    'justinmk/vim-sneak',
+    opt = true,
+    keys = { 's', 'S', 'f', 'F', 't', 'T' },
+    config = function()
+      vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
+      vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')
+      vim.keymap.set({ 'n', 'x' }, 't', '<Plug>Sneak_t')
+      vim.keymap.set({ 'n', 'x' }, 'T', '<Plug>Sneak_T')
+    end
+  }
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
 
@@ -376,6 +386,10 @@ local function startup(use)
               noice.hunk.get,
               cond = noice.hunk.has,
             },
+            {
+              noice.sneak.get,
+              cond = noice.sneak.has,
+            },
             { 'encoding' },
             { 'fileformat' },
             { 'filetype' },
@@ -625,6 +639,7 @@ local function startup(use)
         },
         status = {
           hunk = { find = "Hunk" },
+          sneak = { find = "^>" },
         },
         routes = {
           {
@@ -635,6 +650,7 @@ local function startup(use)
                 { find = "Hunk" },
                 { find = "go up one level" },
                 { find = "^<$" }, -- This occurs frequently but I don't know why
+                { find = "^>" }, -- vim-sneak
               }
             }
           },
@@ -663,6 +679,7 @@ local function startup(use)
                 { event = 'msg_show', find = '^Warn' },
                 { event = 'msg_show', find = '^W%d+:' },
                 { event = 'msg_show', find = '^No hunks$' },
+                { event = 'msg_show', find = '^not found:' }, -- vim-sneak warning
               }
             },
             opts = {
