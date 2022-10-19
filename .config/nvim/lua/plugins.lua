@@ -58,7 +58,7 @@ local function startup(use)
       vim.g.NERDDefaultAlign = 'left'
       -- use compact syntax for prettified multi-line comments
       vim.g.NERDCompactSexyComs = 1
-      -- enable trimming of trailing whitespace when uncommenting
+      -- enable trimming of trailing white space when uncomment
       vim.g.NERDTrimTrailingWhitespace = 1
       -- enable NERDCommenterToggle to check all selected lines is commented or not
       vim.g.NERDToggleCheckAllLines = 1
@@ -410,7 +410,7 @@ local function startup(use)
                 NvimTree = 'File Explorer',
                 toggleterm = 'Terminal',
                 packer = 'Packer',
-                lspinfo = 'Lsp Info',
+                lspinfo = 'LSP Info',
                 iron = 'REPL',
                 tsplayground = 'Playground',
               },
@@ -425,7 +425,7 @@ local function startup(use)
       }
     end
   }
-  --- Floating statuslines
+  --- Floating status line
   use {
     'b0o/incline.nvim',
     requires = {
@@ -775,7 +775,7 @@ local function startup(use)
               fallback()
             end
           end),
-          -- <Tab> and <S-Tab> are simmilar to <C-n> and <C-p>
+          -- <Tab> and <S-Tab> are similar to <C-n> and <C-p>
           -- But <Tab> can trigger copilot suggestion while <C-n> not
           ['<Tab>'] = cmp.mapping(function(fallback)
             if copilot.is_visible() then
@@ -836,7 +836,7 @@ local function startup(use)
       require('luasnip/loaders/from_vscode').lazy_load()
     end
   }
-  --- Treesitter
+  --- Tree sitter
   use {
     'nvim-treesitter/nvim-treesitter',
     requires = {

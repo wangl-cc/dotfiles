@@ -26,7 +26,7 @@ cmd 'syntax on'
 -- italic comments
 cmd 'highlight Comment cterm=italic gui=italic'
 
--- use ture colors
+-- use true colors
 opt.termguicolors = true
 
 -- show line number and relative line number
@@ -82,15 +82,15 @@ opt.modelines = 1
 -- always show tab line
 opt.showtabline = 2
 
--- always show a global status line, requir nvim-0.7
+-- always show a global status line, require nvim-0.7
 opt.laststatus = 3
 
 -- display sign in number column
 opt.signcolumn = 'number'
 
--- gui cursor, only works when termguicolors is on
--- The guicursor don't use the highlight group by default,
--- this is a modified version of the default guicursor with highlight group
+-- gui cursor, only works when 'termguicolors' is on
+-- The 'guicursor' don't use the highlight group by default,
+-- this is a modified version of the default 'guicursor' with highlight group
 -- more see: h 'guicursor'
 opt.guicursor = 'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver25-Cursor/lCursor,r-cr-o:hor20-Cursor/lCursor'
 
@@ -98,10 +98,10 @@ opt.guicursor = 'n-v-c-sm:block-Cursor/lCursor,i-ci-ve:ver25-Cursor/lCursor,r-cr
 g.tex_flavor = 'latex'
 
 -- commands
---- Remove all tariling blanks
+--- Remove all trailing blanks
 map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing blanks')
 
--- hightlight and replace <cword>(w) or <cWORD>(W)
+-- highlight and replace <cword>(w) or <cWORD>(W)
 --- highlight all matching words under cursor
 --- <leader>hw/W
 map('n', '<leader>hw',
