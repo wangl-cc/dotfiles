@@ -379,10 +379,6 @@ local function startup(use)
           },
           lualine_x = {
             {
-              noice.search.get,
-              cond = noice.search.has,
-            },
-            {
               noice.hunk.get,
               cond = noice.hunk.has,
             },
@@ -390,6 +386,7 @@ local function startup(use)
               noice.sneak.get,
               cond = noice.sneak.has,
             },
+            { 'searchcount' },
             { 'encoding' },
             { 'fileformat' },
             { 'filetype' },
