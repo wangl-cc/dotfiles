@@ -999,6 +999,7 @@ packer.startup {
         return result, win, buf
       end,
     },
+    disable_commands = true,
   }
 }
 
