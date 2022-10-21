@@ -82,6 +82,8 @@ local function startup(use)
       vim.keymap.set({ 'n', 'x' }, 'T', '<Plug>Sneak_T')
     end
   }
+  --- Better repeat with .
+  use 'tpope/vim-repeat'
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
 
