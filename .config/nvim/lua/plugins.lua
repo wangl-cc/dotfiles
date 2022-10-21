@@ -602,10 +602,10 @@ local function startup(use)
     config = function()
       require('noice').setup {
         cmdline = {
-          icons = {
-            ["/"] = { icon = " ", firstc = false },
-            ["?"] = { icon = " ", firstc = false },
-            [":"] = { icon = " ", firstc = false },
+          format = {
+            search_down = { icon = '' },
+            search_up = { icon = '' },
+            filter = { kind = 'shell' },
           },
         },
         notify = { enabled = true },
