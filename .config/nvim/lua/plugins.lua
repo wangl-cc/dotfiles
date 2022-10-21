@@ -627,8 +627,8 @@ local function startup(use)
             search_up = { icon = '' },
             -- lua don't support pattern like h(elp)? or (h|help)
             -- thus :h and :help are separated
-            h = { kind = 'help', pattern = ':%s*h%s+', icon = '' },
-            help = { pattern = ':%s*help%s+', icon = '' },
+            h = { kind = 'help', pattern = ':%s*h%s+', icon = '', ft = 'text' },
+            help = { pattern = ':%s*help%s+', icon = '', ft = 'text' },
             filter = { kind = 'shell' },
           },
         },
