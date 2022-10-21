@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 })
 vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = { 'plugins.lua' },
-  command = 'source <afile> | PackerCompile',
+  command = 'source <afile> | lua Packer.compile()',
   group = autosource,
 })
 
