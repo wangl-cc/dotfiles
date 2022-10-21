@@ -890,6 +890,31 @@ local function startup(use)
           },
         },
       }
+      local parsers = require('nvim-treesitter.parsers')
+      vim.keymap.set('n', '<leader>lp', function()
+        local parser_list = parsers.available_parsers()
+        table.sort(parser_list)
+        local parser_info = {}
+        for _, lang in ipairs(parser_list) do
+          table.insert(parser_info, {
+            lang = lang,
+            status = parsers.has_parser(lang)
+          })
+        end
+        vim.ui.select(parser_info, {
+          prompt = 'Update parser',
+          format_item = function(item)
+            -- use + to search installed parser and - search uninstalled parser
+            return string.format('%s %s', item.status and '+' or '-', item.lang)
+          end,
+        }, function(selected)
+          if selected then
+            require('nvim-treesitter.install').update()(selected.lang)
+          end
+        end)
+      end, {
+        desc = "List tree-sitter parsers",
+      })
     end,
   }
   use {
