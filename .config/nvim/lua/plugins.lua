@@ -568,6 +568,8 @@ local function startup(use)
     config = function()
       local wk = require('which-key')
       wk.setup {
+        show_help = false,
+        show_keys = false,
         plugins = {
           spelling = {
             enabled = true,
@@ -671,7 +673,6 @@ local function startup(use)
             filter = {
               any = {
                 { event = 'msg_show', find = '^Hunk %d+ of %d' },
-                { event = 'msg_show', find = 'go up one level' },
                 { event = 'msg_show', find = '^<$' }, -- This occurs frequently but I don't know why
                 { event = 'msg_show', find = '^>' }, -- vim-sneak
               }
