@@ -86,6 +86,16 @@ local function startup(use)
   use 'tpope/vim-repeat'
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
+  --- Incremental rename
+  use {
+    'smjonas/inc-rename.nvim',
+    opt = true,
+    cmd = 'IncRename',
+    keys = '<leader>cn',
+    config = function()
+      require("inc_rename").setup {}
+    end
+  }
 
   -- UI
   --- File explorer
@@ -629,6 +639,16 @@ local function startup(use)
             -- thus :h and :help are separated
             h = { kind = 'help', pattern = ':%s*h%s+', icon = '', ft = 'text' },
             help = { pattern = ':%s*help%s+', icon = '', ft = 'text' },
+            IncRename = {
+              pattern = ':%s*IncRename%s+',
+              icon = '',
+              ft = 'text',
+              opts = {
+                relative = 'cursor',
+                size = { min_width = 15 },
+                position = { row = -3, col = -4 },
+              }
+            },
             filter = { kind = 'shell' },
           },
         },
