@@ -582,6 +582,10 @@ local function startup(use)
           spelling = {
             enabled = true,
           },
+        },
+        popup_mappings = {
+          scroll_down = '<c-f>',
+          scroll_up = '<c-b>',
         }
       }
       wk.register {
