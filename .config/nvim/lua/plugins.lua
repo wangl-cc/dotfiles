@@ -625,8 +625,8 @@ local function startup(use)
             search_up = { icon = '' },
             -- lua don't support pattern like h(elp)? or (h|help)
             -- thus :h and :help are separated
-            h = { kind = 'help', pattern = ':%s*h%s+', icon = ''},
-            help = { pattern = ':%s*help%s+', icon = ''},
+            h = { kind = 'help', pattern = ':%s*h%s+', icon = '' },
+            help = { pattern = ':%s*help%s+', icon = '' },
             filter = { kind = 'shell' },
           },
         },
@@ -637,48 +637,48 @@ local function startup(use)
           enabled = true,
           view_search = false,
         },
-        history = { view = "popup" },
+        history = { view = 'popup' },
         views = {
           cmdline_popup = {
             position = {
-              row = "20%",
-              col = "50%",
+              row = '20%',
+              col = '50%',
             }
           },
           confirm = {
             position = {
-              row = "80%",
-              col = "50%",
+              row = '80%',
+              col = '50%',
             }
           },
           popup = {
             border = {
               style = 'rounded',
               text = {
-                top = " Noice ",
-                top_align = "center",
+                top = ' Noice ',
+                top_align = 'center',
               }
             },
           },
         },
         status = {
-          hunk = { find = "^Hunk %d+ of %d" },
-          sneak = { find = "^>" },
+          hunk = { find = '^Hunk %d+ of %d' },
+          sneak = { find = '^>' },
         },
         routes = {
           {
             opts = { skip = true },
             filter = {
               any = {
-                { event = 'msg_show', find = "^Hunk %d+ of %d" },
-                { event = 'msg_show', find = "go up one level" },
-                { event = 'msg_show', find = "^<$" }, -- This occurs frequently but I don't know why
-                { event = 'msg_show', find = "^>" }, -- vim-sneak
+                { event = 'msg_show', find = '^Hunk %d+ of %d' },
+                { event = 'msg_show', find = 'go up one level' },
+                { event = 'msg_show', find = '^<$' }, -- This occurs frequently but I don't know why
+                { event = 'msg_show', find = '^>' }, -- vim-sneak
               }
             }
           },
           {
-            view = "notify",
+            view = 'notify',
             filter = {
               any = {
                 { error = true },
@@ -695,7 +695,7 @@ local function startup(use)
             }
           },
           {
-            view = "notify",
+            view = 'notify',
             filter = {
               any = {
                 { warning = true },
@@ -713,10 +713,10 @@ local function startup(use)
             }
           },
           {
-            view = "popup",
+            view = 'popup',
             filter = {
               any = {
-                { event = "msg_history_show" },
+                { event = 'msg_history_show' },
                 { min_height = 10 },
               }
             }
@@ -800,6 +800,7 @@ local function startup(use)
           end),
           -- <Tab> and <S-Tab> are similar to <C-n> and <C-p>
           -- But <Tab> can trigger copilot suggestion while <C-n> not
+          -- And <C-n> can trigger complete while <Tab> not
           ['<Tab>'] = cmp.mapping(function(fallback)
             if copilot.is_visible() then
               copilot.accept()
@@ -824,6 +825,7 @@ local function startup(use)
           end),
           ['<CR>'] = cmp.mapping.confirm { select = true },
         },
+        -- TODO: source priority
         sources = {
           { name = 'luasnip' },
           { name = 'omni' },
@@ -931,7 +933,7 @@ local function startup(use)
           end
         end)
       end, {
-        desc = "List tree-sitter parsers",
+        desc = 'List tree-sitter parsers',
       })
     end,
   }
@@ -1057,4 +1059,4 @@ end
 
 return packer
 
--- vim:tw=76:ts=2:sw=2:et:fdm=expr:fdn=3
+-- vim:tw=76:ts=2:sw=2:et
