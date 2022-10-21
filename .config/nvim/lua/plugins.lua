@@ -639,7 +639,7 @@ local function startup(use)
           },
         },
         status = {
-          hunk = { find = "Hunk" },
+          hunk = { find = "^Hunk %d+ of %d" },
           sneak = { find = "^>" },
         },
         routes = {
@@ -647,10 +647,10 @@ local function startup(use)
             opts = { skip = true },
             filter = {
               any = {
-                { find = "Hunk" },
-                { find = "go up one level" },
-                { find = "^<$" }, -- This occurs frequently but I don't know why
-                { find = "^>" }, -- vim-sneak
+                { event = 'msg_show', find = "^Hunk %d+ of %d" },
+                { event = 'msg_show', find = "go up one level" },
+                { event = 'msg_show', find = "^<$" }, -- This occurs frequently but I don't know why
+                { event = 'msg_show', find = "^>" }, -- vim-sneak
               }
             }
           },
@@ -694,7 +694,7 @@ local function startup(use)
             filter = {
               any = {
                 { event = "msg_history_show" },
-                { event = "msg_show", min_height = 10 },
+                { min_height = 10 },
               }
             }
           },
