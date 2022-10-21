@@ -608,6 +608,7 @@ local function startup(use)
             filter = { kind = 'shell' },
           },
         },
+        popupmenu = { enabled = false },
         notify = { enabled = true },
         lsp_progress = { enabled = true },
         messages = {
