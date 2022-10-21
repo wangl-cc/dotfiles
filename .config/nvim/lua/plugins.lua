@@ -51,7 +51,7 @@ local function startup(use)
       -- use <leader>c<space> to toggle comments
       vim.keymap.set({ 'n', 'o', 'x' }, [[<leader>c<space>]],
         '<Plug>NERDCommenterToggle', { noremap = true, silent = true,
-        desc = 'Toggles the comment state' })
+        desc = 'Change comment state' })
       -- add a space after comment delimiters by default
       vim.g.NERDSpaceDelims = 1
       -- align
@@ -565,11 +565,28 @@ local function startup(use)
   use {
     'folke/which-key.nvim',
     config = function()
-      require('which-key').setup {
+      local wk = require('which-key')
+      wk.setup {
         plugins = {
           spelling = {
             enabled = true,
           },
+        }
+      }
+      wk.register {
+        ['<leader>'] = {
+          l = {
+            name = 'List',
+            g = { name = 'Git' },
+          },
+          t = { name = 'Toggle' },
+          g = { name = 'Go to' },
+          m = { name = 'Mark' },
+          s = { name = 'Send' },
+          c = { name = 'Change' },
+          h = { name = 'Hunk' },
+          d = { name = 'Remove' },
+          a = { name = 'Add' },
         }
       }
     end

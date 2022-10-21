@@ -9,8 +9,8 @@ local function silent_noremap(desc)
 end
 
 -- leader key
-g.mapleader = ','
-g.maplocalleader = ';'
+g.mapleader = ' '
+g.maplocalleader = ' '
 
 -- Skip some remote provider loading
 g.loaded_python3_provider = 0
@@ -104,10 +104,10 @@ map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing
 -- highlight and replace <cword>(w) or <cWORD>(W)
 --- highlight all matching words under cursor
 --- <leader>hw/W
-map('n', '<leader>hw',
+map('n', '<leader>w',
   [[:exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>]],
   silent_noremap 'Highlight matching words under cursor')
-map('n', '<leader>hW',
+map('n', '<leader>W',
   [[:exec 'match Search /\V' . expand('<cWORD>') . '/'<CR>]],
   silent_noremap 'Highlight matching WORDS under cursor')
 --- replace all matching words under cursor
@@ -134,9 +134,9 @@ map('n', '<leader>cw', function()
   local pattern = [[\<]] .. cword .. [[\>]]
   local replace = create_replace(pattern, vim.v.count)
   vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, { desc = 'Replace matching words under cursor' })
+end, { desc = 'Change all matchs of cword' })
 map('n', '<leader>cW', function()
   local cword = vim.fn.expand('<cWORD>')
   local replace = create_replace(cword, vim.v.count)
   vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, { desc = 'Replace matching WORDS under cursor' })
+end, { desc = 'Change all matchs of cWORD' })

@@ -26,7 +26,7 @@ local on_attach_common = function(_, bufnr)
   map('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
   map('n', '<leader>K', vim.lsp.buf.signature_help,
     { buffer = bufnr, desc = 'Show signature help' })
-  map('n', '<leader>wa', function()
+  map('n', '<leader>aw', function()
     vim.ui.input({
       prompt = 'Workspace folder to be added',
       default = vim.fn.expand('%:p:h'),
@@ -36,7 +36,7 @@ local on_attach_common = function(_, bufnr)
       end
     end)
   end, { buffer = bufnr, desc = 'Add workspace folder' })
-  map('n', '<leader>wr', function()
+  map('n', '<leader>dw', function()
     vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
       prompt = 'Workspace folder to be removed'
     }, function(dir)
@@ -46,8 +46,8 @@ local on_attach_common = function(_, bufnr)
     end
     )
   end, { buffer = bufnr, desc = 'Remove workspace folder' })
-  map('n', '<leader>rn', vim.lsp.buf.rename, { buffer = bufnr, desc = 'Rename variable' })
-  map('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Show code action' })
+  map('n', '<leader>cn', vim.lsp.buf.rename, { buffer = bufnr, desc = 'Change variable name' })
+  map('n', '<leader>.', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Show code action' })
   map({ 'n', 'v' }, '<leader>f', function(opts)
     opts = opts or {}
     opts.async = true
