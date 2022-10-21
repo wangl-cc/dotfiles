@@ -73,8 +73,6 @@ local function startup(use)
   --- Enhance search
   use {
     'justinmk/vim-sneak',
-    opt = true,
-    keys = { 's', 'S', 'f', 'F', 't', 'T' },
     config = function()
       vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
       vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')
