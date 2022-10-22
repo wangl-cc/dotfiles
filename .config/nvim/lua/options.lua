@@ -103,32 +103,8 @@ g.tex_flavor = 'latex'
 map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing blanks')
 
 --- replace all matching words under cursor
---- [count]<leader>cw/W
---- if [count] is not given, replace all matching
---- if [count] is given, replace matchings in [count] lines
-local function create_replace(pattern, count)
-  return function(nword)
-    if nword and #nword > 0 then
-      local cmds
-      if not count or count == 0 then
-        cmds = { [[:%s/\V]], pattern, [[/]], nword, [[/g]] }
-      else
-        cmds = { [[s/\V]], pattern, [[/]], nword, [[/g ]], count }
-      end
-      cmd(table.concat(cmds))
-      cmd [[let @/ = '']]
-    end
-  end
-end
-
-map('n', '<leader>cw', function()
-  local cword = vim.fn.expand('<cword>')
-  local pattern = [[\<]] .. cword .. [[\>]]
-  local replace = create_replace(pattern, vim.v.count)
-  vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, { desc = 'Change all matchs of cword' })
-map('n', '<leader>cW', function()
-  local cword = vim.fn.expand('<cWORD>')
-  local replace = create_replace(cword, vim.v.count)
-  vim.ui.input({ prompt = 'New word: ', default = cword }, replace)
-end, { desc = 'Change all matchs of cWORD' })
+--- <leader>cw/W
+cmd [[
+nnoremap <leader>cw : %s/\V\<<C-r><C-w>\>/<C-r><C-w>
+nnoremap <leader>cW : %s/\V<C-r><C-a>/<C-r><C-a>
+]]

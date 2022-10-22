@@ -669,6 +669,16 @@ local function startup(use)
                 position = { row = -3, col = -4 },
               }
             },
+            Substitute = {
+              pattern = [[: %%s/\V\?<?%a+\?>?/]], -- a space before % to avoid this for normal sub
+              icon = '',
+              ft = 'text',
+              opts = {
+                relative = 'cursor',
+                size = { min_width = 15 },
+                position = { row = -3, col = -4 },
+              }
+            },
             filter = { kind = 'shell' },
           },
         },
