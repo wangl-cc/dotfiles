@@ -102,15 +102,6 @@ g.tex_flavor = 'latex'
 --- Remove all trailing blanks
 map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing blanks')
 
--- highlight and replace <cword>(w) or <cWORD>(W)
---- highlight all matching words under cursor
---- <leader>hw/W
-map('n', '<leader>w',
-  [[:exec 'match Search /\V\<' . expand('<cword>') . '\>/'<CR>]],
-  silent_noremap 'Highlight matching words under cursor')
-map('n', '<leader>W',
-  [[:exec 'match Search /\V' . expand('<cWORD>') . '/'<CR>]],
-  silent_noremap 'Highlight matching WORDS under cursor')
 --- replace all matching words under cursor
 --- [count]<leader>cw/W
 --- if [count] is not given, replace all matching
