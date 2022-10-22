@@ -84,21 +84,27 @@ end
 
 M.setup = function()
   local lsp_reload = vim.api.nvim_create_augroup('LspReload', { clear = true })
+  -- auto reload servers' config when config changes
+  util.create_source_autocmd {
+    pattern = 'lsp/*.lua',
+    callback = function()
+      local file = vim.fn.expand('<afile>')
+      local server = vim.fs.basename(file):gsub('%.lua$', '')
+      if server == 'init' then
+        return
+      end
+      local config = util.reload('lsp.' .. server)
+      setup_server(server, config)
+      print('Reloaded ' .. server)
+    end,
+    group = lsp_reload,
+  }
   map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
   map('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
   for _, server in ipairs(M.servers) do
     local mod = 'lsp.' .. server
     local config = require(mod)
     setup_server(server, config)
-    -- auto reload server config when it changes
-    util.create_source_autocmd {
-      pattern = 'lsp/' .. server .. '.lua',
-      callback = function()
-        config = util.reload(mod)
-        setup_server(server, config)
-      end,
-      group = lsp_reload,
-    }
   end
 end
 
