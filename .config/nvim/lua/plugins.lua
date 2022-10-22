@@ -308,7 +308,7 @@ local function startup(use)
       local uppercase_filetype = function()
         return vim.bo.filetype:upper()
       end
-      local noice = require('noice').api.statusline
+      local noice = require('noice').api.status
       require('lualine').setup {
         options = {
           theme = 'tokyonight',
