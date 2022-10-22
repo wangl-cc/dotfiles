@@ -1051,6 +1051,15 @@ local function startup(use)
       vim.g.vimtex_view_skim_reading_bar = 1
     end
   }
+  -- NeoVim
+  use {
+    'folke/neodev.nvim',
+    opt = true,
+    ft = 'lua',
+    config = function()
+      require('neodev').setup {}
+    end
+  }
 
   -- Misc
   --- Waka time
