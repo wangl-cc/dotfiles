@@ -62,16 +62,17 @@ if vim.fn.executable('lua-language-server') == 1 then
     cmd = { 'lua-language-server' },
     settings = {
       Lua = {
-        runtime = {
-          version = 'LuaJIT',
-          path = vim.split(package.path, ';'),
-        },
-        diagnostics = { globals = { 'vim' } },
-        workspace = { library = vim.api.nvim_get_runtime_file('', true) },
         telemetry = { enable = false },
       },
     },
     on_attach = on_attach_common,
+    on_new_config = function(config, root_dir)
+      if root_dir:match('nvim') then
+        -- HACK: use neodev's on_new_config directly
+        require('neodev.config').setup {}
+        require('neodev.lsp').on_new_config(config, root_dir)
+      end
+    end
   }
 end
 

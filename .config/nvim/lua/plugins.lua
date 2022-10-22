@@ -1083,10 +1083,7 @@ local function startup(use)
   use {
     'folke/neodev.nvim',
     opt = true,
-    ft = 'lua',
-    config = function()
-      require('neodev').setup {}
-    end
+    module = 'neodev',
   }
 
   -- Misc
