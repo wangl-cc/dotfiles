@@ -395,7 +395,29 @@ local function startup(use)
               noice.sneak.get,
               cond = noice.sneak.has,
             },
-            { 'searchcount' },
+            {
+              function()
+                if vim.v.hlsearch == 0 then
+                  return ''
+                end
+                local result = vim.fn.searchcount { timeout = 500, maxcount = 99 }
+                if result.total == 0 or result.current == 0 then
+                  return ''
+                end
+                local pattern = vim.fn.escape(vim.fn.getreg('/'), '%')
+                if result.incomplete == 1 then
+                  return string.format('/%s [?/?]', pattern)
+                elseif result.incomplete == 2 then
+                  if result.current > result.maxcount then
+                    return string.format('/%s [>%d/>%d]', pattern, result.current, result.total)
+                  else
+                    return string.format('/%s [%d/>%d]', pattern, result.current, result.total)
+                  end
+                else
+                  return string.format('/%s [%d/%d]', pattern, result.current, result.total)
+                end
+              end
+            },
             { 'encoding' },
             { 'fileformat' },
             { 'filetype' },
