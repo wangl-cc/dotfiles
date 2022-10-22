@@ -457,7 +457,6 @@ local function startup(use)
               start = status,
               separator = ' ← ',
               reverse = true,
-              indicator_size = vim.fn.winwidth('%') - filename:len() - 5,
             }
           end
           return status
