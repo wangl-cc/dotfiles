@@ -87,9 +87,6 @@ local function startup(use)
   --- Incremental rename
   use {
     'smjonas/inc-rename.nvim',
-    opt = true,
-    cmd = 'IncRename',
-    keys = '<leader>cn',
     config = function()
       require("inc_rename").setup {}
     end
