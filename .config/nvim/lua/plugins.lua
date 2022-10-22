@@ -42,6 +42,27 @@ local function startup(use)
   }
   --- Git commands
   use { 'tpope/vim-fugitive', opt = true, cmd = { 'Git' } }
+  --- Git panel
+  use {
+    'TimUntersberger/neogit',
+    opt = true,
+    cmd = { 'Neogit' },
+    config = function()
+      require('neogit').setup {
+        kind = 'vsplit',
+        -- customize displayed signs
+        signs = {
+          -- { CLOSED, OPENED }
+          section = { '', '' },
+          item = { '', '' },
+          hunk = { '', '' },
+        },
+        integrations = {
+          diffview = true
+        }
+      }
+    end
+  }
   --- Commenting
   use {
     'preservim/nerdcommenter',
@@ -659,6 +680,9 @@ local function startup(use)
             -- thus :h and :help are separated
             h = { kind = 'help', pattern = ':%s*h%s+', icon = '', ft = 'text' },
             help = { pattern = ':%s*help%s+', icon = '', ft = 'text' },
+            -- issues about IncRename adn Substitute:
+            -- 1. can't restore if the popup has different pos
+            -- 2. cursor don't update during move
             IncRename = {
               pattern = ':%s*IncRename%s+',
               icon = '',
@@ -670,7 +694,7 @@ local function startup(use)
               }
             },
             Substitute = {
-              pattern = [[: %%s/\V\?<?%a+\?>?/]], -- a space before % to avoid this for normal sub
+              pattern = [[: %%s/[\<>%a]+/]], -- a space before % to avoid this for normal sub
               icon = '',
               ft = 'text',
               opts = {
