@@ -39,9 +39,6 @@ opt.confirm = true
 -- when a bracket is inserted, briefly jump to the matching one
 opt.showmatch = true
 
--- show command in bottom of screen
-opt.showcmd = true
-
 -- file encoding
 opt.fileencoding = 'utf-8'
 
@@ -75,6 +72,9 @@ opt.scrolloff = 3
 
 -- disable error bell
 opt.errorbells = false
+
+-- hide cmdline
+opt.cmdheight = 0
 
 -- check modeline
 opt.modelines = 1
