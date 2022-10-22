@@ -126,12 +126,12 @@ local function startup(use)
     'akinsho/toggleterm.nvim',
     tag = 'v2.*',
     opt = true,
-    keys = '<leader>tt',
+    keys = '<C-/>',
     cmd = 'ToggleTerm',
     config = function()
       require('toggleterm').setup {
         size = 12,
-        open_mapping = [[<leader>tt]],
+        open_mapping = '<C-/>',
         shade_terminals = false,
         start_in_insert = true,
         insert_mappings = true,
