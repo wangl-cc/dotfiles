@@ -116,7 +116,7 @@ local function startup(use)
         },
         update_cwd = true,
       }
-      vim.keymap.set({ 'n', 't', 'i', 'v', 'o' }, '<leader>te',
+      vim.keymap.set({ 'n', 'v' }, '<leader>te',
         '<Cmd>NvimTreeToggle<CR>', { noremap = true, silent = true,
         desc = 'Toggle the file explorer' })
     end,
