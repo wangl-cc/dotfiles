@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 Packer = require 'plugins'
 
 -- lsp configs
-LSP = require 'lsp'
+require('lsp').setup()
 
 -- vim options and keymaps
 require 'options'
