@@ -7,7 +7,6 @@ local config = {
       return result, win, buf
     end,
   },
-  disable_commands = true,
 }
 
 local function startup(use)
