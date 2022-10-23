@@ -3,11 +3,6 @@ local g = vim.g
 local o = vim.o
 local opt = vim.opt
 local cmd = vim.cmd
-local map = vim.keymap.set
-
-local function silent_noremap(desc)
-  return { noremap = true, silent = true, desc = desc }
-end
 
 -- leader key
 g.mapleader = ' '
@@ -48,7 +43,6 @@ o.fileencoding = 'utf-8'
 o.hlsearch = true
 o.incsearch = true
 o.smartcase = true
-map('n', '<leader>/', [[:nohlsearch<CR>:match<CR>]], silent_noremap 'nohlsearch and clear match')
 
 -- split
 o.splitbelow = true
@@ -75,8 +69,12 @@ o.scrolloff = 3
 -- disable error bell
 o.errorbells = false
 
--- hide cmdline
-o.cmdheight = 0
+-- NOTE: don't set cmdheight to 0 here
+-- it will break the statusline in neovim 0.8.0
+-- but it's ok for master branch
+-- this options will be set by noice automatically
+-- so don't set it here
+-- o.cmdheight = 0
 
 -- check modeline
 o.modelines = 1
@@ -102,14 +100,3 @@ opt.guicursor = {
 
 -- tex flavor
 g.tex_flavor = 'latex'
-
--- commands
---- Remove all trailing blanks
-map('n', '<leader>db', [[:%s/[ \\t]\\+$//<CR>]], silent_noremap 'Remove trailing blanks')
-
---- replace all matching words under cursor
---- <leader>cw/W
-cmd [[
-nnoremap <leader>cw : %s/\V\<<C-r><C-w>\>/<C-r><C-w>
-nnoremap <leader>cW : %s/\V<C-r><C-a>/<C-r><C-a>
-]]

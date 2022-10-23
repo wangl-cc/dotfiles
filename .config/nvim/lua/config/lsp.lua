@@ -84,6 +84,14 @@ end
 
 M.setup = function()
   local lsp_reload = vim.api.nvim_create_augroup('LspReload', { clear = true })
+  -- auto reload after this file
+  util.create_source_autocmd {
+    pattern = 'config/lsp.lua',
+    callback = function()
+      util.reload('config.lsp').setup()
+    end,
+    group = lsp_reload,
+  }
   -- auto reload servers' config when config changes
   util.create_source_autocmd {
     pattern = 'lsp/*.lua',
