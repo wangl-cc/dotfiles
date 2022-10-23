@@ -1,5 +1,4 @@
 local M = {
-  tag = 'v2.*',
   opt = true,
   keys = '<C-/>',
   cmd = 'ToggleTerm',
