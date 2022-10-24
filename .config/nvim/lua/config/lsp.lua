@@ -6,12 +6,6 @@ local util = require('util')
 
 local M = {}
 
-M.servers = {
-  'bashls',
-  'julials',
-  'sumneko_lua',
-}
-
 local on_attach_common = function(_, bufnr)
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -60,6 +54,18 @@ local on_attach_common = function(_, bufnr)
   end, { buffer = bufnr, desc = 'Format code' })
 end
 
+local function process_config(config, reload)
+  if type(config) == 'string' then
+    if reload then
+      return util.reload(config)
+    else
+      return require(config)
+    end
+  else -- table
+    return config
+  end
+end
+
 local function setup_server(server, config)
   if not config then
     return
@@ -82,7 +88,21 @@ local function setup_server(server, config)
   return lspconfig[server].setup(new_options)
 end
 
+M.configs = {
+  julials = 'lsp.julials',
+  sumneko_lua = 'lsp.sumneko_lua',
+}
+
 M.setup = function()
+  -- some simple servers, is not necessary to use a config file
+  if vim.fn.executable('bash-language-server') == 1 then
+    M.configs.bashls = { options = { filetypes = { 'bash', 'sh' } } }
+  end
+
+  if vim.fn.executable('taplo') == 1 then
+    M.configs.taplo = {}
+  end
+
   local lsp_reload = vim.api.nvim_create_augroup('LspReload', { clear = true })
   -- auto reload after this file
   util.create_source_autocmd {
@@ -101,7 +121,7 @@ M.setup = function()
       if server == 'init' then
         return
       end
-      local config = util.reload('lsp.' .. server)
+      local config = process_config(M.configs[server], true)
       setup_server(server, config)
       print('Reloaded ' .. server)
     end,
@@ -109,10 +129,8 @@ M.setup = function()
   }
   map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
   map('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
-  for _, server in ipairs(M.servers) do
-    local mod = 'lsp.' .. server
-    local config = require(mod)
-    setup_server(server, config)
+  for server, config in pairs(M.configs) do
+    setup_server(server, process_config(config))
   end
 end
 
