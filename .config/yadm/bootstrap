@@ -59,6 +59,11 @@ if [ $(uname -s) = 'Darwin' ]; then
     defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
     # don't save to iCloud by default
     defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+
+    if command -v fish >/dev/null 2>&1; then
+        echo "Setting fish shell"
+        fish "./bootstrap.fish"
+    fi
 fi
 
 # vim:ts=4:sw=4:et:fdm=marker
