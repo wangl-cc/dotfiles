@@ -11,27 +11,22 @@ function M.config()
       format = {
         search_down = { icon = '' },
         search_up = { icon = '' },
-        -- lua don't support pattern like h(elp)? or (h|help)
-        -- thus :h and :help are separated
-        h = { kind = 'help', pattern = ':%s*h%s+', icon = '', ft = 'text' },
-        help = { pattern = ':%s*help%s+', icon = '', ft = 'text' },
+        help = { icon = '' },
         -- issues about IncRename adn Substitute:
-        -- 1. can't restore if the popup has different pos
-        -- 2. cursor don't update during move
+        -- 1. can't restore if the popup has different pos (fixed by 8463b0b)
+        -- 2. cursor don't update during move (fixed by unknown commit or upstream)
         IncRename = {
           pattern = ':%s*IncRename%s+',
           icon = '',
-          ft = 'text',
           opts = {
             relative = 'cursor',
             size = { min_width = 15 },
             position = { row = -3, col = -4 },
           }
         },
-        Substitute = {
+        substitute = {
           pattern = [[: %%s/[\<>%a]+/]], -- a space before % to avoid this for normal sub
           icon = '',
-          ft = 'text',
           opts = {
             relative = 'cursor',
             size = { min_width = 15 },
