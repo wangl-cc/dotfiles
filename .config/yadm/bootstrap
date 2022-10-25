@@ -4,7 +4,8 @@ echo "Sparse checkout to avoid README.md, LICENSE and install.sh in HOME"
 rm -f ~/README.md ~/LICENSE ~/install.sh
 git -C "$HOME/.git" config core.sparsecheckout true
 git -C "$HOME/.git" config core.sparseCheckoutCone false
-git -C "$HOME/.git" sparse-checkout set --no-cone '/*' '!/README.md' '!/LICENSE' '!/install.sh'
+cd ~ || exit 1 # sparse checkout must be run from the toplevel directory in non-cone mode
+git sparse-checkout set --no-cone '/*' '!/README.md' '!/LICENSE' '!/install.sh'
 
 bootstrap_dir="$(dirname "$0")/bootstrap.d"
 
