@@ -79,6 +79,7 @@ function M.config()
             { event = 'msg_show', find = '^Hunk %d+ of %d' },
             { event = 'msg_show', find = '^<$' }, -- This occurs frequently but I don't know why
             { event = 'msg_show', find = '^>' }, -- vim-sneak
+            { event = 'msg_show', find = '^RPC%[Error%]' },
           }
         }
       },
@@ -89,7 +90,6 @@ function M.config()
             { error = true },
             { event = 'msg_show', find = '^Error' },
             { event = 'msg_show', find = '^E%d+:' },
-            { event = 'msg_show', find = '^RPC%[Error%]' },
           }
         },
         opts = {
