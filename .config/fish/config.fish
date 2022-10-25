@@ -3,9 +3,16 @@ set -gx PATH $HOME/.local/bin $PATH
 # path }}}
 
 # conda initialize {{{
-# set __conda_bin as a universal variable, set it after you install it
+# conda bin is assumed to be installed in $HOME/Conda/bin
+# if you install conda elsewhere
+# set a universal variable  __conda_bin to the path to conda bin
+if set -q $conda_bin
+  set -l __conda_bin $conda_bin
+else
+  set -l __conda_bin $HOME/Conda/bin
+end
 if test -f $__conda_bin
-  eval $HOME/Conda/bin/conda "shell.fish" "hook" $argv | source
+  eval $__conda_bin/conda "shell.fish" "hook" $argv | source
 end
 # conda initialize }}}
 
