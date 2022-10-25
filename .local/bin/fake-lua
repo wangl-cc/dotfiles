@@ -1,0 +1,37 @@
+#!/bin/bash
+
+usage() {
+echo "Usage: $(basename "$0") -v"
+echo
+echo "This is a fake lua command just for get lua version used by starship."
+echo "Do not use it as a real lua command."
+}
+
+version() {
+  if [[ "$1" =~ "nvim" ]];  then 
+    lua_verions=$(nvim -v | grep 'LuaJIT')
+    echo "${lua_verions}-neovim"
+  else
+    if command -v lua >/dev/null 2>&1; then
+      lua -v
+    elif command -v luajit >/dev/null 2>&1; then
+      luajit -v
+    else
+      echo "No lua found"
+      exit 1
+    fi
+  fi
+}
+
+[ $# -ne 1 ] && usage && exit 1
+case $1 in
+  -v|--version)
+    version "$PWD"
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
+
+# vim:ft=sh:ts=2:sw=2:et
