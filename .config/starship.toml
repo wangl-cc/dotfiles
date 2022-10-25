@@ -22,7 +22,7 @@ disabled = false
 format = "at [$localipv4]($style) "
 
 [username]
-format = "[$user]($style) "
+format = "as [$user]($style) "
 show_always = true
 
 # always show user before sudo 
