@@ -1,6 +1,7 @@
 /*
 
 !/.gitignore
+!/starship.toml
 !/nvim/
 !/pip/
 !/yadm/

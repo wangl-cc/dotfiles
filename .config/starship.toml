@@ -1,0 +1,120 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """ \
+$hostname$localip$username$directory\
+$package$julia$lua\
+$git_branch$git_commit$git_state$git_status\
+$fill$jobs$status$cmd_duration\
+$line_break $character\
+"""
+right_format = "$conda$time"
+add_newline = false
+
+# Modules
+# General {{{
+# hostname and localip always show together
+[hostname]
+format = "[$ssh_symbol$hostname]($style) "
+ssh_symbol = " "
+
+[localip]
+disabled = false
+format = "at [$localipv4]($style) "
+
+[username]
+format = "[$user]($style) "
+show_always = true
+
+# always show user before sudo 
+# thus this looks like: user with sudo
+# disabled because it's a bit costly and not that useful
+# [sudo]
+# disabled = false
+# format = "with [$symbol]($style) "
+# symbol = "sudo"
+
+[directory]
+format = "at [$path]($style)[$read_only]($read_only_style) "
+read_only = " "
+
+[fill]
+symbol = " "
+
+[jobs]
+symbol = ""
+style = "bold yellow"
+
+[shell]
+disabled = true
+
+[shlvl]
+disabled = false
+symbol = " "
+
+[status]
+disabled = false
+format = "[$status]($style) "
+
+[cmd_duration]
+format = "took [$duration]($style) "
+min_time = 10_000
+
+[character]
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+vimcmd_symbol = "[](bold green)"
+vimcmd_visual_symbol = "[](bold green)"
+vimcmd_replace_symbol = "[](bold purple)"
+vimcmd_replace_one_symbol = "[](bold yellow)"
+
+[time]
+disabled = false
+time_format = "%a %r"
+
+# General }}}
+
+# Git {{{
+[git_branch]
+symbol = " "
+
+[git_commit]
+format ="on [\\($hash$tag\\)]($style) "
+tag_disabled = false
+tag_symbol = " 笠"
+
+# This module is a bit costly
+[git_status]
+format = "$ahead_behind$conflicted$stashed$renamed$modified$deleted$untracked$staged"
+# all with trailing space is needed
+ahead = "⇡ $count "
+behind = "⇣ $count "
+diverged = "⇕ $ahead_count $behind_count "
+conflicted = " "
+stashed = "⚑ $count "
+staged = "● $count "
+renamed = " $count "
+deleted = " $count "
+untracked = " $count "
+modified = " $count "
+# }}}
+
+# Language or enviroment {{{
+[conda]
+symbol = "python "
+
+[package]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[lua]
+symbol = " "
+lua_binary = "fake-lua"
+
+# [env_var]
+
+# [custom]
+# }}}
+
+# vim:ts=2:sw=2:et:fdm=marker
