@@ -5,6 +5,7 @@
 !.*##*
 !/.zshrc
 !/.zprofile
+!/.fishrc
 !/.vim
 !/.vimrc
 !/.iterm
