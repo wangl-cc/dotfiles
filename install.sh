@@ -79,3 +79,13 @@ else
     REPO_URL=${REPO_URL-"$GITHUB$OWNER/$REPO.git"}
     yadm --yadm-repo "$REPO_DEST" clone $REPO_URL --bootstrap
 fi
+
+# fake git for yadm
+YADM_DIR="$HOME/.local/share/yadm"
+if ! [ -e "$YADM_DIR/repo.git" ]; then
+    print -P "Create fake git for yadm."
+    if ! [ -d "$YADM_DIR" ]; then
+        mkdir -p "$YADM_DIR"
+    fi
+    ln -s "$REPO_DEST" "$YADM_DIR/repo.git"
+fi

@@ -47,22 +47,21 @@ _abbr gr  git remote
 _abbr gco git checkout
 _abbr gcm git checkout master
 _abbr gcb git checkout -b
-_abbr yadm yadm --yadm-repo ~/.git
-_abbr y    yadm --yadm-repo ~/.git
-_abbr ya   yadm --yadm-repo ~/.git add
-_abbr yb   yadm --yadm-repo ~/.git branch
-_abbr yc   yadm --yadm-repo ~/.git commit
-_abbr yd   yadm --yadm-repo ~/.git diff
-_abbr yds  yadm --yadm-repo ~/.git diff --staged
-_abbr ys   yadm --yadm-repo ~/.git status
-_abbr ysu  yadm --yadm-repo ~/.git status -u
-_abbr yl   yadm --yadm-repo ~/.git log
-_abbr yp   yadm --yadm-repo ~/.git push
-_abbr ypl  yadm --yadm-repo ~/.git pull
-_abbr yr   yadm --yadm-repo ~/.git remote
-_abbr yco  yadm --yadm-repo ~/.git checkout
-_abbr ycm  yadm --yadm-repo ~/.git checkout master
-_abbr ycb  yadm --yadm-repo ~/.git checkout -b
+_abbr y    yadm
+_abbr ya   yadm add
+_abbr yb   yadm branch
+_abbr yc   yadm commit
+_abbr yd   yadm diff
+_abbr yds  yadm diff --staged
+_abbr ys   yadm status
+_abbr ysu  yadm status -u
+_abbr yl   yadm log
+_abbr yp   yadm push
+_abbr ypl  yadm pull
+_abbr yr   yadm remote
+_abbr yco  yadm checkout
+_abbr ycm  yadm checkout master
+_abbr ycb  yadm checkout -b
 # git }}}
 # abbreviates }}}
 

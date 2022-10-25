@@ -147,7 +147,6 @@ if command -v nvim &> /dev/null; then
     alias vim='nvim'
     alias vimdiff='nvimdiff'
 fi
-alias yadm='yadm --yadm-repo $HOME/.git'
 # set LD_LIBRARY_PATH for julia to avoid use wrong lib
 if [ -n "$LD_LIBRARY_PATH" ]; then
     __JULIA_LIBRARY="$(dirname $(readlink -f $(which julia)))/../lib/julia"
