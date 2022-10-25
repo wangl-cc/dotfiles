@@ -1,31 +1,28 @@
-"$schema" = 'https://starship.rs/config-schema.json'
-
 format = """ \
-$hostname$localip$username$directory\
-$package$julia$lua\
+$username$hostname$localip$directory\
+$package$julia$lua$conda\
 $git_branch$git_commit$git_state$git_status\
-$fill$jobs$status$cmd_duration\
-$line_break $character\
+$fill $cmd_duration$time\
+$line_break $jobs$shlvl$character\
 """
-right_format = "$conda$time"
-add_newline = false
+right_format = "$status"
+add_newline = true
 
 # Modules
 # General {{{
-# hostname and localip always show together
+# hostname and localip always show together, only on ssh
 [hostname]
-format = "[$ssh_symbol$hostname]($style) "
-ssh_symbol = " "
+format = "on [$hostname]($style) "
 
 [localip]
 disabled = false
-format = "at [$localipv4]($style) "
+format = "[\\($localipv4\\)]($style) "
 
 [username]
-format = "as [$user]($style) "
+format = "[$user]($style) "
 show_always = true
 
-# always show user before sudo 
+# always show user before sudo
 # thus this looks like: user with sudo
 # disabled because it's a bit costly and not that useful
 # [sudo]
@@ -38,7 +35,7 @@ format = "at [$path]($style)[$read_only]($read_only_style) "
 read_only = " "
 
 [fill]
-symbol = " "
+symbol = "─"
 
 [jobs]
 symbol = ""
