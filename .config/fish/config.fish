@@ -79,7 +79,15 @@ set -gx ESH_SHELL /bin/bash
 # environments variables for interactive shells }}}
 
 # fish config {{{
-set -g fish_greeting # set to null to disable greeting
+if type -q fastfetch
+  # use fastfetch if installed
+  function fish_greeting
+      fastfetch
+  end
+  _abbr ff fastfetch
+else
+  set -g fish_greeting # set to null to disable greeting
+end
 set -g fish_key_bindings fish_vi_key_bindings
 # fish config }}}
 
