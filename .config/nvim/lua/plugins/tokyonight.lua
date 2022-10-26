@@ -11,10 +11,6 @@ function M.config()
     cmd_full = vim.fn.split(cmd_core)
   end
 
-  local function can_autobg()
-    return vim.fn.has('mac') == 1 or (is_sshr and vim.env.LC_OS == 'Darwin')
-  end
-
   local function is_dark()
     return vim.fn.systemlist(cmd_full)[1] == 'Dark'
   end
@@ -27,10 +23,11 @@ function M.config()
     end,
   }
   vim.cmd [[colorscheme tokyonight]]
-  require('util.autobg').setup {
-    can_autobg = can_autobg,
-    is_dark = is_dark,
-  }
+  if vim.fn.has('mac') == 1 or (is_sshr and vim.env.LC_OS == 'Darwin') then
+    require('util.autobg').setup {
+      is_dark = is_dark,
+    }
+  end
 end
 
 return M
