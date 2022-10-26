@@ -25,7 +25,7 @@ function M.config()
           }
         },
         substitute = {
-          pattern = [[: %%s/[\<>%a]+/]], -- a space before % to avoid this for normal sub
+          pattern = [[: %%s/[\<>_%a]+/]], -- a space before % to avoid this for normal sub
           icon = '',
           opts = {
             relative = 'cursor',
