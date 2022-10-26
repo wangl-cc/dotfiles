@@ -18,57 +18,57 @@ end
 
 if status is-interactive # {{{
 # abbreviates {{{
-function _abbr
+function abbrg --description 'Create a new global abbreviation'
   abbr -a -g $argv
 end
 # rm
-_abbr rm "rm -i"
+abbrg rm "rm -i"
 # vi
-_abbr vi vim
+abbrg vi vim
 # ls
-_abbr l  "ls --color"
-_abbr ll "ls --color -lh"
-_abbr la "ls --color -Alh"
+abbrg l  ls --color
+abbrg ll ls --color -lh
+abbrg la ls --color -Alh
 # cd
-_abbr ... "../.."
+abbrg ... ../..
 # git {{{
-_abbr g   git
-_abbr ga  git add
-_abbr gb  git branch
-_abbr gc  git commit
-_abbr gd  git diff
-_abbr gds git diff --staged
-_abbr gs  git status
-_abbr gsu git status -u
-_abbr gl  git log
-_abbr gp  git push
-_abbr gpl git pull
-_abbr gr  git remote
-_abbr gco git checkout
-_abbr gcm git checkout master
-_abbr gcb git checkout -b
-_abbr y    yadm
-_abbr ya   yadm add
-_abbr yb   yadm branch
-_abbr yc   yadm commit
-_abbr yd   yadm diff
-_abbr yds  yadm diff --staged
-_abbr ys   yadm status
-_abbr ysu  yadm status -u
-_abbr yl   yadm log
-_abbr yp   yadm push
-_abbr ypl  yadm pull
-_abbr yr   yadm remote
-_abbr yco  yadm checkout
-_abbr ycm  yadm checkout master
-_abbr ycb  yadm checkout -b
+abbrg g   git
+abbrg ga  git add
+abbrg gb  git branch
+abbrg gc  git commit
+abbrg gd  git diff
+abbrg gds git diff --staged
+abbrg gs  git status
+abbrg gsu git status -u
+abbrg gl  git log
+abbrg gp  git push
+abbrg gpl git pull
+abbrg gr  git remote
+abbrg gco git checkout
+abbrg gcm git checkout master
+abbrg gcb git checkout -b
+abbrg y    yadm
+abbrg ya   yadm add
+abbrg yb   yadm branch
+abbrg yc   yadm commit
+abbrg yd   yadm diff
+abbrg yds  yadm diff --staged
+abbrg ys   yadm status
+abbrg ysu  yadm status -u
+abbrg yl   yadm log
+abbrg yp   yadm push
+abbrg ypl  yadm pull
+abbrg yr   yadm remote
+abbrg yco  yadm checkout
+abbrg ycm  yadm checkout master
+abbrg ycb  yadm checkout -b
 # git }}}
 # abbreviates }}}
 
 # environments variables for interactive shells {{{
 # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
 if type -q nvim
-  _abbr vim nvim
+  abbrg vim nvim
   set -gx VISUAL nvim
   set -gx GIT_DIFF_TOOL nvimdiff
 else
@@ -84,7 +84,7 @@ if type -q fastfetch
   function fish_greeting
       fastfetch
   end
-  _abbr ff fastfetch
+  abbrg ff fastfetch
 else
   set -g fish_greeting # set to null to disable greeting
 end
