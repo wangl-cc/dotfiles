@@ -5,6 +5,12 @@ function set_verbose
   set $argv
 end
 
+if test (uname -s) = "Darwin"; and test (uname -m) = "arm64"
+  set_verbose -Ux CONDARC_MIRROR "bfsu.edu.cn"
+else
+  set_verbose -Ux CONDARC_MIRROR "aliyun.com"
+end
+
 if type -q brew
   set_verbose -Ux HOMEBREW_PREFIX (brew --prefix)
   set_verbose -Ux HOMEBREW_CELLAR (brew --cellar)
