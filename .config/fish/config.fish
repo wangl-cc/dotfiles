@@ -6,10 +6,11 @@ set -gx PATH $HOME/.local/bin $PATH
 # conda bin is assumed to be installed in $HOME/Conda/bin
 # if you install conda elsewhere
 # set a universal variable  __conda_bin to the path to conda bin
+set -l __conda_bin
 if set -q $conda_bin
-  set -l __conda_bin $conda_bin
+  set __conda_bin $conda_bin
 else
-  set -l __conda_bin $HOME/Conda/bin
+  set __conda_bin $HOME/Conda/bin
 end
 if test -f $__conda_bin
   eval $__conda_bin/conda "shell.fish" "hook" $argv | source
