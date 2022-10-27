@@ -36,7 +36,7 @@ function M.config()
       },
       {
         sections = { lualine_a = { uppercase_filetype } },
-        filetypes = { 'lspinfo', 'packer', 'checkhealth' }
+        filetypes = { 'lspinfo', 'packer', 'checkhealth', 'startuptime' }
       },
       {
         sections = {
@@ -140,6 +140,7 @@ function M.config()
             lspinfo = 'LSP Info',
             iron = 'REPL',
             tsplayground = 'Playground',
+            startuptime = 'Startup Time',
           },
         }
       },
