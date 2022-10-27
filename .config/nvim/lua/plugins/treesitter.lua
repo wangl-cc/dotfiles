@@ -3,6 +3,7 @@ local M = {
     'p00f/nvim-ts-rainbow',
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/playground',
+    'JoosepAlviste/nvim-ts-context-commentstring',
   },
   run = ':TSUpdate',
 }
@@ -30,6 +31,10 @@ function M.config()
     },
     playground = {
       enable = true,
+    },
+    context_commentstring = {
+      enable = true,
+      enable_autocmd = false,
     },
     textobjects = {
       select = {
