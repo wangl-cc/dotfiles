@@ -147,6 +147,13 @@ local function startup(use)
   }
   -- cmdline and handle messages
   use { 'folke/noice.nvim', plugin = 'noice' }
+  --- Highlight and view todos
+  use {
+    "folke/todo-comments.nvim",
+    config = function()
+      require("todo-comments").setup {}
+    end
+  }
   -- Code support
   --- Language server
   use {
