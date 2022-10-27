@@ -30,7 +30,7 @@ end
 
 function M.reload(mod)
   package.loaded[mod] = nil
-  m = require(mod)
+  local m = require(mod)
   M.debug('Reloaded ' .. mod)
   return m
 end
