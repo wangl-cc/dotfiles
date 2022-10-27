@@ -36,7 +36,7 @@ function M.config()
       },
       {
         sections = { lualine_a = { uppercase_filetype } },
-        filetypes = { 'lspinfo', 'packer' }
+        filetypes = { 'lspinfo', 'packer', 'checkhealth' }
       },
       {
         sections = {
@@ -134,6 +134,7 @@ function M.config()
           },
           filetype_names = {
             ['neo-tree'] = 'File Explorer',
+            checkhealth = 'Check Health',
             toggleterm = 'Terminal',
             packer = 'Packer',
             lspinfo = 'LSP Info',
