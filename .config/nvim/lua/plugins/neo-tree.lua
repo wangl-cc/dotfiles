@@ -1,5 +1,8 @@
 local M = {
   opt = true,
+  requires = {
+    { 's1n7ax/nvim-window-picker', tag = "v1.*" },
+  },
   branch = 'v2.x',
   keys = [[<leader>tt]],
   cmd = 'Neotree',
@@ -10,6 +13,16 @@ local M = {
 vim.g.neo_tree_remove_legacy_commands = 1
 
 function M.config()
+  require('window-picker').setup {
+    autoselect_one = true,
+    include_current = false,
+    filter_rules = {
+      bo = {
+        filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+        buftype = { 'terminal', "quickfix" },
+      },
+    },
+  }
   require('neo-tree').setup {
     close_if_last_window = true,
     popup_border_style = 'rounded',
