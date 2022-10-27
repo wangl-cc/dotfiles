@@ -36,6 +36,8 @@ function M.config()
     smart_move = { enabled = false },
     lsp = {
       progress = { enabled = true },
+      hover = { enabled = true },
+      signature = { enabled = true },
     },
     messages = {
       enabled = true,
