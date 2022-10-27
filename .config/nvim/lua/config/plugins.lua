@@ -198,8 +198,7 @@ local function startup(use)
           s = { name = 'Send' },
           c = { name = 'Change' },
           h = { name = 'Hunk' },
-          d = { name = 'Remove' },
-          a = { name = 'Add' },
+          w = { name = 'Workspace folder' },
         }
       }
     end

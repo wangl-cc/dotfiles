@@ -23,7 +23,7 @@ local on_attach_common = function(_, bufnr)
   map('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
   map('n', '<leader>K', vim.lsp.buf.signature_help,
     { buffer = bufnr, desc = 'Show signature help' })
-  map('n', '<leader>aw', function()
+  map('n', '<leader>wa', function()
     vim.ui.input({
       prompt = 'Workspace folder to be added',
       default = vim.fn.expand('%:p:h'),
@@ -33,7 +33,7 @@ local on_attach_common = function(_, bufnr)
       end
     end)
   end, { buffer = bufnr, desc = 'Add workspace folder' })
-  map('n', '<leader>dw', function()
+  map('n', '<leader>wd', function()
     vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
       prompt = 'Workspace folder to be removed'
     }, function(dir)
