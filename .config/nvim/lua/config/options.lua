@@ -49,6 +49,8 @@ o.splitbelow = true
 o.splitright = true
 
 -- Indent
+o.tabstop = 2
+o.shiftwidth = 2
 o.expandtab = true
 o.smarttab = true
 o.autoindent = true

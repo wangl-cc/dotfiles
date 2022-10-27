@@ -50,8 +50,6 @@ local function startup(use)
   use { 'TimUntersberger/neogit', plugin = 'neogit' }
   --- Text alignment
   use { 'godlygeek/tabular', opt = true, cmd = 'Tabularize' }
-  --- Auto tabstop and shiftwidth
-  use 'tpope/vim-sleuth'
   --- Incremental rename
   use {
     'smjonas/inc-rename.nvim',
