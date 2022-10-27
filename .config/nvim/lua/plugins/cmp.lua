@@ -7,7 +7,6 @@ local M = {
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-cmdline',
-    'dmitmel/cmp-cmdline-history',
     'saadparwaiz1/cmp_luasnip',
     'hrsh7th/cmp-omni',
   },
@@ -108,8 +107,7 @@ function M.config()
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
       { name = 'path', max_item_count = 5 },
-      { name = 'cmdline', max_item_count = 5 },
-      { name = 'cmdline_history', max_item_count = 5 },
+      { name = 'cmdline', max_item_count = 10 },
     },
   })
 end
