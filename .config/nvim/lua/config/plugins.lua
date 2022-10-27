@@ -55,7 +55,12 @@ local function startup(use)
     end
   }
   --- Surrounding
-  use 'tpope/vim-surround'
+  use {
+    'kylechui/nvim-surround',
+    config = function()
+      require('nvim-surround').setup {}
+    end
+  }
   --- Text alignment (not used)
   use 'godlygeek/tabular'
   --- Enhance search
