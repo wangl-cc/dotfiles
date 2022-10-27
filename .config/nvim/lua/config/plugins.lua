@@ -48,8 +48,8 @@ local function startup(use)
   use { 'lewis6991/gitsigns.nvim', plugin = 'gitsigns' }
   -- Git panel
   use { 'TimUntersberger/neogit', plugin = 'neogit' }
-  --- Text alignment (not used)
-  use 'godlygeek/tabular'
+  --- Text alignment
+  use { 'godlygeek/tabular' , opt = true, cmd = 'Tabularize' }
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
   --- Incremental rename
