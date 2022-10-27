@@ -38,6 +38,7 @@ function M.config()
     },
     popupmenu = { enabled = false },
     notify = { enabled = true },
+    smart_move = { enabled = false },
     lsp = {
       progress = { enabled = true },
     },
