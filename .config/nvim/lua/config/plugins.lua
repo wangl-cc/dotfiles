@@ -54,8 +54,6 @@ local function startup(use)
       require('Comment').setup {}
     end
   }
-  --- Additional text objects
-  use 'wellle/targets.vim'
   --- Surrounding
   use 'tpope/vim-surround'
   --- Text alignment (not used)
