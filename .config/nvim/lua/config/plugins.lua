@@ -48,36 +48,8 @@ local function startup(use)
   use { 'lewis6991/gitsigns.nvim', plugin = 'gitsigns' }
   -- Git panel
   use { 'TimUntersberger/neogit', plugin = 'neogit' }
-  --- Commenting
-  use {
-    'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup {
-         pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-      }
-    end
-  }
-  --- Surrounding
-  use {
-    'kylechui/nvim-surround',
-    config = function()
-      require('nvim-surround').setup {}
-    end
-  }
   --- Text alignment (not used)
   use 'godlygeek/tabular'
-  --- Enhance search
-  use {
-    'justinmk/vim-sneak',
-    config = function()
-      vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
-      vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')
-      vim.keymap.set({ 'n', 'x' }, 't', '<Plug>Sneak_t')
-      vim.keymap.set({ 'n', 'x' }, 'T', '<Plug>Sneak_T')
-    end
-  }
-  --- Better repeat with .
-  use 'tpope/vim-repeat'
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
   --- Incremental rename
@@ -171,40 +143,7 @@ local function startup(use)
   --- Telescope (fuzzy finder)
   use { 'nvim-telescope/telescope.nvim', plugin = 'telescope' }
   -- WhichKey (keybindings)
-  use {
-    'folke/which-key.nvim',
-    config = function()
-      local wk = require('which-key')
-      wk.setup {
-        show_help = false,
-        show_keys = false,
-        plugins = {
-          spelling = {
-            enabled = true,
-          },
-        },
-        popup_mappings = {
-          scroll_down = '<c-f>',
-          scroll_up = '<c-b>',
-        }
-      }
-      wk.register {
-        ['<leader>'] = {
-          l = {
-            name = 'List',
-            g = { name = 'Git' },
-          },
-          t = { name = 'Toggle' },
-          g = { name = 'Go to' },
-          m = { name = 'Mark' },
-          s = { name = 'Send' },
-          c = { name = 'Change' },
-          h = { name = 'Hunk' },
-          w = { name = 'Workspace folder' },
-        }
-      }
-    end
-  }
+  use { 'folke/which-key.nvim', plugin = 'which-key' }
   -- Notify (notifications)
   use {
     'rcarriga/nvim-notify',

@@ -47,6 +47,8 @@ function M.config()
           ['ic'] = '@class.inner',
           ['ab'] = '@block.outer',
           ['ib'] = '@block.inner',
+          ['aa'] = '@parameter.outer',
+          ['ia'] = '@parameter.inner',
         },
       },
       swap = {
