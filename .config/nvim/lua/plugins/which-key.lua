@@ -7,7 +7,7 @@ local M = {
 }
 
 function M.config()
-  -- this is hacky, to remove the operators gc defined by which-key default
+  -- HACK: which-key is not setup with setup() function, to clear operators
   require('which-key.config').setup {
     show_help = false,
     show_keys = false,
@@ -57,11 +57,9 @@ function M.config()
     w = { name = 'Workspace folder' },
   }
   wk.register(leader, { prefix = '<leader>' })
-  -- known issue:
-  -- which-key is not compatible the below plugins
-  -- thus key like gc will not trigger wihch-key
+  -- NOTE: which-key is not compatible the below plugins
   require('nvim-surround').setup {}
-  -- known issue: can't repeat with dot with treesitter textobjects
+  -- NOTE: can't repeat with dot with treesitter textobjects
   require('Comment').setup {
     pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
   }

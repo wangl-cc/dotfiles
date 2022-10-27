@@ -49,7 +49,7 @@ local function startup(use)
   -- Git panel
   use { 'TimUntersberger/neogit', plugin = 'neogit' }
   --- Text alignment
-  use { 'godlygeek/tabular' , opt = true, cmd = 'Tabularize' }
+  use { 'godlygeek/tabular', opt = true, cmd = 'Tabularize' }
   --- Auto tabstop and shiftwidth
   use 'tpope/vim-sleuth'
   --- Incremental rename

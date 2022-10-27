@@ -7,9 +7,6 @@ function M.config()
         search_down = { icon = '' },
         search_up = { icon = '' },
         help = { icon = '' },
-        -- issues about IncRename adn Substitute:
-        -- 1. can't restore if the popup has different pos (fixed by unknown commit or upstream)
-        -- 2. cursor don't update during move (fixed by 8463b0b with a hack)
         IncRename = {
           pattern = ':%s*IncRename%s+',
           icon = '',
@@ -20,7 +17,8 @@ function M.config()
           }
         },
         substitute = {
-          pattern = [[: %%s/[\<>_%a]+/]], -- a space before % to avoid this for normal sub
+          -- NOTE: a space before % to avoid this for normal sub
+          pattern = [[: %%s/[\<>_%a]+/]],
           icon = '',
           opts = {
             relative = 'cursor',
