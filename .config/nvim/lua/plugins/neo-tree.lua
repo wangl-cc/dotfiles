@@ -1,7 +1,7 @@
 local M = {
   opt = true,
   requires = {
-    { 's1n7ax/nvim-window-picker', tag = "v1.*" },
+    { 's1n7ax/nvim-window-picker', tag = "v1.*", module = "nvim-window-picker" },
   },
   branch = 'v2.x',
   keys = [[<leader>tt]],
