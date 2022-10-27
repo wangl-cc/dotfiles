@@ -49,24 +49,9 @@ local function startup(use)
   use { 'TimUntersberger/neogit', plugin = 'neogit' }
   --- Commenting
   use {
-    'preservim/nerdcommenter',
+    'numToStr/Comment.nvim',
     config = function()
-      -- disable default mappings
-      vim.g.NERDCreateDefaultMappings = 0
-      -- use <leader>c<space> to toggle comments
-      vim.keymap.set({ 'n', 'o', 'x' }, [[<leader>c<space>]],
-        '<Plug>NERDCommenterToggle', { noremap = true, silent = true,
-        desc = 'Change comment state' })
-      -- add a space after comment delimiters by default
-      vim.g.NERDSpaceDelims = 1
-      -- align
-      vim.g.NERDDefaultAlign = 'left'
-      -- use compact syntax for prettified multi-line comments
-      vim.g.NERDCompactSexyComs = 1
-      -- enable trimming of trailing white space when uncomment
-      vim.g.NERDTrimTrailingWhitespace = 1
-      -- enable NERDCommenterToggle to check all selected lines is commented or not
-      vim.g.NERDToggleCheckAllLines = 1
+      require('Comment').setup {}
     end
   }
   --- Additional text objects
