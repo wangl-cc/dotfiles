@@ -27,6 +27,7 @@ function M.config()
       }
     }
   }
+  require('telescope').load_extension('fzf')
   map('n', '<leader>lf', builtins.find_files, { desc = 'List files in CWD' })
   map('n', '<leader>lk', builtins.keymaps, { desc = 'List keymaps' })
   map('n', '<leader>lb', builtins.buffers, { desc = 'List buffers' })
