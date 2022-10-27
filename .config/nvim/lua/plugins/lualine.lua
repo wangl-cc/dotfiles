@@ -18,7 +18,7 @@ function M.config()
       section_separators = { left = '', right = '' },
     },
     extensions = {
-      'nvim-tree',
+      'neo-tree',
       'quickfix',
       'toggleterm',
       {
@@ -133,7 +133,7 @@ function M.config()
             directory = '', -- Text to show when the buffer is a directory
           },
           filetype_names = {
-            NvimTree = 'File Explorer',
+            ['neo-tree'] = 'File Explorer',
             toggleterm = 'Terminal',
             packer = 'Packer',
             lspinfo = 'LSP Info',

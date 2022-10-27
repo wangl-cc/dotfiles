@@ -1,9 +1,4 @@
-local M = {
-  requires = {
-    'MunifTanjim/nui.nvim',
-    'rcarriga/nvim-notify',
-  },
-}
+local M = {}
 
 function M.config()
   require('noice').setup {

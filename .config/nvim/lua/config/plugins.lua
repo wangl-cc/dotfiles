@@ -26,6 +26,7 @@ local function startup(use)
   -- common dependencies
   use { 'nvim-lua/plenary.nvim', opt = true, module = 'plenary' }
   use { 'kyazdani42/nvim-web-devicons', opt = true, module = 'nvim-web-devicons' }
+  use { 'MunifTanjim/nui.nvim' }
 
   -- speed up loading Lua modules
   use 'lewis6991/impatient.nvim'
@@ -86,8 +87,26 @@ local function startup(use)
   }
 
   -- UI
+  --- Window picker, required by neo-tree
+  use {
+    's1n7ax/nvim-window-picker',
+    tag = "v1.*",
+    config = function()
+      require('window-picker').setup {
+        autoselect_one = true,
+        include_current = false,
+        filter_rules = {
+          bo = {
+            filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+            buftype = { 'terminal', "quickfix" },
+          },
+        },
+        other_win_hl_color = '#e35e4f',
+      }
+    end,
+  }
   --- File explorer
-  use { 'kyazdani42/nvim-tree.lua', plugin = 'nvim-tree' }
+  use { 'nvim-neo-tree/neo-tree.nvim', plugin = 'neo-tree' }
   --- Terminal toggle
   use { 'akinsho/toggleterm.nvim', plugin = 'toggleterm' }
   --- Interactive REPL
