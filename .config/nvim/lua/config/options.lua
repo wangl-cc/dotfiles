@@ -109,32 +109,6 @@ opt.guicursor = {
 -- tex flavor
 g.tex_flavor = 'latex'
 
--- disable some builtin plugins
--- from: https://github.com/folke/dot/blob/master/config/nvim/lua/config/options.lua
--- LISENSE: Apache License 2.0
--- Copyright (c) Folke Lemaitre
-local builtins = {
-  "gzip",
-  "zip",
-  "zipPlugin",
-  "fzf",
-  "tar",
-  "tarPlugin",
-  "getscript",
-  "getscriptPlugin",
-  "vimball",
-  "vimballPlugin",
-  "2html_plugin",
-  "matchit",
-  "matchparen",
-  "logiPat",
-  "rrhelper",
-  "netrw",
-  "netrwPlugin",
-  "netrwSettings",
-  "netrwFileHandlers",
-}
-
-for _, plugin in ipairs(builtins) do
-  vim.g["loaded_" .. plugin] = 1
-end
+-- disable builtin plugins
+g.loaded_tutor_mode_plugin = 0
+g.loaded_2html_plugin = 0
