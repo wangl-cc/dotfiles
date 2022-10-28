@@ -70,22 +70,6 @@ local function startup(use)
     'stevearc/dressing.nvim',
     config = function()
       require('dressing').setup {
-        input = {
-          enable = true,
-          start_in_insert = true,
-          mappings = {
-            n = {
-              ['<C-c>'] = 'Close',
-              ['<CR>'] = 'Confirm',
-            },
-            i = {
-              ['<C-c>'] = 'Close',
-              ['<CR>'] = 'Confirm',
-              ['<Up>'] = 'HistoryPrev',
-              ['<Down>'] = 'HistoryNext',
-            },
-          },
-        },
         select = {
           enabled = true,
           backend = { 'telescope', 'builtin' },

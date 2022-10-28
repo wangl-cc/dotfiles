@@ -1,6 +1,11 @@
 local M = {}
 
 function M.config()
+  local cursor_input_opts = {
+    relative = 'cursor',
+    size = { min_width = 20 },
+    position = { row = 2, col = -2 },
+  }
   require('noice').setup {
     cmdline = {
       format = {
@@ -10,23 +15,16 @@ function M.config()
         IncRename = {
           pattern = ':%s*IncRename%s+',
           icon = '',
-          opts = {
-            relative = 'cursor',
-            size = { min_width = 15 },
-            position = { row = -3, col = -4 },
-          }
+          opts = cursor_input_opts
         },
         substitute = {
           -- NOTE: a space before % to avoid this for normal sub
           pattern = [[: %%s/[\<>_%a]+/]],
           icon = '',
-          opts = {
-            relative = 'cursor',
-            size = { min_width = 15 },
-            position = { row = -3, col = -4 },
-          }
+          opts = cursor_input_opts,
         },
         filter = { kind = 'shell' },
+        input = { opts = cursor_input_opts },
       },
     },
     popupmenu = { enabled = false },
