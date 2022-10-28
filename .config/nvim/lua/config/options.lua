@@ -90,6 +90,9 @@ o.laststatus = 3
 -- display sign in number column
 o.signcolumn = 'number'
 
+-- Auto write
+o.autowrite = true
+
 -- short message, details see :h 'shortmess'
 o.shortmess = 'aoOsWAIFS'
 
