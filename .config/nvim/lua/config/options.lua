@@ -90,6 +90,9 @@ o.laststatus = 3
 -- display sign in number column
 o.signcolumn = 'number'
 
+-- short message, details see :h 'shortmess'
+o.shortmess = 'aoOsWAIFS'
+
 -- gui cursor, only works when 'termguicolors' is on
 -- The 'guicursor' don't use the highlight group by default,
 -- this is a modified version of the default 'guicursor' with highlight group
