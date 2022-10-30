@@ -112,3 +112,12 @@ g.tex_flavor = 'latex'
 -- disable builtin plugins
 g.loaded_tutor_mode_plugin = 0
 g.loaded_2html_plugin = 0
+
+-- set buflisted to false for some filetypes
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'checkhealth' },
+  callback = function()
+    vim.bo.buflisted = false
+  end,
+  group = vim.api.nvim_create_augroup('Unlisted', { clear = true }),
+})
