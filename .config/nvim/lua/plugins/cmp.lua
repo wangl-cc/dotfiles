@@ -21,8 +21,14 @@ function M.config()
   cmp.setup {
     window = {
       completion = {
-        col_offset = -1,
+        border = 'rounded',
+        winhighlight = 'Normal:Normal,FloatBorder:Normal,Search:None',
+        col_offset = -2,
         side_padding = 0,
+      },
+      documentation = {
+        border = 'rounded',
+        winhighlight = 'Normal:Normal,FloatBorder:Normal,Search:None',
       },
     },
     formatting = {
