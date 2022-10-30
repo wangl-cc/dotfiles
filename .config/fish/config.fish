@@ -62,6 +62,7 @@ else
   set -gx GIT_DIFF_TOOL vimdiff
 end
 set -gx ESH_SHELL /bin/bash
+set -gx WAKATIME_HOME $HOME/.config/wakatime
 # environments variables for interactive shells }}}
 
 # fish config {{{
