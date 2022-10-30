@@ -9,7 +9,7 @@ defaults_verbose() {
 
 # iterm2
 ## set iterm2 config folder
-defaults_verbose write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.iterm"
+defaults_verbose write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2"
 ## enable custom folder
 defaults_verbose write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
 
