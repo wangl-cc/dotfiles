@@ -2,7 +2,7 @@ local M = {
   requires = {
     'p00f/nvim-ts-rainbow',
     'nvim-treesitter/nvim-treesitter-textobjects',
-    'nvim-treesitter/playground',
+    { 'nvim-treesitter/playground', cmd = 'TSPlaygroundToggle' },
     'JoosepAlviste/nvim-ts-context-commentstring',
   },
   run = ':TSUpdate',

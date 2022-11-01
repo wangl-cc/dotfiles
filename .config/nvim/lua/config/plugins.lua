@@ -112,6 +112,8 @@ local function startup(use)
   -- Notify (notifications)
   use {
     'rcarriga/nvim-notify',
+    opt = true,
+    module = 'notify',
     config = function()
       local notify = require('notify')
       notify.setup {
