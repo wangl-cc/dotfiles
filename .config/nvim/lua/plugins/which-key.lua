@@ -33,8 +33,50 @@ function M.config()
       'nohlsearch and clear match'
     },
     l = {
-      name = 'List',
-      g = { name = 'Git' },
+      name = 'List', -- telescope
+      l = {
+        [[<Cmd>Telescope<CR>]],
+        'List telescope sources',
+      },
+      f = {
+        [[<Cmd>Telescope find_files<CR>]],
+        'List files in CWD',
+      },
+      k = {
+        [[<Cmd>Telescope keymaps<CR>]],
+        'List keymaps',
+      },
+      b = {
+        [[<Cmd>Telescope buffers<CR>]],
+        'List buffers',
+      },
+      h = {
+        [[<Cmd>Telescope help_tags<CR>]],
+        'List help tags',
+      },
+      w = {
+        [[<Cmd>Telescope live_grep<CR>]],
+        'Grep words in CWD',
+      },
+      c = {
+        [[<Cmd>Telescope todo-comments todo<CR>]],
+        'List todo comments',
+      },
+      g = {
+        name = 'Git',
+        c = {
+          [[<Cmd>Telescope git_commits<CR>]],
+          'Show git log'
+        },
+        b = {
+          [[<Cmd>Telescope git_bcommits<CR>]],
+          'Show git log of current file'
+        },
+        s = {
+          [[<Cmd>Telescope git_status<CR>]],
+          'Show git status'
+        },
+      },
     },
     t = { name = 'Toggle' },
     g = { name = 'Go to' },

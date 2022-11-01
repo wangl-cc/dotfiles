@@ -1,9 +1,14 @@
-local lspconfig = require('lspconfig')
-local telescope = require('telescope.builtin')
-local make_capabilities = require('cmp_nvim_lsp').default_capabilities
-local util = require('util')
-
 local M = {}
+
+local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
+local has_cmp_lsp, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
+if not has_lspconfig or not has_cmp_lsp then
+  M.setup = function() end
+  return M
+end
+
+local make_capabilities = cmp_lsp.default_capabilities
+local util = require('util')
 
 local function keymap(mode, lhs, rhs, opts)
   opts = opts or {}
@@ -21,15 +26,18 @@ local on_attach_common = function(_, bufnr)
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_keymap('n', 'gd', telescope.lsp_definitions, { desc = 'Go to definition' })
-  buf_keymap('n', 'gD', telescope.lsp_type_definitions, { desc = 'Go to type definitions' })
-  buf_keymap('n', 'gr', telescope.lsp_references, { desc = 'Go to references' })
-  buf_keymap('n', 'gi', telescope.lsp_implementations, { desc = 'Go to implementations' })
-  buf_keymap('n', '<leader>ld', function()
-    return telescope.diagnostics { bufnr = 0 }
-  end, { desc = 'List all diagnostics if current buffer' })
-  buf_keymap('n', '<leader>ls', telescope.lsp_document_symbols,
-    { buffer = bufnr, desc = 'List all symbols in current buffer' })
+  buf_keymap('n', 'gd', [[<Cmd>Telescope lsp_definitions<CR>]],
+    { desc = 'Go to definition' })
+  buf_keymap('n', 'gD', [[<Cmd>Telescope lsp_type_definitions<CR>]],
+    { desc = 'Go to type definitions' })
+  buf_keymap('n', 'gr', [[<Cmd>Telescope lsp_references<CR>]],
+    { desc = 'Go to references' })
+  buf_keymap('n', 'gi', [[<Cmd>Telescope lsp_implementations<CR>]],
+    { desc = 'Go to implementations' })
+  buf_keymap('n', '<leader>ld', [[<Cmd>Telescope diagnostics bufnr=0<CR>]],
+    { desc = 'List all diagnostics if current buffer' })
+  buf_keymap('n', '<leader>ls', [[<Cmd>Telescope lsp_document_symbols<CR>]],
+    { desc = 'List all symbols in current buffer' })
   buf_keymap('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
   buf_keymap('n', '<leader>K', vim.lsp.buf.signature_help,
     { buffer = bufnr, desc = 'Show signature help' })
@@ -55,13 +63,13 @@ local on_attach_common = function(_, bufnr)
   end, { buffer = bufnr, desc = 'Remove workspace folder' })
   buf_keymap('n', '<leader>cn', function()
     return ':IncRename ' .. vim.fn.expand('<cword>')
-  end, { buffer = bufnr, expr = true, desc = 'Change variable name' })
-  buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Show code action' })
+  end, { desc = 'Change variable name' })
+  buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
   buf_keymap({ 'n', 'v' }, '<leader>f', function(opts)
     opts = opts or {}
     opts.async = true
     vim.lsp.buf.format(opts)
-  end, { buffer = bufnr, desc = 'Format code' })
+  end, { desc = 'Format code' })
 end
 
 local function process_config(config, reload)

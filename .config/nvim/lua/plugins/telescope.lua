@@ -1,15 +1,19 @@
 local M = {
+  opt = true,
+  cmd = 'Telescope',
+  keys = { '<leader>l', 'gd', 'gD', 'gr', 'gi' },
+  module = 'telescope',
+  wants = { 'telescope-fzf-native.nvim', 'plenary.nvim' },
   requires = { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
 }
 
 function M.config()
+  local telescope = require('telescope')
   local actions = require('telescope.actions')
-  local builtins = require('telescope.builtin')
-  local map = vim.keymap.set
-  require('telescope').setup {
+  telescope.setup {
     defaults = {
       mappings = {
-        i = {
+        i = { -- TODO: open with window picker
           ['<esc>'] = actions.close, -- quit but esc
           ['<C-u>'] = false, -- clear promote
           ['<C-b>'] = actions.preview_scrolling_up,
@@ -27,15 +31,7 @@ function M.config()
       }
     }
   }
-  require('telescope').load_extension('fzf')
-  map('n', '<leader>lf', builtins.find_files, { desc = 'List files in CWD' })
-  map('n', '<leader>lk', builtins.keymaps, { desc = 'List keymaps' })
-  map('n', '<leader>lb', builtins.buffers, { desc = 'List buffers' })
-  map('n', '<leader>lh', builtins.help_tags, { desc = 'List help tags' })
-  map('n', '<leader>lw', builtins.live_grep, { desc = 'Live grep' })
-  map('n', '<leader>lgc', builtins.git_commits, { desc = 'Show git log' })
-  map('n', '<leader>lgb', builtins.git_bcommits, { desc = 'Show git log of current file' })
-  map('n', '<leader>lgs', builtins.git_status, { desc = 'Show git status' })
+  telescope.load_extension('fzf')
 end
 
 return M
