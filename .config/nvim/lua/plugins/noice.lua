@@ -118,7 +118,7 @@ function M.config()
         filter = {
           any = {
             { event = 'msg_history_show' },
-            { min_height = 10 },
+            { event = 'msg_show', min_height = 10 },
           }
         }
       },
