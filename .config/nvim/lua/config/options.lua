@@ -129,3 +129,13 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
   group = id
 })
+
+-- set tabstop and shiftwidth for some filetype
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'julia', 'python' },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
+  end,
+  group = vim.api.nvim_create_augroup('IndentOptions', { clear = true })
+})
