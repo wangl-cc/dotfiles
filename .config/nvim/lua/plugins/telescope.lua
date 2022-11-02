@@ -1,7 +1,6 @@
 local M = {
   opt = true,
   cmd = 'Telescope',
-  keys = { '<leader>l', 'gd', 'gD', 'gr', 'gi' },
   module = 'telescope',
   wants = { 'telescope-fzf-native.nvim', 'plenary.nvim' },
   requires = { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
