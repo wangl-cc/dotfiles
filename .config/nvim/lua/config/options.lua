@@ -113,11 +113,19 @@ g.tex_flavor = 'latex'
 g.loaded_tutor_mode_plugin = 0
 g.loaded_2html_plugin = 0
 
--- set buflisted to false for some filetypes
+-- set auto delete buffer for some filetypes
+local id = vim.api.nvim_create_augroup('AutoDeleteBuffer', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'checkhealth' },
   callback = function()
-    vim.bo.buflisted = false
+    vim.bo.bufhidden = 'delete'
   end,
-  group = vim.api.nvim_create_augroup('Unlisted', { clear = true }),
+  group = id
+})
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = { 'lsp.log' },
+  callback = function()
+    vim.bo.bufhidden = 'delete'
+  end,
+  group = id
 })
