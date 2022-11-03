@@ -18,6 +18,9 @@ function M.config()
         enabled = true,
       },
     },
+    key_labels = {
+      ['<CR>'] = '↩',
+    },
     popup_mappings = {
       scroll_down = '<c-f>',
       scroll_up = '<c-b>',

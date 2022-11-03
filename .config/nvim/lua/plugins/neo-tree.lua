@@ -33,8 +33,8 @@ function M.config()
       position = 'left',
       width = 30,
       mappings = {
-        ['<space>'] = 'noop',
-        ['<cr>'] = 'open_with_window_picker',
+        ['<Space>'] = 'noop',
+        ['<CR>'] = 'open_with_window_picker',
         ['s'] = 'split_with_window_picker',
         ['<C-x>'] = 'split_with_window_picker',
         ['S'] = 'noop',
