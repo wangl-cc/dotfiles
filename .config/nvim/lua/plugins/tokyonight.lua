@@ -17,6 +17,9 @@ function M.config()
 
   local tokyonight = require('tokyonight.config')
   tokyonight.setup {
+    styles = {
+      floats = "normal",
+    },
     sidebars = { 'qf' },
     on_highlights = function(hl, c)
       hl.rainbowcol6 = { fg = c.magenta2 }
