@@ -95,7 +95,17 @@ function M.config()
         'Show git status'
       },
     },
-    t = { name = 'Toggle' },
+    t = {
+      name = 'Toggle',
+      t = {
+        [[<Cmd>Neotree toggle<CR>]],
+        'Toggle the file explorer'
+      },
+      c = {
+        [[<Cmd>TSContextToggle<CR>]],
+        'Toggle treesitter context',
+      }
+    },
     c = {
       name = 'Change',
       w = {

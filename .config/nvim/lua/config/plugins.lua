@@ -26,7 +26,25 @@ local function startup(use)
   -- common dependencies
   use { 'nvim-lua/plenary.nvim', opt = true, module = 'plenary' }
   use { 'kyazdani42/nvim-web-devicons', opt = true, module = 'nvim-web-devicons' }
-  use { 'MunifTanjim/nui.nvim', opt = true, event = 'UIEnter' }
+  use { 'MunifTanjim/nui.nvim', opt = true, module = 'nui' }
+  use {
+    's1n7ax/nvim-window-picker',
+    tag = "v1.*",
+    module = "window-picker",
+    config = function()
+      require('window-picker').setup {
+        autoselect_one = true,
+        include_current = false,
+        filter_rules = {
+          bo = {
+            filetype = { 'neo-tree', "neo-tree-popup", "notify" },
+            buftype = { 'terminal', "quickfix" },
+          },
+        },
+        -- TODO: highlights
+      }
+    end
+  }
 
   -- speed up loading Lua modules
   use 'lewis6991/impatient.nvim'
@@ -223,6 +241,31 @@ local function startup(use)
   }
   --- Tree sitter
   use { 'nvim-treesitter/nvim-treesitter', plugin = 'treesitter' }
+  use {
+    'nvim-treesitter/playground',
+    opt = true,
+    cmd = 'TSPlaygroundToggle',
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        playground = {
+          enable = true,
+        },
+      }
+    end
+  }
+  use {
+    'nvim-treesitter/nvim-treesitter-context',
+    opt = true,
+    cmd = 'TSContextToggle',
+    config = function()
+      require('treesitter-context').setup {
+        -- set to false at setup,
+        -- because it's loaded by TSContextToggle command
+        -- and which will toggle this option
+        enable = false,
+      }
+    end,
+  }
   --- LaTeX
   use {
     'lervag/vimtex',

@@ -1,11 +1,7 @@
 local M = {
   opt = true,
-  requires = {
-    { 's1n7ax/nvim-window-picker', tag = "v1.*", module = "nvim-window-picker" },
-  },
-  branch = 'v2.x',
-  keys = [[<leader>tt]],
   cmd = 'Neotree',
+  branch = 'v2.x',
 }
 
 -- This is run this file is loaded
@@ -13,17 +9,6 @@ local M = {
 vim.g.neo_tree_remove_legacy_commands = 1
 
 function M.config()
-  require('window-picker').setup {
-    autoselect_one = true,
-    include_current = false,
-    filter_rules = {
-      bo = {
-        filetype = { 'neo-tree', "neo-tree-popup", "notify" },
-        buftype = { 'terminal', "quickfix" },
-      },
-    },
-    -- TODO: highlights
-  }
   require('neo-tree').setup {
     close_if_last_window = true,
     popup_border_style = 'rounded',
@@ -43,8 +28,6 @@ function M.config()
       }
     },
   }
-  vim.keymap.set({ 'n', 'v' }, '<leader>tt', '<Cmd>Neotree toggle<CR>',
-    { silent = true, desc = 'Toggle the file explorer' })
 end
 
 return M
