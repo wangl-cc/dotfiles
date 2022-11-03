@@ -63,7 +63,7 @@ function M.config()
     },
   }
   local parsers = require('nvim-treesitter.parsers')
-  vim.keymap.set('n', '<leader>lp', function()
+  vim.keymap.set('n', '<leader>sp', function()
     local parser_list = parsers.available_parsers()
     table.sort(parser_list)
     local parser_info = {}
@@ -85,7 +85,7 @@ function M.config()
       end
     end)
   end, {
-    desc = 'List tree-sitter parsers',
+    desc = 'Search tree-sitter parsers',
   })
 end
 

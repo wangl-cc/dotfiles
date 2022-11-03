@@ -1,14 +1,6 @@
 local M = {
   opt = true,
-  keys = {
-    '<leader>tr',
-    '<leader>sc',
-    '<leader>sl',
-    '<leader>sf',
-    '<leader>sm',
-    '<leader>mc',
-    '<leader>md',
-  },
+  keys = { "<leader><CR>", [[<C-\>]] },
 }
 function M.config()
   local iron = require('iron.core')
@@ -29,20 +21,17 @@ function M.config()
       },
     },
     keymaps = {
-      send_motion = '<leader>sc',
-      visual_send = '<leader>sc',
-      send_file = '<leader>sf',
-      send_line = '<leader>sl',
-      send_mark = '<leader>sm',
-      mark_motion = '<leader>mc',
-      mark_visual = '<leader>mc',
-      remove_mark = '<leader>md',
-      cr = '<leader>s<cr>',
-      interrupt = '<leader>s<space>',
-      exit = '<leader>sq',
-      clear = '<leader>cl',
+      visual_send = '<leader><CR>',
+      send_motion = '<leader><CR>',
     },
   }
+  vim.keymap.set('n', [[<C-\>]], function()
+    -- FROM: https://github.com/hkupty/iron.nvim/issues/279
+    local last_line = vim.fn.line('$')
+    local pos = vim.api.nvim_win_get_cursor(0)
+    iron.send_line()
+    vim.api.nvim_win_set_cursor(0, { math.min(pos[1] + 1, last_line), pos[2] })
+  end, { desc = 'Send line and move down' })
   vim.keymap.set('n', '<leader>tr', function()
     if vim.bo.filetype == 'iron' then
       vim.api.nvim_win_hide(0)

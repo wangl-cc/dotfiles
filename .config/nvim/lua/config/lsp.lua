@@ -34,10 +34,10 @@ local on_attach_common = function(_, bufnr)
     { desc = 'Go to references' })
   buf_keymap('n', 'gi', [[<Cmd>Telescope lsp_implementations<CR>]],
     { desc = 'Go to implementations' })
-  buf_keymap('n', '<leader>ld', [[<Cmd>Telescope diagnostics bufnr=0<CR>]],
-    { desc = 'List all diagnostics if current buffer' })
-  buf_keymap('n', '<leader>ls', [[<Cmd>Telescope lsp_document_symbols<CR>]],
-    { desc = 'List all symbols in current buffer' })
+  buf_keymap('n', '<leader>sd', [[<Cmd>Telescope diagnostics bufnr=0<CR>]],
+    { desc = 'Search all diagnostics if current buffer' })
+  buf_keymap('n', '<leader>ss', [[<Cmd>Telescope lsp_document_symbols<CR>]],
+    { desc = 'Search all symbols in current buffer' })
   buf_keymap('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
   buf_keymap('n', '<leader>K', vim.lsp.buf.signature_help,
     { buffer = bufnr, desc = 'Show signature help' })

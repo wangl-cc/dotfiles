@@ -32,27 +32,27 @@ function M.config()
       [[:nohlsearch<CR>:match<CR>]],
       'nohlsearch and clear match'
     },
-    l = {
-      name = 'List', -- telescope
-      l = {
+    s = {
+      name = 'Search', -- telescope
+      t = {
         [[<Cmd>Telescope<CR>]],
-        'List telescope sources',
+        'Search telescope sources',
       },
       f = {
         [[<Cmd>Telescope find_files<CR>]],
-        'List files in CWD',
+        'Search files in CWD',
       },
       k = {
         [[<Cmd>Telescope keymaps<CR>]],
-        'List keymaps',
+        'Search keymaps',
       },
       b = {
         [[<Cmd>Telescope buffers<CR>]],
-        'List buffers',
+        'Search buffers',
       },
       h = {
         [[<Cmd>Telescope help_tags<CR>]],
-        'List help tags',
+        'Search help tags',
       },
       w = {
         [[<Cmd>Telescope live_grep<CR>]],
@@ -60,28 +60,25 @@ function M.config()
       },
       c = {
         [[<Cmd>Telescope todo-comments todo<CR>]],
-        'List todo comments',
+        'Search todo comments',
       },
-      g = {
-        name = 'Git',
-        c = {
-          [[<Cmd>Telescope git_commits<CR>]],
-          'Show git log'
-        },
-        b = {
-          [[<Cmd>Telescope git_bcommits<CR>]],
-          'Show git log of current file'
-        },
-        s = {
-          [[<Cmd>Telescope git_status<CR>]],
-          'Show git status'
-        },
+    },
+    g = {
+      name = 'Git',
+      c = {
+        [[<Cmd>Telescope git_commits<CR>]],
+        'Show git log'
+      },
+      b = {
+        [[<Cmd>Telescope git_bcommits<CR>]],
+        'Show git log of current file'
+      },
+      s = {
+        [[<Cmd>Telescope git_status<CR>]],
+        'Show git status'
       },
     },
     t = { name = 'Toggle' },
-    g = { name = 'Go to' },
-    m = { name = 'Mark' },
-    s = { name = 'Send' },
     c = {
       name = 'Change',
       w = {
