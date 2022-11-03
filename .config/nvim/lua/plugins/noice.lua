@@ -62,6 +62,11 @@ function M.config()
           }
         },
       },
+      notify = {
+        win_options = {
+          winblend = 20,
+        }
+      }
     },
     status = {
       hunk = { find = '^Hunk %d+ of %d' },
