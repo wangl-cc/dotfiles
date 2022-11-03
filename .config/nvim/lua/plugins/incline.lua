@@ -1,7 +1,8 @@
-local M = {}
+local M = {
+  after = 'tokyonight.nvim', -- wait for colorscheme to load
+}
 
 function M.config()
-  local ts_statusline = require('util.ts_statusline').ts_statusline
   local get_icon_color = require('nvim-web-devicons').get_icon_color
 
   require('incline').setup {
@@ -9,19 +10,11 @@ function M.config()
       local bufname = vim.api.nvim_buf_get_name(props.buf)
       local filename = vim.fn.fnamemodify(bufname, ':t')
       local filetype_icon, color = get_icon_color(filename)
-      local status = {
+      return {
         { filetype_icon, guifg = color },
         ' ',
         filename,
       }
-      if vim.fn.bufnr('%') == props.buf then
-        return ts_statusline {
-          start = status,
-          separator = ' ← ',
-          reverse = true,
-        }
-      end
-      return status
     end,
     window = {
       margin = {

@@ -1,14 +1,15 @@
 local M = {}
 
+local util = require('util')
 local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
 local has_cmp_lsp, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
 if not has_lspconfig or not has_cmp_lsp then
+  util.warn('lspconfig or cmp_nvim_lsp not found, skipping lsp config')
   M.setup = function() end
   return M
 end
 
 local make_capabilities = cmp_lsp.default_capabilities
-local util = require('util')
 
 local function keymap(mode, lhs, rhs, opts)
   opts = opts or {}

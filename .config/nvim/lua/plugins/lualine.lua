@@ -1,5 +1,6 @@
 local M = {
   after = {
+    'tokyonight.nvim', -- after tokyonight.nvim to get color theme
     'noice.nvim', -- after noice to ensure status line functions are loaded
     'gitsigns.nvim', -- after gitsigns to ensure b.gitsigns_status_dict is seted
   },

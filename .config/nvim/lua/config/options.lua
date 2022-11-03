@@ -112,6 +112,9 @@ g.tex_flavor = 'latex'
 -- disable builtin plugins
 g.loaded_tutor_mode_plugin = 0
 g.loaded_2html_plugin = 0
+g.loaded_netrw = 0
+g.loaded_netrwPlugin = 0
+g.loaded_matchit = 0
 
 -- set auto delete buffer for some filetypes
 local id = vim.api.nvim_create_augroup('AutoDeleteBuffer', { clear = true })

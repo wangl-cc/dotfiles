@@ -1,4 +1,7 @@
-local M = {}
+local M = {
+  opt = true,
+  event = 'UIEnter',
+}
 
 function M.config()
   local is_sshr = vim.env.SSHR_PORT ~= nil

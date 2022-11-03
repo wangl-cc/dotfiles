@@ -1,4 +1,6 @@
-local M = {}
+local M = {
+  after = 'tokyonight.nvim', -- wait for colorscheme to load
+}
 
 function M.config()
   local cursor_input_opts = {

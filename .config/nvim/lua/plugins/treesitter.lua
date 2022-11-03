@@ -1,9 +1,24 @@
 local M = {
+  opt = true,
+  branch = 'v0.8.0',
+  event = "BufEnter",
   requires = {
     'p00f/nvim-ts-rainbow',
     'nvim-treesitter/nvim-treesitter-textobjects',
-    'nvim-treesitter/playground', cmd = 'TSPlaygroundToggle',
     'JoosepAlviste/nvim-ts-context-commentstring',
+    { 'nvim-treesitter/playground', cmd = 'TSPlaygroundToggle' },
+    {
+      'nvim-treesitter/nvim-treesitter-context',
+      opt = true,
+      cmd = 'TSContextToggle',
+      config = function()
+        require('treesitter-context').setup {
+          enable = false, -- set to false at setup, because it's loaded by TSContextToggle command
+        }
+        vim.keymap.set('n', '<leader>tc', '<Cmd>TSContextToggle<CR>',
+          { silent = true, noremap = true, desc = 'Toggle treesitter context' })
+      end,
+    }
   },
   run = ':TSUpdate',
 }
@@ -84,9 +99,7 @@ function M.config()
         require('nvim-treesitter.install').update()(selected.lang)
       end
     end)
-  end, {
-    desc = 'Search tree-sitter parsers',
-  })
+  end, { desc = 'Search tree-sitter parsers' })
 end
 
 return M

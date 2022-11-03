@@ -1,4 +1,6 @@
-local M = {}
+local M = {
+  after = 'tokyonight.nvim', -- wait for colorscheme to load
+}
 
 function M.config()
   require('gitsigns').setup {

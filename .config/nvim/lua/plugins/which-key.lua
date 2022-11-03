@@ -1,7 +1,21 @@
 local M = {
+  opt = true,
+  event = 'BufEnter',
   requires = {
-    'kylechui/nvim-surround',
-    'numToStr/Comment.nvim',
+    {
+      'kylechui/nvim-surround',
+      config = function()
+        require('nvim-surround').setup {}
+      end
+    },
+    {
+      'numToStr/Comment.nvim',
+      config = function()
+        require('Comment').setup {
+          pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+        }
+      end
+    },
     'justinmk/vim-sneak',
   }
 }
@@ -100,11 +114,7 @@ function M.config()
   }
   wk.register(leader, { prefix = '<leader>' })
   -- NOTE: which-key is not compatible the below plugins
-  require('nvim-surround').setup {}
   -- NOTE: can't repeat with dot with treesitter textobjects
-  require('Comment').setup {
-    pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-  }
   -- sneak
   vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
   vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')

@@ -26,7 +26,7 @@ local function startup(use)
   -- common dependencies
   use { 'nvim-lua/plenary.nvim', opt = true, module = 'plenary' }
   use { 'kyazdani42/nvim-web-devicons', opt = true, module = 'nvim-web-devicons' }
-  use { 'MunifTanjim/nui.nvim' }
+  use { 'MunifTanjim/nui.nvim', opt = true, event = 'UIEnter' }
 
   -- speed up loading Lua modules
   use 'lewis6991/impatient.nvim'
@@ -53,6 +53,8 @@ local function startup(use)
   --- Incremental rename
   use {
     'smjonas/inc-rename.nvim',
+    opt = true,
+    event = 'UIEnter',
     config = function()
       require('inc_rename').setup {}
     end
@@ -68,6 +70,8 @@ local function startup(use)
   --- Input and select
   use {
     'stevearc/dressing.nvim',
+    opt = true,
+    event = 'UIEnter',
     config = function()
       require('dressing').setup {
         input = { enabled = false },
@@ -81,6 +85,8 @@ local function startup(use)
   --- Indent guides
   use {
     'lukas-reineke/indent-blankline.nvim',
+    opt = true,
+    event = 'UIEnter',
     config = function()
       require('indent_blankline').setup {
         char = '▏',
@@ -135,6 +141,8 @@ local function startup(use)
   --- Highlight and view todos
   use {
     "folke/todo-comments.nvim",
+    opt = true,
+    event = 'UIEnter',
     config = function()
       require("todo-comments").setup {}
     end
@@ -143,43 +151,19 @@ local function startup(use)
   --- Language server
   use {
     'neovim/nvim-lspconfig',
+    opt = true,
+    event = 'BufReadPre',
     config = function()
-      -- This is just config for ui, config for lsp in config/lsp.lua
-      -- we can't load lsp.lua here because it may break packer compile
       require('lspconfig.ui.windows').default_options.border = 'rounded'
+      require('config.lsp').setup()
     end
   }
   --- Auto completion
   use { 'hrsh7th/nvim-cmp', plugin = 'cmp' }
-  --- Snippets
-  use {
-    'L3MON4D3/LuaSnip',
-    opt = true,
-    event = { 'InsertEnter', 'CmdLineEnter' },
-    module = 'luasnip',
-    requires = 'rafamadriz/friendly-snippets',
-    config = function()
-      require('luasnip/loaders/from_vscode').lazy_load()
-    end
-  }
-  --- Tree sitter
-  use { 'nvim-treesitter/nvim-treesitter', plugin = 'treesitter' }
-  use {
-    'nvim-treesitter/nvim-treesitter-context',
-    opt = true,
-    cmd = 'TSContextToggle',
-    keys = '<leader>tc',
-    config = function()
-      require('treesitter-context').setup {
-        enable = true,
-      }
-      vim.keymap.set('n', '<leader>tc', '<Cmd>TSContextToggle<CR>',
-        { silent = true, noremap = true, desc = 'Toggle treesitter context' })
-    end,
-  }
-  --- auto pair
+  -- Auto pairs
   use {
     'windwp/nvim-autopairs',
+    opt = true,
     event = 'InsertEnter',
     config = function()
       local npairs = require('nvim-autopairs')
@@ -217,6 +201,8 @@ local function startup(use)
   --- Copilot
   use {
     'zbirenbaum/copilot.lua',
+    opt = true,
+    event = 'BufReadPost',
     config = function()
       require('copilot').setup {
         copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
@@ -235,8 +221,8 @@ local function startup(use)
       }
     end
   }
-  --- Zinit
-  use { 'zdharma-continuum/zinit-vim-syntax', opt = true, ft = 'zsh' }
+  --- Tree sitter
+  use { 'nvim-treesitter/nvim-treesitter', plugin = 'treesitter' }
   --- LaTeX
   use {
     'lervag/vimtex',
@@ -254,7 +240,7 @@ local function startup(use)
 
   -- Misc
   --- Waka time
-  use { 'wakatime/vim-wakatime', opt = true, event = 'VimEnter' }
+  use { 'wakatime/vim-wakatime', opt = true, event = 'UIEnter' }
 end
 
 return require('util.packer').setup(config, startup)
