@@ -16,8 +16,13 @@ end
 local function auto_compile(packer)
   local auto_compile_group = vim.api.nvim_create_augroup('AutoCompile', { clear = true })
   util.create_source_autocmd {
-    pattern = { 'config/plugins.lua', '*/plugins/*.lua', 'util/*.lua' },
+    pattern = {
+      'config/plugins.lua',
+      '*/nvim/lua/plugins/*.lua',
+      '*/nvim/lua/util/*.lua',
+    },
     callback = function()
+      util.info('Reload plugins', 'AutoCompile')
       for mod, _ in pairs(package.loaded) do
         if mod:match('^plugins%.') or mod:match('^util%.') or mod == 'config.plugins' then
           util.unload(mod)
@@ -31,7 +36,7 @@ local function auto_compile(packer)
   vim.api.nvim_create_autocmd('User', {
     pattern = 'PackerCompileDone',
     callback = function()
-      util.info('Re-compiled')
+      util.info('Packer compile done', 'AutoCompile')
     end,
     group = auto_compile_group,
   })

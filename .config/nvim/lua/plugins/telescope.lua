@@ -1,12 +1,12 @@
 local M = {
-  opt = true,
-  cmd = 'Telescope',
-  module = 'telescope',
-  wants = { 'telescope-fzf-native.nvim', 'plenary.nvim' },
+  -- opt = true,
+  -- cmd = 'Telescope',
+  -- module = 'telescope',
   requires = { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
 }
 
 function M.config()
+  -- FIXME: Telescope breaks when its loaded and then reloaded if its lazy loaded
   local telescope = require('telescope')
   local actions = require('telescope.actions')
   telescope.setup {
