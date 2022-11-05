@@ -26,6 +26,8 @@ function M.config()
     sidebars = { 'qf' },
     on_highlights = function(hl, c)
       hl.rainbowcol6 = { fg = c.magenta2 }
+      hl.WindowPicker = { fg = c.black, bg = c.blue }
+      hl.WindowPickerNC = { fg = c.black, bg = c.blue }
     end,
   }
   vim.cmd [[colorscheme tokyonight]]

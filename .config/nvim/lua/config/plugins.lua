@@ -27,24 +27,6 @@ local function startup(use)
   use { 'nvim-lua/plenary.nvim', opt = true, module = 'plenary' }
   use { 'kyazdani42/nvim-web-devicons', opt = true, module = 'nvim-web-devicons' }
   use { 'MunifTanjim/nui.nvim', opt = true, module = 'nui' }
-  use {
-    's1n7ax/nvim-window-picker',
-    tag = "v1.*",
-    module = "window-picker",
-    config = function()
-      require('window-picker').setup {
-        autoselect_one = true,
-        include_current = false,
-        filter_rules = {
-          bo = {
-            filetype = { 'neo-tree', "neo-tree-popup", "notify" },
-            buftype = { 'terminal', "quickfix" },
-          },
-        },
-        -- TODO: highlights
-      }
-    end
-  }
 
   -- speed up loading Lua modules
   use 'lewis6991/impatient.nvim'
