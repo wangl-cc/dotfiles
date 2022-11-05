@@ -106,6 +106,9 @@ opt.guicursor = {
   'r-cr-o:hor20-Cursor/lCursor',
 }
 
+-- clipboard
+opt.clipboard:append { 'unnamedplus' }
+
 -- tex flavor
 g.tex_flavor = 'latex'
 
