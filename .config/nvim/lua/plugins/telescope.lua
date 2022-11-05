@@ -1,8 +1,13 @@
 local M = {
-  -- opt = true,
-  -- cmd = 'Telescope',
-  -- module = 'telescope',
-  requires = { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+  after = "tokyonight.nvim",
+  requires = {
+    'nvim-telescope/telescope-fzf-native.nvim',
+    run = 'make',
+    after = 'telescope.nvim',
+    config = function()
+      require('telescope').load_extension('fzf')
+    end
+  },
 }
 
 function M.config()
@@ -30,7 +35,6 @@ function M.config()
       }
     }
   }
-  telescope.load_extension('fzf')
 end
 
 return M
