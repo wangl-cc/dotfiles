@@ -64,7 +64,7 @@ local on_attach_common = function(_, bufnr)
   end, { buffer = bufnr, desc = 'Remove workspace folder' })
   buf_keymap('n', '<leader>cn', function()
     return ':IncRename ' .. vim.fn.expand('<cword>')
-  end, { desc = 'Change variable name' })
+  end, { expr = true, desc = 'Change variable name' })
   buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
   buf_keymap({ 'n', 'v' }, '<leader>f', function(opts)
     opts = opts or {}
