@@ -202,7 +202,7 @@ local function startup(use)
   use {
     'zbirenbaum/copilot.lua',
     opt = true,
-    event = 'InsertEnter',
+    module = 'copilot',
     config = function()
       require('copilot').setup {
         copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
