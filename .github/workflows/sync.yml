@@ -34,6 +34,6 @@ jobs:
         env:
           ID_FILE: ~/.ssh/id_rsa
           TRIGGER_TYPE: ${{ github.event_name }}
-        run:
+        run: |
           git remote add gitee git@gitee.com:wangl-cc/dotfiles.git
           git push gitee master
