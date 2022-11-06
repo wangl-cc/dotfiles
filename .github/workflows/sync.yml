@@ -14,7 +14,8 @@ jobs:
           - config.yml
     steps:
       - uses: actions/checkout@v3
-        fetch-depth: 0
+        with:
+          fetch-depth: 0
       - name: "Create private key"
         run: |
           mkdir -p ~/.ssh
