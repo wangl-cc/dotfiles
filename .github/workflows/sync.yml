@@ -36,4 +36,4 @@ jobs:
           TRIGGER_TYPE: ${{ github.event_name }}
         run: |
           git remote add gitee git@gitee.com:wangl-cc/dotfiles.git
-          git push gitee master
+          git push gitee $GITHUB_REF
