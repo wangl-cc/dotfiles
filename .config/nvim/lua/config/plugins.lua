@@ -209,6 +209,8 @@ local function startup(use)
             vim.fn.expand('$HOMEBREW_PREFIX/opt/node@16/bin/node') or 'node',
         filetypes = {
           help = false,
+          iron = false,
+          toggleterm = false,
           ['*'] = true,
         },
         panel = {
