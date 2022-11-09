@@ -51,7 +51,13 @@ genpw_pattern(){
     pattern="$1"
     pw=""
     for (( i=0; i<${#pattern}; i++ )); do
-        pw="$pw$(charset2char "${pattern:$i:1}")"
+        pattern_char="${pattern:$i:1}"
+        if [[ "$pattern_char" == "%" ]]; then
+            (( i++ ))
+            pw="$pw${pattern:$i:1}"
+        else
+            pw="$pw$(charset2char "${pattern_char}")"
+        fi
     done
     echo "$pw"
 }
@@ -88,6 +94,9 @@ Charsets:
     'a': an union of 'w' and special characters.
 
     If other charsets occurs in pattern, which will be return as is.
+    If you want to use characters like 'u' in pattern, you should use '%' to
+    escape it, like '%u', which will be return as 'u'. '%' can also be escaped
+    by '%%', which will be return as '%'.
 EOM
 }
 
@@ -97,6 +106,9 @@ Examples:
 
 \$ $(basename "$0") -p wwww-wwww-wwww
 AGm4-iODv-wUAx
+
+\$ $(basename "$0") -p %w%l-wwww-wwww
+wl-xnNr-IDv1
 
 \$ $(basename "$0") -l 16
 ufzm7QUDZMyln6-D
