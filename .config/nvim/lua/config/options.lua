@@ -94,7 +94,7 @@ o.signcolumn = 'number'
 o.autowrite = true
 
 -- short message, details see :h 'shortmess'
-o.shortmess = 'aoOsWAIFS'
+o.shortmess = 'aoOsWAIF'
 
 -- gui cursor, only works when 'termguicolors' is on
 -- The 'guicursor' don't use the highlight group by default,
