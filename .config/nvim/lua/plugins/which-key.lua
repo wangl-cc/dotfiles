@@ -150,10 +150,10 @@ function M.config()
   -- NOTE: which-key is not compatible with vim-sneak and Comment.nvim
   -- NOTE: can't repeat with dot with treesitter textobjects
   -- bind fF and tT to sneak
-  vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
-  vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')
-  vim.keymap.set({ 'n', 'x' }, 't', '<Plug>Sneak_t')
-  vim.keymap.set({ 'n', 'x' }, 'T', '<Plug>Sneak_T')
+  vim.keymap.set({ 'n', 'x', 'o' }, 'f', '<Plug>Sneak_f')
+  vim.keymap.set({ 'n', 'x', 'o' }, 'F', '<Plug>Sneak_F')
+  vim.keymap.set({ 'n', 'x', 'o' }, 't', '<Plug>Sneak_t')
+  vim.keymap.set({ 'n', 'x', 'o' }, 'T', '<Plug>Sneak_T')
 end
 
 return M
