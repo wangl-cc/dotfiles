@@ -6,7 +6,7 @@ local M = {}
 local function switch_bg(bg)
   if vim.o.background ~= bg then
     vim.o.background = bg
-    vim.api.nvim_exec_autocmds('OptionSet', { pattern = 'background' })
+    vim.api.nvim_exec_autocmds("OptionSet", { pattern = "background" })
   end
 end
 
@@ -40,9 +40,9 @@ function M.autobg()
   if not autobg_lock then
     autobg_lock = true
     if M.options.is_dark() then
-      switch('dark', M.options.dark)
+      switch("dark", M.options.dark)
     else
-      switch('light', M.options.light)
+      switch("light", M.options.light)
     end
     autobg_lock = false
   end
@@ -54,12 +54,13 @@ function M.setup(opts)
 
   M.options = vim.deepcopy(opts)
 
-  local autobg_group = vim.api.nvim_create_augroup('AutoBackground', { clear = true })
+  local autobg_group =
+    vim.api.nvim_create_augroup("AutoBackground", { clear = true })
   -- iTerm2 will send a SIGWINCH when the theme changes
-  vim.api.nvim_create_autocmd('Signal', {
-    pattern = 'SIGWINCH',
+  vim.api.nvim_create_autocmd("Signal", {
+    pattern = "SIGWINCH",
     callback = M.autobg,
-    group = autobg_group
+    group = autobg_group,
   })
 
   return autobg_group

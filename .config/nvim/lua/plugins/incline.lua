@@ -1,18 +1,18 @@
 local M = {
-  after = 'tokyonight.nvim', -- wait for colorscheme to load
+  after = "tokyonight.nvim", -- wait for colorscheme to load
 }
 
 function M.config()
-  local get_icon_color = require('nvim-web-devicons').get_icon_color
+  local get_icon_color = require("nvim-web-devicons").get_icon_color
 
-  require('incline').setup {
+  require("incline").setup {
     render = function(props)
       local bufname = vim.api.nvim_buf_get_name(props.buf)
-      local filename = vim.fn.fnamemodify(bufname, ':t')
+      local filename = vim.fn.fnamemodify(bufname, ":t")
       local filetype_icon, color = get_icon_color(filename)
       return {
         { filetype_icon, guifg = color },
-        ' ',
+        " ",
         filename,
       }
     end,

@@ -1,20 +1,20 @@
 local M = {
   opt = true,
-  cmd = 'Neogit',
+  cmd = "Neogit",
 }
 function M.config()
-  require('neogit').setup {
-    kind = 'vsplit',
+  require("neogit").setup {
+    kind = "vsplit",
     -- customize displayed signs
     signs = {
       -- { CLOSED, OPENED }
-      section = { '', '' },
-      item = { '', '' },
-      hunk = { '', '' },
+      section = { "", "" },
+      item = { "", "" },
+      hunk = { "", "" },
     },
     integrations = {
-      diffview = true
-    }
+      diffview = true,
+    },
   }
 end
 

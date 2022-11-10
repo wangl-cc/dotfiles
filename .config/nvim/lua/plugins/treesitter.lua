@@ -1,24 +1,24 @@
 local M = {
   opt = true,
-  branch = 'v0.8.0',
+  branch = "v0.8.0",
   event = "BufEnter",
   requires = {
-    'p00f/nvim-ts-rainbow',
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    'JoosepAlviste/nvim-ts-context-commentstring',
+    "p00f/nvim-ts-rainbow",
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  run = ':TSUpdate',
+  run = ":TSUpdate",
 }
 
 function M.config()
-  require('nvim-treesitter.configs').setup {
+  require("nvim-treesitter.configs").setup {
     ensure_installed = {
-      'bash',
-      'vim',
-      'lua',
-      'regex',
-      'query',
-      'help',
+      "bash",
+      "vim",
+      "lua",
+      "regex",
+      "query",
+      "help",
     },
     auto_install = true,
     highlight = {
@@ -40,50 +40,50 @@ function M.config()
         enable = true,
         lookahead = true,
         keymaps = {
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-          ['ab'] = '@block.outer',
-          ['ib'] = '@block.inner',
-          ['aa'] = '@parameter.outer',
-          ['ia'] = '@parameter.inner',
+          ["af"] = "@function.outer",
+          ["if"] = "@function.inner",
+          ["ac"] = "@class.outer",
+          ["ic"] = "@class.inner",
+          ["ab"] = "@block.outer",
+          ["ib"] = "@block.inner",
+          ["aa"] = "@parameter.outer",
+          ["ia"] = "@parameter.inner",
         },
       },
       swap = {
         enable = true,
         swap_next = {
-          ['<leader>a'] = '@parameter.inner',
+          ["<leader>a"] = "@parameter.inner",
         },
         swap_previous = {
-          ['<leader>A'] = '@parameter.inner',
+          ["<leader>A"] = "@parameter.inner",
         },
       },
     },
   }
-  local parsers = require('nvim-treesitter.parsers')
-  vim.keymap.set('n', '<leader>sp', function()
+  local parsers = require "nvim-treesitter.parsers"
+  vim.keymap.set("n", "<leader>sp", function()
     local parser_list = parsers.available_parsers()
     table.sort(parser_list)
     local parser_info = {}
     for _, lang in ipairs(parser_list) do
       table.insert(parser_info, {
         lang = lang,
-        status = parsers.has_parser(lang)
+        status = parsers.has_parser(lang),
       })
     end
     vim.ui.select(parser_info, {
-      prompt = 'Update parser',
+      prompt = "Update parser",
       format_item = function(item)
         -- use + to search installed parser and - search uninstalled parser
-        return string.format('%s %s', item.status and '+' or '-', item.lang)
+        return string.format("%s %s", item.status and "+" or "-", item.lang)
       end,
     }, function(selected)
       if selected then
-        require('nvim-treesitter.install').update()(selected.lang)
+        require("nvim-treesitter.install").update()(selected.lang)
       end
     end)
-  end, { desc = 'Search tree-sitter parsers' })
+  end, { desc = "Search tree-sitter parsers" })
 end
 
 return M

@@ -1,8 +1,8 @@
 local config = {
   display = {
     open_fn = function()
-      local result, win, buf = require('packer.util').float {
-        border = 'rounded',
+      local result, win, buf = require("packer.util").float {
+        border = "rounded",
       }
       return result, win, buf
     end,
@@ -11,198 +11,207 @@ local config = {
 
 local function startup(use)
   -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
+  use "wbthomason/packer.nvim"
 
   -- startup time
   use {
-    'dstein64/vim-startuptime',
+    "dstein64/vim-startuptime",
     opt = true,
-    cmd = 'StartupTime',
+    cmd = "StartupTime",
     config = function()
       vim.g.startuptime_tries = 50
-    end
+    end,
   }
 
   -- common dependencies
-  use { 'nvim-lua/plenary.nvim', opt = true, module = 'plenary' }
-  use { 'kyazdani42/nvim-web-devicons', opt = true, module = 'nvim-web-devicons' }
-  use { 'MunifTanjim/nui.nvim', opt = true, module = 'nui' }
+  use { "nvim-lua/plenary.nvim", opt = true, module = "plenary" }
+  use { "kyazdani42/nvim-web-devicons", opt = true, module = "nvim-web-devicons" }
+  use { "MunifTanjim/nui.nvim", opt = true, module = "nui" }
 
   -- speed up loading Lua modules
-  use 'lewis6991/impatient.nvim'
+  use "lewis6991/impatient.nvim"
 
   -- UNIX shell commands
   use {
-    'tpope/vim-eunuch',
+    "tpope/vim-eunuch",
     opt = true,
+    -- stylua: ignore
     cmd = {
-      'Delete', 'Remove', 'Unlike',
-      'Rename', 'Move', 'Copy', 'Duplicate',
-      'Mkdir', 'Chmod', 'Cfind', 'Clocate', 'Wall',
-      'SudoWrite', 'SudoEdit',
+      "Delete", "Remove", "Unlike",
+      "Rename", "Move", "Copy", "Duplicate",
+      "Mkdir", "Chmod", "Cfind", "Clocate", "Wall",
+      "SudoWrite", "SudoEdit",
     }
   }
   -- Git commands
-  use { 'tpope/vim-fugitive', opt = true, cmd = { 'Git' } }
+  use { "tpope/vim-fugitive", opt = true, cmd = { "Git" } }
   --- Git signs
-  use { 'lewis6991/gitsigns.nvim', plugin = 'gitsigns' }
+  use { "lewis6991/gitsigns.nvim", plugin = "gitsigns" }
   -- Git panel
-  use { 'TimUntersberger/neogit', plugin = 'neogit' }
+  use { "TimUntersberger/neogit", plugin = "neogit" }
   --- Text alignment
-  use { 'godlygeek/tabular', opt = true, cmd = 'Tabularize' }
+  use { "godlygeek/tabular", opt = true, cmd = "Tabularize" }
   --- Incremental rename
   use {
-    'smjonas/inc-rename.nvim',
+    "smjonas/inc-rename.nvim",
     opt = true,
-    event = 'UIEnter',
+    event = "UIEnter",
     config = function()
-      require('inc_rename').setup {}
-    end
+      require("inc_rename").setup {}
+    end,
   }
 
   -- UI
   --- File explorer
-  use { 'nvim-neo-tree/neo-tree.nvim', plugin = 'neo-tree' }
+  use { "nvim-neo-tree/neo-tree.nvim", plugin = "neo-tree" }
   --- Terminal toggle
-  use { 'akinsho/toggleterm.nvim', plugin = 'toggleterm' }
+  use { "akinsho/toggleterm.nvim", plugin = "toggleterm" }
   --- Interactive REPL
-  use { 'hkupty/iron.nvim', plugin = 'iron' }
+  use { "hkupty/iron.nvim", plugin = "iron" }
   --- Input and select
   use {
-    'stevearc/dressing.nvim',
+    "stevearc/dressing.nvim",
     opt = true,
-    event = 'UIEnter',
+    event = "UIEnter",
     config = function()
-      require('dressing').setup {
+      require("dressing").setup {
         input = { enabled = false },
         select = {
           enabled = true,
-          backend = { 'telescope', 'builtin' },
-        }
+          backend = { "telescope", "builtin" },
+        },
       }
-    end
+    end,
   }
   --- Indent guides
   use {
-    'lukas-reineke/indent-blankline.nvim',
+    "lukas-reineke/indent-blankline.nvim",
     opt = true,
-    event = 'UIEnter',
+    event = "UIEnter",
     config = function()
-      require('indent_blankline').setup {
-        char = '▏',
-        context_char = '▏',
+      require("indent_blankline").setup {
+        char = "▏",
+        context_char = "▏",
         show_current_context = true,
         show_current_context_start = true,
       }
     end,
   }
   --- Colorscheme
-  use { 'folke/tokyonight.nvim', plugin = 'tokyonight' }
+  use { "folke/tokyonight.nvim", plugin = "tokyonight" }
   --- Statusline
-  use { 'nvim-lualine/lualine.nvim', plugin = 'lualine' }
+  use { "nvim-lualine/lualine.nvim", plugin = "lualine" }
   --- Floating status line
-  use { 'b0o/incline.nvim', plugin = 'incline' }
+  use { "b0o/incline.nvim", plugin = "incline" }
   --- Telescope (fuzzy finder)
-  use { 'nvim-telescope/telescope.nvim', plugin = 'telescope' }
+  use { "nvim-telescope/telescope.nvim", plugin = "telescope" }
   -- WhichKey (keybindings)
-  use { 'folke/which-key.nvim', plugin = 'which-key' }
+  use { "folke/which-key.nvim", plugin = "which-key" }
   -- Notify (notifications)
   use {
-    'rcarriga/nvim-notify',
+    "rcarriga/nvim-notify",
     opt = true,
-    module = 'notify',
+    module = "notify",
     config = function()
-      local notify = require('notify')
+      local notify = require "notify"
       notify.setup {
-        stages = 'fade',
+        stages = "fade",
         timeout = 3000,
         level = vim.log.levels.INFO,
         icons = {
-          ERROR = '',
-          WARN  = '',
-          INFO  = '',
-          DEBUG = '',
-          TRACE = '✎',
+          ERROR = "",
+          WARN = "",
+          INFO = "",
+          DEBUG = "",
+          TRACE = "✎",
         },
       }
-    end
+    end,
   }
   -- cmdline and handle messages
-  use { 'folke/noice.nvim', plugin = 'noice' }
+  use { "folke/noice.nvim", plugin = "noice" }
   --- Highlight and view todos
   use {
     "folke/todo-comments.nvim",
     opt = true,
-    event = 'UIEnter',
+    event = "UIEnter",
     config = function()
       require("todo-comments").setup {}
-    end
+    end,
   }
   -- Code support
   --- Language server
   use {
-    'neovim/nvim-lspconfig',
+    "neovim/nvim-lspconfig",
     opt = true,
-    event = 'BufReadPre',
+    event = "BufReadPre",
     config = function()
-      require('lspconfig.ui.windows').default_options.border = 'rounded'
-      require('config.lsp').setup()
-    end
+      require("lspconfig.ui.windows").default_options.border = "rounded"
+      require("config.lsp").setup()
+    end,
   }
   --- Auto completion
-  use { 'hrsh7th/nvim-cmp', plugin = 'cmp' }
+  use { "hrsh7th/nvim-cmp", plugin = "cmp" }
   -- Auto pairs
   use {
-    'windwp/nvim-autopairs',
+    "windwp/nvim-autopairs",
     opt = true,
-    event = 'InsertEnter',
+    event = "InsertEnter",
     config = function()
-      local npairs = require('nvim-autopairs')
-      local Rule = require('nvim-autopairs.rule')
+      local npairs = require "nvim-autopairs"
+      local Rule = require "nvim-autopairs.rule"
       npairs.setup {}
       npairs.add_rules {
-        Rule(' ', ' ')
-            :with_pair(function(opts)
-              local pair = opts.line:sub(opts.col - 1, opts.col)
-              return vim.tbl_contains({ '()', '[]', '{}' }, pair)
-            end),
-        Rule('( ', ' )')
-            :with_pair(function() return false end)
-            :with_move(function(opts)
-              return opts.prev_char:match('.%)') ~= nil
-            end)
-            :use_key(')'),
-        Rule('{ ', ' }')
-            :with_pair(function() return false end)
-            :with_move(function(opts)
-              return opts.prev_char:match('.%}') ~= nil
-            end)
-            :use_key('}'),
-        Rule('[ ', ' ]')
-            :with_pair(function() return false end)
-            :with_move(function(opts)
-              return opts.prev_char:match('.%]') ~= nil
-            end)
-            :use_key(']')
+        Rule(" ", " "):with_pair(function(opts)
+          local pair = opts.line:sub(opts.col - 1, opts.col)
+          return vim.tbl_contains({ "()", "[]", "{}" }, pair)
+        end),
+        Rule("( ", " )")
+          :with_pair(function()
+            return false
+          end)
+          :with_move(function(opts)
+            return opts.prev_char:match ".%)" ~= nil
+          end)
+          :use_key ")",
+        Rule("{ ", " }")
+          :with_pair(function()
+            return false
+          end)
+          :with_move(function(opts)
+            return opts.prev_char:match ".%}" ~= nil
+          end)
+          :use_key "}",
+        Rule("[ ", " ]")
+          :with_pair(function()
+            return false
+          end)
+          :with_move(function(opts)
+            return opts.prev_char:match ".%]" ~= nil
+          end)
+          :use_key "]",
       }
-      require('cmp').event:on('confirm_done',
-        require('nvim-autopairs.completion.cmp').on_confirm_done())
-    end
+      require("cmp").event:on(
+        "confirm_done",
+        require("nvim-autopairs.completion.cmp").on_confirm_done()
+      )
+    end,
   }
   --- Copilot
   use {
-    'zbirenbaum/copilot.lua',
+    "zbirenbaum/copilot.lua",
     opt = true,
-    module = 'copilot',
+    module = "copilot",
     config = function()
-      require('copilot').setup {
-        copilot_node_command = vim.loop.os_uname().sysname == 'Darwin' and
-            vim.fn.expand('$HOMEBREW_PREFIX/opt/node@16/bin/node') or 'node',
+      require("copilot").setup {
+        copilot_node_command = vim.loop.os_uname().sysname == "Darwin"
+            and vim.fn.expand "$HOMEBREW_PREFIX/opt/node@16/bin/node"
+          or "node",
         filetypes = {
           help = false,
           iron = false,
           toggleterm = false,
-          ['*'] = true,
+          ["*"] = true,
         },
         panel = {
           enabled = false,
@@ -212,28 +221,28 @@ local function startup(use)
           auto_trigger = true,
         },
       }
-    end
+    end,
   }
   --- Tree sitter
-  use { 'nvim-treesitter/nvim-treesitter', plugin = 'treesitter' }
+  use { "nvim-treesitter/nvim-treesitter", plugin = "treesitter" }
   use {
-    'nvim-treesitter/playground',
+    "nvim-treesitter/playground",
     opt = true,
-    cmd = 'TSPlaygroundToggle',
+    cmd = "TSPlaygroundToggle",
     config = function()
-      require('nvim-treesitter.configs').setup {
+      require("nvim-treesitter.configs").setup {
         playground = {
           enable = true,
         },
       }
-    end
+    end,
   }
   use {
-    'nvim-treesitter/nvim-treesitter-context',
+    "nvim-treesitter/nvim-treesitter-context",
     opt = true,
-    cmd = 'TSContextToggle',
+    cmd = "TSContextToggle",
     config = function()
-      require('treesitter-context').setup {
+      require("treesitter-context").setup {
         -- set to false at setup,
         -- because it's loaded by TSContextToggle command
         -- and which will toggle this option
@@ -243,24 +252,24 @@ local function startup(use)
   }
   --- LaTeX
   use {
-    'lervag/vimtex',
+    "lervag/vimtex",
     opt = true,
-    ft = 'tex',
-    cmd = 'VimtexInverseSearch', -- for inverse search
+    ft = "tex",
+    cmd = "VimtexInverseSearch", -- for inverse search
     config = function()
-      vim.g.vimtex_view_method = 'skim'
+      vim.g.vimtex_view_method = "skim"
       vim.g.vimtex_view_skim_sync = 1
       vim.g.vimtex_view_skim_reading_bar = 1
-    end
+    end,
   }
   -- Neovim lua
-  use { 'folke/neodev.nvim', opt = true, module = 'neodev' }
+  use { "folke/neodev.nvim", opt = true, module = "neodev" }
 
   -- Misc
   --- Waka time
-  use { 'wakatime/vim-wakatime', opt = true, event = 'UIEnter' }
+  use { "wakatime/vim-wakatime", opt = true, event = "UIEnter" }
 end
 
-return require('util.packer').setup(config, startup)
+return require("util.packer").setup(config, startup)
 
 -- vim:ts=2:sw=2:et

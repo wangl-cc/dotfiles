@@ -1,10 +1,10 @@
 local M = {}
 
-local util = require('util')
-local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
-local has_cmp_lsp, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
+local util = require "util"
+local has_lspconfig, lspconfig = pcall(require, "lspconfig")
+local has_cmp_lsp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
 if not has_lspconfig or not has_cmp_lsp then
-  util.warn('lspconfig or cmp_nvim_lsp not found, skipping lsp config')
+  util.warn "lspconfig or cmp_nvim_lsp not found, skipping lsp config"
   M.setup = function() end
   return M
 end
@@ -25,8 +25,9 @@ local on_attach_common = function(_, bufnr)
     keymap(mode, lhs, rhs, opts)
   end
 
-  -- Mappings.
+  -- Mappings:
   -- See `:help vim.lsp.*` for documentation on any of the below functions
+  -- stylua: ignore start
   buf_keymap('n', 'gd', [[<Cmd>Telescope lsp_definitions<CR>]],
     { desc = 'Go to definition' })
   buf_keymap('n', 'gD', [[<Cmd>Telescope lsp_type_definitions<CR>]],
@@ -39,13 +40,14 @@ local on_attach_common = function(_, bufnr)
     { desc = 'Search all diagnostics if current buffer' })
   buf_keymap('n', '<leader>ss', [[<Cmd>Telescope lsp_document_symbols<CR>]],
     { desc = 'Search all symbols in current buffer' })
-  buf_keymap('n', '<leader>k', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Show hover' })
+  buf_keymap('n', '<leader>k', vim.lsp.buf.hover,
+    { buffer = bufnr, desc = 'Show hover' })
   buf_keymap('n', '<leader>K', vim.lsp.buf.signature_help,
     { buffer = bufnr, desc = 'Show signature help' })
   buf_keymap('n', '<leader>wa', function()
     vim.ui.input({
       prompt = 'Workspace folder to be added',
-      default = vim.fn.expand('%:p:h'),
+      default = vim.fn.expand '%:p:h',
     }, function(dir)
       if dir then
         vim.lsp.buf.add_workspace_folder(dir)
@@ -54,16 +56,15 @@ local on_attach_common = function(_, bufnr)
   end, { buffer = bufnr, desc = 'Add workspace folder' })
   buf_keymap('n', '<leader>wd', function()
     vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
-      prompt = 'Workspace folder to be removed'
+      prompt = 'Workspace folder to be removed',
     }, function(dir)
       if dir then
         vim.lsp.buf.remove_workspace_folder(dir)
       end
-    end
-    )
+    end)
   end, { buffer = bufnr, desc = 'Remove workspace folder' })
   buf_keymap('n', '<leader>cn', function()
-    return ':IncRename ' .. vim.fn.expand('<cword>')
+    return ':IncRename ' .. vim.fn.expand '<cword>'
   end, { expr = true, desc = 'Change variable name' })
   buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
   buf_keymap({ 'n', 'v' }, '<leader>f', function(opts)
@@ -71,10 +72,11 @@ local on_attach_common = function(_, bufnr)
     opts.async = true
     vim.lsp.buf.format(opts)
   end, { desc = 'Format code' })
+  -- stylua: ignore end
 end
 
 local function process_config(config, reload)
-  if type(config) == 'string' then
+  if type(config) == "string" then
     if reload then
       return util.reload(config)
     else
@@ -108,46 +110,46 @@ local function setup_server(server, config)
 end
 
 M.configs = {
-  julials = 'lsp.julials',
-  sumneko_lua = 'lsp.sumneko_lua',
+  julials = "lsp.julials",
+  sumneko_lua = "lsp.sumneko_lua",
 }
 
 M.setup = function()
   -- some simple servers, is not necessary to use a config file
-  if vim.fn.executable('bash-language-server') == 1 then
-    M.configs.bashls = { options = { filetypes = { 'bash', 'sh' } } }
+  if vim.fn.executable "bash-language-server" == 1 then
+    M.configs.bashls = { options = { filetypes = { "bash", "sh" } } }
   end
 
-  if vim.fn.executable('taplo') == 1 then
+  if vim.fn.executable "taplo" == 1 then
     M.configs.taplo = {}
   end
 
-  local lsp_reload = vim.api.nvim_create_augroup('LspReload', { clear = true })
+  local lsp_reload = vim.api.nvim_create_augroup("LspReload", { clear = true })
   -- auto reload after this file
   util.create_source_autocmd {
-    pattern = 'config/lsp.lua',
+    pattern = "config/lsp.lua",
     callback = function()
-      util.reload('config.lsp').setup()
+      util.reload("config.lsp").setup()
     end,
     group = lsp_reload,
   }
   -- auto reload servers' config when config changes
   util.create_source_autocmd {
-    pattern = 'lsp/*.lua',
+    pattern = "lsp/*.lua",
     callback = function()
-      local file = vim.fn.expand('<afile>')
-      local server = vim.fs.basename(file):gsub('%.lua$', '')
-      if server == 'init' then
+      local file = vim.fn.expand "<afile>"
+      local server = vim.fs.basename(file):gsub("%.lua$", "")
+      if server == "init" then
         return
       end
       local config = process_config(M.configs[server], true)
       setup_server(server, config)
-      print('Reloaded ' .. server)
+      print("Reloaded " .. server)
     end,
     group = lsp_reload,
   }
-  keymap('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
-  keymap('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
+  keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+  keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
   for server, config in pairs(M.configs) do
     setup_server(server, process_config(config))
   end

@@ -20,14 +20,14 @@ local M = {}
 --@type WindowPickerOptions
 M.options = {
   autoselect_one = true,
-  chars = 'FJDKSLA;CMRUEIWOQP',
+  chars = "FJDKSLA;CMRUEIWOQP",
   use_winbar = 0, -- 0: never | 1: when cmdheight == 0 | 2: always
   filter_rule = {
     current = false, -- if include current window, default is false
     wo = {},
     bo = {
-      filetype = { 'neo-tree' },
-      buftype = { 'terminal' },
+      filetype = { "neo-tree" },
+      buftype = { "terminal" },
     },
     -- func = function(winid) end, return false to filter out
   },
@@ -80,14 +80,14 @@ local function filter_windows(windows, rule)
 end
 
 local function picker_hl(indicator_hl)
-  return indicator_hl .. ':WindowPicker,' .. indicator_hl .. 'NC:WindowPickerNC'
+  return indicator_hl .. ":WindowPicker," .. indicator_hl .. "NC:WindowPickerNC"
 end
 
 --@param opts? WindowPickerOptions
 --@return integer
 function M.pick_window(opts)
   -- merge options
-  local options = opts and vim.tbl_extend('force', M.options, opts) or M.options
+  local options = opts and vim.tbl_extend("force", M.options, opts) or M.options
   local rules = options.filter_rule
   local chars = options.chars
 
@@ -97,7 +97,7 @@ function M.pick_window(opts)
   -- remove floating windows
   windows = vim.tbl_filter(function(winid)
     local config = vim.api.nvim_win_get_config(winid)
-    return config.relative == '' -- empty string means not floating
+    return config.relative == "" -- empty string means not floating
   end, windows)
   -- filter windows by rules
   local pickables = filter_windows(windows, rules)
@@ -125,35 +125,35 @@ function M.pick_window(opts)
   if use_winbar < 2 then -- don't use winbar
     laststatus = vim.o.laststatus
     cmdheight = vim.o.cmdheight
-    indicator = 'statusline'
-    indicator_hl = 'StatusLine'
+    indicator = "statusline"
+    indicator_hl = "StatusLine"
     -- set statusline and cmdheight to show indicator
     vim.o.laststatus = 2
     vim.o.cmdheight = 1
   else
-    indicator = 'winbar'
-    indicator_hl = 'WinBar'
+    indicator = "winbar"
+    indicator_hl = "WinBar"
   end
   -- setup indicator for selectable windows
   local chars_used = {}
   local win_opts = {}
   for i, id in ipairs(pickables) do
     local char = chars:sub(i, i)
-    table.insert(chars_used, '&' .. char)
+    table.insert(chars_used, "&" .. char)
     -- save window options
     win_opts[id] = {
       [indicator] = vim.api.nvim_win_get_option(id, indicator),
-      winhl = vim.api.nvim_win_get_option(id, 'winhl'),
+      winhl = vim.api.nvim_win_get_option(id, "winhl"),
     }
     -- set indicator to show char
-    vim.api.nvim_win_set_option(id, indicator, '%=' .. char .. '%=')
-    vim.api.nvim_win_set_option(id, 'winhl', picker_hl(indicator_hl))
+    vim.api.nvim_win_set_option(id, indicator, "%=" .. char .. "%=")
+    vim.api.nvim_win_set_option(id, "winhl", picker_hl(indicator_hl))
   end
   -- redraw windows
-  vim.cmd('redraw')
+  vim.cmd "redraw"
 
   -- ask user to pick a window, user type <Esc> means no window selected
-  local i = vim.fn.confirm('Pick which window?', table.concat(chars_used, '\n'), 0)
+  local i = vim.fn.confirm("Pick which window?", table.concat(chars_used, "\n"), 0)
 
   -- Restore UI
   -- restore window options
