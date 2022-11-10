@@ -23,6 +23,11 @@ function M.config()
     keymaps = {
       visual_send = '<leader><CR>',
       send_motion = '<leader><CR>',
+      send_file = '<leader><CR>gg',
+      cr = '<leader><CR><CR>',
+      interrupt = '<leader><C-c>',
+      clear = '<leader><C-u>',
+      exit = '<leader><C-d>',
     },
   }
   vim.keymap.set('n', [[<C-\>]], function()
