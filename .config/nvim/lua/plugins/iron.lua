@@ -6,6 +6,7 @@ function M.config()
   local iron = require('iron.core')
   iron.setup {
     config = {
+      highlight_last = false,
       repl_open_cmd = function(bufnr)
         -- HACK: set the filetype to 'iron' to detect it when needed
         vim.api.nvim_buf_set_option(bufnr, 'filetype', 'iron')
