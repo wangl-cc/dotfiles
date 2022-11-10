@@ -94,15 +94,6 @@ local function startup(use)
         show_current_context = true,
         show_current_context_start = true,
       }
-      local cmds = require('indent_blankline.commands')
-      vim.keymap.set('n', '<leader>ti', cmds.toggle,
-        { desc = 'Toggle indent guides' })
-      for _, keymap in pairs({ 'zo', 'zO', 'zc', 'zC', 'za', 'zA', 'zv',
-        'zx', 'zX', 'zm', 'zM', 'zr', 'zR' }) do
-        vim.keymap.set('n', keymap,
-          keymap .. '<Cmd>IndentBlanklineRefresh<CR>',
-          { noremap = true, silent = true })
-      end
     end,
   }
   --- Colorscheme

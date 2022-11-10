@@ -104,7 +104,11 @@ function M.config()
       c = {
         [[<Cmd>TSContextToggle<CR>]],
         'Toggle treesitter context',
-      }
+      },
+      i = {
+        [[<Cmd>IndentBlanklineToggle<CR>]],
+        'Toggle indent guides',
+      },
     },
     c = {
       name = 'Change',
@@ -123,9 +127,29 @@ function M.config()
     w = { name = 'Workspace folder' },
   }
   wk.register(leader, { prefix = '<leader>' })
-  -- NOTE: which-key is not compatible the below plugins
+  -- fold keymaps with IndentBlanklineRefresh
+  local fold = {
+    o = {[[zo<Cmd>IndentBlanklineRefresh<CR>]], 'Open one fold under the cursor'},
+    O = {[[zO<Cmd>IndentBlanklineRefresh<CR>]], 'Open all folds under the cursor'},
+    c = {[[zc<Cmd>IndentBlanklineRefresh<CR>]], 'Close one fold under the cursor'},
+    C = {[[zC<Cmd>IndentBlanklineRefresh<CR>]], 'Close all folds under the cursor'},
+    a = {[[za<Cmd>IndentBlanklineRefresh<CR>]], 'Toggle one fold under the cursor'},
+    A = {[[zA<Cmd>IndentBlanklineRefresh<CR>]], 'Toggle all folds under the cursor'},
+    v = {[[zv<Cmd>IndentBlanklineRefresh<CR>]], 'View cursor line'},
+    x = {[[zx<Cmd>IndentBlanklineRefresh<CR>]], 'Re-apply fold level, then do zv'},
+    X = {[[zX<Cmd>IndentBlanklineRefresh<CR>]], 'Re-apply fold level'},
+    m = {[[zm<Cmd>IndentBlanklineRefresh<CR>]], 'Decrease fold level'},
+    M = {[[zM<Cmd>IndentBlanklineRefresh<CR>]], 'Close all folds'},
+    r = {[[zr<Cmd>IndentBlanklineRefresh<CR>]], 'Increase fold level'},
+    R = {[[zR<Cmd>IndentBlanklineRefresh<CR>]], 'Open all folds'},
+    n = {[[zn<Cmd>IndentBlanklineRefresh<CR>]], 'Disable fold'},
+    N = {[[zN<Cmd>IndentBlanklineRefresh<CR>]], 'Enable fold'},
+    i = {[[zi<Cmd>IndentBlanklineRefresh<CR>]], 'Toggle foldenable'},
+  }
+  wk.register(fold, { prefix = 'z' })
+  -- NOTE: which-key is not compatible with vim-sneak and Comment.nvim
   -- NOTE: can't repeat with dot with treesitter textobjects
-  -- sneak
+  -- bind fF and tT to sneak
   vim.keymap.set({ 'n', 'x' }, 'f', '<Plug>Sneak_f')
   vim.keymap.set({ 'n', 'x' }, 'F', '<Plug>Sneak_F')
   vim.keymap.set({ 'n', 'x' }, 't', '<Plug>Sneak_t')
