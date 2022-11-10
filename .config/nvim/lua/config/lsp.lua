@@ -87,8 +87,16 @@ local function process_config(config, reload)
   end
 end
 
+--@class LspConfig
+--@field disabled? boolean
+--@field on_attach? func(bufnr, client)
+--@field setup_capabilities? func(capabilities)
+--@field opts? table
+
+--@param server string
+--@param config lspconfig
 local function setup_server(server, config)
-  if not config then
+  if config.disabled then
     return
   end
   local options = config.options or {}

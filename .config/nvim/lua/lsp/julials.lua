@@ -1,10 +1,12 @@
-if vim.fn.executable "julia" ~= 1 and vim.env.__JULIA_LSP_DISABLE == "true" then
-  return
+--@type LspConfig
+local M = {}
+
+if vim.fn.executable "julia" ~= 1 or vim.env.__JULIA_LSP_DISABLE == "true" then
+  M.disabled = true
+  return M
 end
 
 local Job = require "plenary.job"
-
-local M = {}
 
 M.setup_capabilities = function(capabilities)
   -- from wiki of LanguageServer.jl
