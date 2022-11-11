@@ -70,12 +70,7 @@ function M.config()
       )
       map("n", "<leader>td", gs.toggle_deleted, { desc = "Toggle deleted lines" })
       map("n", "<leader>ts", gs.toggle_signs, { desc = "Toggle git signcolumn" })
-      map(
-        "n",
-        "<leader>tl",
-        gs.toggle_linehl,
-        { desc = "Toggle git line highlight" }
-      )
+      map("n", "<leader>tl", gs.toggle_linehl, { desc = "Toggle git line highlight" })
       map("n", "<leader>tw", gs.toggle_word_diff, { desc = "Toggle word diff" })
     end,
     yadm = {

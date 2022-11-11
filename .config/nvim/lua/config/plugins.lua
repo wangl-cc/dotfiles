@@ -41,7 +41,7 @@ local function startup(use)
       "Rename", "Move", "Copy", "Duplicate",
       "Mkdir", "Chmod", "Cfind", "Clocate", "Wall",
       "SudoWrite", "SudoEdit",
-    }
+    },
   }
   -- Git commands
   use { "tpope/vim-fugitive", opt = true, cmd = { "Git" } }

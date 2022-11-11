@@ -54,8 +54,7 @@ function M.setup(opts)
 
   M.options = vim.deepcopy(opts)
 
-  local autobg_group =
-    vim.api.nvim_create_augroup("AutoBackground", { clear = true })
+  local autobg_group = vim.api.nvim_create_augroup("AutoBackground", { clear = true })
   -- iTerm2 will send a SIGWINCH when the theme changes
   vim.api.nvim_create_autocmd("Signal", {
     pattern = "SIGWINCH",
