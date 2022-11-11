@@ -120,27 +120,27 @@ g.loaded_netrwPlugin = 0
 g.loaded_matchit = 0
 
 -- set auto delete buffer for some filetypes
-local id = vim.api.nvim_create_augroup("AutoDeleteBuffer", { clear = true })
+local auto_bd = vim.api.nvim_create_augroup("AutoDeleteBuffer", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "checkhealth" },
   callback = function()
     vim.bo.bufhidden = "delete"
   end,
-  group = id,
+  group = auto_bd,
 })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "gitcommit", "gitrebase" },
   callback = function()
     vim.bo.bufhidden = "wipe"
   end,
-  group = id,
+  group = auto_bd,
 })
 vim.api.nvim_create_autocmd("BufEnter", {
   pattern = { "lsp.log" },
   callback = function()
     vim.bo.bufhidden = "delete"
   end,
-  group = id,
+  group = auto_bd,
 })
 
 -- set tabstop and shiftwidth for some filetype
@@ -151,6 +151,21 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo.shiftwidth = 4
   end,
   group = vim.api.nvim_create_augroup("IndentOptions", { clear = true }),
+})
+
+-- show cursor line only in active window
+local cursorline = vim.api.nvim_create_augroup("CursorLine", { clear = true })
+vim.api.nvim_create_autocmd("WinEnter", {
+  callback = function()
+    vim.wo.cursorline = true
+  end,
+  group = cursorline,
+})
+vim.api.nvim_create_autocmd("WinLeave", {
+  callback = function()
+    vim.wo.cursorline = false
+  end,
+  group = cursorline,
 })
 
 -- NOTE: use nvim inside nvim, there are some notes
