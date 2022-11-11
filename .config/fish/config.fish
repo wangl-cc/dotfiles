@@ -9,8 +9,6 @@ function abbrg --description 'Create a new global abbreviation'
 end
 # rm
 abbrg rm "rm -i"
-# vi
-abbrg vi vim
 # ls
 abbrg l  ls --color
 abbrg ll ls --color -lh
@@ -54,12 +52,32 @@ abbrg ycb  yadm checkout -b
 # environments variables for interactive shells {{{
 # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
 if type -q nvim
-  abbrg vim nvim
-  set -gx VISUAL nvim
-  set -gx GIT_DIFF_TOOL nvimdiff
+  if set -q NVIM # inside nvim
+    abbrg vi nvr
+    abbrg vim nvr
+    abbrg nvim nvr
+    # if neovim-remote is not installed, fallback to nvim
+    if not type -q nvr
+      # this definition works but not as good as nvr
+      # thus neovim-remote is highly recommended
+      function nvr --description "neovim remote"
+        nvim --server $NVIM --remote $argv
+      end
+    end
+    # environments variables set in nvim
+  else
+    abbrg vi nvim
+    abbrg vim nvim
+    abbrg nvim nvim
+    set -gx VISUAL nvim
+    set -gx GIT_DIFF_TOOL nvimdiff
+    set -gx GIT_MERGE_TOOL nvimdiff
+  end
 else
+  abbrg vi vim
   set -gx VISUAL vim
   set -gx GIT_DIFF_TOOL vimdiff
+  set -gx GIT_MERGE_TOOL vimdiff
 end
 set -gx ESH_SHELL /bin/bash
 set -gx WAKATIME_HOME $HOME/.config/wakatime

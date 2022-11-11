@@ -20,8 +20,12 @@
 	autoSetupRemote = true
 [diff]
 	tool = $GIT_DIFF_TOOL
+[difftool "nvr"]
+	cmd = nvr -s -d $LOCAL $REMOTE
 [merge]
-	tool = $GIT_DIFF_TOOL
+	tool = $GIT_MERGE_TOOL
+[mergetool "nvr"]
+	cmd = nvr -s -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='
 [alias]
 	st = status
 	co = checkout

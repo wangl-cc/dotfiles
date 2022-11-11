@@ -128,6 +128,13 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = id,
 })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "gitcommit", "gitrebase" },
+  callback = function()
+    vim.bo.bufhidden = "wipe"
+  end,
+  group = id,
+})
 vim.api.nvim_create_autocmd("BufEnter", {
   pattern = { "lsp.log" },
   callback = function()
@@ -145,3 +152,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = vim.api.nvim_create_augroup("IndentOptions", { clear = true }),
 })
+
+-- NOTE: use nvim inside nvim, there are some notes
+-- 1. nvim --remote works but not well, nvr is much more recommended;
+-- 2. this works in vim command line :!, only works in terminal inside nvim;
+-- 3. environment variables must be set here instead of shell rc file;
+if vim.fn.executable "nvr" == 1 then
+  vim.env.VISUAL = "nvr"
+  vim.env.GIT_EDITOR = 'nvr -cc split --remote-wait'
+  vim.env.GIT_DIFF_TOOL = "nvr"
+  vim.env.GIT_MERGE_TOOL = "nvr"
+else
+  vim.env.VISUAL = "nvim --server " .. vim.v.servername .. " --remote"
+end
