@@ -4,48 +4,48 @@ set -gx PATH $HOME/.local/bin $PATH
 
 if status is-interactive # {{{
 # abbreviates {{{
-function abbrg --description 'Create a new global abbreviation'
+function gabbr --description 'Create a new global abbreviation'
   abbr -a -g $argv
 end
 # rm
-abbrg rm "rm -i"
+gabbr rm "rm -i"
 # ls
-abbrg l  ls --color
-abbrg ll ls --color -lh
-abbrg la ls --color -Alh
+gabbr l  ls --color
+gabbr ll ls --color -lh
+gabbr la ls --color -Alh
 # cd
-abbrg ... ../..
+gabbr ... ../..
 # git {{{
-abbrg g   git
-abbrg ga  git add
-abbrg gb  git branch
-abbrg gc  git commit
-abbrg gd  git diff
-abbrg gds git diff --staged
-abbrg gs  git status
-abbrg gsu git status -u
-abbrg gl  git log
-abbrg gp  git push
-abbrg gpl git pull
-abbrg gr  git remote
-abbrg gco git checkout
-abbrg gcm git checkout master
-abbrg gcb git checkout -b
-abbrg y    yadm
-abbrg ya   yadm add
-abbrg yb   yadm branch
-abbrg yc   yadm commit
-abbrg yd   yadm diff
-abbrg yds  yadm diff --staged
-abbrg ys   yadm status
-abbrg ysu  yadm status -u
-abbrg yl   yadm log
-abbrg yp   yadm push
-abbrg ypl  yadm pull
-abbrg yr   yadm remote
-abbrg yco  yadm checkout
-abbrg ycm  yadm checkout master
-abbrg ycb  yadm checkout -b
+gabbr g   git
+gabbr ga  git add
+gabbr gb  git branch
+gabbr gc  git commit
+gabbr gd  git diff
+gabbr gds git diff --staged
+gabbr gs  git status
+gabbr gsu git status -u
+gabbr gl  git log
+gabbr gp  git push
+gabbr gpl git pull
+gabbr gr  git remote
+gabbr gco git checkout
+gabbr gcm git checkout master
+gabbr gcb git checkout -b
+gabbr y    yadm
+gabbr ya   yadm add
+gabbr yb   yadm branch
+gabbr yc   yadm commit
+gabbr yd   yadm diff
+gabbr yds  yadm diff --staged
+gabbr ys   yadm status
+gabbr ysu  yadm status -u
+gabbr yl   yadm log
+gabbr yp   yadm push
+gabbr ypl  yadm pull
+gabbr yr   yadm remote
+gabbr yco  yadm checkout
+gabbr ycm  yadm checkout master
+gabbr ycb  yadm checkout -b
 # git }}}
 # abbreviates }}}
 
@@ -53,9 +53,9 @@ abbrg ycb  yadm checkout -b
 # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
 if type -q nvim
   if set -q NVIM # inside nvim
-    abbrg vi nvr
-    abbrg vim nvr
-    abbrg nvim nvr
+    gabbr vi nvr
+    gabbr vim nvr
+    gabbr nvim nvr
     # if neovim-remote is not installed, fallback to nvim
     if not type -q nvr
       # this definition works but not as good as nvr
@@ -66,15 +66,15 @@ if type -q nvim
     end
     # environments variables set in nvim
   else
-    abbrg vi nvim
-    abbrg vim nvim
-    abbrg nvim nvim
+    gabbr vi nvim
+    gabbr vim nvim
+    gabbr nvim nvim
     set -gx VISUAL nvim
     set -gx GIT_DIFF_TOOL nvimdiff
     set -gx GIT_MERGE_TOOL nvimdiff
   end
 else
-  abbrg vi vim
+  gabbr vi vim
   set -gx VISUAL vim
   set -gx GIT_DIFF_TOOL vimdiff
   set -gx GIT_MERGE_TOOL vimdiff
@@ -89,7 +89,7 @@ if type -q fastfetch
   function fish_greeting
       fastfetch
   end
-  abbrg ff fastfetch
+  gabbr ff fastfetch
 else
   set -g fish_greeting # set to null to disable greeting
 end
