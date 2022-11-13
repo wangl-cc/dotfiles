@@ -8,7 +8,7 @@ function gabbr --description 'Create a new global abbreviation'
   abbr -a -g $argv
 end
 # rm
-gabbr rm "rm -i"
+gabbr rm rm -i
 # ls
 gabbr l  ls --color
 gabbr ll ls --color -lh
@@ -19,6 +19,8 @@ gabbr ... ../..
 gabbr g   git
 gabbr ga  git add
 gabbr gb  git branch
+gabbr gbl git branch -l
+gabbr gba git branch -a
 gabbr gc  git commit
 gabbr gd  git diff
 gabbr gds git diff --staged
@@ -28,6 +30,8 @@ gabbr gl  git log
 gabbr gp  git push
 gabbr gpl git pull
 gabbr gr  git remote
+gabbr grv git remote -v
+gabbr gra git remote add
 gabbr gco git checkout
 gabbr gcm git checkout master
 gabbr gcb git checkout -b
