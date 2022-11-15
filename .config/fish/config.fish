@@ -87,7 +87,7 @@ set -gx ESH_SHELL /bin/bash
 set -gx WAKATIME_HOME $HOME/.config/wakatime
 # environments variables for interactive shells }}}
 
-# fish config {{{
+# fish greeting {{{
 if type -q fastfetch
   # use fastfetch if installed
   function fish_greeting
@@ -97,8 +97,20 @@ if type -q fastfetch
 else
   set -g fish_greeting # set to null to disable greeting
 end
+# fish_greeting }}}
+
+# fish vi mode {{{
 set -g fish_key_bindings fish_vi_key_bindings
-# fish config }}}
+function fish_user_key_bindings
+  fish_default_key_bindings -M insert # set default key bindings for insert mode
+  # then execute the vi-bindings so they take precedence when there's a conflict.
+  fish_vi_key_bindings --no-erase insert
+end
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_replace underscore
+set fish_cursor_replace_one underscore
+# fish vi mode}}}
 
 # starship initialize {{{
 if type -q starship
