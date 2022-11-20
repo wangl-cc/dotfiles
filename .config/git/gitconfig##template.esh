@@ -18,14 +18,24 @@
 	rebase = false
 [push]
 	autoSetupRemote = true
+<% if command -v nvr >/dev/null 2>&1; then -%>
 [diff]
-	tool = $GIT_DIFF_TOOL
-[difftool "nvr"]
-	cmd = nvr -s -d $LOCAL $REMOTE
+	tool = nvr
 [merge]
-	tool = $GIT_MERGE_TOOL
+	tool = nvr
 [mergetool "nvr"]
 	cmd = nvr -s -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='
+<% elif command -v nvim >/dev/null 2>&1; then -%>
+[diff]
+	tool = nvimdiff
+[merge]
+	tool = nvimdiff
+<% else -%>
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+<% fi -%>
 [alias]
 	st = status
 	co = checkout

@@ -175,8 +175,6 @@ vim.api.nvim_create_autocmd("WinLeave", {
 if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr"
   vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"
-  vim.env.GIT_DIFF_TOOL = "nvr"
-  vim.env.GIT_MERGE_TOOL = "nvr"
 else
   vim.env.VISUAL = "nvim --server " .. vim.v.servername .. " --remote"
 end

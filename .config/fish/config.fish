@@ -74,14 +74,10 @@ if type -q nvim
     gabbr vim nvim
     gabbr nvim nvim
     set -gx VISUAL nvim
-    set -gx GIT_DIFF_TOOL nvimdiff
-    set -gx GIT_MERGE_TOOL nvimdiff
   end
 else
   gabbr vi vim
   set -gx VISUAL vim
-  set -gx GIT_DIFF_TOOL vimdiff
-  set -gx GIT_MERGE_TOOL vimdiff
 end
 set -gx ESH_SHELL /bin/bash
 set -gx WAKATIME_HOME $HOME/.config/wakatime
