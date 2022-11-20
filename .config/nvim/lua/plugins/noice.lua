@@ -26,7 +26,6 @@ function M.config()
           opts = cursor_input_opts,
         },
         filter = { kind = "shell" },
-        input = { opts = cursor_input_opts },
       },
     },
     popupmenu = { enabled = false },
