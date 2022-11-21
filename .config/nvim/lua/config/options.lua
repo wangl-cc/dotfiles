@@ -168,6 +168,23 @@ vim.api.nvim_create_autocmd("WinLeave", {
   group = cursorline,
 })
 
+-- treesitter for esh
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = { [[*.esh]] },
+  callback = function(args)
+    local buffer = args.buf
+    local ft = vim.bo[buffer].filetype
+    vim.bo[buffer].filetype = "esh"
+    local scm = string.format([[
+        (content) @%s @combined
+        (code) @bash @combined
+      ]], ft)
+    vim.treesitter.query.set_query( "embedded_template", "injections", scm)
+    vim.treesitter.start(buffer, "embedded_template")
+  end,
+  group = vim.api.nvim_create_augroup("EshTS", { clear = true }),
+})
+
 -- NOTE: use nvim inside nvim, there are some notes
 -- 1. nvim --remote works but not well, nvr is much more recommended;
 -- 2. this works in vim command line :!, only works in terminal inside nvim;

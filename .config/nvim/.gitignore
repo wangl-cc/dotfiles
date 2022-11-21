@@ -1,2 +1,4 @@
 plugin/packer_compiled.lua
+parser
+parser-info
 minimal.lua

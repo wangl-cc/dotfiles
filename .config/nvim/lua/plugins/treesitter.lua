@@ -1,6 +1,5 @@
 local M = {
   opt = true,
-  branch = "v0.8.0",
   event = "BufEnter",
   requires = {
     "p00f/nvim-ts-rainbow",
@@ -19,7 +18,9 @@ function M.config()
       "regex",
       "query",
       "help",
+      "embedded_template",
     },
+    parser_install_dir = vim.fn.stdpath("config"),
     auto_install = true,
     highlight = {
       enable = true,
