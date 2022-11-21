@@ -112,10 +112,6 @@ function M.config()
           cond = noice.hunk.has,
         },
         {
-          noice.sneak.get,
-          cond = noice.sneak.has,
-        },
-        {
           function()
             if vim.v.hlsearch == 0 then
               return ""

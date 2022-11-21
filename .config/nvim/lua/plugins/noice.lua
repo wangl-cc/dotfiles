@@ -71,7 +71,6 @@ function M.config()
     },
     status = {
       hunk = { find = "^Hunk %d+ of %d" },
-      sneak = { find = "^>" },
     },
     routes = {
       {
