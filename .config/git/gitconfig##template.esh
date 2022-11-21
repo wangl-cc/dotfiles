@@ -21,6 +21,8 @@
 <% if command -v nvr >/dev/null 2>&1; then -%>
 [diff]
 	tool = nvr
+[difftool "nvr"]
+	cmd = nvr -s -d $LOCAL $REMOTE
 [merge]
 	tool = nvr
 [mergetool "nvr"]
