@@ -1,6 +1,6 @@
 local M = {
   opt = true,
-  event = "BufEnter",
+  event = "BufReadPre", -- Load bofore treesitter is loaded
   requires = {
     "p00f/nvim-ts-rainbow",
     "nvim-treesitter/nvim-treesitter-textobjects",
@@ -85,6 +85,15 @@ function M.config()
       end
     end)
   end, { desc = "Search tree-sitter parsers" })
+  local parser_config = parsers.get_parser_configs()
+  parser_config.git_config = {
+    install_info = {
+      url = "https://github.com/the-mikedavis/tree-sitter-git-config.git",
+      files = { "src/parser.c" },
+      branch = "main",
+    },
+    filetype = "gitconfig",
+  }
 end
 
 return M

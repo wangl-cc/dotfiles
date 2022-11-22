@@ -4,7 +4,7 @@
 	name = Long Wang
 	email = wangl.cc@outlook.com
 <% if [ "$YADM_OS"  == "Darwin" ]; then -%>
-	signingkey = 57F47DDA!
+	signingkey = "57F47DDA!"
 [commit]
 	gpgsign = true
 	verbose = true
@@ -49,4 +49,4 @@
 	insteadOf = "https://github.com/"
 <% fi -%>
 
-# vim:ts=8:sw=8:noet:ft=gitconfig
+<%# vim: set ts=8 sw=8 noet ft=esh_gitconfig: %>

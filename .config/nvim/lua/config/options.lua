@@ -169,20 +169,21 @@ vim.api.nvim_create_autocmd("WinLeave", {
 })
 
 -- treesitter for esh
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = { [[*.esh]] },
+local esh = vim.api.nvim_create_augroup("ESH", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "esh_gitconfig" },
   callback = function(args)
     local buffer = args.buf
-    local ft = vim.bo[buffer].filetype
-    vim.bo[buffer].filetype = "esh"
+    local ft = vim.bo[buffer].filetype:sub(5)
+    local lang = ft == "gitconfig" and "git_config" or ft
     local scm = string.format([[
         (content) @%s @combined
         (code) @bash @combined
-      ]], ft)
-    vim.treesitter.query.set_query( "embedded_template", "injections", scm)
+      ]], lang)
+    vim.treesitter.query.set_query("embedded_template", "injections", scm)
     vim.treesitter.start(buffer, "embedded_template")
   end,
-  group = vim.api.nvim_create_augroup("EshTS", { clear = true }),
+  group = esh
 })
 
 -- NOTE: use nvim inside nvim, there are some notes
