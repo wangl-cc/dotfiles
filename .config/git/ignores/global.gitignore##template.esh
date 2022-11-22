@@ -1,6 +1,6 @@
-{% if yadm.os == "Darwin" %}
-{% include "./{{ yadm.os }}.gitignore" %}
-{% endif %}
+<% if [ $YADM_OS == "Darwin" ]; then -%>
+<% cat "$(dirname $YADM_SOURCE)/darwin.gitignore" | sed '/vim:/d' -%>
+<% fi -%>
 # ============================== vim =============================== #
 # ============= github/gitignore/Global/Vim.gitignore ============== #
 
@@ -26,5 +26,4 @@ tags
 
 # ============================== misc =============================== #
 lcov.info
-
-# vim:ft=gitignore
+<%# vim: set ft=esh_gitignore: -%>
