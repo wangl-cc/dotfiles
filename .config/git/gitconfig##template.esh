@@ -4,7 +4,7 @@
 	name = Long Wang
 	email = wangl.cc@outlook.com
 <% if gpg -k | grep 'sub' | grep 'S' >/dev/null 2>&1; then -%>
-	signingkey = <% gpg -k --keyid-format short | grep 'sub' | grep 'S' | sed 's/^.*\/\([^ ]*\) .*$/\1/' -%>
+	signingkey = <% gpg -k --keyid-format short | grep 'sub' | grep 'S' | sed 's/^.*\/\([^ ]*\) .*$/"\1!"/' -%>
 [commit]
 	gpgsign = true
 	verbose = true
