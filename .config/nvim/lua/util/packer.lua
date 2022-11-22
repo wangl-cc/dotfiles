@@ -62,7 +62,7 @@ function M.setup(config, startup)
   packer.reset()
 
   local function use(spec)
-    if spec.plugin then
+    if type(spec) == "table" and spec.plugin then
       spec = vim.tbl_deep_extend("force", spec, require("plugins." .. spec.plugin))
     end
     return packer.use(spec)
