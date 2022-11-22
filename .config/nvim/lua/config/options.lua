@@ -171,7 +171,7 @@ vim.api.nvim_create_autocmd("WinLeave", {
 -- treesitter for esh
 local esh = vim.api.nvim_create_augroup("ESH", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "esh_gitconfig" },
+  pattern = { "esh_*" },
   callback = function(args)
     local buffer = args.buf
     local ft = vim.bo[buffer].filetype:sub(5)
