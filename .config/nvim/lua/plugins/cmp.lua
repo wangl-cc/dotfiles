@@ -105,12 +105,20 @@ function M.config()
     -- TODO: source priority
     sources = {
       { name = "luasnip" },
-      { name = "omni" },
       { name = "nvim_lsp", max_item_count = 10 },
       { name = "buffer", max_item_count = 5 },
       { name = "path", max_item_count = 5 },
     },
   }
+  cmp.setup.filetype("latex", {
+    sources = {
+      { name = "luasnip" },
+      -- omni may break completion thus only enable it for latex
+      { name = "omni", max_item_count = 10 },
+      { name = "buffer", max_item_count = 5 },
+      { name = "path", max_item_count = 5 },
+    },
+  })
   cmp.setup.cmdline({ "/", "?" }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
