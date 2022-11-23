@@ -11,6 +11,12 @@ bootstrap_dir="$(dirname "$0")/bootstrap.d"
 
 if [ "$(uname -s)" = 'Darwin' ]; then
   bash "$bootstrap_dir/macOS.sh"
+  # setup path to homebrew temporary to find packages installed by homebrew
+  if [ "$(uname -m)" = 'arm64' ]; then
+    export PATH="/opt/homebrew/bin:$PATH"
+  else
+    export PATH="/usr/local/bin:$PATH"
+  fi
 fi
 
 if command -v fish >/dev/null 2>&1; then
