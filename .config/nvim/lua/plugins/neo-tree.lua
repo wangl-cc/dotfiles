@@ -1,6 +1,4 @@
 local M = {
-  opt = true,
-  cmd = "Neotree",
   branch = "v2.x",
 }
 
