@@ -101,6 +101,29 @@ M.options = {
       },
     },
   },
+  on_new_config = function(config, root_dir)
+    -- read config from .julials.json in root_dir
+    -- and then merge it into config
+    -- Example: { "lint": { "run": false } } will disable linting,
+    -- more options see: https://github.com/julia-vscode/LanguageServer.jl/blob/main/src/requests/workspace.jl#L96-L110
+    local jl_config = root_dir .. "/.julials.json"
+    if vim.fn.filereadable(jl_config) == 1 then
+      local f = io.open(jl_config, "r")
+      if not f then
+        return
+      end
+      local content = f:read "*a"
+      local decoded = vim.json.decode(content)
+      if decoded then
+        config.settings.julia = vim.tbl_deep_extend(
+          "force",
+          config.settings.julia,
+          decoded
+        )
+      end
+      f:close()
+    end
+  end
 }
 
 return M
