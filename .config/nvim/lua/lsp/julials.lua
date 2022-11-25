@@ -97,6 +97,7 @@ M.options = {
     julia = {
       lint = {
         run = true,
+        missingrefs = "none",
         disabledDirs = { "test", "docs" },
       },
     },
