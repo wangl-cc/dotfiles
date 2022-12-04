@@ -88,15 +88,17 @@ local function process_config(config, reload)
 end
 
 --@class LspConfig
+--@field executable? string
 --@field disabled? boolean
---@field on_attach? func(bufnr, client)
 --@field setup_capabilities? func(capabilities)
---@field opts? table
+--@field options? table
 
 --@param server string
---@param config lspconfig
+--@param config LspConfig
 local function setup_server(server, config)
-  if config.disabled then
+  local executable = config.executable or server
+  -- don't setup if server is disabled or not installed
+  if config.disabled or vim.fn.executable(executable) == 0 then
     return
   end
   local options = config.options or {}
@@ -120,18 +122,16 @@ end
 M.configs = {
   julials = "lsp.julials",
   sumneko_lua = "lsp.sumneko_lua",
+  bashls = {
+    executable = "bash-language-server",
+    options = {
+      filetypes = { "sh", "bash" },
+    },
+  },
+  taplo = {},
 }
 
 M.setup = function()
-  -- some simple servers, is not necessary to use a config file
-  if vim.fn.executable "bash-language-server" == 1 then
-    M.configs.bashls = { options = { filetypes = { "bash", "sh" } } }
-  end
-
-  if vim.fn.executable "taplo" == 1 then
-    M.configs.taplo = {}
-  end
-
   local lsp_reload = vim.api.nvim_create_augroup("LspReload", { clear = true })
   -- auto reload after this file
   util.create_source_autocmd {

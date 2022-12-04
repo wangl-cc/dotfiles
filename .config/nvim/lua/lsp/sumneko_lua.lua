@@ -1,10 +1,7 @@
 --@type LspConfig
-local M = {}
-
-if vim.fn.executable "lua-language-server" ~= 1 then
-  M.disabled = true
-  return M
-end
+local M = {
+  executable = "lua-language-server",
+}
 
 M.options = {
   cmd = { "lua-language-server" },

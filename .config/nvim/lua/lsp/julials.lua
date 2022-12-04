@@ -1,7 +1,9 @@
 --@type LspConfig
-local M = {}
+local M = {
+  executable = "julia",
+}
 
-if vim.fn.executable "julia" ~= 1 or vim.env.__JULIA_LSP_DISABLE == "true" then
+if vim.env.__JULIA_LSP_DISABLE == "true" then
   M.disabled = true
   return M
 end
