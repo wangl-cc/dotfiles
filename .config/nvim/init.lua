@@ -1,7 +1,8 @@
 pcall(require, "impatient")
 
--- vim options and keymaps
+-- plugin unrelated configurations
 require "options"
+require "autocmds"
 
 -- load plugins
 require "plugins"
