@@ -129,6 +129,12 @@ M.configs = {
     },
   },
   taplo = {},
+  jsonls = {
+    executable = "vscode-json-languageserver",
+    options = {
+      cmd = { "vscode-json-languageserver", "--stdio" },
+    },
+  },
 }
 
 M.setup = function()
