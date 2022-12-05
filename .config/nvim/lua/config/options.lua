@@ -155,15 +155,26 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- show cursor line only in active window
 local cursorline = vim.api.nvim_create_augroup("CursorLine", { clear = true })
-vim.api.nvim_create_autocmd("WinEnter", {
+-- There is a win variable `cursorline` to store cursorline status when disable it
+-- this should avoid to enable cursorline for some window
+-- where the cursorline is disable, such as Telescope prompt
+vim.api.nvim_create_autocmd({ "InsertLeave", "WinEnter" }, {
   callback = function()
-    vim.wo.cursorline = true
+    local ok, cl = pcall(vim.api.nvim_win_get_var, 0, "cursorline")
+    if ok and cl then
+      vim.wo.cursorline = true
+      vim.api.nvim_win_del_var(0, "cursorline")
+    end
   end,
   group = cursorline,
 })
-vim.api.nvim_create_autocmd("WinLeave", {
+vim.api.nvim_create_autocmd({ "InsertEnter", "WinLeave" }, {
   callback = function()
-    vim.wo.cursorline = false
+    local cl = vim.wo.cursorline
+    if cl then
+      vim.api.nvim_win_set_var(0, "cursorline", cl)
+      vim.wo.cursorline = false
+    end
   end,
   group = cursorline,
 })
