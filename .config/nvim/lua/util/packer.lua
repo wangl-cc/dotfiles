@@ -21,36 +21,30 @@ local function bootstrap()
 end
 
 local function auto_compile(packer)
-  local auto_compile_group =
-    vim.api.nvim_create_augroup("AutoCompile", { clear = true })
+  local group = vim.api.nvim_create_augroup("AutoCompile", { clear = true })
   util.create_source_autocmd {
     pattern = {
-      "config/plugins.lua",
       "*/nvim/lua/plugins/*.lua",
       "*/nvim/lua/util/*.lua",
     },
     callback = function()
       util.info("Reload plugins", "AutoCompile")
       for mod, _ in pairs(package.loaded) do
-        if
-          mod:match "^plugins%."
-          or mod:match "^util%."
-          or mod == "config.plugins"
-        then
+        if mod:match "^plugins" or mod:match "^util" then
           util.unload(mod)
         end
       end
-      util.reload "config.plugins"
+      require "plugins"
       packer.compile()
     end,
-    group = auto_compile_group,
+    group = group,
   }
   vim.api.nvim_create_autocmd("User", {
     pattern = "PackerCompileDone",
     callback = function()
       util.info("Packer compile done", "AutoCompile")
     end,
-    group = auto_compile_group,
+    group = group,
   })
 end
 

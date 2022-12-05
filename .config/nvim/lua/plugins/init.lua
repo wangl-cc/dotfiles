@@ -147,7 +147,7 @@ local function startup(use)
     event = "BufReadPre",
     config = function()
       require("lspconfig.ui.windows").default_options.border = "rounded"
-      require("config.lsp").setup()
+      require("lsp").setup()
     end,
   }
   --- Auto completion
