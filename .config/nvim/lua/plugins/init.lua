@@ -13,7 +13,16 @@ local function startup(use)
   -- Packer can manage itself
   use "wbthomason/packer.nvim"
 
-  -- startup time
+  -- speed up loading Lua modules
+  use "lewis6991/impatient.nvim"
+
+  -- common dependencies
+  use { "nvim-lua/plenary.nvim", opt = true, module = "plenary" }
+  use { "kyazdani42/nvim-web-devicons", opt = true, module = "nvim-web-devicons" }
+  use { "MunifTanjim/nui.nvim", opt = true, module = "nui" }
+
+  -- Commands
+  --- StartupTime command to measure startup time
   use {
     "dstein64/vim-startuptime",
     opt = true,
@@ -22,14 +31,6 @@ local function startup(use)
       vim.g.startuptime_tries = 50
     end,
   }
-
-  -- common dependencies
-  use { "nvim-lua/plenary.nvim", opt = true, module = "plenary" }
-  use { "kyazdani42/nvim-web-devicons", opt = true, module = "nvim-web-devicons" }
-  use { "MunifTanjim/nui.nvim", opt = true, module = "nui" }
-
-  -- speed up loading Lua modules
-  use "lewis6991/impatient.nvim"
 
   -- UNIX shell commands
   use {
@@ -43,15 +44,9 @@ local function startup(use)
       "SudoWrite", "SudoEdit",
     },
   }
-  -- Git commands
-  use { "tpope/vim-fugitive", opt = true, cmd = { "Git" } }
-  --- Git signs
-  use { "lewis6991/gitsigns.nvim", plugin = "gitsigns" }
-  -- Git panel
-  use { "TimUntersberger/neogit", plugin = "neogit" }
-  --- Text alignment
+  -- Text alignment
   use { "godlygeek/tabular", opt = true, cmd = "Tabularize" }
-  --- Incremental rename
+  -- Incremental rename
   use {
     "smjonas/inc-rename.nvim",
     opt = true,
@@ -60,11 +55,19 @@ local function startup(use)
       require("inc_rename").setup {}
     end,
   }
+  -- Git commands
+  use { "tpope/vim-fugitive", opt = true, cmd = { "Git" } }
 
-  -- UI
+  -- Colorscheme
+  use { "folke/tokyonight.nvim", plugin = "tokyonight" }
+  -- UI Components
+  --- Git signs
+  use { "lewis6991/gitsigns.nvim", plugin = "gitsigns" }
+  --- Git panel
+  use { "TimUntersberger/neogit", plugin = "neogit" }
   --- File explorer
   use { "nvim-neo-tree/neo-tree.nvim", plugin = "neo-tree" }
-  --- Terminal toggle
+  --- Togglable terminal
   use { "akinsho/toggleterm.nvim", plugin = "toggleterm" }
   --- Interactive REPL
   use { "hkupty/iron.nvim", plugin = "iron" }
@@ -97,17 +100,15 @@ local function startup(use)
       }
     end,
   }
-  --- Colorscheme
-  use { "folke/tokyonight.nvim", plugin = "tokyonight" }
   --- Statusline
   use { "nvim-lualine/lualine.nvim", plugin = "lualine" }
   --- Floating status line
   use { "b0o/incline.nvim", plugin = "incline" }
   --- Telescope (fuzzy finder)
   use { "nvim-telescope/telescope.nvim", plugin = "telescope" }
-  -- WhichKey (keybindings)
+  -- Show and define keybindings
   use { "folke/which-key.nvim", plugin = "which-key" }
-  -- Notify (notifications)
+  -- Notification popup
   use {
     "rcarriga/nvim-notify",
     opt = true,
@@ -128,23 +129,19 @@ local function startup(use)
       }
     end,
   }
-  -- cmdline and handle messages
+  -- UI handler for cmdline and messages
   use { "folke/noice.nvim", plugin = "noice" }
-  --- Highlight and view todos
-  use {
-    "folke/todo-comments.nvim",
-    opt = true,
-    event = "UIEnter",
-    config = function()
-      require("todo-comments").setup {}
-    end,
-  }
-  -- Code support
+
+  -- Editing
+  --- Neovim lua
+  use { "folke/neodev.nvim", opt = true, module = "neodev" }
+  --- Local configuration
+  use { "folke/neoconf.nvim", opt = true, module = "neoconf" }
   --- Language server
   use {
     "neovim/nvim-lspconfig",
     opt = true,
-    event = "BufReadPre",
+    event = "BufEnter",
     config = function()
       require("lspconfig.ui.windows").default_options.border = "rounded"
       require("lsp").setup()
@@ -152,7 +149,7 @@ local function startup(use)
   }
   --- Auto completion
   use { "hrsh7th/nvim-cmp", plugin = "cmp" }
-  -- Auto pairs
+  --- Auto pairs
   use {
     "windwp/nvim-autopairs",
     opt = true,
@@ -167,34 +164,43 @@ local function startup(use)
           return vim.tbl_contains({ "()", "[]", "{}" }, pair)
         end),
         Rule("( ", " )")
-          :with_pair(function()
-            return false
-          end)
-          :with_move(function(opts)
-            return opts.prev_char:match ".%)" ~= nil
-          end)
-          :use_key ")",
+            :with_pair(function()
+              return false
+            end)
+            :with_move(function(opts)
+              return opts.prev_char:match ".%)" ~= nil
+            end)
+            :use_key ")",
         Rule("{ ", " }")
-          :with_pair(function()
-            return false
-          end)
-          :with_move(function(opts)
-            return opts.prev_char:match ".%}" ~= nil
-          end)
-          :use_key "}",
+            :with_pair(function()
+              return false
+            end)
+            :with_move(function(opts)
+              return opts.prev_char:match ".%}" ~= nil
+            end)
+            :use_key "}",
         Rule("[ ", " ]")
-          :with_pair(function()
-            return false
-          end)
-          :with_move(function(opts)
-            return opts.prev_char:match ".%]" ~= nil
-          end)
-          :use_key "]",
+            :with_pair(function()
+              return false
+            end)
+            :with_move(function(opts)
+              return opts.prev_char:match ".%]" ~= nil
+            end)
+            :use_key "]",
       }
       require("cmp").event:on(
         "confirm_done",
         require("nvim-autopairs.completion.cmp").on_confirm_done()
       )
+    end,
+  }
+  --- Highlight and view todos
+  use {
+    "folke/todo-comments.nvim",
+    opt = true,
+    event = "UIEnter",
+    config = function()
+      require("todo-comments").setup {}
     end,
   }
   --- Copilot
@@ -206,7 +212,7 @@ local function startup(use)
       require("copilot").setup {
         copilot_node_command = vim.loop.os_uname().sysname == "Darwin"
             and vim.fn.expand "$HOMEBREW_PREFIX/opt/node@16/bin/node"
-          or "node",
+            or "node",
         filetypes = {
           help = false,
           iron = false,
@@ -262,8 +268,6 @@ local function startup(use)
       vim.g.vimtex_view_skim_reading_bar = 1
     end,
   }
-  -- Neovim lua
-  use { "folke/neodev.nvim", opt = true, module = "neodev" }
 
   -- Misc
   --- Waka time

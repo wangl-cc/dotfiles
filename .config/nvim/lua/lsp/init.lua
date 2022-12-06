@@ -138,6 +138,14 @@ M.configs = {
 }
 
 M.setup = function()
+  require("neoconf").setup {
+    import = {
+      vscode = false,
+      coc = false,
+      nlsp = false,
+    }
+  }
+  require("neodev").setup {}
   -- auto reload servers' config when config changes
   util.create_source_autocmd {
     pattern = "lsp/*.lua",
