@@ -8,8 +8,6 @@ if vim.env.__JULIA_LSP_DISABLE == "true" then
   return M
 end
 
-local Job = require "plenary.job"
-
 M.setup_capabilities = function(capabilities)
   -- from wiki of LanguageServer.jl
   capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -56,7 +54,7 @@ if vim.fn.filereadable(julia_img_user) == 1 then
 end
 
 function M.install()
-  return Job:new({
+  return require("plenary.job"):new({
     command = "julia",
     args = {
       "--startup-file=no",
@@ -76,7 +74,7 @@ function M.install()
 end
 
 function M.compile()
-  return Job:new({
+  return require("plenary.job"):new({
     command = "julia",
     args = {
       "--history-file=no",
