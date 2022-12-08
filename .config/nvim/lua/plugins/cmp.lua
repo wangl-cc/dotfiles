@@ -25,6 +25,9 @@ function M.config()
   local luasnip = require "luasnip"
   local icons = require("util.icons").icons
   local copilot = require "copilot.suggestion"
+  local source_names = {
+    nvim_lsp = "LSP",
+  }
   cmp.setup {
     window = {
       completion = {
@@ -40,9 +43,10 @@ function M.config()
     },
     formatting = {
       fields = { "kind", "abbr", "menu" },
-      format = function(_, vim_item)
-        vim_item.menu = vim_item.kind
+      format = function(entry, vim_item)
+        local name = entry.source.name
         vim_item.kind = icons[vim_item.kind] or ""
+        vim_item.menu = ("[%s]"):format(source_names[name] or name)
         return vim_item
       end,
     },
