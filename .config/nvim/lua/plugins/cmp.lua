@@ -78,16 +78,13 @@ function M.config()
           fallback()
         end
       end),
-      -- <Tab> and <S-Tab> are similar to <C-n> and <C-p>
-      -- But <Tab> can trigger copilot suggestion while <C-n> not
-      -- And <C-n> can trigger complete while <Tab> not
+      -- <Tab> and <S-Tab> to accept copilot suggestionActions
+      -- or complete common string when copilot is not visible
       ["<Tab>"] = cmp.mapping(function(fallback)
         if copilot.is_visible() then
           copilot.accept()
         elseif cmp.visible() then
-          cmp.select_next_item {
-            behavior = types.cmp.SelectBehavior.Insert,
-          }
+          cmp.complete_common_string()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
         else
@@ -95,8 +92,8 @@ function M.config()
         end
       end),
       ["<S-Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item()
+        if copilot.is_visible() then
+          copilot.dismiss()
         elseif luasnip.jumpable(-1) then
           luasnip.jump(-1)
         else
