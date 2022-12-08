@@ -129,6 +129,7 @@ M.configs = {
     },
   },
   taplo = {},
+  texlab = {},
   jsonls = {
     executable = "vscode-json-languageserver",
     options = {

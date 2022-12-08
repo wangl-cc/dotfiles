@@ -7,7 +7,6 @@ local M = {
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
     "saadparwaiz1/cmp_luasnip",
-    "hrsh7th/cmp-omni",
     { --- Snippets
       "L3MON4D3/LuaSnip",
       opt = true,
@@ -110,15 +109,6 @@ function M.config()
       { name = "path", max_item_count = 5 },
     },
   }
-  cmp.setup.filetype("latex", {
-    sources = {
-      { name = "luasnip" },
-      -- omni may break completion thus only enable it for latex
-      { name = "omni", max_item_count = 10 },
-      { name = "buffer", max_item_count = 5 },
-      { name = "path", max_item_count = 5 },
-    },
-  })
   cmp.setup.cmdline({ "/", "?" }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
