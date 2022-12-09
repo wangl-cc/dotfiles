@@ -21,13 +21,54 @@ local M = {
 
 function M.config()
   local cmp = require "cmp"
-  local types = require "cmp.types"
   local luasnip = require "luasnip"
-  local icons = require("util.icons").icons
   local copilot = require "copilot.suggestion"
+
+  local feedkeys = require "cmp.utils.feedkeys"
+  local keymap = require "cmp.utils.keymap"
+
+  local icons = {
+    Text = "",
+    Method = "",
+    Function = "",
+    Constructor = "",
+    Field = "ﰠ",
+    Variable = "",
+    Interface = "",
+    Class = "פּ",
+    Module = "",
+    Property = "ﰠ",
+    Unit = "",
+    Value = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "",
+    Event = "",
+    Struct = "פּ",
+    Operator = "",
+    TypeParameter = "",
+  }
+
   local source_names = {
     nvim_lsp = "LSP",
+    cmdline_path = "path",
   }
+  local function buf_get_char(buffer, row, col)
+    row = row - 1
+    return vim.api.nvim_buf_get_text(buffer, row, col - 1, row, col, {})[1]
+  end
+
+  local function has_words_before()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and buf_get_char(0, row, col):match "%s" == nil
+  end
+
   cmp.setup {
     window = {
       completion = {
@@ -60,13 +101,13 @@ function M.config()
       ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
       ["<C-n>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
-          cmp.select_next_item {
-            behavior = types.cmp.SelectBehavior.Insert,
-          }
+          cmp.select_next_item()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
+        elseif has_words_before() then
+          cmp.complete()
         else
-          cmp.mapping.complete(fallback)
+          fallback()
         end
       end),
       ["<C-p>"] = cmp.mapping(function(fallback)
@@ -74,6 +115,8 @@ function M.config()
           cmp.select_prev_item()
         elseif luasnip.jumpable(-1) then
           luasnip.jump(-1)
+        elseif has_words_before() then
+          cmp.complete()
         else
           fallback()
         end
@@ -87,6 +130,8 @@ function M.config()
           cmp.complete_common_string()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
+        elseif has_words_before() then
+          cmp.complete()
         else
           fallback()
         end
@@ -94,8 +139,12 @@ function M.config()
       ["<S-Tab>"] = cmp.mapping(function(fallback)
         if copilot.is_visible() then
           copilot.dismiss()
+        elseif cmp.visible() then
+          cmp.select_prev_item()
         elseif luasnip.jumpable(-1) then
           luasnip.jump(-1)
+        elseif has_words_before() then
+          cmp.complete()
         else
           fallback()
         end
@@ -110,17 +159,57 @@ function M.config()
       { name = "path", max_item_count = 5 },
     },
   }
+  local cmdline_mappings = cmp.mapping.preset.cmdline {
+    ["<Tab>"] = {
+      c = function()
+        if cmp.visible() then
+          cmp.complete_common_string()
+        else
+          feedkeys.call(keymap.t "<C-z>", "n")
+        end
+      end,
+    },
+  }
   cmp.setup.cmdline({ "/", "?" }, {
-    mapping = cmp.mapping.preset.cmdline(),
+    mapping = cmdline_mappings,
     sources = {
       { name = "buffer" },
     },
   })
+  local cmdline_path = require("cmp_path").new()
+  local complete = cmdline_path.complete
+  cmdline_path.complete = function(self, params, callback)
+    local callback_new = function(candidates)
+      if not candidates then
+        callback()
+        return
+      end
+      for _, candidate in ipairs(candidates) do
+        candidate.label = candidate.label:gsub("#", "\\#")
+        candidate.insertText = candidate.insertText:gsub("#", "\\#")
+        local word = candidate.word
+        if word then
+          candidate.word = word:gsub("#", "\\#")
+        end
+      end
+      callback(candidates)
+    end
+    return complete(self, params, callback_new)
+  end
+  cmp.register_source("cmdline_path", cmdline_path)
   cmp.setup.cmdline(":", {
-    mapping = cmp.mapping.preset.cmdline(),
+    mapping = cmdline_mappings,
     sources = {
-      { name = "path", max_item_count = 5 },
-      { name = "cmdline", max_item_count = 10 },
+      {
+        name = "cmdline_path",
+        max_item_count = 5,
+        group_index = 1,
+      },
+      {
+        name = "cmdline",
+        max_item_count = 10,
+        group_index = 2,
+      },
     },
   })
 end
