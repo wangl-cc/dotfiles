@@ -144,7 +144,7 @@ M.setup = function()
       vscode = false,
       coc = false,
       nlsp = false,
-    }
+    },
   }
   require("neodev").setup {}
   -- auto reload servers' config when config changes
@@ -159,7 +159,7 @@ M.setup = function()
       local config = process_config(M.configs[server], true)
       setup_server(server, config)
     end,
-    group = vim.api.nvim_create_augroup("LspReload", { clear = true })
+    group = vim.api.nvim_create_augroup("LspReload", { clear = true }),
   }
   keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
   keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })

@@ -66,13 +66,15 @@ vim.api.nvim_create_autocmd("FileType", {
     local buffer = args.buf
     local ft = vim.bo[buffer].filetype:sub(5)
     local lang = ft == "gitconfig" and "git_config" or ft
-    local scm = string.format([[
+    local scm = string.format(
+      [[
         (content) @%s @combined
         (code) @bash @combined
-      ]], lang)
+      ]],
+      lang
+    )
     vim.treesitter.query.set_query("embedded_template", "injections", scm)
     vim.treesitter.start(buffer, "embedded_template")
   end,
-  group = esh
+  group = esh,
 })
-

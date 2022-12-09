@@ -54,41 +54,45 @@ if vim.fn.filereadable(julia_img_user) == 1 then
 end
 
 function M.install()
-  return require("plenary.job"):new({
-    command = "julia",
-    args = {
-      "--startup-file=no",
-      "--history-file=no",
-      "--project=~/.config/julials/nvim_lsp",
-      "-e",
-      [[using Pkg; Pkg.instantiate()]],
-    },
-    on_exit = function(_, code)
-      if code == 0 then
-        print "julials installed."
-      else
-        print "julials installation failed."
-      end
-    end,
-  }):start()
+  return require("plenary.job")
+    :new({
+      command = "julia",
+      args = {
+        "--startup-file=no",
+        "--history-file=no",
+        "--project=~/.config/julials/nvim_lsp",
+        "-e",
+        [[using Pkg; Pkg.instantiate()]],
+      },
+      on_exit = function(_, code)
+        if code == 0 then
+          print "julials installed."
+        else
+          print "julials installation failed."
+        end
+      end,
+    })
+    :start()
 end
 
 function M.compile()
-  return require("plenary.job"):new({
-    command = "julia",
-    args = {
-      "--history-file=no",
-      "--project=~/.config/julials/nvim_lsp",
-      vim.fn.expand "~/.config/julials/compiler/compile.jl",
-    },
-    on_exit = function(_, code)
-      if code == 0 then
-        print "julials compiled."
-      else
-        print "julials compilation failed."
-      end
-    end,
-  }):start()
+  return require("plenary.job")
+    :new({
+      command = "julia",
+      args = {
+        "--history-file=no",
+        "--project=~/.config/julials/nvim_lsp",
+        vim.fn.expand "~/.config/julials/compiler/compile.jl",
+      },
+      on_exit = function(_, code)
+        if code == 0 then
+          print "julials compiled."
+        else
+          print "julials compilation failed."
+        end
+      end,
+    })
+    :start()
 end
 
 M.options = {
