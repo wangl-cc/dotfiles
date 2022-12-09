@@ -6,7 +6,6 @@ local M = {}
 local function switch_bg(bg)
   if vim.o.background ~= bg then
     vim.o.background = bg
-    vim.api.nvim_exec_autocmds("OptionSet", { pattern = "background" })
   end
 end
 
@@ -60,6 +59,7 @@ function M.setup(opts)
     pattern = "SIGWINCH",
     callback = M.autobg,
     group = autobg_group,
+    nested = true,
   })
 
   return autobg_group
