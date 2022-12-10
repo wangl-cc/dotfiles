@@ -22,20 +22,21 @@ end
 
 local function auto_compile(packer)
   local group = vim.api.nvim_create_augroup("AutoCompile", { clear = true })
-  util.create_source_autocmd {
-    pattern = {
-      "*/nvim/lua/plugins/*.lua",
-      "*/nvim/lua/util/*.lua",
-    },
-    callback = function()
+  util.create_bufwrite_autocmd {
+    pattern = "*/nvim/lua/plugins/*.lua",
+    callback = function(args)
       util.info("Reload plugins", "AutoCompile")
-      for mod, _ in pairs(package.loaded) do
-        if mod:match "^plugins" or mod:match "^util" then
-          util.unload(mod)
+      local mod = vim.fs.basename(args.file):sub(1, -5)
+      if mod == "init" then
+        util.reload "plugins"
+        local ok = pcall(packer.compile)
+        if not ok then
+          util.info("Install missing plugins")
+          pcall(packer.install)
         end
+      else -- re-run config of given plugin configs
+        pcall(util.reload("plugins." .. mod).config)
       end
-      require "plugins"
-      packer.compile()
     end,
     group = group,
   }
@@ -46,6 +47,18 @@ local function auto_compile(packer)
     end,
     group = group,
   })
+  vim.api.nvim_create_user_command(
+    "PackerReload",
+    function()
+      util.reload "plugins"
+      local ok = pcall(packer.compile)
+      if not ok then
+        util.info("Install missing plugins")
+        pcall(packer.install)
+      end
+    end,
+    { desc = "Reload config and compile with packer" }
+  )
 end
 
 function M.setup(config, startup)

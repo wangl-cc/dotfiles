@@ -148,11 +148,10 @@ M.setup = function()
   }
   require("neodev").setup {}
   -- auto reload servers' config when config changes
-  util.create_source_autocmd {
+  util.create_bufwrite_autocmd {
     pattern = "lsp/*.lua",
-    callback = function()
-      local file = vim.fn.expand "<afile>"
-      local server = vim.fs.basename(file):gsub("%.lua$", "")
+    callback = function(args)
+      local server = vim.fs.basename(args.file):gsub("%.lua$", "")
       if server == "init" then -- reload this file
         return util.reload("lsp").setup()
       end

@@ -1,8 +1,9 @@
 pcall(require, "impatient")
 
 -- plugin unrelated configurations
-require "options"
-require "autocmds"
+local auto_reload = require("util").auto_reload
+auto_reload "options"
+auto_reload "autocmds"
 
 -- load plugins
 require "plugins"
