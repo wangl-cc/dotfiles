@@ -8,6 +8,7 @@ M.options = {
   settings = {
     Lua = {
       telemetry = { enable = false },
+      workspace = { checkThirdParty = false },
     },
   },
 }
