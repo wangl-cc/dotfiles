@@ -5,7 +5,7 @@ using Base.Meta
 
 Simmilar to `using`, but you can specify the package UUID.
 Besides if given pacakges is not installed,
-install them into ` @v#.#` environment.
+install them into `@v#.#` environment.
 """
 macro safe_using(pkgs...)
     return _safe_using(pkgs...)
