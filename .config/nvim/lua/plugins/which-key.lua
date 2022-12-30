@@ -109,6 +109,20 @@ function M.config()
         [[<Cmd>IndentBlanklineToggle<CR>]],
         "Toggle indent guides",
       },
+      r = {
+        function()
+          local ok, iron = pcall(require, "iron.core")
+          if not ok then
+            return
+          end
+          if vim.bo.filetype == "iron" then
+            vim.api.nvim_win_hide(0)
+          else
+            iron.repl_for(vim.bo.ft)
+          end
+        end,
+        "Toggle REPL",
+      }
     },
     c = {
       name = "Change",

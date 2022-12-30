@@ -1,6 +1,7 @@
 local M = {
   opt = true,
   keys = { "<leader><CR>", [[<C-\>]] },
+  module = "iron",
 }
 function M.config()
   local iron = require "iron.core"
@@ -38,13 +39,6 @@ function M.config()
     iron.send_line()
     vim.api.nvim_win_set_cursor(0, { math.min(pos[1] + 1, last_line), pos[2] })
   end, { desc = "Send line and move down" })
-  vim.keymap.set("n", "<leader>tr", function()
-    if vim.bo.filetype == "iron" then
-      vim.api.nvim_win_hide(0)
-    else
-      iron.repl_for(vim.bo.ft)
-    end
-  end, { desc = "Toggle REPL" })
 end
 
 return M
