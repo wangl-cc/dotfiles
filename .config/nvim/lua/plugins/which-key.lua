@@ -76,6 +76,10 @@ function M.config()
         [[<Cmd>Telescope todo-comments todo<CR>]],
         "Search todo comments",
       },
+      a = {
+        [[<Cmd>Telescope diagnostics<CR>]],
+        "Search all diagnostics",
+      },
     },
     g = {
       name = "Git",
