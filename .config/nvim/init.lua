@@ -5,6 +5,6 @@ auto_reload "options"
 auto_reload "autocmds"
 
 -- load plugins
-auto_reload "manager"
+require "manager"
 
 -- vim:tw=76:ts=2:sw=2:et
