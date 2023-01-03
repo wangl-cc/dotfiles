@@ -71,7 +71,11 @@ function M.config()
         { "mode", icons_enabled = true },
       },
       lualine_b = {
-        { "branch", icons_enabled = true },
+        {
+          "branch",
+          icons_enabled = true,
+          icon = "",
+        },
         {
           "diff",
           symbols = { added = " ", modified = "柳", removed = " " },
