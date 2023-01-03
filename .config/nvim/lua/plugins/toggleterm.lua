@@ -1,5 +1,5 @@
 local M = {
-  opt = true,
+  "akinsho/toggleterm.nvim",
   keys = "<C-/>",
   cmd = "ToggleTerm",
 }

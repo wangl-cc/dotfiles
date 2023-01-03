@@ -1,9 +1,9 @@
 local M = {
-  opt = true,
+  "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
-  requires = {
+  dependencies = {
     "nvim-telescope/telescope-fzf-native.nvim",
-    run = "make",
+    build = "make",
     config = function()
       require("telescope").load_extension "fzf"
     end,

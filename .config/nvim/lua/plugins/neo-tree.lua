@@ -1,5 +1,7 @@
 local M = {
-  branch = "v2.x",
+  "nvim-neo-tree/neo-tree.nvim",
+  version = "2",
+  event = "BufEnter",
 }
 
 -- This is run this file is loaded

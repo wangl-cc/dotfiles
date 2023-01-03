@@ -1,41 +1,17 @@
-local config = {
-  display = {
-    open_fn = function()
-      local result, win, buf = require("packer.util").float {
-        border = "rounded",
-      }
-      return result, win, buf
-    end,
-  },
-}
-
-local function startup(use)
-  -- Packer can manage itself
-  use "wbthomason/packer.nvim"
-
-  -- speed up loading Lua modules
-  use "lewis6991/impatient.nvim"
+return {
+  -- Lazy can manage itself
+  { "folke/lazy.nvim", version = "7" },
 
   -- common dependencies
-  use { "nvim-lua/plenary.nvim", opt = true, module = "plenary" }
-  use { "kyazdani42/nvim-web-devicons", opt = true, module = "nvim-web-devicons" }
-  use { "MunifTanjim/nui.nvim", opt = true, module = "nui" }
+  { "nvim-lua/plenary.nvim" },
+  { "kyazdani42/nvim-web-devicons" },
+  { "MunifTanjim/nui.nvim" },
 
   -- Commands
-  --- StartupTime command to measure startup time
-  use {
-    "dstein64/vim-startuptime",
-    opt = true,
-    cmd = "StartupTime",
-    config = function()
-      vim.g.startuptime_tries = 50
-    end,
-  }
 
   -- UNIX shell commands
-  use {
+  {
     "tpope/vim-eunuch",
-    opt = true,
     -- stylua: ignore
     cmd = {
       "Delete", "Remove", "Unlike",
@@ -43,38 +19,24 @@ local function startup(use)
       "Mkdir", "Chmod", "Cfind", "Clocate", "Wall",
       "SudoWrite", "SudoEdit",
     },
-  }
+  },
   -- Text alignment
-  use { "godlygeek/tabular", opt = true, cmd = "Tabularize" }
+  { "godlygeek/tabular", cmd = "Tabularize" },
   -- Incremental rename
-  use {
+  {
     "smjonas/inc-rename.nvim",
-    opt = true,
     event = "UIEnter",
     config = function()
       require("inc_rename").setup {}
     end,
-  }
+  },
   -- Git commands
-  use { "tpope/vim-fugitive", opt = true, cmd = { "Git" } }
+  { "tpope/vim-fugitive", cmd = { "Git" } },
 
-  -- Colorscheme
-  use { "folke/tokyonight.nvim", plugin = "tokyonight" }
   -- UI Components
-  --- Git signs
-  use { "lewis6991/gitsigns.nvim", plugin = "gitsigns" }
-  --- Git panel
-  use { "TimUntersberger/neogit", plugin = "neogit" }
-  --- File explorer
-  use { "nvim-neo-tree/neo-tree.nvim", plugin = "neo-tree" }
-  --- Togglable terminal
-  use { "akinsho/toggleterm.nvim", plugin = "toggleterm" }
-  --- Interactive REPL
-  use { "hkupty/iron.nvim", plugin = "iron" }
   --- Input and select
-  use {
+  {
     "stevearc/dressing.nvim",
-    opt = true,
     event = "UIEnter",
     config = function()
       require("dressing").setup {
@@ -85,11 +47,10 @@ local function startup(use)
         },
       }
     end,
-  }
+  },
   --- Indent guides
-  use {
+  {
     "lukas-reineke/indent-blankline.nvim",
-    opt = true,
     event = "UIEnter",
     config = function()
       require("indent_blankline").setup {
@@ -99,20 +60,10 @@ local function startup(use)
         show_current_context_start = true,
       }
     end,
-  }
-  --- Statusline
-  use { "nvim-lualine/lualine.nvim", plugin = "lualine" }
-  --- Floating status line
-  use { "b0o/incline.nvim", plugin = "incline" }
-  --- Telescope (fuzzy finder)
-  use { "nvim-telescope/telescope.nvim", plugin = "telescope" }
-  -- Show and define keybindings
-  use { "folke/which-key.nvim", plugin = "which-key" }
+  },
   -- Notification popup
-  use {
+  {
     "rcarriga/nvim-notify",
-    opt = true,
-    module = "notify",
     config = function()
       local notify = require "notify"
       notify.setup {
@@ -128,31 +79,24 @@ local function startup(use)
         },
       }
     end,
-  }
-  -- UI handler for cmdline and messages
-  use { "folke/noice.nvim", plugin = "noice" }
-
+  },
   -- Editing
   --- Neovim lua
-  use { "folke/neodev.nvim", opt = true, module = "neodev" }
+  { "folke/neodev.nvim" },
   --- Local configuration
-  use { "folke/neoconf.nvim", opt = true, module = "neoconf" }
+  { "folke/neoconf.nvim" },
   --- Language server
-  use {
+  {
     "neovim/nvim-lspconfig",
-    opt = true,
     event = "BufEnter",
     config = function()
       require("lspconfig.ui.windows").default_options.border = "rounded"
       require("lsp").setup()
     end,
-  }
-  --- Auto completion
-  use { "hrsh7th/nvim-cmp", plugin = "cmp" }
+  },
   --- Auto pairs
-  use {
+  {
     "windwp/nvim-autopairs",
-    opt = true,
     event = "InsertEnter",
     config = function()
       local npairs = require "nvim-autopairs"
@@ -193,21 +137,18 @@ local function startup(use)
         require("nvim-autopairs.completion.cmp").on_confirm_done()
       )
     end,
-  }
+  },
   --- Highlight and view todos
-  use {
+  {
     "folke/todo-comments.nvim",
-    opt = true,
     event = "UIEnter",
     config = function()
       require("todo-comments").setup {}
     end,
-  }
+  },
   --- Copilot
-  use {
+  {
     "zbirenbaum/copilot.lua",
-    opt = true,
-    module = "copilot",
     config = function()
       require("copilot").setup {
         filetypes = {
@@ -225,12 +166,10 @@ local function startup(use)
         },
       }
     end,
-  }
+  },
   --- Tree sitter
-  use { "nvim-treesitter/nvim-treesitter", plugin = "treesitter" }
-  use {
+  {
     "nvim-treesitter/playground",
-    opt = true,
     cmd = "TSPlaygroundToggle",
     config = function()
       require("nvim-treesitter.configs").setup {
@@ -239,10 +178,9 @@ local function startup(use)
         },
       }
     end,
-  }
-  use {
+  },
+  {
     "nvim-treesitter/nvim-treesitter-context",
-    opt = true,
     cmd = "TSContextToggle",
     config = function()
       require("treesitter-context").setup {
@@ -252,11 +190,10 @@ local function startup(use)
         enable = false,
       }
     end,
-  }
+  },
   --- LaTeX
-  use {
+  {
     "lervag/vimtex",
-    opt = true,
     ft = "tex",
     cmd = "VimtexInverseSearch", -- for inverse search
     config = function()
@@ -267,13 +204,11 @@ local function startup(use)
       vim.g.vimtex_syntax_enabled = 0
       vim.g.vimtex_syntax_conceal_disable = 1
     end,
-  }
+  },
 
   -- Misc
   --- Waka time
-  use { "wakatime/vim-wakatime", opt = true, event = "UIEnter" }
-end
-
-return require("util.packer").setup(config, startup)
+  { "wakatime/vim-wakatime", event = "VeryLazy" },
+}
 
 -- vim:ts=2:sw=2:et

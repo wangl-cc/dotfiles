@@ -1,7 +1,6 @@
 local M = {
-  opt = true,
+  "hkupty/iron.nvim",
   keys = { "<leader><CR>", [[<C-\>]] },
-  module = "iron",
 }
 function M.config()
   local iron = require "iron.core"

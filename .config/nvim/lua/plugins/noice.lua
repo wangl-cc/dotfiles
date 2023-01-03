@@ -1,5 +1,7 @@
 local M = {
-  after = "tokyonight.nvim", -- wait for colorscheme to load
+  "folke/noice.nvim",
+  event = "UIEnter",
+  version = "1",
 }
 
 function M.config()

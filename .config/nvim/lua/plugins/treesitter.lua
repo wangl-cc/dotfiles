@@ -1,12 +1,12 @@
 local M = {
-  opt = true,
+  "nvim-treesitter/nvim-treesitter",
   event = "BufReadPre", -- Load bofore treesitter is loaded
-  requires = {
+  dependencies = {
     "p00f/nvim-ts-rainbow",
     "nvim-treesitter/nvim-treesitter-textobjects",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  run = ":TSUpdate",
+  build = ":TSUpdate",
 }
 
 function M.config()
