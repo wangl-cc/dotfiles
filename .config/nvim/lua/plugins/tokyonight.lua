@@ -1,6 +1,7 @@
 local M = {
-  opt = true,
-  event = "UIEnter",
+  "folke/tokyonight.nvim",
+  lazy = false,
+  priority = 1000,
 }
 
 function M.config()

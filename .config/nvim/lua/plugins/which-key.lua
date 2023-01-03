@@ -1,7 +1,7 @@
 local M = {
-  opt = true,
-  event = "BufEnter",
-  requires = {
+  "folke/which-key.nvim",
+  event = "VeryLazy",
+  dependencies = {
     {
       "kylechui/nvim-surround",
       config = function()
@@ -21,8 +21,7 @@ local M = {
 }
 
 function M.config()
-  -- HACK: which-key is not setup with setup() function, to clear operators
-  require("which-key.config").setup {
+  require("which-key").setup {
     show_help = false,
     show_keys = false,
     plugins = {
@@ -40,8 +39,6 @@ function M.config()
       scroll_up = "<c-b>",
     },
   }
-  local options = require("which-key.config").options
-  options.operators = {}
   local wk = require "which-key"
   wk.load()
   local leader = {
@@ -122,7 +119,7 @@ function M.config()
           end
         end,
         "Toggle REPL",
-      }
+      },
     },
     c = {
       name = "Change",
@@ -139,6 +136,33 @@ function M.config()
     },
     h = { name = "Hunk" },
     w = { name = "Workspace folder" },
+    p = {
+      name = "Package manager",
+      h = {
+        [[<Cmd>Lazy home<CR>]],
+        "Home of lazy.nvim",
+      },
+      i = {
+        [[<Cmd>Lazy install<CR>]],
+        "Install missing plugins",
+      },
+      u = {
+        [[<Cmd>Lazy update<CR>]],
+        "Update plugins",
+      },
+      s = {
+        [[<Cmd>Lazy sync<CR>]],
+        "Install, clean and update plugins",
+      },
+      x = {
+        [[<Cmd>Lazy clean<CR>]],
+        "Clean unused plugins",
+      },
+      p = {
+        [[<Cmd>Lazy profile<CR>]],
+        "Profile startup time",
+      },
+    },
   }
   wk.register(leader, { prefix = "<leader>" })
   -- fold keymaps with IndentBlanklineRefresh

@@ -1,5 +1,6 @@
 local M = {
-  after = "tokyonight.nvim", -- wait for colorscheme to load
+  "lewis6991/gitsigns.nvim",
+  event = "UIEnter",
 }
 
 function M.config()

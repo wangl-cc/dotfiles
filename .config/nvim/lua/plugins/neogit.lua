@@ -1,5 +1,5 @@
 local M = {
-  opt = true,
+  "TimUntersberger/neogit",
   cmd = "Neogit",
 }
 function M.config()
