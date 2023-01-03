@@ -13,7 +13,7 @@ local function keymap(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
-local on_attach_common = function(_, bufnr)
+local on_attach_common = function(client, bufnr)
   local function buf_keymap(mode, lhs, rhs, opts)
     opts = opts or {}
     opts.buffer = bufnr
@@ -62,12 +62,23 @@ local on_attach_common = function(_, bufnr)
     return ':IncRename ' .. vim.fn.expand '<cword>'
   end, { expr = true, desc = 'Change variable name' })
   buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
-  buf_keymap({ 'n', 'v' }, '<leader>f', function(opts)
-    opts = opts or {}
-    opts.async = true
-    vim.lsp.buf.format(opts)
-  end, { desc = 'Format code' })
+  local formatting = function()
+    vim.lsp.buf.format {
+      async = true,
+      filter = function(c)
+        return c.name == "null-ls"
+      end,
+    }
+  end
+  buf_keymap({ 'n', 'v' }, '<leader>f', formatting, { desc = 'Format' })
   -- stylua: ignore end
+  if client.supports_method "textDocument/formatting" then
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = vim.api.nvim_create_augroup("Formatting", { clear = true }),
+      buffer = bufnr,
+      callback = formatting,
+    })
+  end
 end
 
 local function process_config(config, reload)
