@@ -85,15 +85,6 @@ return {
   { "folke/neodev.nvim" },
   --- Local configuration
   { "folke/neoconf.nvim" },
-  --- Language server
-  {
-    "neovim/nvim-lspconfig",
-    event = "BufEnter",
-    config = function()
-      require("lspconfig.ui.windows").default_options.border = "rounded"
-      require("lsp").setup()
-    end,
-  },
   --- Auto pairs
   {
     "windwp/nvim-autopairs",

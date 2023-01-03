@@ -1,13 +1,8 @@
-local M = {}
-
 local util = require "util"
-local has_lspconfig, lspconfig = pcall(require, "lspconfig")
-local has_cmp_lsp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if not has_lspconfig or not has_cmp_lsp then
-  util.warn "lspconfig or cmp_nvim_lsp not found, skipping lsp config"
-  M.setup = function() end
-  return M
-end
+local lspconfig = require "lspconfig"
+local cmp_lsp = require "cmp_nvim_lsp"
+
+local M = {}
 
 local make_capabilities = cmp_lsp.default_capabilities
 
@@ -139,14 +134,6 @@ M.configs = {
 }
 
 M.setup = function()
-  require("neoconf").setup {
-    import = {
-      vscode = false,
-      coc = false,
-      nlsp = false,
-    },
-  }
-  require("neodev").setup {}
   -- auto reload servers' config when config changes
   util.create_bufwrite_autocmd {
     pattern = "lsp/*.lua",
