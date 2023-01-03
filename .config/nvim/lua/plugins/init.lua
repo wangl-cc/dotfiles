@@ -37,7 +37,6 @@ return {
   --- Input and select
   {
     "stevearc/dressing.nvim",
-
     event = "UIEnter",
     config = function()
       require("dressing").setup {
@@ -52,7 +51,6 @@ return {
   --- Indent guides
   {
     "lukas-reineke/indent-blankline.nvim",
-
     event = "UIEnter",
     config = function()
       require("indent_blankline").setup {
@@ -66,7 +64,6 @@ return {
   -- Notification popup
   {
     "rcarriga/nvim-notify",
-
     config = function()
       local notify = require "notify"
       notify.setup {
@@ -91,7 +88,6 @@ return {
   --- Language server
   {
     "neovim/nvim-lspconfig",
-
     event = "BufEnter",
     config = function()
       require("lspconfig.ui.windows").default_options.border = "rounded"
@@ -101,7 +97,6 @@ return {
   --- Auto pairs
   {
     "windwp/nvim-autopairs",
-
     event = "InsertEnter",
     config = function()
       local npairs = require "nvim-autopairs"
@@ -146,7 +141,6 @@ return {
   --- Highlight and view todos
   {
     "folke/todo-comments.nvim",
-
     event = "UIEnter",
     config = function()
       require("todo-comments").setup {}
@@ -155,7 +149,6 @@ return {
   --- Copilot
   {
     "zbirenbaum/copilot.lua",
-
     config = function()
       require("copilot").setup {
         filetypes = {
@@ -177,7 +170,6 @@ return {
   --- Tree sitter
   {
     "nvim-treesitter/playground",
-
     cmd = "TSPlaygroundToggle",
     config = function()
       require("nvim-treesitter.configs").setup {
@@ -189,7 +181,6 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
-
     cmd = "TSContextToggle",
     config = function()
       require("treesitter-context").setup {
@@ -203,7 +194,6 @@ return {
   --- LaTeX
   {
     "lervag/vimtex",
-
     ft = "tex",
     cmd = "VimtexInverseSearch", -- for inverse search
     config = function()
