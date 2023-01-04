@@ -62,11 +62,16 @@ local on_attach_common = function(client, bufnr)
     return ':IncRename ' .. vim.fn.expand '<cword>'
   end, { expr = true, desc = 'Change variable name' })
   buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
+  local ft = vim.bo[bufnr].filetype
+  local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
   local formatting = function()
     vim.lsp.buf.format {
       async = true,
       filter = function(c)
-        return c.name == "null-ls"
+        if have_nls then
+          return c.name == "null-ls"
+        end
+        return c.name ~= "null-ls"
       end,
     }
   end
