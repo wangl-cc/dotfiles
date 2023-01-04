@@ -193,7 +193,11 @@ function M.config()
   }
   wk.register(fold, { prefix = "z" })
   wk.register {
-    ["<C-/>"] = { "<Cmd>ToggleTerm<CR>", "Toggle terminal" },
+    ["<C-/>"] = {
+      "<Cmd>ToggleTerm<CR>",
+      "Toggle terminal",
+      mode = { "n", "v", "t" },
+    },
     ["<C-\\>"] = {
       function()
         -- FROM: https://github.com/hkupty/iron.nvim/issues/279
