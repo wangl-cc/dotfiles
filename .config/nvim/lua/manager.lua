@@ -1,5 +1,3 @@
-local util = require "util"
-
 local path = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(path) then
   vim.fn.system {
@@ -10,14 +8,11 @@ if not vim.loop.fs_stat(path) then
     "https://github.com/folke/lazy.nvim.git",
     path,
   }
-  -- use the stable tag
-  vim.fn.system {
-    "git",
-    "-C",
-    path,
-    "checkout",
-    "tags/stable",
-  }
+  local f = io.open(vim.fn.stdpath "config" .. "/lazy-lock.json", "r")
+  if f then
+    local lock = vim.json.decode(f:read "*a")
+    vim.fn.system { "git", "-C", path, "checkout", lock["lazy.nvim"].commit }
+  end
 end
 vim.opt.rtp:prepend(path)
 
