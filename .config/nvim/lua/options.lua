@@ -112,12 +112,8 @@ opt.clipboard:append { "unnamedplus" }
 -- tex flavor
 g.tex_flavor = "latex"
 
--- disable builtin plugins
-g.loaded_tutor_mode_plugin = 0
-g.loaded_2html_plugin = 0
-g.loaded_netrw = 0
-g.loaded_netrwPlugin = 0
-g.loaded_matchit = 0
+-- Remove neotree legacy commands
+g.neo_tree_remove_legacy_commands = 1
 
 -- NOTE: use nvim inside nvim, there are some notes
 -- 1. nvim --remote works but not well, nvr is much more recommended;

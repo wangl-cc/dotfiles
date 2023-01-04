@@ -1,4 +1,4 @@
-local M = {
+local treesitter = {
   "nvim-treesitter/nvim-treesitter",
   event = "BufReadPre", -- Load bofore treesitter is loaded
   dependencies = {
@@ -9,7 +9,7 @@ local M = {
   build = ":TSUpdate",
 }
 
-function M.config()
+function treesitter.config()
   require("nvim-treesitter.configs").setup {
     ensure_installed = {
       "bash",
@@ -96,4 +96,29 @@ function M.config()
   }
 end
 
-return M
+return {
+  treesitter,
+  {
+    "nvim-treesitter/playground",
+    cmd = "TSPlaygroundToggle",
+    config = function()
+      require("nvim-treesitter.configs").setup {
+        playground = {
+          enable = true,
+        },
+      }
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    cmd = "TSContextToggle",
+    config = function()
+      require("treesitter-context").setup {
+        -- set to false at setup,
+        -- because it's loaded by TSContextToggle command
+        -- and which will toggle this option
+        enable = false,
+      }
+    end,
+  },
+}

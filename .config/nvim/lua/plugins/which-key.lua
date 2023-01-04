@@ -1,23 +1,6 @@
 local M = {
   "folke/which-key.nvim",
   event = "VeryLazy",
-  dependencies = {
-    {
-      "kylechui/nvim-surround",
-      config = function()
-        require("nvim-surround").setup {}
-      end,
-    },
-    {
-      "numToStr/Comment.nvim",
-      config = function()
-        require("Comment").setup {
-          pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-        }
-      end,
-    },
-    "justinmk/vim-sneak",
-  },
 }
 
 function M.config()
@@ -40,7 +23,6 @@ function M.config()
     },
   }
   local wk = require "which-key"
-  wk.load()
   local leader = {
     ["/"] = {
       [[:nohlsearch<CR>:match<CR>]],
@@ -210,13 +192,19 @@ function M.config()
     i = { [[zi<Cmd>IndentBlanklineRefresh<CR>]], "Toggle foldenable" },
   }
   wk.register(fold, { prefix = "z" })
-  -- NOTE: which-key is not compatible with vim-sneak and Comment.nvim
-  -- NOTE: can't repeat with dot with treesitter textobjects
-  -- bind fF and tT to sneak
-  vim.keymap.set({ "n", "x", "o" }, "f", "<Plug>Sneak_f")
-  vim.keymap.set({ "n", "x", "o" }, "F", "<Plug>Sneak_F")
-  vim.keymap.set({ "n", "x", "o" }, "t", "<Plug>Sneak_t")
-  vim.keymap.set({ "n", "x", "o" }, "T", "<Plug>Sneak_T")
+  wk.register {
+    ["<C-/>"] = { "<Cmd>ToggleTerm<CR>", "Toggle terminal" },
+    ["<C-\\>"] = {
+      function()
+        -- FROM: https://github.com/hkupty/iron.nvim/issues/279
+        local last_line = vim.fn.line "$"
+        local pos = vim.api.nvim_win_get_cursor(0)
+        require("iron.core").send_line()
+        vim.api.nvim_win_set_cursor(0, { math.min(pos[1] + 1, last_line), pos[2] })
+      end,
+      "Send line and move down",
+    },
+  }
 end
 
 return M
