@@ -19,6 +19,8 @@ function treesitter.config()
       "query",
       "help",
       "embedded_template",
+      "gitcommit",
+      "diff",
     },
     parser_install_dir = vim.fn.stdpath "config",
     auto_install = true,
