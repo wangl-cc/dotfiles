@@ -40,7 +40,7 @@ function M.config()
   }
   vim.cmd [[colorscheme tokyonight]]
   if vim.fn.has "mac" == 1 or (is_sshr and vim.env.LC_OS == "Darwin") then
-    require("util.autobg").setup {
+    require("auto-backgroud").setup {
       is_dark = is_dark,
     }
   end

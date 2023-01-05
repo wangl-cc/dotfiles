@@ -1,4 +1,4 @@
-local util = require "util"
+local util = require "util.reload"
 local lspconfig = require "lspconfig"
 local cmp_lsp = require "cmp_nvim_lsp"
 

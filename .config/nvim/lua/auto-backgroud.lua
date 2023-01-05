@@ -1,3 +1,8 @@
+--[[
+Set background automatically based on system theme.
+Only works for iTerm2 which send SIGWINCH when theme changes.
+--]]
+
 local M = {}
 
 --@alias BackgroundEnum string | '"light"' | '"dark"'
