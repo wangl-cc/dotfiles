@@ -13,6 +13,8 @@ local function keymap(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+local format_group = vim.api.nvim_create_augroup("AutoFormat", { clear = true })
+
 local on_attach_common = function(client, bufnr)
   local function buf_keymap(mode, lhs, rhs, opts)
     opts = opts or {}
@@ -62,26 +64,37 @@ local on_attach_common = function(client, bufnr)
     return ':IncRename ' .. vim.fn.expand '<cword>'
   end, { expr = true, desc = 'Change variable name' })
   buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
+  -- stylua: ignore end
   local ft = vim.bo[bufnr].filetype
-  local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
-  local formatting = function()
-    vim.lsp.buf.format {
+  local have_nls = #require("null-ls.sources").get_available(
+      ft,
+      "NULL_LS_FORMATTING"
+    ) > 0
+  local format = function(opts)
+    opts = vim.tbl_extend("keep", opts or {}, {
       async = true,
+      bufnr = bufnr,
       filter = function(c)
         if have_nls then
           return c.name == "null-ls"
         end
         return c.name ~= "null-ls"
       end,
-    }
+    })
+    vim.lsp.buf.format(opts)
   end
-  buf_keymap({ 'n', 'v' }, '<leader>f', formatting, { desc = 'Format' })
-  -- stylua: ignore end
+  buf_keymap({ "n", "v" }, "<leader>f", format, { desc = "Format" })
   if client.supports_method "textDocument/formatting" then
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = vim.api.nvim_create_augroup("Formatting", { clear = true }),
+    vim.api.nvim_clear_autocmds {
+      group = format_group,
       buffer = bufnr,
-      callback = formatting,
+    }
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = format_group,
+      buffer = bufnr,
+      callback = function()
+        format { async = false }
+      end,
     })
   end
 end
