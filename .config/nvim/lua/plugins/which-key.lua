@@ -88,6 +88,10 @@ function M.config()
         [[<Cmd>TSContextToggle<CR>]],
         "Toggle treesitter context",
       },
+      p = {
+        [[<Cmd>TSPlaygroundToggle<CR>]],
+        "Toggle treesitter playground",
+      },
       i = {
         [[<Cmd>IndentBlanklineToggle<CR>]],
         "Toggle indent guides",
