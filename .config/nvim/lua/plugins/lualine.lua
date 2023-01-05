@@ -36,7 +36,7 @@ function M.config()
         sections = {
           lualine_a = { uppercase_filetype },
           lualine_y = { "progress" },
-          lualine_z = { "location" }
+          lualine_z = { "location" },
         },
         filetypes = { "lspinfo", "packer", "checkhealth", "startuptime", "lazy" },
       },
