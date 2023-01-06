@@ -15,6 +15,9 @@ gabbr ll ls --color -lh
 gabbr la ls --color -Alh
 # cd
 gabbr ... ../..
+# julia
+gabbr jl julia
+gabbr jp julia --project
 # git {{{
 gabbr g   git
 gabbr ga  git add
