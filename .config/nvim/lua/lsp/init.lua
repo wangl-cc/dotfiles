@@ -8,8 +8,8 @@ local make_capabilities = cmp_lsp.default_capabilities
 
 local function keymap(mode, lhs, rhs, opts)
   opts = opts or {}
-  opts.noremap = opts.noremap or true
-  opts.silent = opts.silent or true
+  opts.noremap = vim.F.if_nil(opts.noremap, true)
+  opts.silent = vim.F.if_nil(opts.silent, true)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
