@@ -7,7 +7,7 @@
 	<key>AlwaysOpenWindowAtStartup</key>
 	<false/>
 	<key>CheckTestRelease</key>
-	<false/>
+	<true/>
 	<key>Custom Color Presets</key>
 	<dict>
 		<key>One Dark</key>
