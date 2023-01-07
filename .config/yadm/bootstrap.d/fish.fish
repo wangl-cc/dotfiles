@@ -15,6 +15,10 @@ if type -q brew
   set_verbose -Ux HOMEBREW_PREFIX (brew --prefix)
   set_verbose -Ux HOMEBREW_CELLAR (brew --cellar)
   set_verbose -Ux HOMEBREW_REPOSITORY (brew --repo)
+  set -l _homebrew_sbin $HOMEBREW_PREFIX/sbin
+  if not contains $_homebrew_sbin $fish_user_paths
+    set_verbose -U fish_user_paths $_homebrew_sbin $fish_user_paths
+  end
   set -l _homebrew_bin $HOMEBREW_PREFIX/bin
   if not contains $_homebrew_bin $fish_user_paths
     set_verbose -U fish_user_paths $_homebrew_bin $fish_user_paths
