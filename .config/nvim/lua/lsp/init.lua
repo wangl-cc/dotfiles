@@ -99,30 +99,31 @@ local on_attach_common = function(client, bufnr)
   end
 end
 
-local function process_config(config, reload)
-  if type(config) == "string" then
+---@param opts table|string Config for lspconfig, if string it is treated as a lua module name
+---@param reload? boolean Whether to reload the module
+---@return table opts Processed lspconfig
+local function process_config(opts, reload)
+  if type(opts) == "string" then
     if reload then
-      return util.reload(config)
+      return util.reload(opts)
     else
-      return require(config)
+      return require(opts)
     end
   else -- table
-    return config
+    return opts
   end
 end
 
---@class LspConfig
---@field executable? string
---@field disabled? boolean
---@field setup_capabilities? func(capabilities)
---@field options? table
+---@class LspConfig
+---@field disabled? boolean Whether to disable this lsp
+---@field setup_capabilities? fun(capabilities:table):table Setup capabilities
+---@field options? table Options to be passed to lspconfig
 
---@param server string
---@param config LspConfig
+---@param server string
+---@param config LspConfig
 local function setup_server(server, config)
-  local executable = config.executable or server
-  -- don't setup if server is disabled or not installed
-  if config.disabled or vim.fn.executable(executable) == 0 then
+  -- don't setup if server is disabled
+  if config.disabled then
     return
   end
   local options = config.options or {}

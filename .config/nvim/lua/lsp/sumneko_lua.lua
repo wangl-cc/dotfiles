@@ -1,7 +1,5 @@
---@type LspConfig
-local M = {
-  executable = "lua-language-server",
-}
+---@type LspConfig
+local M = {}
 
 M.options = {
   cmd = { "lua-language-server" },

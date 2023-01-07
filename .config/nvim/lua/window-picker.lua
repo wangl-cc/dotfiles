@@ -3,39 +3,41 @@ This file is a modified version of s1n7ax/nvim-window-picker
 URL: https://github.com/s1n7ax/nvim-window-picker
 License: MIT, full license text see bottom of this file
 --]]
+local ui = require "util.ui"
+local tbl = require "util.table"
+
 local M = {}
 
---@class FilterRule
---@field current_win boolean
---@field bo? table<string, string[]>
---@field wo? table<string, string[]>
---@field func? fun(winid):boolean
+---@class FilterRule
+---@field current? boolean Filter out current window or not
+---@field bo? table<string, string[]> Buffer options to be filtered out
+---@field wo? table<string, string[]> Window options to be filtered out
+---@field func? fun(winid:integer):boolean Function to filter out windows
 
---@class WindowPickerOptions
---@field autoselect_one? boolean
---@field chars? string
---@field use_winbar? integer | 0 | 1 | 2
---@field filter_rule? FilterRule
+---@class WindowPickerOptions
+---@field autoselect_one? boolean
+---@field chars? string
+---@field use_winbar?  0 | 1 | 2
+---@field filter_rule? FilterRule
 
---@type WindowPickerOptions
+---@type WindowPickerOptions
 M.options = {
   autoselect_one = true,
   chars = "FJDKSLA;CMRUEIWOQP",
   use_winbar = 0, -- 0: never | 1: when cmdheight == 0 | 2: always
   filter_rule = {
-    current = false, -- if include current window, default is false
+    current = false,
     wo = {},
     bo = {
       filetype = { "neo-tree" },
       buftype = { "terminal" },
     },
-    -- func = function(winid) end, return false to filter out
   },
 }
 
---@param windows integer[]
---@param rule FilterRule
---@return integer[]
+---@param windows integer[] Window ids to be filtered
+---@param rule FilterRule Filter rule
+---@return integer[] Filtered window ids
 local function filter_windows(windows, rule)
   -- remove current window firstly if needed
   if not rule.current then
@@ -83,11 +85,11 @@ local function picker_hl(indicator_hl)
   return indicator_hl .. ":WindowPicker," .. indicator_hl .. "NC:WindowPickerNC"
 end
 
---@param opts? WindowPickerOptions
---@return integer
+---@param opts? WindowPickerOptions Options to override default options
+---@return integer|nil Selected window id or nil if no window is selected
 function M.pick_window(opts)
   -- merge options
-  local options = opts and vim.tbl_extend("force", M.options, opts) or M.options
+  local options = vim.tbl_extend("force", M.options, opts or {})
   local rules = options.filter_rule
   local chars = options.chars
 
@@ -137,9 +139,11 @@ function M.pick_window(opts)
   -- setup indicator for selectable windows
   local chars_used = {}
   local win_opts = {}
+
   for i, id in ipairs(pickables) do
     local char = chars:sub(i, i)
-    table.insert(chars_used, "&" .. char)
+    assert(char ~= "", "Not enough chars to indicate windows")
+    table.insert(chars_used, char)
     -- save window options
     win_opts[id] = {
       [indicator] = vim.api.nvim_win_get_option(id, indicator),
@@ -153,7 +157,7 @@ function M.pick_window(opts)
   vim.cmd "redraw"
 
   -- ask user to pick a window, user type <Esc> means no window selected
-  local i = vim.fn.confirm("Pick which window?", table.concat(chars_used, "\n"), 0)
+  local _, i = ui.confirm(chars_used, { prompt = "Pick a window" })
 
   -- Restore UI
   -- restore window options
@@ -172,6 +176,11 @@ function M.pick_window(opts)
 
   -- return selected window id, i2id[0] is nil which means no window selected
   return pickables[i]
+end
+
+---@param opts WindowPickerOptions Options to override default options
+M.setup = function(opts)
+  tbl.extend_inplace(M.options, opts)
 end
 
 return M

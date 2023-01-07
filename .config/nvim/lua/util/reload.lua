@@ -7,6 +7,8 @@ function M.create_bufwrite_autocmd(opts)
 end
 
 local auto_reload_id = vim.api.nvim_create_augroup("AutoReload", { clear = true })
+---@param mod string Module to be auto reloaded
+---@return any Module
 function M.auto_reload(mod)
   M.create_bufwrite_autocmd {
     pattern = mod:gsub("%.", "/") .. ".lua",
@@ -18,11 +20,13 @@ function M.auto_reload(mod)
   return require(mod)
 end
 
+---@param mod string Module to be unloaded
 function M.unload(mod)
   package.loaded[mod] = nil
   log.info("Unloaded " .. mod)
 end
 
+---@param mod string Module to be reloaded
 function M.reload(mod)
   package.loaded[mod] = nil
   local m = require(mod)

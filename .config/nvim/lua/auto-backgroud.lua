@@ -5,21 +5,21 @@ Only works for iTerm2 which send SIGWINCH when theme changes.
 
 local M = {}
 
---@alias BackgroundEnum string | '"light"' | '"dark"'
+---@alias BackgroundEnum `light` | `dark`
 
---@param bg BackgroundEnum
+---@param bg BackgroundEnum
 local function switch_bg(bg)
   if vim.o.background ~= bg then
     vim.o.background = bg
   end
 end
 
---@class BackgroundSwitcher
---@field pre? fun(): void
---@field post? fun(): void
+---@class BackgroundSwitcher
+---@field pre? fun() Pre switch callback
+---@field post? fun() Post switch callback
 
---@param bg BackgroundEnum
---@param switcher? BackgroundSwitcher
+---@param bg BackgroundEnum Background to switch to
+---@param switcher? BackgroundSwitcher Switcher options
 local function switch(bg, switcher)
   if not switcher then
     switch_bg(bg)
@@ -34,10 +34,10 @@ local function switch(bg, switcher)
   end
 end
 
---@class AutoBackgroundOptions
---@field is_dark fun(): boolean
---@field dark? BackgroundSwitcher
---@field light? BackgroundSwitcher
+---@class AutoBackgroundOptions
+---@field is_dark fun(): boolean A function to check if system theme is dark
+---@field dark? BackgroundSwitcher Switcher options for dark theme
+---@field light? BackgroundSwitcher Switcher options for light theme
 
 local autobg_lock = false
 function M.autobg()
@@ -52,7 +52,7 @@ function M.autobg()
   end
 end
 
---@param opts AutoBackgroundOptions
+---@param opts AutoBackgroundOptions
 function M.setup(opts)
   opts = opts or {}
 
