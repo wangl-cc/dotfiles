@@ -1,7 +1,7 @@
 ---@type LspConfig
 local M = {}
 
-if vim.env.__JULIA_LSP_DISABLE == "true" then
+if vim.env.__JULIA_LSP_DISABLE == "true" or vim.fn.executable "julia" == 0 then
   M.disabled = true
   return M
 end
@@ -37,9 +37,12 @@ M.setup_capabilities = function(capabilities)
 end
 
 local os_name = vim.loop.os_uname().sysname
+-- stylua: ignore start
+-- This can not be formatted correctly by stylua
 local julia_img_user = os_name == "Darwin"
-    and vim.fn.expand "~/.config/julials/compiler/sys.dylib"
-  or vim.fn.expand "~/.config/julials/sys.so"
+  and vim.fn.expand "~/.config/julials/compiler/sys.dylib"
+  or vim.fn.expand "~/.config/julials/compiler/sys.so"
+-- stylua: ignore end
 local julia_cmd = {
   "julia",
   "--startup-file=no",
