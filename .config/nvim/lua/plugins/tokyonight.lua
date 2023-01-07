@@ -1,5 +1,6 @@
 local M = {
   "folke/tokyonight.nvim",
+  version = "1",
   lazy = false,
   priority = 1000,
 }

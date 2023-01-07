@@ -1,5 +1,6 @@
 local M = {
   "folke/which-key.nvim",
+  version = "1",
   event = "VeryLazy",
 }
 

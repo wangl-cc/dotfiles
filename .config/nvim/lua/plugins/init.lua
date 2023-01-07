@@ -25,6 +25,7 @@ return {
   --- Highlight and view todos
   {
     "folke/todo-comments.nvim",
+    version = "1",
     event = "UIEnter",
     config = function()
       require("todo-comments").setup {}
