@@ -4,55 +4,52 @@ set -gx PATH $HOME/.local/bin $PATH
 
 if status is-interactive # {{{
 # abbreviates {{{
-function gabbr --description 'Create a new global abbreviation'
-  abbr -a -g $argv
-end
 # rm
-gabbr rm rm -i
+abbr --add rm rm -i
 # ls
-gabbr l  ls --color
-gabbr ll ls --color -lh
-gabbr la ls --color -Alh
+abbr --add l  ls --color
+abbr --add ll ls --color -lh
+abbr --add la ls --color -Alh
 # cd
 gabbr ... ../..
 # julia
-gabbr jl julia
-gabbr jp julia --project
+abbr --add jl julia
+abbr --add jp julia --project
 # git {{{
-gabbr g   git
-gabbr ga  git add
-gabbr gb  git branch
-gabbr gbl git branch -l
-gabbr gba git branch -a
-gabbr gc  git commit
-gabbr gd  git diff
-gabbr gds git diff --staged
-gabbr gs  git status
-gabbr gsu git status -u
-gabbr gl  git log
-gabbr gp  git push
-gabbr gpl git pull
-gabbr gr  git remote
-gabbr grv git remote -v
-gabbr gra git remote add
-gabbr gco git checkout
-gabbr gcm git checkout master
-gabbr gcb git checkout -b
-gabbr y    yadm
-gabbr ya   yadm add
-gabbr yb   yadm branch
-gabbr yc   yadm commit
-gabbr yd   yadm diff
-gabbr yds  yadm diff --staged
-gabbr ys   yadm status
-gabbr ysu  yadm status -u
-gabbr yl   yadm log
-gabbr yp   yadm push
-gabbr ypl  yadm pull
-gabbr yr   yadm remote
-gabbr yco  yadm checkout
-gabbr ycm  yadm checkout master
-gabbr ycb  yadm checkout -b
+abbr --add g   git
+abbr --add ga  git add
+abbr --add gb  git branch
+abbr --add gbl git branch -l
+abbr --add gba git branch -a
+abbr --add gc  git commit
+abbr --add gd  git diff
+abbr --add gds git diff --staged
+abbr --add gs  git status
+abbr --add gsu git status -u
+abbr --add gl  git log
+abbr --add gp  git push
+abbr --add gpl git pull
+abbr --add gr  git remote
+abbr --add grv git remote -v
+abbr --add gra git remote add
+abbr --add gco git checkout
+abbr --add gcm git checkout master
+abbr --add gcb git checkout -b
+abbr --add y    yadm
+abbr --add ya   yadm add
+abbr --add yb   yadm branch
+abbr --add yc   yadm commit
+abbr --add yd   yadm diff
+abbr --add yds  yadm diff --staged
+abbr --add ys   yadm status
+abbr --add ysu  yadm status -u
+abbr --add yl   yadm log
+abbr --add yp   yadm push
+abbr --add ypl  yadm pull
+abbr --add yr   yadm remote
+abbr --add yco  yadm checkout
+abbr --add ycm  yadm checkout master
+abbr --add ycb  yadm checkout -b
 # git }}}
 # abbreviates }}}
 
@@ -60,9 +57,9 @@ gabbr ycb  yadm checkout -b
 # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
 if type -q nvim
   if set -q NVIM # inside nvim
-    gabbr vi nvr
-    gabbr vim nvr
-    gabbr nvim nvr
+    abbr --add vi nvr
+    abbr --add vim nvr
+    abbr --add nvim nvr
     # if neovim-remote is not installed, fallback to nvim
     if not type -q nvr
       # this definition works but not as good as nvr
@@ -73,13 +70,13 @@ if type -q nvim
     end
     # environments variables set in nvim
   else
-    gabbr vi nvim
-    gabbr vim nvim
-    gabbr nvim nvim
+    abbr --add vi nvim
+    abbr --add vim nvim
+    abbr --add nvim nvim
     set -gx VISUAL nvim
   end
 else
-  gabbr vi vim
+  abbr --add vi vim
   set -gx VISUAL vim
 end
 set -gx ESH_SHELL /bin/bash
@@ -92,7 +89,7 @@ if type -q fastfetch
   function fish_greeting
       fastfetch
   end
-  gabbr ff fastfetch
+  abbr --add ff fastfetch
 else
   set -g fish_greeting # set to null to disable greeting
 end
