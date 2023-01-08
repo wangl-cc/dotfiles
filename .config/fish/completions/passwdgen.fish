@@ -1,3 +1,4 @@
+complete -f -c passwdgen
 complete -c passwdgen -s h -l help -d "Print help message"
 complete -c passwdgen -s e -l example -d "Print examples"
 
