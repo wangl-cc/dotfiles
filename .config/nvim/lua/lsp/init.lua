@@ -99,9 +99,28 @@ local on_attach_common = function(client, bufnr)
   end
 end
 
----@param opts table|string Config for lspconfig, if string it is treated as a lua module name
+---@class LspOptions
+---@field root_dir? fun(filename, bufnr): string
+---@field name? string
+---@field filetypes? string[]|string
+---@field autostart? boolean
+---@field single_file_support? boolean
+---@field on_new_config? fun(config, root_dir)
+---@field capabilities table <string, string|table|boolean|function>
+---@field cmd? string[]
+---@field handlers? function[]
+---@field init_options? table<string, string|table|boolean>
+---@field on_attach? fun(client, bufnr)
+---@field settings? table<string, string|table|boolean>
+
+---@class LspConfig
+---@field disabled? boolean Whether to disable this lsp
+---@field setup_capabilities? fun(capabilities:table):table Setup capabilities
+---@field options? LspOptions Options to be passed to lspconfig
+
+---@param opts LspConfig|string Config for lspconfig, if string it is treated as a lua module name
 ---@param reload? boolean Whether to reload the module
----@return table opts Processed lspconfig
+---@return LspConfig options opts Processed lspconfig
 local function process_config(opts, reload)
   if type(opts) == "string" then
     if reload then
@@ -109,15 +128,10 @@ local function process_config(opts, reload)
     else
       return require(opts)
     end
-  else -- table
+  else -- LspConfig
     return opts
   end
 end
-
----@class LspConfig
----@field disabled? boolean Whether to disable this lsp
----@field setup_capabilities? fun(capabilities:table):table Setup capabilities
----@field options? table Options to be passed to lspconfig
 
 ---@param server string
 ---@param config LspConfig
@@ -144,11 +158,11 @@ local function setup_server(server, config)
   return lspconfig[server].setup(new_options)
 end
 
+---@type table<string, LspConfig|string>
 M.configs = {
   julials = "lsp.julials",
   sumneko_lua = "lsp.sumneko_lua",
   bashls = {
-    executable = "bash-language-server",
     options = {
       filetypes = { "sh", "bash" },
     },
@@ -156,14 +170,13 @@ M.configs = {
   taplo = {},
   texlab = {},
   jsonls = {
-    executable = "vscode-json-languageserver",
     options = {
       cmd = { "vscode-json-languageserver", "--stdio" },
     },
   },
   ltex = {
     options = {
-      filetypes = { 'plaintex', 'tex', 'bib', 'markdown', 'rst' },
+      filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
     },
   },
 }
