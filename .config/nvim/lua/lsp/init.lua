@@ -161,6 +161,11 @@ M.configs = {
       cmd = { "vscode-json-languageserver", "--stdio" },
     },
   },
+  ltex = {
+    options = {
+      filetypes = { 'plaintex', 'tex', 'bib', 'markdown', 'rst' },
+    },
+  },
 }
 
 M.setup = function()
