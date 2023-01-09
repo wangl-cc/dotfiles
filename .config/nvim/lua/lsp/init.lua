@@ -169,11 +169,7 @@ M.configs = {
   },
   taplo = {},
   texlab = {},
-  jsonls = {
-    options = {
-      cmd = { "vscode-json-languageserver", "--stdio" },
-    },
-  },
+  jsonls = {},
   ltex = {
     options = {
       filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
