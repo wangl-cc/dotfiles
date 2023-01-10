@@ -1,79 +1,31 @@
 local util = require "util.reload"
 local lspconfig = require "lspconfig"
 local cmp_lsp = require "cmp_nvim_lsp"
+local tbl = require "util.table"
+local register = require("util.keymap").register
 
 local M = {}
 
 local make_capabilities = cmp_lsp.default_capabilities
 
-local function keymap(mode, lhs, rhs, opts)
-  opts = opts or {}
-  opts.noremap = vim.F.if_nil(opts.noremap, true)
-  opts.silent = vim.F.if_nil(opts.silent, true)
-  vim.keymap.set(mode, lhs, rhs, opts)
-end
-
 local format_group = vim.api.nvim_create_augroup("AutoFormat", { clear = true })
 
-local on_attach_common = function(client, bufnr)
-  local function buf_keymap(mode, lhs, rhs, opts)
-    opts = opts or {}
-    opts.buffer = bufnr
-    keymap(mode, lhs, rhs, opts)
-  end
+---@type boolean[]
+M.autoformat = {}
 
-  -- Mappings:
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  -- stylua: ignore start
-  buf_keymap('n', 'gd', [[<Cmd>Telescope lsp_definitions<CR>]],
-    { desc = 'Go to definition' })
-  buf_keymap('n', 'gD', [[<Cmd>Telescope lsp_type_definitions<CR>]],
-    { desc = 'Go to type definitions' })
-  buf_keymap('n', 'gr', [[<Cmd>Telescope lsp_references<CR>]],
-    { desc = 'Go to references' })
-  buf_keymap('n', 'gi', [[<Cmd>Telescope lsp_implementations<CR>]],
-    { desc = 'Go to implementations' })
-  buf_keymap('n', '<leader>sd', [[<Cmd>Telescope diagnostics bufnr=0<CR>]],
-    { desc = 'Search all diagnostics if current buffer' })
-  buf_keymap('n', '<leader>ss', [[<Cmd>Telescope lsp_document_symbols<CR>]],
-    { desc = 'Search all symbols in current buffer' })
-  buf_keymap('n', '<leader>k', vim.lsp.buf.hover,
-    { buffer = bufnr, desc = 'Show hover' })
-  buf_keymap('n', '<leader>K', vim.lsp.buf.signature_help,
-    { buffer = bufnr, desc = 'Show signature help' })
-  buf_keymap('n', '<leader>wa', function()
-    vim.ui.input({
-      prompt = 'Workspace folder to be added',
-      default = vim.fn.expand '%:p:h',
-    }, function(dir)
-      if dir then
-        vim.lsp.buf.add_workspace_folder(dir)
-      end
-    end)
-  end, { buffer = bufnr, desc = 'Add workspace folder' })
-  buf_keymap('n', '<leader>wd', function()
-    vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
-      prompt = 'Workspace folder to be removed',
-    }, function(dir)
-      if dir then
-        vim.lsp.buf.remove_workspace_folder(dir)
-      end
-    end)
-  end, { buffer = bufnr, desc = 'Remove workspace folder' })
-  buf_keymap('n', '<leader>cn', function()
-    return ':IncRename ' .. vim.fn.expand '<cword>'
-  end, { expr = true, desc = 'Change variable name' })
-  buf_keymap('n', '<leader>.', vim.lsp.buf.code_action, { desc = 'Show code action' })
-  -- stylua: ignore end
-  local ft = vim.bo[bufnr].filetype
+local on_attach_common = function(client, buffer)
+  local ft = vim.bo[buffer].filetype
   local have_nls = #require("null-ls.sources").get_available(
       ft,
       "NULL_LS_FORMATTING"
     ) > 0
+  if client.supports_method "textDocument/formatting" then
+    M.autoformat[buffer] = M.options.autoformat
+  end
   local format = function(opts)
     opts = vim.tbl_extend("keep", opts or {}, {
       async = true,
-      bufnr = bufnr,
+      bufnr = buffer,
       filter = function(c)
         if have_nls then
           return c.name == "null-ls"
@@ -83,20 +35,131 @@ local on_attach_common = function(client, bufnr)
     })
     vim.lsp.buf.format(opts)
   end
-  buf_keymap({ "n", "v" }, "<leader>f", format, { desc = "Format" })
-  if client.supports_method "textDocument/formatting" then
-    vim.api.nvim_clear_autocmds {
-      group = format_group,
-      buffer = bufnr,
-    }
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = format_group,
-      buffer = bufnr,
-      callback = function()
+  ---@type KeymapTree
+  local mappings = {
+    ---@type KeymapTree
+    g = {
+      ---@type KeymapOption
+      d = {
+        [[<Cmd>Telescope lsp_definitions<CR>]],
+        desc = "Go to definition",
+      },
+      ---@type KeymapOption
+      D = {
+        [[<Cmd>Telescope lsp_type_definitions<CR>]],
+        desc = "Go to type definitions",
+      },
+      ---@type KeymapOption
+      r = {
+        [[<Cmd>Telescope lsp_references<CR>]],
+        desc = "Go to references",
+      },
+      ---@type KeymapOption
+      i = {
+        [[<Cmd>Telescope lsp_implementations<CR>]],
+        desc = "Go to implementations",
+      },
+    },
+    ---@type KeymapTree
+    ["<leader>"] = {
+      ---@type KeymapOption
+      f = {
+        callback = format,
+        desc = "Format",
+      },
+      ---@type KeymapOption
+      tf = {
+        callback = function()
+          if M.autoformat[buffer] ~= nil then
+            M.autoformat[buffer] = not M.autoformat[buffer]
+          end
+        end,
+        desc = "Toggle autoformat",
+      },
+      ---@type KeymapOption
+      k = {
+        callback = vim.lsp.buf.hover,
+        desc = "Show hover and signature help",
+      },
+      ---@type KeymapOption
+      K = {
+        callback = vim.lsp.buf.signature_help,
+        desc = "Show signature help",
+      },
+      ---@type KeymapOption
+      ["."] = {
+        callback = vim.lsp.buf.code_action,
+        desc = "Show code actions",
+      },
+      ---@type KeymapTree
+      s = {
+        ---@type KeymapOption
+        d = {
+          [[<Cmd>Telescope diagnostics bufnr=0<CR>]],
+          desc = "Search all diagnostics if current buffer",
+        },
+        ---@type KeymapOption
+        s = {
+          [[<Cmd>Telescope lsp_document_symbols<CR>]],
+          desc = "Search all symbols in current buffer",
+        },
+      },
+      ---@type KeymapTree
+      w = {
+        ---@type KeymapOption
+        a = {
+          callback = function()
+            vim.ui.input({
+              prompt = "Workspace folder to be added",
+              default = vim.fn.expand "%:p:h",
+            }, function(dir)
+              if dir then
+                vim.lsp.buf.add_workspace_folder(dir)
+              end
+            end)
+          end,
+          desc = "Add workspace folder",
+        },
+        ---@type KeymapOption
+        d = {
+          function()
+            vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
+              prompt = "Workspace folder to be removed",
+            }, function(dir)
+              if dir then
+                vim.lsp.buf.remove_workspace_folder(dir)
+              end
+            end)
+          end,
+          desc = "Remove workspace folder",
+        },
+      },
+      ---@type KeymapOption
+      cn = {
+        callback = function()
+          return ":IncRename " .. vim.fn.expand "<cword>"
+        end,
+        expr = true,
+        desc = "Rename all references of symbol under the cursor",
+      },
+    },
+  }
+
+  register(mappings, { buffer = buffer, silent = true })
+
+  vim.api.nvim_clear_autocmds {
+    group = format_group,
+    buffer = buffer,
+  }
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    group = format_group,
+    buffer = buffer,
+    callback = function()
+      if M.autoformat[buffer] then
         format { async = false }
-      end,
-    })
-  end
+      end
+    end,
+  })
 end
 
 ---@class LspOptions
@@ -158,26 +221,30 @@ local function setup_server(server, config)
   return lspconfig[server].setup(new_options)
 end
 
----@type table<string, LspConfig|string>
-M.configs = {
-  julials = "lsp.julials",
-  sumneko_lua = "lsp.sumneko_lua",
-  bashls = {
-    options = {
-      filetypes = { "sh", "bash" },
+M.options = {
+  autoformat = true,
+  ---@type table<string, LspConfig|string>
+  servers = {
+    julials = "lsp.julials",
+    sumneko_lua = "lsp.sumneko_lua",
+    bashls = {
+      options = {
+        filetypes = { "sh", "bash" },
+      },
     },
-  },
-  taplo = {},
-  texlab = {},
-  jsonls = {},
-  ltex = {
-    options = {
-      filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
+    taplo = {},
+    texlab = {},
+    jsonls = {},
+    ltex = {
+      options = {
+        filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
+      },
     },
   },
 }
 
-M.setup = function()
+M.setup = function(opts)
+  tbl.extend_inplace(M.options, opts or {})
   -- auto reload servers' config when config changes
   util.create_bufwrite_autocmd {
     pattern = "lsp/*.lua",
@@ -186,14 +253,22 @@ M.setup = function()
       if server == "init" then -- reload this file
         return util.reload("lsp").setup()
       end
-      local config = process_config(M.configs[server], true)
+      local config = process_config(M.options.servers[server], true)
       setup_server(server, config)
     end,
     group = vim.api.nvim_create_augroup("LspReload", { clear = true }),
   }
-  keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-  keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-  for server, config in pairs(M.configs) do
+  register({
+    ["]"] = {
+      callback = vim.diagnostic.goto_next,
+      desc = "Go to next diagnostic",
+    },
+    ["["] = {
+      callback = vim.diagnostic.goto_prev,
+      desc = "Go to previous diagnostic",
+    },
+  }, { suffix = "d" })
+  for server, config in pairs(M.options.servers) do
     setup_server(server, process_config(config))
   end
 end
