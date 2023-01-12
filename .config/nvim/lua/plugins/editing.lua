@@ -2,7 +2,7 @@ return {
   -- TODO: Noice route for mini.align and jump
   {
     "echasnovski/mini.align",
-    event = "VeryLazy",
+    keys = { "ga", "gA" },
     config = function()
       require("mini.align").setup {}
     end,
@@ -16,14 +16,14 @@ return {
   },
   {
     "kylechui/nvim-surround",
-    event = "VeryLazy",
+    keys = { "ys", "ds", "cs" },
     config = function()
       require("nvim-surround").setup {}
     end,
   },
   {
     "numToStr/Comment.nvim",
-    event = "VeryLazy",
+    keys = { "gc", "gb" },
     config = function()
       require("Comment").setup {
         pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
