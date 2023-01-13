@@ -6,6 +6,8 @@
 	<false/>
 	<key>AlwaysOpenWindowAtStartup</key>
 	<false/>
+	<key>BootstrapDaemon</key>
+	<false/>
 	<key>CheckTestRelease</key>
 	<true/>
 	<key>Custom Color Presets</key>
