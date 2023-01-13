@@ -2,7 +2,7 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     version = "2",
-    event = "BufEnter", -- Load when BufEnter to open directory
+    cmd = "Neotree",
     config = {
       close_if_last_window = true,
       popup_border_style = "rounded",

@@ -95,3 +95,17 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = group,
 })
+
+-- When open a directory, load neo-tree and open the directory with it
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = { "*" },
+  once = true,
+  callback = function(args)
+    local bufname = args.file
+    local stats = vim.loop.fs_stat(bufname)
+    if stats and stats.type == "directory" then
+      require("neo-tree.setup.netrw").hijack()
+    end
+  end,
+  group = group,
+})

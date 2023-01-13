@@ -1,7 +1,7 @@
 local M = {
   "folke/which-key.nvim",
   version = "1",
-  event = "VeryLazy",
+  event = "UIEnter",
 }
 
 M.config = function()
@@ -33,8 +33,6 @@ M.config = function()
     w = { name = "Workspace action" },
     p = { name = "Package manager action" },
   }, { prefix = "<leader>" })
-
-  require "config.keymap"
 end
 
 return M
