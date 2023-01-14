@@ -11,7 +11,7 @@ function M.config()
     diff_opts = {
       internal = true,
     },
-    on_attach = function(bufnr)
+    on_attach = function(buffer)
       local gs = package.loaded.gitsigns
 
       local register = require("util.keymap").register
@@ -44,7 +44,7 @@ function M.config()
           expr = true,
           desc = "Previous change hunk",
         },
-      }, { suffix = "c" })
+      }, { suffix = "c", buffer = buffer })
 
       -- Actions
       register({
@@ -112,7 +112,7 @@ function M.config()
             desc = "Toggle word diff",
           },
         },
-      }, { prefix = "<leader>" })
+      }, { prefix = "<leader>", buffer = buffer })
     end,
     yadm = {
       enable = true,
