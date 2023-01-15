@@ -80,6 +80,7 @@ function M.config()
           "diff",
           symbols = { added = " ", modified = "柳", removed = " " },
           source = function()
+            ---@diagnostic disable-next-line undefined-field
             local gs_st = vim.b.gitsigns_status_dict
             return gs_st
               and {
