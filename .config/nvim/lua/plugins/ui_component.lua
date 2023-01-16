@@ -1,5 +1,15 @@
 return {
   {
+    "lukas-reineke/indent-blankline.nvim",
+    event = "UIEnter",
+    config = {
+      char = "▏",
+      context_char = "▏",
+      show_current_context = true,
+      show_current_context_start = true,
+    },
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     version = "2",
     cmd = "Neotree",
@@ -103,11 +113,10 @@ return {
     event = "UIEnter",
     config = function()
       local get_icon_color = require("nvim-web-devicons").get_icon_color
-
       require("incline").setup {
         render = function(props)
           local bufname = vim.api.nvim_buf_get_name(props.buf)
-          local filename = vim.fn.fnamemodify(bufname, ":t")
+          local filename = vim.fs.basename(bufname)
           local filetype_icon, color = get_icon_color(filename)
           return {
             { filetype_icon, guifg = color },
@@ -123,5 +132,11 @@ return {
         },
       }
     end,
+  },
+  {
+    "folke/todo-comments.nvim",
+    version = "1",
+    event = "UIEnter",
+    config = true,
   },
 }

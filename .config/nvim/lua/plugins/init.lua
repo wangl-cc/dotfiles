@@ -22,36 +22,6 @@ return {
   -- Git commands
   { "tpope/vim-fugitive", cmd = { "Git" } },
 
-  --- Highlight and view todos
-  {
-    "folke/todo-comments.nvim",
-    version = "1",
-    event = "UIEnter",
-    config = function()
-      require("todo-comments").setup {}
-    end,
-  },
-  --- Copilot
-  {
-    "zbirenbaum/copilot.lua",
-    config = function()
-      require("copilot").setup {
-        filetypes = {
-          help = false,
-          iron = false,
-          toggleterm = false,
-          ["*"] = true,
-        },
-        panel = {
-          enabled = false,
-        },
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-        },
-      }
-    end,
-  },
   --- LaTeX
   {
     "lervag/vimtex",

@@ -1,9 +1,14 @@
+--[[
+This file contains the plugins that change apperence of some api
+--]]
+
 return {
-  --- Better vim.ui.*
+  -- Better vim.ui.*
   {
     "stevearc/dressing.nvim",
     event = "UIEnter",
     config = {
+      -- vim.ui.input is handled by noice
       input = { enabled = false },
       select = {
         enabled = true,
@@ -11,18 +16,7 @@ return {
       },
     },
   },
-  --- Indent guides
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "UIEnter",
-    config = {
-      char = "▏",
-      context_char = "▏",
-      show_current_context = true,
-      show_current_context_start = true,
-    },
-  },
-  -- Notification popup
+  -- Better vim.notify
   {
     "rcarriga/nvim-notify",
     config = {
@@ -38,7 +32,7 @@ return {
       },
     },
   },
-  -- Incremental rename
+  -- Incremental vim.lsp.buf.rename
   {
     "smjonas/inc-rename.nvim",
     event = "UIEnter",

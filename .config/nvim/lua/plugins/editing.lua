@@ -70,4 +70,22 @@ return {
       )
     end,
   },
+  {
+    "zbirenbaum/copilot.lua",
+    config = {
+      filetypes = {
+        help = false,
+        iron = false,
+        toggleterm = false,
+        ["*"] = true,
+      },
+      panel = {
+        enabled = false,
+      },
+      suggestion = {
+        enabled = true,
+        auto_trigger = true,
+      },
+    },
+  },
 }
