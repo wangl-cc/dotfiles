@@ -174,8 +174,10 @@ function M.config()
       { name = "buffer" },
     },
   })
+  --HACK:we warp the complete of the cmp_path source to escape `#` in path
   local cmdline_path = require("cmp_path").new()
   local complete = cmdline_path.complete
+  ---@diagnostic disable-next-line duplicate-set-field
   cmdline_path.complete = function(self, params, callback)
     local callback_new = function(candidates)
       if not candidates then
