@@ -15,13 +15,10 @@ g.loaded_ruby_provider = 0
 g.loaded_node_provider = 0 -- even node is required for copilot but it use its own node
 
 --- filetype detection
-cmd "filetype plugin indent on"
+cmd.filetype("plugin", "indent", "on")
 
 --- syntax highlight
-cmd "syntax on"
-
--- italic comments
-cmd "highlight Comment cterm=italic gui=italic"
+cmd.syntax "on"
 
 -- use true colors
 o.termguicolors = true

@@ -154,7 +154,7 @@ function M.pick_window(opts)
     vim.api.nvim_win_set_option(id, "winhl", picker_hl(indicator_hl))
   end
   -- redraw windows
-  vim.cmd "redraw"
+  vim.cmd.redraw()
 
   -- ask user to pick a window, user type <Esc> means no window selected
   local _, i = ui.confirm(chars_used, { prompt = "Pick a window" })
