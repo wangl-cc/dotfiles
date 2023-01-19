@@ -27,15 +27,15 @@ clone_repo() {
     $GIT -C "$REPO_DIR" pull
   else
     temp=$(mktemp -d)
-    [ -d "$temp" ] || echo "Failed to create temp directory." && exit 1
-    cd "$temp" &&
-    $GIT clone --no-checkout "$REPO_URL" &&
-    config_repo &&
-    mv "$temp/.git" "$REPO_DIR" &&
-    cd ~ &&
-    $GIT reset HEAD &&
-    yadm bootstrap
+    [ -d "$temp" ] || exit 1
+    cd "$temp" || exit 1
+    $GIT clone --recurse-submodules --no-checkout "$REPO_URL" "$temp"
+    config_repo
+    mv "$temp/.git" "$REPO_DIR"
     rm -rf "$temp"
+    cd ~ || exit 1
+    $GIT reset HEAD
+    yadm bootstrap
   fi
 }
 
