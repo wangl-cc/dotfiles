@@ -1,0 +1,17 @@
+<% URL="mirrors.aliyun.com"
+if [ "$(uname -sm)" = "Darwin arm64" ]; then
+  URL="mirrors.bfsu.edu.cn"
+fi -%>
+show_channel_urls: true
+channels:
+  - defaults
+default_channels:
+  - https://<%= $URL %>/anaconda/pkgs/main
+  - https://<%= $URL %>/anaconda/pkgs/free
+  - https://<%= $URL %>/anaconda/pkgs/r
+  - https://<%= $URL %>/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://<%= $URL %>/anaconda/cloud
+  msys2: https://<%= $URL %>/anaconda/cloud
+  bioconda: https://<%= $URL %>/anaconda/cloud
+<%# vim: set ft=esh_yaml: -%>
