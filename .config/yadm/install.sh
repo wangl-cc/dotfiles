@@ -29,12 +29,13 @@ clone_repo() {
     temp=$(mktemp -d)
     [ -d "$temp" ] || exit 1
     cd "$temp" || exit 1
-    $GIT clone --recurse-submodules --no-checkout "$REPO_URL" "$temp"
+    $GIT clone --no-checkout "$REPO_URL" "$temp"
     config_repo
     mv "$temp/.git" "$REPO_DIR"
     rm -rf "$temp"
     cd ~ || exit 1
     $GIT reset HEAD
+    $GIT submodule update --init --recursive
     yadm bootstrap
   fi
 }
