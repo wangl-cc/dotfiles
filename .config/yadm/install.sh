@@ -1,56 +1,180 @@
 #!/bin/bash
 
-GIT=${GIT-"git"}
-GITHUB=${GITHUB-"https://github.com/"}
-OWNER=${OWNER-"wangl-cc"}
-REPO=${REPO-"dotfiles"}
-REPO_URL=${REPO_URL-"$GITHUB$OWNER/$REPO.git"}
-REPO_DIR="$HOME"
-REPO_DEST="$REPO_DIR/.git"
+# Color Codes
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[0;33m'
+readonly BLUE='\033[0;34m'
+readonly PURPLE='\033[0;35m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
 
-# make sure $HOME/.local/bin in PATH
-# where yadm and esh is located
+# Variables
+GIT=${GIT-"git"}
 export PATH="$HOME/.local/bin:$PATH"
 
-config_repo() {
-  $GIT config core.bare false
-  $GIT config core.worktree "$HOME"
-  $GIT config yadm.managed true
-  $GIT config core.sparsecheckout true
-  $GIT config core.sparseCheckoutCone false
-  $GIT sparse-checkout set --no-cone '/*' '!/README.md' '!/LICENSE' '!/install.sh' '!/.github'
+# Logging
+LOG_LEVEL=2
+trace() {
+  if [ $LOG_LEVEL -le 0 ]; then
+    echo -e "${CYAN}TRACE:${NC} $1"
+  fi
 }
-
-clone_repo() {
-  if [ -d "$REPO_DEST" ]; then
-    echo "Repository already exists, pull latest changes."
-    $GIT -C "$REPO_DIR" pull
-  else
-    temp=$(mktemp -d)
-    [ -d "$temp" ] || exit 1
-    cd "$temp" || exit 1
-    $GIT clone --no-checkout "$REPO_URL" "$temp"
-    config_repo
-    mv "$temp/.git" "$REPO_DIR"
-    rm -rf "$temp"
-    cd ~ || exit 1
-    $GIT reset HEAD
-    $GIT submodule update --init --recursive
-    yadm bootstrap
+debug() {
+  if [ $LOG_LEVEL -le 1 ]; then
+    echo -e "${PURPLE}DEBUG:${NC} $1"
+  fi
+}
+info() {
+  if [ $LOG_LEVEL -le 2 ]; then
+    echo -e "$1"
+  fi
+}
+warn() {
+  if [ $LOG_LEVEL -le 3 ]; then
+    echo -e "${YELLOW}WARN${NC}:  $1"
+  fi
+}
+error() {
+  if [ $LOG_LEVEL -le 4 ]; then
+    echo -e "${RED}ERROR${NC}: $1>&2"
+    exit 1
   fi
 }
 
-YADM_DATA="$HOME/.local/share/yadm"
-# create a link to yadm repo for $REPO_DEST
-fake_repo() { # fake git for yadm
+color() {
+  echo "${2:-$BLUE}$1${NC}"
+}
+
+ok() {
+  info "$(color "$1" "$GREEN")"
+}
+
+# Logging for git
+can_quiet() {
+  subcmd=$1
+  $GIT "$subcmd" -h | grep -q -- --quiet
+}
+can_verbose() {
+  subcmd=$1
+  $GIT "$subcmd" -h | grep -q -- --verbose
+}
+git_verbose() {
+  trace "$GIT $*"
+  if [[ $LOG_LEVEL -le 2 && $(can_verbose "$1") ]]; then
+    $GIT "$@" --verbose
+  elif [[ $LOG_LEVEL -ge 4 && $(can_quiet "$1") ]]; then
+    $GIT "$@" --quiet
+  else
+    $GIT "$@"
+  fi
+}
+
+config() {
+  git_verbose config core.bare false
+  git_verbose config core.worktree "$HOME"
+  git_verbose config yadm.managed true
+  git_verbose config core.sparsecheckout true
+  git_verbose config core.sparseCheckoutCone false
+  git_verbose sparse-checkout set --no-cone '/*' '!/README.md' '!/LICENSE' '!/install.sh' '!/.github'
+}
+
+
+clone_core() {
+  local temp
+  temp=$(mktemp -d)
+  cd "$temp" || error "Unable to change to temp directory: $temp"
+  git_verbose clone --no-checkout "$1" "$temp" --branch "$2" ||
+    error "Unable to clone repository $(color "$1") with branch $(color "$2")"
+  config || error "Unable to configure repository"
+  mv "$temp/.git" "$HOME" || error "Unable to move .git directory"
+  rm -rf "$temp"
+  cd ~ || error "Unable to change to home directory: $HOME"
+  git_verbose reset HEAD
+  git_verbose submodule update --init --recursive
+  ok "Clone succeed"
+}
+
+clone() {
+  force=$1
+  url=$2
+  branch=$3
+  repo="$HOME/.git"
+  if [ -d "repo" ]; then if [ "$force" = "true" ]; then
+      warn "Repository already exists, force clone"
+      rm -rf "$repo"
+      clone_core "$url" "$branch"
+    else
+      warn "Repository already exists, pull latest changes"
+      git_verbose -C "$repo" pull --quiet
+    fi
+  else
+    clone_core "$url" "$branch"
+  fi
+}
+
+# Create a link_yadm from $HOME/.git to $YADM_DATA/repo.git
+# This is needed to make yadm work
+link_yadm() {
+  YADM_DATA="$HOME/.local/share/yadm"
   if ! [ -e "$YADM_DATA/repo.git" ]; then
-    print -P "Create fake git for yadm."
     if ! [ -d "$YADM_DATA" ]; then
+      info "Create yadm data directory"
       mkdir -p "$YADM_DATA"
     fi
-    ln -s "$REPO_DEST" "$YADM_DATA/repo.git"
+    info "Link yadm repository"
+    ln -s "$HOME/.git" "$YADM_DATA/repo.git"
   fi
 }
 
-clone_repo
-fake_repo
+usage() {
+cat <<EOM
+Usage: $(basename "$0") [options] [command]
+Options:
+  -h Show this help message and exit
+  -f Force clone repository and overwrite existing one
+  -v Verbose output, repeat for more verbosity
+  -q Quiet output, repeat for less verbosity
+  -u Specify repository owner
+  -r Specify repository name
+  -b Specify repository branch
+  -l Specify repository url
+EOM
+}
+
+main() {
+  while getopts "hfmvqu:r:b:l:" opt; do
+    case $opt in
+      h) usage; exit 0;;
+      f) force=true;;
+      v) (( LOG_LEVEL-- ));;
+      q) (( LOG_LEVEL++ ));;
+      u) owner="$OPTARG";;
+      r) repo="$OPTARG";;
+      b) branch="$OPTARG";;
+      l) url="$OPTARG";;
+      *) usage; exit 1;;
+    esac
+  done
+
+  force=${force-"false"}
+  owner=${owner:-"wangl-cc"}
+  repo=${repo:-"dotfiles"}
+  branch=${branch:-"master"}
+  url=${url:-"https://github.com/$owner/$repo.git"}
+  
+  debug "GIT: $(color "$GIT")"
+  debug "PATH: $(color "$PATH")"
+  debug "LOG_LEVEL: $(color "$LOG_LEVEL")"
+  debug "force: $(color "$force")"
+  debug "owner: $(color "$owner")"
+  debug "repo: $(color "$repo")"
+  debug "branch: $(color "$branch")"
+  debug "url: $(color "$url")"
+
+  clone "$force" "$url" "$branch"
+  link_yadm
+  yadm bootstrap
+}
+
+main "$@"
