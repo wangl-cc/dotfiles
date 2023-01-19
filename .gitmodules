@@ -1,0 +1,6 @@
+[submodule ".local/share/dotfiles/yadm"]
+	path = .local/share/dotfiles/yadm
+	url = https://github.com/TheLocehiliosan/yadm
+[submodule ".local/share/dotfiles/esh"]
+	path = .local/share/dotfiles/esh
+	url = https://github.com/jirutka/esh.git
