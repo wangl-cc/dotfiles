@@ -12,7 +12,7 @@ set -gx CONDA_EXE $__CONDA_ROOT/bin/conda
 # test if conda is installed
 if not test -x $CONDA_EXN
   set -e CONDA_EXE
-  return
+  exit
 end
 
 set -gx CONDA_PYTHON_EXE $__CONDA_ROOT/bin/python
