@@ -38,21 +38,14 @@ abbr --add gra git remote add
 abbr --add gco git checkout
 abbr --add gcm git checkout master
 abbr --add gcb git checkout -b
-abbr --add y    yadm
-abbr --add ya   yadm add
-abbr --add yb   yadm branch
-abbr --add yc   yadm commit
-abbr --add yd   yadm diff
-abbr --add yds  yadm diff --staged
-abbr --add ys   yadm status
-abbr --add ysu  yadm status -u
-abbr --add yl   yadm log
-abbr --add yp   yadm push
-abbr --add ypl  yadm pull
-abbr --add yr   yadm remote
-abbr --add yco  yadm checkout
-abbr --add ycm  yadm checkout master
-abbr --add ycb  yadm checkout -b
+abbr --add y  yadm
+abbr --add ya yadm alt
+abbr --add yb yadm bootstrap
+abbr --add yd yadm decrypt
+abbr --add ye yadm encrypt
+abbr --add yp yadm parms
+abbr --add yg yadm git-crypt
+abbr --add yt yadm transcrypt
 # git }}}
 # abbreviates }}}
 
