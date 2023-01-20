@@ -42,7 +42,7 @@ abbr --add ya yadm alt
 abbr --add yb yadm bootstrap
 abbr --add yd yadm decrypt
 abbr --add ye yadm encrypt
-abbr --add yp yadm parms
+abbr --add yp yadm perms
 abbr --add yg yadm git-crypt
 abbr --add yt yadm transcrypt
 # git }}}
