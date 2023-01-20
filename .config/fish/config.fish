@@ -11,10 +11,9 @@ abbr --add l  ls --color
 abbr --add ll ls --color -lh
 abbr --add la ls --color -Alh
 # cd
-function multicd
-  echo cd (string repeat -n (math (string length -- $argv[1]) - 1) ../)
-end
-abbr --add dotdot --regex '^\.\.+$' --function multicd
+abbr --add .. cd ..
+abbr --add ... cd ../..
+abbr --add .... cd ../../..
 # julia
 abbr --add jl julia
 abbr --add jp julia --project
