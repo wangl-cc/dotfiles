@@ -1,11 +1,11 @@
 format = """ \
 $username$hostname$localip$directory\
-$package$julia$lua$conda\
+$package$julia$lua\
 $git_branch$git_commit$git_state$git_status\
 $fill $cmd_duration$time\
 $line_break $jobs$shlvl$character\
 """
-right_format = "$status"
+right_format = "$status$conda"
 add_newline = true
 
 # Modules
@@ -75,7 +75,7 @@ time_format = "%a %r"
 symbol = " "
 
 [git_commit]
-format ="on [\\($hash$tag\\)]($style) "
+format = "on [\\($hash$tag\\)]($style) "
 tag_disabled = false
 tag_symbol = " 笠"
 
@@ -97,7 +97,8 @@ modified = " $count "
 
 # Language or enviroment {{{
 [conda]
-symbol = "python "
+symbol = " "
+format = "[$symbol$environment]($style) "
 
 [package]
 symbol = " "
