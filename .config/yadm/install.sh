@@ -174,6 +174,8 @@ main() {
 
   clone "$force" "$url" "$branch"
   link_yadm
+  export ESH_SHELL="/bin/bash"
+  yadm alt
   yadm bootstrap
 }
 
