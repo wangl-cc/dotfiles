@@ -18,6 +18,9 @@
 !.local/share
 !.local/share/man
 
+# GnuPG
+!.gnupg
+
 # yadm alternate files
 !*##*
 !.*##*
