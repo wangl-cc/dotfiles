@@ -1,14 +1,93 @@
-/*
-/.*
+# Ignore everything by default
+*
+# git files
+!.gitignore
+!.gitmodules
 
+# Repository files
+!README.md
+!LICENSE
+!.github
+!.github/workflows
+!.github/workflows/*
+
+# basic file structure
+!.config
+!.local
+!.local/bin
+!.local/share
+!.local/share/man
+
+# yadm alternate files
 !*##*
 !.*##*
-!/.fishrc
-!/.vim
-!/.vimrc
-!/.iterm
-!/.gnupg
-!/.config
-!/.julia
-!/.gitignore
-!/.gitconfig
+
+# Symbolic links
+!.gitconfig
+!install.sh
+
+# Conda
+!.config/conda
+!.config/conda/condarc##template.esh
+
+# FastFetch
+!.config/fastfetch
+!.config/fastfetch/config.conf
+
+# Fish Shell
+!.fishrc
+!.config/fish
+!.config/fish/*
+.config/fish/fish_variables
+
+# Git
+!.config/git
+!.config/git/*
+.config/git/gitconfig
+.config/git/ignores/global.gitignore
+
+# iTerm2
+!.config/iterm2/com.googlecode.iterm2.plist
+
+# Julia
+!.julia
+!.julia/config
+!.julia/config/startup.jl
+!.config/julials
+!.config/julials/compiler
+!.config/julials/compiler/*
+.config/julials/compiler/sys.*
+!.config/julials/nvim_lsp
+!.config/julials/nvim_lsp/*
+.config/julials/*/Manifest.toml
+
+# NeoVim
+!.config/nvim
+!.config/nvim/**
+.config/nvim/minimal.lua
+.config/nvim/parser
+.config/nvim/parser-info
+
+# pip
+!.config/pip
+!.config/pip/pip.conf
+
+# Starship
+!.config/starship.toml
+
+# YADM
+!.config/yadm
+!.config/yadm/*
+!.local/share/yadm
+!.local/share/yadm/archive
+
+# Utilities
+!.local/bin/passwdgen
+!.local/bin/fake-lua
+
+# Dependencies
+!.local/share/dotfiles
+!.local/share/dotfiles/*
+!.local/bin/yadm
+!.local/bin/esh
+
