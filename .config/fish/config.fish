@@ -24,19 +24,20 @@ abbr --add gb  git branch
 abbr --add gbl git branch -l
 abbr --add gba git branch -a
 abbr --add gc  git commit
+abbr --add gco git checkout
+abbr --add gcm git checkout master
+abbr --add gcb git checkout -b
+abbr --add gci git check-ignore -v
 abbr --add gd  git diff
 abbr --add gds git diff --staged
-abbr --add gs  git status
-abbr --add gsu git status -u
 abbr --add gl  git log
 abbr --add gp  git push
 abbr --add gpl git pull
 abbr --add gr  git remote
 abbr --add grv git remote -v
 abbr --add gra git remote add
-abbr --add gco git checkout
-abbr --add gcm git checkout master
-abbr --add gcb git checkout -b
+abbr --add gs  git status
+abbr --add gsu git status -u
 abbr --add y  yadm
 abbr --add ya yadm alt
 abbr --add yb yadm bootstrap
