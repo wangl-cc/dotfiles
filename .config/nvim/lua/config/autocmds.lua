@@ -76,6 +76,26 @@ vim.api.nvim_create_autocmd({ "InsertEnter", "WinLeave" }, {
   group = group,
 })
 
+-- filetype detection for esh
+vim.filetype.add {
+  extension = {
+    gitignore = "gitignore",
+  },
+  filename = {
+    condarc = "yaml",
+    gitconfig = "gitconfig",
+    [".condarc"] = "yaml",
+    [".fishrc"] = "fish",
+  },
+  pattern = {
+    [".*##template%.esh"] = function(path, _)
+      local content_ft =
+        vim.filetype.match { filename = path:gsub("##template%.esh", "") }
+      return content_ft and "esh_" .. content_ft or "esh_unknown"
+    end,
+  },
+}
+
 -- treesitter for esh
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "esh_*" },

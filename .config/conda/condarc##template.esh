@@ -14,4 +14,3 @@ custom_channels:
   conda-forge: https://<%= $URL %>/anaconda/cloud
   msys2: https://<%= $URL %>/anaconda/cloud
   bioconda: https://<%= $URL %>/anaconda/cloud
-<%# vim: set ft=esh_yaml: -%>

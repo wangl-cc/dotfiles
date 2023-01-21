@@ -111,5 +111,3 @@ end
 # starship initialize }}}
 
 end # is-interactive }}}
-
-# vim:ts=2:sw=2:ft=fish:fdm=marker:et

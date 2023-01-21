@@ -50,5 +50,3 @@
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
 <% fi -%>
-
-<%# vim: set ts=8 sw=8 noet ft=esh_gitconfig: -%>
