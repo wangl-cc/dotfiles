@@ -70,6 +70,17 @@ function M.config()
           },
         },
       },
+      hover = {
+        border = {
+          style = "rounded",
+          padding = { 0, 1 },
+          text = {
+            top = " Hover ",
+            top_align = "center",
+          },
+        },
+        position = { row = 2 },
+      },
       notify = {
         win_options = {
           winblend = 20,
