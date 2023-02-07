@@ -22,6 +22,7 @@ cmd.syntax "on"
 
 -- use true colors
 o.termguicolors = true
+o.pumblend = 10
 
 -- show line number and relative line number
 o.number = true

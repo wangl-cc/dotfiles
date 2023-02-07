@@ -30,7 +30,7 @@ function M.config()
   local tokyonight = require "tokyonight.config"
   tokyonight.setup {
     styles = {
-      floats = "normal",
+      floats = "transparent",
     },
     sidebars = { "qf" },
     on_highlights = function(hl, c)

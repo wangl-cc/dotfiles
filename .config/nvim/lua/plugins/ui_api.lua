@@ -30,6 +30,9 @@ return {
         DEBUG = "",
         TRACE = "✎",
       },
+      on_open = function(win)
+        vim.api.nvim_win_set_option(win, "winblend", 10)
+      end,
     },
   },
   -- Incremental vim.lsp.buf.rename

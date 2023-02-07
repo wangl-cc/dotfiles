@@ -70,9 +70,8 @@ function M.config()
   cmp.setup {
     window = {
       completion = {
-        border = "rounded",
         winhighlight = "Normal:Normal,FloatBorder:Normal,Search:None",
-        col_offset = -2,
+        col_offset = -1,
         side_padding = 0,
       },
       documentation = {
