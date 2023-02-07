@@ -121,5 +121,6 @@ if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr"
   vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"
 else
+  ---@diagnostic disable-next-line: undefined-field
   vim.env.VISUAL = "nvim --server " .. vim.v.servername .. " --remote"
 end
