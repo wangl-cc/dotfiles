@@ -9,7 +9,7 @@ return {
       "williamboman/mason.nvim",
       {
         "williamboman/mason-lspconfig.nvim",
-        config = {
+        opts = {
           automatic_installation = {
             exclude = {
               "julials", -- I use my own config of julials
@@ -25,7 +25,7 @@ return {
   },
   {
     "williamboman/mason.nvim",
-    config = {
+    opts = {
       ui = {
         -- TODO: change size of floating window
         border = "rounded",
@@ -44,7 +44,7 @@ return {
       "williamboman/mason.nvim",
       {
         "jayp0521/mason-null-ls.nvim",
-        config = {
+        opts = {
           ensure_installed = { "stylua", "gitlint" },
         },
       },

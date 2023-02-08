@@ -72,7 +72,7 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    config = {
+    opts = {
       filetypes = {
         help = false,
         iron = false,

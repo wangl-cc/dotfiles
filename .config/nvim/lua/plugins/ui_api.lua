@@ -7,7 +7,7 @@ return {
   {
     "stevearc/dressing.nvim",
     event = "UIEnter",
-    config = {
+    opts = {
       -- vim.ui.input is handled by noice
       input = { enabled = false },
       select = {
@@ -19,7 +19,7 @@ return {
   -- Better vim.notify
   {
     "rcarriga/nvim-notify",
-    config = {
+    opts = {
       stages = "fade",
       timeout = 3000,
       level = vim.log.levels.INFO,

@@ -2,7 +2,7 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "UIEnter",
-    config = {
+    opts = {
       char = "▏",
       context_char = "▏",
       show_current_context = true,
@@ -13,7 +13,7 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     version = "2",
     cmd = "Neotree",
-    config = {
+    opts = {
       close_if_last_window = true,
       popup_border_style = "rounded",
       sort_case_insensitive = true,
@@ -36,7 +36,7 @@ return {
   {
     "TimUntersberger/neogit",
     cmd = "Neogit",
-    config = {
+    opts = {
       kind = "vsplit",
       -- customize displayed signs
       signs = {
@@ -57,7 +57,7 @@ return {
     },
     config = function()
       require("iron.core").setup {
-        config = {
+        opts = {
           highlight_last = false,
           repl_open_cmd = function(bufnr)
             -- HACK: set the filetype to 'iron' to detect it when needed
@@ -88,7 +88,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     cmd = "ToggleTerm",
-    config = {
+    opts = {
       size = 12,
       shade_terminals = false,
       start_in_insert = true,

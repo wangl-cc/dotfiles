@@ -1,6 +1,6 @@
 return {
   -- Lazy can manage itself
-  { "folke/lazy.nvim", version = "7" },
+  { "folke/lazy.nvim", version = "9" },
 
   -- common dependencies
   { "nvim-lua/plenary.nvim" },
