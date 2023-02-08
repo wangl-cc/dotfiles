@@ -1,8 +1,8 @@
 # Ignore everything by default
 *
 # git files
-!.gitignore
-!.gitmodules
+!/.gitignore
+!/.gitmodules
 
 # Repository files
 !README.md
