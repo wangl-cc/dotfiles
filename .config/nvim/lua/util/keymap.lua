@@ -4,6 +4,8 @@ local M = {}
 
 ---@alias KeymapMode string
 
+---@private
+--- Wrap mode in a table if it is not a table
 ---@generic T
 ---@param mode T|T[]
 ---@return T[]
@@ -11,7 +13,12 @@ local warp = function(mode)
   return type(mode) == "table" and mode or { mode }
 end
 
--- pop key from given table, if it exists, otherwise return default
+---@private
+--- Pop the given key from given table if it exists, otherwise return default
+---@param tbl table
+---@param key integer|string
+---@param default? any
+---@return any|nil
 local pop = function(tbl, key, default)
   if tbl[key] == nil then
     return default
@@ -23,7 +30,8 @@ end
 
 ---@alias KeymapCallback fun(opts: table): string|nil
 
--- Options acccepted by `vim.keymap.set`
+---@private
+--- Options acccepted by `vim.keymap.set`
 ---@class KeymapOption
 ---@field nowait? boolean Don't wait for additional keys if true
 ---@field silent? boolean Don't echo the command if true
@@ -36,6 +44,8 @@ end
 ---@field callback? KeymapCallback Function called when mapping is executed
 ---@field desc? string Descripation of mapping.
 
+---@private
+--- Process options for `vim.api.nvim_set_keymap`
 ---@param opts KeymapOption Options of keymap to be setup
 ---@return KeymapOption opts Modified options for keymap
 local setup_opts = function(opts)
@@ -49,7 +59,9 @@ local setup_opts = function(opts)
   return opts
 end
 
----@param buffer number
+---@private
+--- Set keymap for given buffer when buffer is not nil, otherwise set it globally
+---@param buffer buffer|nil
 ---@param mode KeymapMode[]
 ---@param lhs string
 ---@param rhs string
@@ -66,7 +78,7 @@ local set_keymap = function(buffer, mode, lhs, rhs, opts)
   end
 end
 
--- Extended KeymapOption with a additional field mode
+-- Extended KeymapOption with a additional field `mode`
 ---@class KeymapSpec
 ---@field mode KeymapMode|KeymapMode[] Mode of keymap
 ---@field nowait? boolean Don't wait for additional keys if true
@@ -83,7 +95,9 @@ end
 ---@alias Cmd string
 ---@alias KeymapTree table<string, KeymapSpec|KeymapTree|KeymapCallback|Cmd>
 
----@param buffer number
+---@private
+--- Register keymaps with given tree
+---@param buffer buffer|nil
 ---@param mode KeymapMode[]
 ---@param prefix string
 ---@param tree KeymapTree
@@ -118,9 +132,9 @@ local function register(buffer, mode, prefix, tree, suffix, defaults)
   end
 end
 
--- Extended KeymapSpec with additional fields: buffer, prefix and suffix
+--- Extended KeymapSpec with additional fields: `buffer`, `prefix` and `suffix`
 ---@class KeymapDefaults
----@field buffer? number Buffer to set keymap
+---@field buffer? buffer Buffer to set keymap
 ---@field prefix? string Prefix of keymap
 ---@field suffix? string Suffix of keymap
 ---@field mode? KeymapMode|KeymapMode[] Mode to set keymap
@@ -135,14 +149,37 @@ end
 ---@field callback? KeymapCallback Function called when mapping is executed
 ---@field desc? string Descripation of mapping.
 
+--- Register keymaps with given tree and given default options
+---
+--- The node of tree can be:
+--- - string, which is a command to be executed
+--- - function, which is a callback to be executed
+--- - KeymapSpec, which is a table describes a keymap, @see KeymapSpec
+--- - KeymapTree, a sub tree of keymaps
+--- Example:
+--- ```lua
+--- register({
+---  t = {
+---    t = "<Cmd>Neotree toggle<CR>",
+---  },
+---  f = vim.lsp.buf.formatting,
+---  k = {
+---    callback = vim.lsp.buf.hover,
+---    desc = "Show hover",
+---  }
+--- }, { prefix = "<leader>" })
+--- ```
 ---@param tree KeymapTree
 ---@param opts? KeymapDefaults
 M.register = function(tree, opts)
   opts = opts and vim.deepcopy(opts) or {}
-  local buffer = pop(opts, "buffer", false)
-  local prefix = pop(opts, "prefix", "")
-  local suffix = pop(opts, "suffix", "")
-  local mode = warp(pop(opts, "mode", { "n" }))
+  -- Pop some fields from opts to make it a KeymapOption
+  local buffer = pop(opts, "buffer") ---@type number|nil
+  local prefix = pop(opts, "prefix", "") ---@type string
+  local suffix = pop(opts, "suffix", "") ---@type string
+  local mode = warp(pop(opts, "mode", { "n" })) ---@type KeymapMode[]
+  ---@diagnostic disable-next-line: cast-type-mismatch
+  ---@cast opts KeymapOption
   register(buffer, mode, prefix, tree, suffix, setup_opts(opts))
 end
 
