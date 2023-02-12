@@ -57,7 +57,7 @@ return {
     },
     config = function()
       require("iron.core").setup {
-        opts = {
+        config = {
           highlight_last = false,
           repl_open_cmd = function(bufnr)
             -- HACK: set the filetype to 'iron' to detect it when needed
