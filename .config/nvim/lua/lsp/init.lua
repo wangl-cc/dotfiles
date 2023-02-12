@@ -226,7 +226,16 @@ M.options = {
   ---@type table<string, LspConfig|string>
   servers = {
     julials = "lsp.julials",
-    sumneko_lua = "lsp.sumneko_lua",
+    lua_ls = {
+      options = {
+        settings = {
+          Lua = {
+            telemetry = { enable = false },
+            workspace = { checkThirdParty = false },
+          },
+        },
+      },
+    },
     bashls = {
       options = {
         filetypes = { "sh", "bash" },
