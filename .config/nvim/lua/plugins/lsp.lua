@@ -4,7 +4,7 @@ return {
     event = "BufReadPre",
     dependencies = {
       { "folke/neoconf.nvim", version = "1", cmd = "Neoconf", config = true },
-      { "folke/neodev.nvim", version = "1", config = true },
+      { "folke/neodev.nvim", version = "2", config = true },
       "hrsh7th/cmp-nvim-lsp",
       "williamboman/mason.nvim",
       {
