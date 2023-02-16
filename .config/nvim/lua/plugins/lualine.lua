@@ -126,33 +126,20 @@ function M.config()
             if result.total == 0 or result.current == 0 then
               return ""
             end
-            local pattern = vim.fn.escape(vim.fn.getreg "/", "%")
+            local str
             if result.incomplete == 1 then
-              return string.format("/%s [?/?]", pattern)
+              str = "/%s [?/?]"
             elseif result.incomplete == 2 then
               if result.current > result.maxcount then
-                return string.format(
-                  "/%s [>%d/>%d]",
-                  pattern,
-                  result.current,
-                  result.total
-                )
+                str = "/%s [>%d/>%d]"
               else
-                return string.format(
-                  "/%s [%d/>%d]",
-                  pattern,
-                  result.current,
-                  result.total
-                )
+                str = "/%s [%d/>%d]"
               end
             else
-              return string.format(
-                "/%s [%d/%d]",
-                pattern,
-                result.current,
-                result.total
-              )
+              str = "/%s [%d/%d]"
             end
+            local pattern = vim.fn.getreg("/"):gsub("%%", "%%%%")
+            return str:format(pattern, result.current, result.total)
           end,
         },
         { "encoding" },
