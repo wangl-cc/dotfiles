@@ -25,33 +25,7 @@ function M.config()
   local feedkeys = require "cmp.utils.feedkeys"
   local keymap = require "cmp.utils.keymap"
 
-  local icons = {
-    Text = "",
-    Method = "",
-    Function = "",
-    Constructor = "",
-    Field = "ﰠ",
-    Variable = "",
-    Interface = "",
-    Class = "פּ",
-    Module = "",
-    Property = "ﰠ",
-    Unit = "",
-    Value = "",
-    Enum = "",
-    Keyword = "",
-    Snippet = "",
-    Color = "",
-    File = "",
-    Reference = "",
-    Folder = "",
-    EnumMember = "",
-    Constant = "",
-    Event = "",
-    Struct = "פּ",
-    Operator = "",
-    TypeParameter = "",
-  }
+  local icons = require("util.icons").completion
 
   local source_names = {
     nvim_lsp = "LSP",

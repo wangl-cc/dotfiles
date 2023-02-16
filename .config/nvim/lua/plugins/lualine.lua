@@ -13,6 +13,7 @@ function M.config()
     end
   end
   local noice = require("noice").api.status
+  local icons = require "util.icons"
   require("lualine").setup {
     options = {
       theme = "tokyonight",
@@ -77,7 +78,7 @@ function M.config()
         },
         {
           "diff",
-          symbols = { added = " ", modified = "柳", removed = " " },
+          symbols = icons.diff,
           source = function()
             ---@diagnostic disable-next-line undefined-field
             local gs_st = vim.b.gitsigns_status_dict
@@ -92,23 +93,14 @@ function M.config()
         {
           "filename",
           file_status = true,
-          symbols = {
-            modified = "●",
-            readonly = "",
-            new = "",
-          },
+          symbols = icons.file_status,
         },
       },
       lualine_c = {
         {
           "diagnostics",
           sources = { "nvim_lsp" },
-          symbols = {
-            error = "",
-            warn = "",
-            info = "",
-            hint = "",
-          },
+          symbols = icons.diagnostic,
         },
       },
       lualine_x = {
@@ -153,11 +145,7 @@ function M.config()
           show_modified_status = true,
           show_filename_only = true,
           mode = 0,
-          symbols = {
-            modified = " ●", -- Text to show when the buffer is modified
-            alternate_file = "", -- Text to show to identify the alternate file
-            directory = "", -- Text to show when the buffer is a directory
-          },
+          symbols = { alternate_file = "" },
           filetype_names = {
             ["neo-tree"] = "File Explorer",
             checkhealth = "Check Health",
@@ -175,7 +163,7 @@ function M.config()
       lualine_c = {},
       lualine_x = {},
       lualine_y = {},
-      lualine_z = { "tabs" },
+      lualine_z = { { "tabs", mode = 1 } },
     },
   }
 end
