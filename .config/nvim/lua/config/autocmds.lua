@@ -6,7 +6,7 @@ local close_with_q = function(buf)
 end
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "checkhealth" },
+  pattern = { "checkhealth", "man" },
   callback = function(args)
     vim.bo[args.buf].bufhidden = "delete"
     close_with_q(args.buf)
@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     "help",
-    "man",
     "tsplayground",
     "git", -- gitdiff
   },

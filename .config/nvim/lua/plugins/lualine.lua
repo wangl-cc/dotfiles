@@ -7,6 +7,11 @@ function M.config()
   local uppercase_filetype = function()
     return vim.bo.filetype:upper()
   end
+  local const_string = function(str)
+    return function()
+      return str
+    end
+  end
   local noice = require("noice").api.status
   require("lualine").setup {
     options = {
@@ -20,7 +25,9 @@ function M.config()
       "quickfix",
       "toggleterm",
       {
-        sections = { lualine_a = { "mode" } },
+        sections = {
+          lualine_a = { const_string "TELESCOPE" },
+        },
         filetypes = { "TelescopePrompt", "TelescopeResults" },
       },
       {
@@ -38,28 +45,20 @@ function M.config()
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
-        filetypes = { "lspinfo", "packer", "checkhealth", "startuptime", "lazy" },
+        filetypes = { "lspinfo", "checkhealth", "startuptime", "lazy" },
       },
       {
         sections = {
-          lualine_a = {
-            function()
-              return "HELP"
-            end,
-          },
+          lualine_a = { uppercase_filetype },
           lualine_b = { { "filename", file_status = false } },
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
-        filetypes = { "help" },
+        filetypes = { "help", "man" },
       },
       {
         sections = {
-          lualine_a = {
-            function()
-              return "Playground"
-            end,
-          },
+          lualine_a = { const_string "PLAYGROUND" },
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
