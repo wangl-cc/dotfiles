@@ -5,6 +5,7 @@ local M = {
 
 function M.config()
   require("gitsigns").setup {
+    numhl = true,
     current_line_blame_opts = {
       delay = 100,
     },
@@ -110,6 +111,10 @@ function M.config()
           w = {
             callback = gs.toggle_word_diff,
             desc = "Toggle word diff",
+          },
+          n = {
+            callback = gs.toggle_numhl,
+            desc = "Toggle number highlight",
           },
         },
       }, { prefix = "<leader>", buffer = buffer })
