@@ -23,13 +23,7 @@ return {
       stages = "fade",
       timeout = 3000,
       level = vim.log.levels.INFO,
-      icons = {
-        ERROR = "",
-        WARN = "",
-        INFO = "",
-        DEBUG = "",
-        TRACE = "✎",
-      },
+      icons = require("util.icons").loglevel,
       on_open = function(win)
         vim.api.nvim_win_set_option(win, "winblend", 10)
       end,

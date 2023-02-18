@@ -277,6 +277,11 @@ M.setup = function(opts)
       desc = "Go to previous diagnostic",
     },
   }, { suffix = "d" })
+  local icons = require("util.icons").diagnostic
+  for name, icon in pairs(icons) do
+    name = "DiagnosticSign" .. name:sub(1, 1):upper() .. name:sub(2)
+    vim.fn.sign_define(name, { text = icon, texthl = name, numhl = name })
+  end
   for server, config in pairs(M.options.servers) do
     setup_server(server, process_config(config))
   end
