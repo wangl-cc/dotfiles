@@ -46,7 +46,3 @@
 	ci = commit
 	br = branch
 	st = status
-<% if compgen -G "$HOME/.ssh/id*" > /dev/null; then -%>
-[url "git@github.com:"]
-	insteadOf = "https://github.com/"
-<% fi -%>
