@@ -1,2 +1,6 @@
 .config/wakatime/.wakatime.cfg
 .config/github-copilot/*.json
+.config/clash/config.yaml
+.config/clash/rulesets/*.yaml
+.config/clash/rulesets/*/*.yaml
+.config/clash/subscriptions/*
