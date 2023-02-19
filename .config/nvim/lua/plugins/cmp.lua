@@ -10,9 +10,7 @@ local M = {
     { --- Snippets
       "L3MON4D3/LuaSnip",
       dependencies = "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip/loaders/from_vscode").lazy_load()
-      end,
+      config = function() require("luasnip/loaders/from_vscode").lazy_load() end,
     },
   },
 }
@@ -63,9 +61,7 @@ function M.config()
       end,
     },
     snippet = {
-      expand = function(args)
-        luasnip.lsp_expand(args.body)
-      end,
+      expand = function(args) luasnip.lsp_expand(args.body) end,
     },
     mapping = cmp.mapping.preset.insert {
       ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
@@ -161,9 +157,7 @@ function M.config()
         candidate.label = candidate.label:gsub("#", "\\#")
         candidate.insertText = candidate.insertText:gsub("#", "\\#")
         local word = candidate.word
-        if word then
-          candidate.word = word:gsub("#", "\\#")
-        end
+        if word then candidate.word = word:gsub("#", "\\#") end
       end
       callback(candidates)
     end

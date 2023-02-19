@@ -3,23 +3,17 @@ return {
   {
     "echasnovski/mini.align",
     keys = { "ga", "gA" },
-    config = function()
-      require("mini.align").setup {}
-    end,
+    config = function() require("mini.align").setup {} end,
   },
   {
     "echasnovski/mini.jump",
     event = "VeryLazy",
-    config = function()
-      require("mini.jump").setup {}
-    end,
+    config = function() require("mini.jump").setup {} end,
   },
   {
     "kylechui/nvim-surround",
     keys = { "ys", "ds", "cs" },
-    config = function()
-      require("nvim-surround").setup {}
-    end,
+    config = function() require("nvim-surround").setup {} end,
   },
   {
     "numToStr/Comment.nvim",
@@ -38,9 +32,7 @@ return {
       local Rule = require "nvim-autopairs.rule"
       local cond = require "nvim-autopairs.conds"
       local before_char = function(char)
-        return function(opts)
-          return opts.prev_char == char
-        end
+        return function(opts) return opts.prev_char == char end
       end
       npairs.setup {}
       npairs.add_rules {

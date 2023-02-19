@@ -23,9 +23,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "gitcommit", "gitrebase" },
-  callback = function(args)
-    vim.bo[args.buf].bufhidden = "wipe"
-  end,
+  callback = function(args) vim.bo[args.buf].bufhidden = "wipe" end,
   group = group,
 })
 vim.api.nvim_create_autocmd("FileType", {
@@ -34,9 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "tsplayground",
     "git", -- gitdiff
   },
-  callback = function(args)
-    close_with_q(args.buf)
-  end,
+  callback = function(args) close_with_q(args.buf) end,
   group = group,
 })
 

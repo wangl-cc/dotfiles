@@ -23,9 +23,7 @@ function M.config()
     cmd_full = vim.fn.split(cmd_core)
   end
 
-  local function is_dark()
-    return vim.fn.systemlist(cmd_full)[1] == "Dark"
-  end
+  local is_dark = function() return vim.fn.systemlist(cmd_full)[1] == "Dark" end
 
   local tokyonight = require "tokyonight.config"
   tokyonight.setup {

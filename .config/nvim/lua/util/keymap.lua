@@ -9,9 +9,7 @@ local M = {}
 ---@generic T
 ---@param mode T|T[]
 ---@return T[]
-local warp = function(mode)
-  return type(mode) == "table" and mode or { mode }
-end
+local warp = function(mode) return type(mode) == "table" and mode or { mode } end
 
 ---@private
 --- Pop the given key from given table if it exists, otherwise return default
@@ -20,9 +18,7 @@ end
 ---@param default? any
 ---@return any|nil
 local pop = function(tbl, key, default)
-  if tbl[key] == nil then
-    return default
-  end
+  if tbl[key] == nil then return default end
   local val = tbl[key]
   tbl[key] = nil
   return val

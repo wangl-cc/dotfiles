@@ -12,9 +12,7 @@ local auto_reload_id = vim.api.nvim_create_augroup("AutoReload", { clear = true 
 function M.auto_reload(mod)
   M.create_bufwrite_autocmd {
     pattern = mod:gsub("%.", "/") .. ".lua",
-    callback = function()
-      M.reload(mod)
-    end,
+    callback = function() M.reload(mod) end,
     group = auto_reload_id,
   }
   return require(mod)

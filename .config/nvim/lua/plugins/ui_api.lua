@@ -24,9 +24,7 @@ return {
       timeout = 3000,
       level = vim.log.levels.INFO,
       icons = require("util.icons").loglevel,
-      on_open = function(win)
-        vim.api.nvim_win_set_option(win, "winblend", 10)
-      end,
+      on_open = function(win) vim.api.nvim_win_set_option(win, "winblend", 10) end,
     },
   },
   -- Incremental vim.lsp.buf.rename

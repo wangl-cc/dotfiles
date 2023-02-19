@@ -5,76 +5,32 @@ local leader_mappings = {
     desc = "nohlsearch and clear match",
   },
   s = {
-    t = {
-      [[<Cmd>Telescope<CR>]],
-      desc = "Search telescope sources",
-    },
-    f = {
-      [[<Cmd>Telescope find_files<CR>]],
-      desc = "Search files in CWD",
-    },
-    k = {
-      [[<Cmd>Telescope keymaps<CR>]],
-      desc = "Search keymaps",
-    },
-    b = {
-      [[<Cmd>Telescope buffers<CR>]],
-      desc = "Search buffers",
-    },
-    h = {
-      [[<Cmd>Telescope help_tags<CR>]],
-      desc = "Search help tags",
-    },
-    w = {
-      [[<Cmd>Telescope live_grep<CR>]],
-      desc = "Grep words in CWD",
-    },
-    c = {
-      [[<Cmd>Telescope todo-comments todo<CR>]],
-      desc = "Search todo comments",
-    },
-    a = {
-      [[<Cmd>Telescope diagnostics<CR>]],
-      desc = "Search all diagnostics",
-    },
+    t = { [[<Cmd>Telescope<CR>]], desc = "Search telescope sources" },
+    f = { [[<Cmd>Telescope find_files<CR>]], desc = "Search files in CWD" },
+    k = { [[<Cmd>Telescope keymaps<CR>]], desc = "Search keymaps" },
+    b = { [[<Cmd>Telescope buffers<CR>]], desc = "Search buffers" },
+    h = { [[<Cmd>Telescope help_tags<CR>]], desc = "Search help tags" },
+    w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
+    c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
+    a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
   },
   g = {
-    c = {
-      [[<Cmd>Telescope git_commits<CR>]],
-      desc = "Show git log",
-    },
+    c = { [[<Cmd>Telescope git_commits<CR>]], desc = "Show git log" },
     b = {
       [[<Cmd>Telescope git_bcommits<CR>]],
       desc = "Show git log of current file",
     },
-    s = {
-      [[<Cmd>Telescope git_status<CR>]],
-      desc = "Show git status",
-    },
+    s = { [[<Cmd>Telescope git_status<CR>]], desc = "Show git status" },
   },
   t = {
-    t = {
-      [[<Cmd>Neotree toggle<CR>]],
-      desc = "Toggle the file explorer",
-    },
-    c = {
-      [[<Cmd>TSContextToggle<CR>]],
-      desc = "Toggle treesitter context",
-    },
-    p = {
-      [[<Cmd>TSPlaygroundToggle<CR>]],
-      desc = "Toggle treesitter playground",
-    },
-    i = {
-      [[<Cmd>IndentBlanklineToggle<CR>]],
-      desc = "Toggle indent guides",
-    },
+    t = { [[<Cmd>Neotree toggle<CR>]], desc = "Toggle the file explorer" },
+    c = { [[<Cmd>TSContextToggle<CR>]], desc = "Toggle treesitter context" },
+    p = { [[<Cmd>TSPlaygroundToggle<CR>]], desc = "Toggle treesitter playground" },
+    i = { [[<Cmd>IndentBlanklineToggle<CR>]], desc = "Toggle indent guides" },
     r = {
       callback = function()
         local ok, iron = pcall(require, "iron.core")
-        if not ok then
-          return
-        end
+        if not ok then return end
         if vim.bo.filetype == "iron" then
           vim.api.nvim_win_hide(0)
         else
@@ -97,30 +53,12 @@ local leader_mappings = {
     },
   },
   p = {
-    h = {
-      [[<Cmd>Lazy home<CR>]],
-      desc = "Home of lazy.nvim",
-    },
-    i = {
-      [[<Cmd>Lazy install<CR>]],
-      desc = "Install missing plugins",
-    },
-    u = {
-      [[<Cmd>Lazy update<CR>]],
-      desc = "Update plugins",
-    },
-    s = {
-      [[<Cmd>Lazy sync<CR>]],
-      desc = "Install, clean and update plugins",
-    },
-    x = {
-      [[<Cmd>Lazy clean<CR>]],
-      desc = "Clean unused plugins",
-    },
-    p = {
-      [[<Cmd>Lazy profile<CR>]],
-      desc = "Profile startup time",
-    },
+    h = { [[<Cmd>Lazy home<CR>]], desc = "Home of lazy.nvim" },
+    i = { [[<Cmd>Lazy install<CR>]], desc = "Install missing plugins" },
+    u = { [[<Cmd>Lazy update<CR>]], desc = "Update plugins" },
+    s = { [[<Cmd>Lazy sync<CR>]], desc = "Install, clean and update plugins" },
+    x = { [[<Cmd>Lazy clean<CR>]], desc = "Clean unused plugins" },
+    p = { [[<Cmd>Lazy profile<CR>]], desc = "Profile startup time" },
   },
 }
 register(leader_mappings, { prefix = "<leader>", silent = true })

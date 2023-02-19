@@ -11,9 +11,7 @@ local M = {}
 M.confirm = function(items, opts, on_choice)
   opts = opts or {}
   local i = vim.fn.confirm(opts.prompt or "Select", table.concat(items, "\n"), 0)
-  if on_choice then
-    on_choice(items[i], i)
-  end
+  if on_choice then on_choice(items[i], i) end
   return items[i], i
 end
 

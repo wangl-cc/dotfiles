@@ -82,9 +82,7 @@ function treesitter.config()
         return string.format("%s %s", item.status and "+" or "-", item.lang)
       end,
     }, function(selected)
-      if selected then
-        require("nvim-treesitter.install").update()(selected.lang)
-      end
+      if selected then require("nvim-treesitter.install").update()(selected.lang) end
     end)
   end, { desc = "Search tree-sitter parsers" })
   local parser_config = parsers.get_parser_configs()

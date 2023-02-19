@@ -54,9 +54,7 @@ local function filter_windows(windows, rule)
     windows = vim.tbl_filter(function(winid)
       for opt, blacklist in pairs(rule.wo) do
         local val = vim.api.nvim_win_get_option(winid, opt)
-        if vim.tbl_contains(blacklist, val) then
-          return false
-        end
+        if vim.tbl_contains(blacklist, val) then return false end
       end
       return true
     end, windows)
@@ -67,17 +65,13 @@ local function filter_windows(windows, rule)
       local buffer = vim.api.nvim_win_get_buf(winid)
       for opt, blacklist in pairs(rule.bo) do
         local val = vim.api.nvim_buf_get_option(buffer, opt)
-        if vim.tbl_contains(blacklist, val) then
-          return false
-        end
+        if vim.tbl_contains(blacklist, val) then return false end
       end
       return true
     end, windows)
   end
   -- apply custom filter function
-  if rule.func then
-    windows = vim.tbl_filter(rule.func, windows)
-  end
+  if rule.func then windows = vim.tbl_filter(rule.func, windows) end
   return windows
 end
 
@@ -104,9 +98,7 @@ function M.pick_window(opts)
   -- filter windows by rules
   local pickables = filter_windows(windows, rules)
   -- If there are no selectable windows, return
-  if #pickables == 0 then
-    return
-  end
+  if #pickables == 0 then return end
   -- If there is only one selectable window and autoselect_one is true, return it
   if options.autoselect_one and vim.tbl_count(pickables) == 1 then
     return pickables[1]
@@ -115,9 +107,7 @@ function M.pick_window(opts)
   -- Setup UI to indicate windows
   -- check if use winbar
   local use_winbar = options.use_winbar
-  if vim.opt.cmdheight:get() == 0 then
-    use_winbar = use_winbar + 1
-  end
+  if vim.opt.cmdheight:get() == 0 then use_winbar = use_winbar + 1 end
   -- winbar or statusline variables
   local laststatus
   local cmdheight
@@ -179,9 +169,7 @@ function M.pick_window(opts)
 end
 
 ---@param opts WindowPickerOptions Options to override default options
-M.setup = function(opts)
-  tbl.extend_inplace(M.options, opts)
-end
+M.setup = function(opts) tbl.extend_inplace(M.options, opts) end
 
 return M
 

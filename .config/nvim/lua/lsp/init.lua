@@ -27,9 +27,7 @@ local on_attach_common = function(client, buffer)
       async = true,
       bufnr = buffer,
       filter = function(c)
-        if have_nls then
-          return c.name == "null-ls"
-        end
+        if have_nls then return c.name == "null-ls" end
         return c.name ~= "null-ls"
       end,
     })
@@ -40,20 +38,14 @@ local on_attach_common = function(client, buffer)
     ---@type KeymapTree
     g = {
       ---@type KeymapOption
-      d = {
-        [[<Cmd>Telescope lsp_definitions<CR>]],
-        desc = "Go to definition",
-      },
+      d = { [[<Cmd>Telescope lsp_definitions<CR>]], desc = "Go to definition" },
       ---@type KeymapOption
       D = {
         [[<Cmd>Telescope lsp_type_definitions<CR>]],
         desc = "Go to type definitions",
       },
       ---@type KeymapOption
-      r = {
-        [[<Cmd>Telescope lsp_references<CR>]],
-        desc = "Go to references",
-      },
+      r = { [[<Cmd>Telescope lsp_references<CR>]], desc = "Go to references" },
       ---@type KeymapOption
       i = {
         [[<Cmd>Telescope lsp_implementations<CR>]],
@@ -63,10 +55,7 @@ local on_attach_common = function(client, buffer)
     ---@type KeymapTree
     ["<leader>"] = {
       ---@type KeymapOption
-      f = {
-        callback = format,
-        desc = "Format",
-      },
+      f = { callback = format, desc = "Format" },
       ---@type KeymapOption
       tf = {
         callback = function()
@@ -77,20 +66,11 @@ local on_attach_common = function(client, buffer)
         desc = "Toggle autoformat",
       },
       ---@type KeymapOption
-      k = {
-        callback = vim.lsp.buf.hover,
-        desc = "Show hover and signature help",
-      },
+      k = { callback = vim.lsp.buf.hover, desc = "Show hover and signature help" },
       ---@type KeymapOption
-      K = {
-        callback = vim.lsp.buf.signature_help,
-        desc = "Show signature help",
-      },
+      K = { callback = vim.lsp.buf.signature_help, desc = "Show signature help" },
       ---@type KeymapOption
-      ["."] = {
-        callback = vim.lsp.buf.code_action,
-        desc = "Show code actions",
-      },
+      ["."] = { callback = vim.lsp.buf.code_action, desc = "Show code actions" },
       ---@type KeymapTree
       s = {
         ---@type KeymapOption
@@ -113,9 +93,7 @@ local on_attach_common = function(client, buffer)
               prompt = "Workspace folder to be added",
               default = vim.fn.expand "%:p:h",
             }, function(dir)
-              if dir then
-                vim.lsp.buf.add_workspace_folder(dir)
-              end
+              if dir then vim.lsp.buf.add_workspace_folder(dir) end
             end)
           end,
           desc = "Add workspace folder",
@@ -126,9 +104,7 @@ local on_attach_common = function(client, buffer)
             vim.ui.select(vim.lsp.buf.list_workspace_folders(), {
               prompt = "Workspace folder to be removed",
             }, function(dir)
-              if dir then
-                vim.lsp.buf.remove_workspace_folder(dir)
-              end
+              if dir then vim.lsp.buf.remove_workspace_folder(dir) end
             end)
           end,
           desc = "Remove workspace folder",
@@ -136,9 +112,7 @@ local on_attach_common = function(client, buffer)
       },
       ---@type KeymapOption
       cn = {
-        callback = function()
-          return ":IncRename " .. vim.fn.expand "<cword>"
-        end,
+        callback = function() return ":IncRename " .. vim.fn.expand "<cword>" end,
         expr = true,
         desc = "Rename all references of symbol under the cursor",
       },
@@ -155,9 +129,7 @@ local on_attach_common = function(client, buffer)
     group = format_group,
     buffer = buffer,
     callback = function()
-      if M.autoformat[buffer] then
-        format { async = false }
-      end
+      if M.autoformat[buffer] then format { async = false } end
     end,
   })
 end
@@ -200,21 +172,15 @@ end
 ---@param config LspConfig
 local function setup_server(server, config)
   -- don't setup if server is disabled
-  if config.disabled then
-    return
-  end
+  if config.disabled then return end
   local options = config.options or {}
   local function on_attach(client, bufnr)
     on_attach_common(client, bufnr)
-    if options.on_attach then
-      options.on_attach(client, bufnr)
-    end
+    if options.on_attach then options.on_attach(client, bufnr) end
   end
 
   local capabilities = make_capabilities()
-  if config.setup_capabilities then
-    config.setup_capabilities(capabilities)
-  end
+  if config.setup_capabilities then config.setup_capabilities(capabilities) end
   local new_options = vim.deepcopy(options)
   new_options.on_attach = on_attach
   new_options.capabilities = capabilities

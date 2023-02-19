@@ -9,9 +9,7 @@ local M = {}
 
 ---@param bg BackgroundEnum
 local function switch_bg(bg)
-  if vim.o.background ~= bg then
-    vim.o.background = bg
-  end
+  if vim.o.background ~= bg then vim.o.background = bg end
 end
 
 ---@class BackgroundSwitcher
@@ -25,13 +23,9 @@ local function switch(bg, switcher)
     switch_bg(bg)
     return
   end
-  if switcher.pre then
-    switcher.pre()
-  end
+  if switcher.pre then switcher.pre() end
   switch_bg(bg)
-  if switcher.post then
-    switcher.post()
-  end
+  if switcher.post then switcher.post() end
 end
 
 ---@class AutoBackgroundOptions

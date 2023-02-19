@@ -4,13 +4,9 @@ local M = {
 }
 
 function M.config()
-  local uppercase_filetype = function()
-    return vim.bo.filetype:upper()
-  end
+  local uppercase_filetype = function() return vim.bo.filetype:upper() end
   local const_string = function(str)
-    return function()
-      return str
-    end
+    return function() return str end
   end
   local noice = require("noice").api.status
   local icons = require "util.icons"
@@ -110,13 +106,9 @@ function M.config()
         },
         {
           function()
-            if vim.v.hlsearch == 0 then
-              return ""
-            end
+            if vim.v.hlsearch == 0 then return "" end
             local result = vim.fn.searchcount { timeout = 500, maxcount = 99 }
-            if result.total == 0 or result.current == 0 then
-              return ""
-            end
+            if result.total == 0 or result.current == 0 then return "" end
             local str
             if result.incomplete == 1 then
               str = "/%s [?/?]"
