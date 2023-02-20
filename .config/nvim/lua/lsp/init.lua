@@ -215,6 +215,7 @@ M.options = {
         filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
       },
     },
+    pyright = {},
   },
 }
 

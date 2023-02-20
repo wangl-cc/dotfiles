@@ -55,6 +55,9 @@ return {
         sources = {
           null_ls.builtins.formatting.stylua,
           null_ls.builtins.diagnostics.gitlint,
+          -- Python
+          null_ls.builtins.diagnostics.pycodestyle,
+          null_ls.builtins.formatting.autopep8,
         },
       }
     end,
