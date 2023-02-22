@@ -89,8 +89,9 @@ return {
   {
     "akinsho/toggleterm.nvim",
     cmd = "ToggleTerm",
+    keys = { "<C-t>" },
     opts = {
-      size = 12,
+      open_mapping = "<C-t>",
       shade_terminals = false,
       start_in_insert = true,
       insert_mappings = true,

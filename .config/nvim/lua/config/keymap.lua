@@ -104,11 +104,6 @@ local fold = {
 }
 register(fold, { prefix = "z", silent = true })
 register({
-  ["<C-/>"] = {
-    "<Cmd>ToggleTerm<CR>",
-    desc = "Toggle terminal",
-    mode = { "n", "v", "t" },
-  },
   ["<C-\\>"] = {
     function()
       -- FROM: https://github.com/hkupty/iron.nvim/issues/279
