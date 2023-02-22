@@ -1,6 +1,7 @@
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
+    version = "2",
     event = "UIEnter",
     opts = {
       char = "▏",
