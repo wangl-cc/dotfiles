@@ -72,6 +72,7 @@ return {
             julia = {
               command = { "julia", "--project" },
             },
+            python = require("iron.fts.python").ipython,
           },
         },
         keymaps = {
