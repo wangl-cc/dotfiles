@@ -78,7 +78,6 @@ vim.filetype.add {
   },
   filename = {
     condarc = "yaml",
-    gitconfig = "gitconfig",
     [".condarc"] = "yaml",
     [".fishrc"] = "fish",
   },

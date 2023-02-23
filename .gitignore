@@ -46,8 +46,8 @@
 # Git
 !.config/git
 !.config/git/*
-.config/git/gitconfig
-.config/git/ignores/global.gitignore
+.config/git/config
+.config/git/ignore
 
 # iTerm2
 !.config/iterm2/com.googlecode.iterm2.plist

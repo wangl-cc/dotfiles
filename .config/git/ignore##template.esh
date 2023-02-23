@@ -1,5 +1,5 @@
 <% if [ $YADM_OS == "Darwin" ]; then -%>
-<% cat "$(dirname $YADM_SOURCE)/darwin.gitignore" | sed '/vim:/d' -%>
+<% cat "$(dirname $YADM_SOURCE)/ignores/darwin.gitignore" | sed '/vim:/d' -%>
 <% fi -%>
 # ============================== vim =============================== #
 # ============= github/gitignore/Global/Vim.gitignore ============== #

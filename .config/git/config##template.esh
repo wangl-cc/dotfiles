@@ -1,5 +1,3 @@
-[core]
-	excludesFile = ~/.config/git/ignore/global.gitignore
 [user]
 	name = Long Wang
 	email = wangl.cc@outlook.com
