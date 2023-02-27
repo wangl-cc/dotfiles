@@ -22,13 +22,16 @@ function treesitter.config()
       "gitcommit",
       "diff",
     },
+    ignore_install = {
+      "latex",
+    },
     parser_install_dir = vim.fn.stdpath "config",
     auto_install = true,
     highlight = {
       enable = true,
     },
     indent = {
-      enable = true,
+      enable = false,
     },
     rainbow = {
       enable = true,
