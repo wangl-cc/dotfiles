@@ -63,10 +63,17 @@ return {
           repl_open_cmd = function(bufnr)
             -- HACK: set the filetype to 'iron' to detect it when needed
             vim.api.nvim_buf_set_option(bufnr, "filetype", "iron")
-            return require("iron.view").split.vertical.botright(80, {
+            local win_opts = {
               number = false,
               relativenumber = false,
-            })(bufnr)
+            }
+            local view
+            if vim.o.columns <= 180 then
+              view = require("iron.view").split.horizontal.botright(80, win_opts)
+            else
+              view = require("iron.view").split.vertical.botright(15, win_opts)
+            end
+            return view(bufnr)
           end,
           repl_definition = {
             julia = {
