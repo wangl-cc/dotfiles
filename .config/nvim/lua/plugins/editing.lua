@@ -2,7 +2,10 @@ return {
   -- TODO: Noice route for mini.align and jump
   {
     "echasnovski/mini.align",
-    keys = { "ga", "gA" },
+    keys = {
+      { "ga", desc = "Align code" },
+      { "gA", desc = "Align code with preview" },
+    },
     config = function() require("mini.align").setup {} end,
   },
   {
@@ -12,12 +15,22 @@ return {
   },
   {
     "kylechui/nvim-surround",
-    keys = { "ys", "ds", "cs" },
+    keys = {
+      { "ys", desc = "Add a surrounding pair" },
+      { "yS", desc = "Add a surrounding pair in new line" },
+      { "cs", desc = "Change a surrounding pair" },
+      { "ds", desc = "Delete a surrounding pair" },
+      { "S", desc = "Add a surrounding pair", mode = "v" },
+      { "gS", desc = "Add a surrounding pair in new line", mode = "v" },
+    },
     config = function() require("nvim-surround").setup {} end,
   },
   {
     "numToStr/Comment.nvim",
-    keys = { "gc", "gb" },
+    keys = {
+      { "gc", desc = "Toggle comment linewise" },
+      { "gb", desc = "Toggle comment blockwise" },
+    },
     config = function()
       require("Comment").setup {
         pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
