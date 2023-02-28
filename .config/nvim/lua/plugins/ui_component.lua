@@ -67,13 +67,11 @@ return {
               number = false,
               relativenumber = false,
             }
-            local view
             if vim.o.columns <= 180 then
-              view = require("iron.view").split.horizontal.botright(80, win_opts)
+              return require("iron.view").split.hor.botright(80, win_opts)(bufnr)
             else
-              view = require("iron.view").split.vertical.botright(15, win_opts)
+              return require("iron.view").split.vert.botright(15, win_opts)(bufnr)
             end
-            return view(bufnr)
           end,
           repl_definition = {
             julia = {
