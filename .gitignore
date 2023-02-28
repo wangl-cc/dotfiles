@@ -50,6 +50,7 @@
 .config/git/ignore
 
 # iTerm2
+!.config/iterm2
 !.config/iterm2/com.googlecode.iterm2.plist
 
 # Julia
