@@ -68,9 +68,9 @@ return {
               relativenumber = false,
             }
             if vim.o.columns <= 180 then
-              return require("iron.view").split.hor.botright(80, win_opts)(bufnr)
+              return require("iron.view").split.hor.botright(15, win_opts)(bufnr)
             else
-              return require("iron.view").split.vert.botright(15, win_opts)(bufnr)
+              return require("iron.view").split.vert.botright(80, win_opts)(bufnr)
             end
           end,
           repl_definition = {
