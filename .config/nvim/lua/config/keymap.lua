@@ -115,3 +115,11 @@ register({
     desc = "Send line and move down",
   },
 }, { silent = true })
+register({
+  ["<C-f>"] = function()
+    if not require("noice.lsp").scroll(4) then return "<C-f>" end
+  end,
+  ["<C-b>"] = function()
+    if not require("noice.lsp").scroll(-4) then return "<C-b>" end
+  end,
+}, { silent = true, expr = true })
