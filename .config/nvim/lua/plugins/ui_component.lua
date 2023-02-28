@@ -167,6 +167,14 @@ return {
             enabled = true,
           },
         },
+        operators = {
+          ga = "Align code",
+          gA = "Align code with preview",
+          gb = "Toggle comment blockwise",
+          gc = "Toggle comment linewise",
+          ys = "Add a surrounding pair",
+          yS = "Add a surrounding pair in new line",
+        },
         key_labels = {
           ["<CR>"] = "↩",
         },
