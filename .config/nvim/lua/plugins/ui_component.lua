@@ -54,7 +54,7 @@ return {
   {
     "hkupty/iron.nvim",
     keys = {
-      { "<leader><CR>", mode = { "n", "v" }, desc = "Send code to REPL" },
+      { "gs", mode = { "n", "v" }, desc = "Send code to REPL" },
     },
     config = function()
       require("iron.core").setup {
@@ -81,13 +81,13 @@ return {
           },
         },
         keymaps = {
-          visual_send = "<leader><CR>",
-          send_motion = "<leader><CR>",
-          send_file = "<leader><CR>gg",
-          cr = "<leader><CR><CR>",
-          interrupt = "<leader><C-c>",
-          clear = "<leader><C-u>",
-          exit = "<leader><C-d>",
+          visual_send = "gs",
+          send_motion = "gs",
+          send_file = "gsf",
+          cr = "gs<CR>",
+          interrupt = "gsc",
+          clear = "gsu",
+          exit = "gsd",
         },
       }
     end,
@@ -172,6 +172,7 @@ return {
           gA = "Align code with preview",
           gb = "Toggle comment blockwise",
           gc = "Toggle comment linewise",
+          gs = "Send code to REPL",
           ys = "Add a surrounding pair",
           yS = "Add a surrounding pair in new line",
         },
