@@ -154,6 +154,8 @@ return {
     version = "1",
     event = "UIEnter",
     config = function()
+      local ops = require("which-key.plugins.presets").operators
+      ops["gq"] = "Format"
       local wk = require "which-key"
       wk.setup {
         show_help = false,
