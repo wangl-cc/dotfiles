@@ -83,7 +83,7 @@ return {
         keymaps = {
           visual_send = "gs",
           send_motion = "gs",
-          send_file = "gsf",
+          send_file = "gss",
           cr = "gs<CR>",
           interrupt = "gsc",
           clear = "gsu",
