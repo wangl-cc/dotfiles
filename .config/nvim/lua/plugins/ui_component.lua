@@ -167,6 +167,9 @@ return {
             enabled = true,
           },
         },
+        presets = {
+          z = false,
+        },
         operators = {
           ga = "Align code",
           gA = "Align code with preview",
@@ -184,6 +187,27 @@ return {
           scroll_up = "<c-b>",
         },
       }
+      wk.register({
+        -- window nav
+        ["<CR>"] = "Top this line and put cursor at first non-blank",
+        ["."] = "Center this line and put cursor at first non-blank",
+        ["-"] = "Bottom this line and put cursor at first non-blank",
+        t = "Top this line",
+        z = "Center this line",
+        b = "Bottom this line",
+        -- spell keymaps
+        ["="] = "Find spell suggestions for word under the cursor",
+        g = "Mark word under the cursor as a good word permanently",
+        G = "Mark word under the cursor as a good word temporarily",
+        w = "Mark word under the cursor as a wrong word permanently",
+        W = "Mark word under the cursor as a wrong word temporarily",
+        u = {
+          g = "Undo zg",
+          G = "Undo zG",
+          w = "Undo zw",
+          W = "Undo zW",
+        },
+      }, { prefix = "z" })
       wk.register({
         s = { name = "Search source" },
         g = { name = "Git source" },

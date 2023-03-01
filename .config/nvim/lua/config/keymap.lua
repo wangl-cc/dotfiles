@@ -88,7 +88,10 @@ local fold = {
     [[zA<Cmd>IndentBlanklineRefresh<CR>]],
     desc = "Toggle all folds under the cursor",
   },
-  v = { [[zv<Cmd>IndentBlanklineRefresh<CR>]], desc = "View cursor line" },
+  v = {
+    [[zv<Cmd>IndentBlanklineRefresh<CR>]],
+    desc = "Open enough folds to view the cursor line",
+  },
   x = {
     [[zx<Cmd>IndentBlanklineRefresh<CR>]],
     desc = "Re-apply fold level, then do zv",
