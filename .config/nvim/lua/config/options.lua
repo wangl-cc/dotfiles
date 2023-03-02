@@ -104,6 +104,9 @@ opt.guicursor = {
   "r-cr-o:hor20-Cursor/lCursor",
 }
 
+-- gui font, only works for GUI version like `neovide`
+o.guifont = "JetBrainsMono Nerd Font:h13"
+
 -- clipboard
 opt.clipboard:append { "unnamedplus" }
 
@@ -112,6 +115,10 @@ g.tex_flavor = "latex"
 
 -- Remove neotree legacy commands
 g.neo_tree_remove_legacy_commands = 1
+
+-- Set WAKATIME_HOME here instead of shell rc file
+-- because nvim may be not started from shell
+vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
 
 -- NOTE: use nvim inside nvim, there are some notes
 -- 1. nvim --remote works but not well, nvr is much more recommended;
