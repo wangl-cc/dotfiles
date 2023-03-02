@@ -126,3 +126,25 @@ register({
     if not require("noice.lsp").scroll(-4) then return "<C-b>" end
   end,
 }, { silent = true, expr = true })
+register({
+  ["]"] = {
+    b = {
+      [[<Cmd>bnext<CR>]],
+      desc = "Next buffer",
+    },
+    t = {
+      [[<Cmd>tabnext<CR>]],
+      desc = "Next tab",
+    },
+  },
+  ["["] = {
+    b = {
+      [[<Cmd>bprevious<CR>]],
+      desc = "Previous buffer",
+    },
+    t = {
+      [[<Cmd>tabprevious<CR>]],
+      desc = "Previous tab",
+    },
+  },
+}, { silent = true })
