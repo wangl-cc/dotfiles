@@ -2,13 +2,12 @@
 
 local M = {}
 
----@alias KeymapMode string
+---@alias KeymapMode string Mode of keymap
 
 ---@private
 --- Wrap mode in a table if it is not a table
----@generic T
----@param mode T|T[]
----@return T[]
+---@param mode KeymapMode|KeymapMode[]
+---@return KeymapMode[]
 local warp = function(mode) return type(mode) == "table" and mode or { mode } end
 
 ---@private
@@ -75,20 +74,10 @@ local set_keymap = function(buffer, mode, lhs, rhs, opts)
 end
 
 -- Extended KeymapOption with a additional field `mode`
----@class KeymapSpec
----@field mode KeymapMode|KeymapMode[] Mode of keymap
----@field nowait? boolean Don't wait for additional keys if true
----@field silent? boolean Don't echo the command if true
----@field script? boolean
----@field unique? boolean Don't override existing mappings
----@field expr? boolean The callback returns a string
----@field replace_keycodes? boolean Replace keycodes in the callback result
----@field noremap? boolean Make a mapping non-recursive
----@field remap? boolean Make a mapping recursive, override noremap if it not nil
----@field callback? KeymapCallback Function called when mapping is executed
----@field desc? string Descripation of mapping.""
+---@class KeymapSpec: KeymapOption
+---@field mode? KeymapMode|KeymapMode[] Mode of keymap
 
----@alias Cmd string
+---@alias Cmd string Vim command to be executed
 ---@alias KeymapTree table<string, KeymapSpec|KeymapTree|KeymapCallback|Cmd>
 
 ---@private
@@ -104,6 +93,7 @@ local function register(buffer, mode, prefix, tree, suffix, defaults)
     if type(node) == "table" then
       if node[1] ~= nil or node.callback ~= nil then -- KeymapSpec
         local lhs = prefix .. key .. suffix
+        ---@type KeymapSpec
         local opts = vim.tbl_extend("force", defaults, node)
         local rhs = pop(opts, 1, "")
         if type(rhs) == "function" then
@@ -129,21 +119,10 @@ local function register(buffer, mode, prefix, tree, suffix, defaults)
 end
 
 --- Extended KeymapSpec with additional fields: `buffer`, `prefix` and `suffix`
----@class KeymapDefaults
+---@class KeymapDefaults: KeymapSpec
 ---@field buffer? buffer Buffer to set keymap
 ---@field prefix? string Prefix of keymap
 ---@field suffix? string Suffix of keymap
----@field mode? KeymapMode|KeymapMode[] Mode to set keymap
----@field nowait? boolean Don't wait for additional keys if true
----@field silent? boolean Don't echo the command if true
----@field script? boolean
----@field unique? boolean Don't override existing mappings
----@field expr? boolean The callback returns a string
----@field replace_keycodes? boolean Replace keycodes in the callback result
----@field noremap? boolean Make a mapping non-recursive
----@field remap? boolean Make a mapping recursive, override noremap if it not nil
----@field callback? KeymapCallback Function called when mapping is executed
----@field desc? string Descripation of mapping.
 
 --- Register keymaps with given tree and given default options
 ---
