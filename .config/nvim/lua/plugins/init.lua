@@ -2,6 +2,9 @@ return {
   -- Lazy can manage itself
   { "folke/lazy.nvim", version = "9" },
 
+  -- Startup time
+  { "dstein64/vim-startuptime", cmd = "StartupTime" },
+
   -- common dependencies
   { "nvim-lua/plenary.nvim" },
   { "kyazdani42/nvim-web-devicons" },
