@@ -2,7 +2,7 @@ local treesitter = {
   "nvim-treesitter/nvim-treesitter",
   event = "BufReadPre", -- Load bofore treesitter is loaded
   dependencies = {
-    "p00f/nvim-ts-rainbow",
+    "mrjones2014/nvim-ts-rainbow",
     "nvim-treesitter/nvim-treesitter-textobjects",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
