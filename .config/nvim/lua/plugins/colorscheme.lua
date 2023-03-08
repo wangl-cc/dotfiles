@@ -12,7 +12,7 @@ function M.config()
   if is_sshr then
     cmd_full = {
       "ssh",
-      vim.env.LC_HOST,
+      vim.env.LOCAL_HOST,
       "-o",
       "StrictHostKeyChecking=no",
       "-p",
@@ -38,7 +38,7 @@ function M.config()
     end,
   }
   vim.cmd.colorscheme "tokyonight"
-  if vim.fn.has "mac" == 1 or (is_sshr and vim.env.LC_OS == "Darwin") then
+  if vim.fn.has "mac" == 1 or (is_sshr and vim.env.LOCAL_OS == "Darwin") then
     require("auto-backgroud").setup { is_dark = is_dark }
   end
 end
