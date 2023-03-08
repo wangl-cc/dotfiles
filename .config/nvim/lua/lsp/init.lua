@@ -211,7 +211,9 @@ M.options = {
     texlab = {},
     jsonls = {},
     ltex = {
+      ---@type LspOptions
       options = {
+        autostart = false,
         filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
       },
     },
