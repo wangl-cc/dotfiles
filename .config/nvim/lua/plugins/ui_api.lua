@@ -43,6 +43,9 @@ return {
         size = { min_width = 20 },
         position = { row = 2, col = -2 },
       }
+      local shell = vim.fs.basename(vim.o.shell)
+      -- Only bash and fish are supported by tree-sitter
+      local shell_ts = shell == "fish" and "fish" or "bash"
       require("noice").setup {
         cmdline = {
           format = {
@@ -60,7 +63,7 @@ return {
               icon = "",
               opts = cursor_input_opts,
             },
-            filter = { kind = "shell" },
+            filter = { kind = "shell", lang = shell_ts },
           },
         },
         popupmenu = { enabled = false },
