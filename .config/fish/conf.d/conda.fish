@@ -1,10 +1,10 @@
 # test if __fish_conda_root is set
-# if not, use $HOME/Conda as default
+# if not, use $HOME/.local/share/conda
 set -l __CONDA_ROOT
 if set -q __fish_conda_root
   set __CONDA_ROOT $__fish_conda_root
 else
-  set __CONDA_ROOT $HOME/Conda
+  set __CONDA_ROOT $HOME/.local/share/conda
 end
 
 set -gx CONDA_EXE $__CONDA_ROOT/bin/conda
