@@ -14,6 +14,8 @@ abbr --add la ls --color -Alh
 abbr --add .. cd ..
 abbr --add ... cd ../..
 abbr --add .... cd ../../..
+# ssh
+abbr --add ssh ssh -t
 # julia
 abbr --add jl julia
 abbr --add jp julia --project
