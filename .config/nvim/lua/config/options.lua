@@ -107,6 +107,11 @@ opt.guicursor = {
 -- gui font, only works for GUI version like `neovide`
 o.guifont = "JetBrainsMono Nerd Font:h13"
 
+if g.goneovim == 1 then
+  o.cmdheight = 0 -- goneovim has its own cmdline
+  o.scrolloff = 0 -- This is not works well in goneovim
+end
+
 -- clipboard
 opt.clipboard:append { "unnamedplus" }
 
