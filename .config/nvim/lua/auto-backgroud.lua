@@ -40,9 +40,10 @@ end
 -- 2. We might wait for a short time to get the response, which might be run
 --   asynchronously.
 
---[[
 -- This is inspired by neovim's implementation of background handler
 -- https://github.com/neovim/neovim/blob/06aed7c1776e9db769c77ce836c1995128a6afc6/src/nvim/tui/input.c#L568
+
+--[[
 ---@param resp string OSC 11 response string
 ---@return boolean Whether the background is dark
 local handle_osc11 = function(resp)
@@ -50,10 +51,23 @@ local handle_osc11 = function(resp)
   local rgbmax = { 0, 0, 0 }
   local component = 0
   local i = 1
+  local shift = 0
   while true do
     local c = resp:sub(i, i)
-    if c == "/" or c == ":" then
+    if c == "/" then
+      if component == 0 then
+        return true -- not a valid OSC 11 response
+      end
       component = component + 1
+    elseif c == "r" then
+      if resp:sub(i, i + 2) == "rgb" then
+        i = i + 3
+        if resp:sub(i, i) == "a" then i = i + 1 end
+      end
+      if resp:sub(i, i) == ":" then
+        i = i + 1
+        component = 1
+      end
     elseif component == 4 then
       break -- we don't need alpha
     elseif c == "" then -- end of string
@@ -63,6 +77,10 @@ local handle_osc11 = function(resp)
         break
       end
     elseif component > 0 then -- must be the last branch in the if-elseif chain
+      shift = shift + 1
+      if shift > 4 then
+        break -- ignore trailing characters
+      end
       rgb[component] = bit.bor(bit.lshift(rgb[component], 4), tonumber(c, 16))
       rgbmax[component] = bit.bor(bit.lshift(rgbmax[component], 4), 0xf)
     end
@@ -76,9 +94,11 @@ local handle_osc11 = function(resp)
   return l < 0.5
 end
 
--- Test
+--[[ Test
 print(handle_osc11 "\x1b]11;rgb:24e2/2807/39c2") -- true
 print(handle_osc11 "\x1b]11;rgb:e20e/e2d9/e771") -- false
+]]
+
 --]]
 
 ---@class AutoBackgroundOptions
@@ -107,6 +127,11 @@ function M.setup(opts)
   opts = opts or {}
 
   tbl.extend_inplace(M.options, opts)
+
+  -- Use OSC 11 to check background color if is_dark is not provided
+  -- if not M.options.is_dark then
+  -- M.options.is_dark = function() return handle_osc11(get_osc11()) end
+  -- end
 
   -- TODO:use a timer to check theme periodically
   -- Advantages: Works for any terminals, and no need to SIGWINCH
