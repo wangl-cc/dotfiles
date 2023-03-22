@@ -148,3 +148,10 @@ register({
     },
   },
 }, { silent = true })
+-- ISSUE: move to left will not trigger redraw
+register({
+  ["<C-a>"] = "<Home>",
+  ["<C-e>"] = "<End>",
+  ["<C-b>"] = "<S-Left>",
+  ["<C-w>"] = "<S-Right>",
+}, { silent = true, mode = { "c" } })
