@@ -52,7 +52,16 @@ function _safe_using(pkgs...)
     return esc(ex)
 end
 
+using REPL
 @safe_using LazyStartup
+
+atreplinit() do repl
+    if !isdefined(repl, :interface)
+        repl.interface = REPL.setup_interface(repl)
+    end
+    REPL.ipython_mode!(repl)
+    lazy_startup_init!()
+end
 
 @lazy_startup @safe_using(Revise) import * using * include(*) includet(*)
 
