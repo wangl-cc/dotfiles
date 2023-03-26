@@ -43,6 +43,10 @@
 !.config/fish/*
 .config/fish/fish_variables
 
+# atuin
+!.config/atuin
+!.config/atuin/config.toml
+
 # Git
 !.config/git
 !.config/git/*

@@ -112,4 +112,10 @@ if type -q starship
 end
 # starship initialize }}}
 
+# atuin initialize {{{
+if type -q atuin
+  atuin init fish | source
+end
+# atuin initialize }}}
+
 end # is-interactive }}}
