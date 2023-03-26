@@ -19,6 +19,11 @@ return {
       popup_border_style = "rounded",
       sort_case_insensitive = true,
       use_popups_for_input = false,
+      filesystem = {
+        filtered_items = {
+          hide_dotfiles = false,
+        },
+      },
       window = {
         position = "left",
         width = 30,
