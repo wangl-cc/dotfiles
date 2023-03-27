@@ -92,6 +92,14 @@ clone_core() {
   cd ~ || error "Unable to change to home directory: $HOME"
   git_verbose reset HEAD
   git_verbose submodule update --init --recursive
+  $GIT ls-files --deleted | while IFS= read -r file; do
+    git_verbose checkout -- ":/$file"
+  done
+  if [ -n "$($GIT ls-files --modified)" ]; then
+    warn "Local files with content that differs from the ones just cloned were found."
+    warn "They have been left unmodified."
+    warn "Please review and resolve any differences appropriately."
+  fi
   ok "Clone succeed"
 }
 
