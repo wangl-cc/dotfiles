@@ -88,6 +88,7 @@
 !.config/yadm/*
 !.local/share/yadm
 !.local/share/yadm/archive
+!.local/share/yadm/repo.git
 
 # Utilities
 !.local/bin/passwdgen

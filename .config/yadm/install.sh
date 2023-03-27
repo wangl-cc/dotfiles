@@ -121,20 +121,6 @@ clone() {
   fi
 }
 
-# Create a link_yadm from $HOME/.git to $YADM_DATA/repo.git
-# This is needed to make yadm work
-link_yadm() {
-  YADM_DATA="$HOME/.local/share/yadm"
-  if ! [ -e "$YADM_DATA/repo.git" ]; then
-    if ! [ -d "$YADM_DATA" ]; then
-      info "Create yadm data directory"
-      mkdir -p "$YADM_DATA"
-    fi
-    info "Link yadm repository"
-    ln -s "$HOME/.git" "$YADM_DATA/repo.git"
-  fi
-}
-
 usage() {
 cat <<EOM
 Usage: $(basename "$0") [options] [command]
