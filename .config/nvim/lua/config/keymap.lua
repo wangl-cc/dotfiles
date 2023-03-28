@@ -13,6 +13,7 @@ local leader_mappings = {
     w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
+    n = { [[<Cmd>Telescope notes<CR>]], desc = "Search notes" },
   },
   g = {
     c = { [[<Cmd>Telescope git_commits<CR>]], desc = "Show git log" },
@@ -59,6 +60,24 @@ local leader_mappings = {
     s = { [[<Cmd>Lazy sync<CR>]], desc = "Install, clean and update plugins" },
     x = { [[<Cmd>Lazy clean<CR>]], desc = "Clean unused plugins" },
     p = { [[<Cmd>Lazy profile<CR>]], desc = "Profile startup time" },
+  },
+  n = {
+    callback = function()
+      local notes = require "notes"
+      local wins = vim.api.nvim_list_wins()
+      local main = notes.note_path "main"
+      for _, win in ipairs(wins) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        local name = vim.api.nvim_buf_get_name(buf)
+        if name == main then
+          vim.bo[buf].buflisted = false
+          vim.api.nvim_win_hide(win)
+          return
+        end
+      end
+      notes.open_note "main"
+    end,
+    desc = "Toggle main note",
   },
 }
 register(leader_mappings, { prefix = "<leader>", silent = true })

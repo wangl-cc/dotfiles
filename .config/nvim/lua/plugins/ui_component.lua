@@ -256,6 +256,7 @@ return {
           },
         },
       }
+      require("telescope").load_extension "notes"
     end,
   },
 }
