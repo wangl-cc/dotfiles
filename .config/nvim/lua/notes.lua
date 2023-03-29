@@ -60,8 +60,9 @@ M.open_note = function(name)
 end
 
 M.setup = function(opts)
-  M.options = tbl.deep_extend("force", M.options, opts or {})
-  M.options.directory = vim.fn.fnamemodify(M.options.directory, ":p")
+  opts = opts or {}
+  opts.directory = opts.directory and vim.fn.expand(opts.directory) or nil
+  M.options = tbl.extend_inplace(M.options, opts)
 end
 
 return M
