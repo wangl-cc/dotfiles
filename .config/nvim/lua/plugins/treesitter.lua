@@ -10,6 +10,7 @@ local treesitter = {
 }
 
 function treesitter.config()
+  local rainbow = require "ts-rainbow"
   require("nvim-treesitter.configs").setup {
     ensure_installed = {
       "bash",
@@ -36,6 +37,16 @@ function treesitter.config()
     rainbow = {
       enable = true,
       extended_mode = true,
+      strategt = rainbow.strategy["local"],
+      hlgroups = {
+        "rainbowcol1",
+        "rainbowcol2",
+        "rainbowcol3",
+        "rainbowcol4",
+        "rainbowcol5",
+        "rainbowcol6",
+        "rainbowcol7",
+      },
     },
     context_commentstring = {
       enable = true,
