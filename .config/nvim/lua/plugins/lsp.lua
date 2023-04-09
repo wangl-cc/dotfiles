@@ -38,28 +38,30 @@ return {
     },
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
-    event = "BufReadPre",
+    "jay-babu/mason-null-ls.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "williamboman/mason.nvim",
       {
-        "jayp0521/mason-null-ls.nvim",
-        opts = {
-          ensure_installed = { "stylua", "gitlint" },
-        },
+        "jose-elias-alvarez/null-ls.nvim",
+        config = function()
+          local null_ls = require "null-ls"
+          local builtins = null_ls.builtins
+          null_ls.setup {
+            sources = {
+              builtins.formatting.stylua,
+              builtins.diagnostics.gitlint,
+              -- Python
+              builtins.diagnostics.flake8,
+              builtins.formatting.autopep8,
+              builtins.formatting.autoflake,
+            },
+          }
+        end,
       },
     },
-    config = function()
-      local null_ls = require "null-ls"
-      null_ls.setup {
-        sources = {
-          null_ls.builtins.formatting.stylua,
-          null_ls.builtins.diagnostics.gitlint,
-          -- Python
-          null_ls.builtins.diagnostics.pycodestyle,
-          null_ls.builtins.formatting.autopep8,
-        },
-      }
-    end,
+    opts = {
+      automatic_installation = true,
+    },
   },
 }
