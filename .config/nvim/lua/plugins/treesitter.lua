@@ -1,6 +1,6 @@
 local treesitter = {
   "nvim-treesitter/nvim-treesitter",
-  event = "BufReadPre", -- Load bofore treesitter is loaded
+  event = { "BufReadPre", "BufNewFile" }, -- Load bofore treesitter is loaded
   dependencies = {
     { "HiPhish/nvim-ts-rainbow2", version = "2" },
     "nvim-treesitter/nvim-treesitter-textobjects",
