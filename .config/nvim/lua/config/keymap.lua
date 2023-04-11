@@ -64,18 +64,37 @@ local leader_mappings = {
   n = {
     callback = function()
       local notes = require "notes"
-      local wins = vim.api.nvim_list_wins()
-      local main = notes.note_path "main"
-      for _, win in ipairs(wins) do
-        local buf = vim.api.nvim_win_get_buf(win)
-        local name = vim.api.nvim_buf_get_name(buf)
-        if name == main then
-          vim.bo[buf].buflisted = false
-          vim.api.nvim_win_hide(win)
+      if notes.options.open == "float" then
+        if not notes.main_note then
+          notes.main_note = {
+            popup = notes.open_note "main",
+            hiden = false,
+          }
+          notes.main_note.popup:mount()
           return
         end
+        local note = notes.main_note
+        if note.hiden then
+          note.popup:show()
+          note.hiden = false
+        else
+          note.popup:hide()
+          note.hiden = true
+        end
+      else
+        local wins = vim.api.nvim_list_wins()
+        local main = notes.note_path "main"
+        for _, win in ipairs(wins) do
+          local buf = vim.api.nvim_win_get_buf(win)
+          local name = vim.api.nvim_buf_get_name(buf)
+          if name == main then
+            vim.bo[buf].buflisted = false
+            vim.api.nvim_win_hide(win)
+            return
+          end
+        end
+        notes.open_note "main"
       end
-      notes.open_note "main"
     end,
     desc = "Toggle main note",
   },

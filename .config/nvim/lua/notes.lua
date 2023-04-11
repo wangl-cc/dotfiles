@@ -1,13 +1,7 @@
 local tbl = require "util.table"
+local Popup = require "nui.popup"
 
 local M = {}
-
-M.options = {
-  directory = vim.fn.stdpath "state" .. "/notes", -- directory to store notes
-  extension = "md", -- default file extension for notes
-  hide_extension = true, -- hide file extension in picker
-  open = "horizontal botright 20split", -- open command or function
-}
 
 local function get_notes(notes, dir)
   local stat = vim.loop.fs_stat(dir)
@@ -37,15 +31,58 @@ M.note_path = function(file)
   return path
 end
 
-local open = function(file)
-  if type(M.options.open) == "function" then
-    M.options.open(file)
+---@alias _NvimBorderStyle "'none'" | "'single'" | "'double'" | "'rounded'" | "'solid'" | "'shadow'"
+---@alias Align "'left'" | "'center'" | "'right'"
+
+---@class _NuiBorderOptions
+---@field padding number | number[] | { top: number, left: number }
+---@field style _NvimBorderStyle | table
+---@field text { top: string | boolean, top_align?: Align, bottom: string | boolean, bottom_align?: Align }
+
+---@alias _percentage string
+---@alias _Size number | _percentage
+
+---@class _NuiPopupOptions
+---@field border? _NuiBorderOptions
+---@field ns_id? number | string
+---@field relative string | table
+---@field position _Size | { row: _Size, col: _Size }
+---@field size _Size | { width: _Size, height: _Size }
+---@field enter? boolean
+---@field focusable? boolean
+---@field zindex? number
+---@field buf_options? table
+---@field win_options? table
+---@field bufnr? number
+
+---@param bufnr number
+---@param opts? _NuiPopupOptions
+local open_float = function(bufnr, opts)
+  opts = vim.tbl_extend("force", M.options.popup_opts, opts or {})
+  opts.bufnr = bufnr
+  local popup = Popup(opts)
+  popup:mount()
+  return popup
+end
+
+---@param file string
+---@param opts? _NuiPopupOptions
+local open = function(file, opts)
+  if M.options.open == "float" then
+    vim.cmd.badd(file)
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_get_name(bufnr):match(file) then
+        return open_float(bufnr, opts)
+      end
+    end
   else
     vim.cmd(M.options.open .. " " .. file)
   end
 end
 
-M.open_note = function(name)
+---@param name? string note name
+---@param opts? _NuiPopupOptions
+M.open_note = function(name, opts)
   local dir = M.options.directory
   if not name then name = vim.fn.input {
     prompt = "Note name: ",
@@ -56,8 +93,37 @@ M.open_note = function(name)
     vim.fn.mkdir(dir, "p")
     vim.fn.writefile({}, path)
   end
-  open(path)
+  return open(path, opts)
 end
+
+M.options = {
+  directory = vim.fn.stdpath "state" .. "/notes", -- directory to store notes
+  extension = "md", -- default file extension for notes
+  hide_extension = true, -- hide file extension in picker
+  open = "float", -- how to open notes, "float" or valid vim command
+  ---@type _NuiPopupOptions
+  popup_opts = {
+    relative = "editor",
+    position = "50%",
+    size = "80%",
+    enter = true,
+    border = {
+      style = "rounded",
+      text = {
+        top = " Notes ",
+        top_align = "center",
+      },
+    },
+    buf_options = {
+      buflisted = false,
+      filetype = "markdown",
+    },
+    win_options = {
+      number = true,
+      relativenumber = true,
+    },
+  },
+}
 
 M.setup = function(opts)
   opts = opts or {}
