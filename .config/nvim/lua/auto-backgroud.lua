@@ -122,6 +122,8 @@ function M.autobg()
   end
 end
 
+M.timer = nil
+
 ---@param opts AutoBackgroundOptions
 function M.setup(opts)
   opts = opts or {}
@@ -133,16 +135,13 @@ function M.setup(opts)
   -- M.options.is_dark = function() return handle_osc11(get_osc11()) end
   -- end
 
-  -- TODO:use a timer to check theme periodically
-  -- Advantages: Works for any terminals, and no need to SIGWINCH
-  -- Disadvantages: We need to check background periodically, which might be
-  -- a little bit delay and waste of resources.
-
-  -- The sigwinch can not be received properly on nvim nightly
-  -- but works fine on lastest stable release v0.8.3
-  local winch = vim.loop.new_signal()
-  if not winch then error "Failed to create signal" end
-  winch:start("sigwinch", vim.schedule_wrap(M.autobg))
+  -- After 2448816 and 43e8ec9, the TUI becomes external process
+  -- which means we can't get SIGWINCH from nvim,
+  -- so we use a timer to check theme periodically
+  if M.timer then M.timer:stop() end
+  M.timer = vim.loop.new_timer()
+  if not M.timer then error "Failed to create timer" end
+  M.timer:start(5000, 5000, vim.schedule_wrap(M.autobg))
 end
 
 return M
