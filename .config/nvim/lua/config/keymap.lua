@@ -1,4 +1,7 @@
 local register = require("util.keymap").register
+
+local lazygit = nil
+
 local leader_mappings = {
   ["/"] = {
     [[<Cmd>nohlsearch<CR><Cmd>match<CR>]],
@@ -22,6 +25,18 @@ local leader_mappings = {
       desc = "Show git log of current file",
     },
     s = { [[<Cmd>Telescope git_status<CR>]], desc = "Show git status" },
+    g = {
+      callback = function()
+        if not lazygit then
+          lazygit = require("toggleterm.terminal").Terminal:new {
+            cmd = "lazygit",
+            hidden = true,
+          }
+        end
+        lazygit:toggle()
+      end,
+      desc = "Open lazygit terminal",
+    },
   },
   t = {
     t = { [[<Cmd>Neotree toggle<CR>]], desc = "Toggle the file explorer" },
