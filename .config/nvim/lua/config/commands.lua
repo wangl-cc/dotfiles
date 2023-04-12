@@ -5,3 +5,9 @@ end, {
   desc = "Open a note",
   nargs = "?",
 })
+
+vim.api.nvim_create_user_command(
+  "TSRainbowRefresh",
+  [[ exec "TSBufDisable rainbow" | exec "TSBufEnable rainbow" ]],
+  { desc = "Refresh rainbow colors" }
+)
