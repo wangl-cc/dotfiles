@@ -79,8 +79,10 @@ o.errorbells = false
 -- check modeline
 o.modelines = 1
 
--- load exrc
-o.exrc = true
+-- load note_name from editorconfig
+require("editorconfig").properties.note_name = function(bufnr, val, _)
+  vim.b[bufnr].note_name = val
+end
 
 -- always show tab line
 o.showtabline = 2

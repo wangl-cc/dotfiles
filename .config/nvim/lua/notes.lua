@@ -80,6 +80,14 @@ local open = function(file, opts)
   end
 end
 
+local name2title = function(name)
+  return name
+    :gsub("_", " ")
+    :gsub("%.", " ")
+    :gsub("%-", " ")
+    :gsub("%a", string.upper, 1)
+end
+
 ---@param name? string note name
 ---@param opts? _NuiPopupOptions
 M.open_note = function(name, opts)
@@ -91,7 +99,7 @@ M.open_note = function(name, opts)
   local path = M.note_path(name)
   if not vim.loop.fs_stat(path) then
     vim.fn.mkdir(dir, "p")
-    vim.fn.writefile({ "# " .. name:sub(1, 1):upper() .. name:sub(2, -1) }, path)
+    vim.fn.writefile({ "# " .. name2title(name) }, path)
   end
   return open(path, opts)
 end

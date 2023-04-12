@@ -64,7 +64,7 @@ local leader_mappings = {
   n = {
     callback = function()
       local notes = require "notes"
-      local main_name = vim.g.note_name or "main"
+      local main_name = vim.b.note_name or "main"
       if notes.options.open == "float" then
         if not notes.main_note then
           notes.main_note = {
