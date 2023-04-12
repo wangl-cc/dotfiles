@@ -66,7 +66,7 @@ local leader_mappings = {
       local notes = require "notes"
       ---@diagnostic disable-next-line undefined field
       local name = vim.b.note_name or "main"
-      notes.toggle_note(name)
+      notes.toggle(name)
     end,
     desc = "Toggle main note",
   },
