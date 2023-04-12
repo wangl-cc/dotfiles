@@ -7,7 +7,7 @@ local display = function(entry)
   local options = note.options
   local extension = options.extension
   local hide_extension = options.hide_extension
-  local name = vim.fn.fnamemodify(entry, ":t")
+  local name = entry:gsub("^" .. options.directory .. "/", "")
   local ext = vim.fn.fnamemodify(entry, ":e")
   if hide_extension and ext == extension then
     return vim.fn.fnamemodify(name, ":r")
@@ -16,9 +16,8 @@ local display = function(entry)
 end
 
 local finder = function()
-  local notes = note.get_notes()
   return finders.new_table {
-    results = notes,
+    results = note.get_note_list(),
     entry_maker = function(entry)
       local name = display(entry)
       return {
