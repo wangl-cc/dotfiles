@@ -40,23 +40,6 @@ return {
     },
   },
   {
-    "TimUntersberger/neogit",
-    cmd = "Neogit",
-    opts = {
-      kind = "vsplit",
-      -- customize displayed signs
-      signs = {
-        -- { CLOSED, OPENED }
-        section = { "", "" },
-        item = { "", "" },
-        hunk = { "", "" },
-      },
-      integrations = {
-        diffview = true,
-      },
-    },
-  },
-  {
     "hkupty/iron.nvim",
     keys = {
       { "gs", mode = { "n", "v" }, desc = "Send code to REPL" },
