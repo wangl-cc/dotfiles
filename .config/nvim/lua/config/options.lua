@@ -79,6 +79,9 @@ o.errorbells = false
 -- check modeline
 o.modelines = 1
 
+-- load exrc
+o.exrc = true
+
 -- always show tab line
 o.showtabline = 2
 
