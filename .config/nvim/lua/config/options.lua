@@ -80,8 +80,11 @@ o.errorbells = false
 o.modelines = 1
 
 -- load note_name from editorconfig
-require("editorconfig").properties.note_name = function(bufnr, val, _)
-  vim.b[bufnr].note_name = val
+local ok, editorconfig = pcall(require, "editorconfig")
+if ok then
+  editorconfig.properties.note_name = function(bufnr, val)
+    vim.b[bufnr].note_name = val
+  end
 end
 
 -- always show tab line
