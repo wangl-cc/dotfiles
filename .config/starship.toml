@@ -1,11 +1,28 @@
+# Format Layout
+## Defines
+# - user related: username, hostname, localip
+# - directory related: directory, git, package, language
+# - current shell status: jobs, conda
+# - last command information: status
+# - time information: time, cmd_duration
+## Layout with sequence: 1st line left, 1st line right, 2nd line left, 2nd line right
+# - user, directory
+# - shell status
+# - last command information
+# - time
 format = """ \
-$username$hostname$localip$directory\
+$username$hostname$localip\
+$directory\
+$git_branch$git_commit\
 $package$julia$lua\
-$git_branch$git_commit$git_state$git_status\
-$fill $cmd_duration$time\
-$line_break $jobs$shlvl$character\
+$git_state$git_status\
+$fill \
+$jobs$conda\
+$line_break $status$character\
 """
-right_format = "$status$conda"
+right_format = """\
+$cmd_duration$time\
+"""
 add_newline = true
 
 # Modules
@@ -38,7 +55,10 @@ read_only = " "
 symbol = "─"
 
 [jobs]
-symbol = ""
+format = "with [$number backgroud job$symbol]($style) " # this is a trick to make it plural
+symbol = "s"
+number_threshold = 1
+symbol_threshold = 2
 style = "bold yellow"
 
 [shell]
@@ -50,7 +70,10 @@ symbol = " "
 
 [status]
 disabled = false
-format = "[$status]($style) "
+pipestatus = true
+format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style)"
+pipestatus_segment_format = "$int"
+pipestatus_format = "[\\[$common_meaning$signal_name$maybe_int:$pipestatus\\]]($style) "
 
 [cmd_duration]
 format = "took [$duration]($style) "
@@ -98,7 +121,7 @@ modified = " $count "
 # Language or enviroment {{{
 [conda]
 symbol = " "
-format = "[$symbol$environment]($style) "
+format = "at [$symbol$environment]($style) "
 
 [package]
 symbol = " "
