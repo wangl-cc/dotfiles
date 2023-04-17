@@ -36,16 +36,6 @@ vim.api.nvim_create_autocmd("FileType", {
   group = group,
 })
 
--- set different tabstop and shiftwidth for some filetype
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "julia", "python" },
-  callback = function()
-    vim.bo.tabstop = 4
-    vim.bo.shiftwidth = 4
-  end,
-  group = group,
-})
-
 -- Show cursor line only in active window
 -- There is a win variable `cursorline` to store cursorline status when disable it
 -- this should avoid to enable cursorline for some window
