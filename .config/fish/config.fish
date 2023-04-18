@@ -1,7 +1,3 @@
-# path {{{
-set -gx PATH $HOME/.local/bin $PATH
-# path }}}
-
 if status is-interactive # {{{
 # abbreviates {{{
 # rm
