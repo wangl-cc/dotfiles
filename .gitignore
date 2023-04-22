@@ -89,6 +89,7 @@
 # YADM
 !.config/yadm
 !.config/yadm/*
+!.config/yadm/bootstrap.d/*
 !.local/share/yadm
 !.local/share/yadm/archive
 !.local/share/yadm/repo.git

@@ -24,4 +24,8 @@ if command -v fish >/dev/null 2>&1; then
   fish "$bootstrap_dir/fish.fish"
 fi
 
+if command -v brew >/dev/null 2>&1; then
+  bash "$bootstrap_dir/brew.sh"
+fi
+
 # vim:ts=2:sw=2:et:fdm=marker
