@@ -12,6 +12,14 @@ if [ "$(uname -s)" = 'Darwin' ]; then
   fi
 fi
 
+if [ "$(uname -s)" = 'Linux' ]; then
+  # set path to homebrew temporary to find packages installed by homebrew
+  # if linuxbrew in installed other location, the PATH should be set manually
+  if [ -e /home/linuxbrew/.linuxbrew ]; then
+    export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  fi
+fi
+
 if command -v fish >/dev/null 2>&1; then
   fish "$bootstrap_dir/fish.fish"
 fi
