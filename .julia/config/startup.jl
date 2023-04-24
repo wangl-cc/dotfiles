@@ -59,7 +59,11 @@ atreplinit() do repl
     if !isdefined(repl, :interface)
         repl.interface = REPL.setup_interface(repl)
     end
-    REPL.ipython_mode!(repl)
+    if isdefined(REPL, :ipython_mode!)
+        REPL.ipython_mode!(repl)
+    elseif isdefined(REPL, :numbered_prompt!)
+        REPL.numbered_prompt!(repl)
+    end
     lazy_startup_init!()
 end
 
