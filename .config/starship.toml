@@ -49,7 +49,7 @@ show_always = true
 
 [directory]
 format = "at [$path]($style)[$read_only]($read_only_style) "
-read_only = " "
+read_only = " 󰌾"
 
 [fill]
 symbol = "─"
@@ -95,12 +95,12 @@ time_format = "%a %r"
 
 # Git {{{
 [git_branch]
-symbol = " "
+symbol = " "
 
 [git_commit]
 format = "on [\\($hash$tag\\)]($style) "
 tag_disabled = false
-tag_symbol = " 笠"
+tag_symbol = " 󰓹"
 
 # This module is a bit costly
 [git_status]
@@ -119,12 +119,13 @@ modified = " $count "
 # }}}
 
 # Language or enviroment {{{
+[package]
+symbol = "󰏗 "
+
+# Language symbols are nf-seti-* symbols
 [conda]
 symbol = " "
 format = "at [$symbol$environment]($style) "
-
-[package]
-symbol = " "
 
 [julia]
 symbol = " "

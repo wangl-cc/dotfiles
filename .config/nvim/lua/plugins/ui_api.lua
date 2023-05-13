@@ -51,7 +51,7 @@ return {
           format = {
             search_down = { icon = "" },
             search_up = { icon = "" },
-            help = { icon = "" },
+            help = { icon = "󰘥" },
             IncRename = {
               pattern = ":%s*IncRename%s+",
               icon = "",
