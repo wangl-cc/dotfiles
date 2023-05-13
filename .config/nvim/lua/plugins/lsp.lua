@@ -10,11 +10,7 @@ return {
       {
         "williamboman/mason-lspconfig.nvim",
         opts = {
-          automatic_installation = {
-            exclude = {
-              "julials", -- I use my own config of julials
-            },
-          },
+          automatic_installation = {},
         },
       },
     },

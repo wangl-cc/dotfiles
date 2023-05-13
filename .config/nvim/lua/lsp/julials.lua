@@ -36,68 +36,7 @@ M.setup_capabilities = function(capabilities)
   return capabilities
 end
 
-local os_name = vim.loop.os_uname().sysname
--- stylua: ignore start
--- This can not be formatted correctly by stylua
-local julia_img_user = os_name == "Darwin"
-  and vim.fn.expand "~/.config/julials/compiler/sys.dylib"
-  or vim.fn.expand "~/.config/julials/compiler/sys.so"
--- stylua: ignore end
-local julia_cmd = {
-  "julia",
-  "--startup-file=no",
-  "--history-file=no",
-  vim.fn.expand "~/.config/julials/nvim_lsp/julials.jl",
-}
-if vim.fn.filereadable(julia_img_user) == 1 then
-  table.insert(julia_cmd, "-J")
-  table.insert(julia_cmd, julia_img_user)
-end
-
-function M.install()
-  return require("plenary.job")
-    :new({
-      command = "julia",
-      args = {
-        "--startup-file=no",
-        "--history-file=no",
-        "--project=~/.config/julials/nvim_lsp",
-        "-e",
-        [[using Pkg; Pkg.instantiate()]],
-      },
-      on_exit = function(_, code)
-        if code == 0 then
-          print "julials installed."
-        else
-          print "julials installation failed."
-        end
-      end,
-    })
-    :start()
-end
-
-function M.compile()
-  return require("plenary.job")
-    :new({
-      command = "julia",
-      args = {
-        "--history-file=no",
-        "--project=~/.config/julials/nvim_lsp",
-        vim.fn.expand "~/.config/julials/compiler/compile.jl",
-      },
-      on_exit = function(_, code)
-        if code == 0 then
-          print "julials compiled."
-        else
-          print "julials compilation failed."
-        end
-      end,
-    })
-    :start()
-end
-
 M.options = {
-  cmd = julia_cmd,
   settings = {
     julia = {
       lint = {
