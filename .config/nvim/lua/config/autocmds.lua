@@ -30,6 +30,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     "help",
     "tsplayground",
+    "startuptime",
     "git", -- gitdiff
   },
   callback = function(args) close_with_q(args.buf) end,
