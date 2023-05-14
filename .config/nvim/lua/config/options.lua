@@ -139,6 +139,7 @@ vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
 -- 3. environment variables must be set here instead of shell rc file;
 if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr"
+  vim.env.JULIA_EDITOR = "nvr -O"
   vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"
 else
   ---@diagnostic disable-next-line: undefined-field
