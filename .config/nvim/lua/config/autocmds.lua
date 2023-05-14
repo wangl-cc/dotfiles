@@ -65,6 +65,7 @@ vim.api.nvim_create_autocmd({ "InsertEnter", "WinLeave" }, {
 vim.filetype.add {
   extension = {
     gitignore = "gitignore",
+    typ = "typst",
   },
   filename = {
     condarc = "yaml",

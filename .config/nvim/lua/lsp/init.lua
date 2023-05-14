@@ -218,6 +218,7 @@ M.options = {
       },
     },
     pyright = {},
+    typst_lsp = {},
   },
 }
 
