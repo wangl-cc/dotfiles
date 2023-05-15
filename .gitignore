@@ -24,6 +24,10 @@
 # GnuPG
 !.gnupg
 
+# cargo
+!.cargo
+!.cargo/config
+
 # yadm alternate files
 !*##*
 !.*##*
