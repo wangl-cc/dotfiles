@@ -14,7 +14,7 @@ format = """ \
 $username$hostname$localip\
 $directory\
 $git_branch$git_commit\
-$package$julia$lua\
+$package$julia$lua$rust\
 $git_state$git_status\
 $fill \
 $jobs$conda\
@@ -133,6 +133,9 @@ symbol = " "
 [lua]
 symbol = " "
 lua_binary = "fake-lua"
+
+[rust]
+symbol = ' '
 
 # [env_var]
 
