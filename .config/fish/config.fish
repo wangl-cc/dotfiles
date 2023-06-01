@@ -75,6 +75,7 @@ else
 end
 set -gx ESH_SHELL /bin/bash
 set -gx WAKATIME_HOME $HOME/.config/wakatime
+set -gx BOB_CONFIG $HOME/.config/bob/config.json
 # environments variables for interactive shells }}}
 
 # fish greeting {{{
