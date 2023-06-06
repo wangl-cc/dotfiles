@@ -14,10 +14,10 @@ function treesitter.config()
     ensure_installed = {
       "bash",
       "vim",
+      "vimdoc",
       "lua",
       "regex",
       "query",
-      "help",
       "embedded_template",
       "gitcommit",
       "diff",
