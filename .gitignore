@@ -64,6 +64,11 @@
 !.config/iterm2
 !.config/iterm2/com.googlecode.iterm2.plist
 
+# hammerspoon
+!.hammerspoon
+!.hammerspoon/*
+.hammerspoon/Spoons
+
 # Julia
 !.julia
 !.julia/config
