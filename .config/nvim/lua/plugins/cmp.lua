@@ -120,8 +120,8 @@ function M.config()
     },
     -- TODO: source priority
     sources = {
-      { name = "luasnip" },
-      { name = "nvim_lsp", max_item_count = 10 },
+      { name = "nvim_lsp", max_item_count = 15 },
+      { name = "luasnip", max_item_count = 5 },
       { name = "buffer", max_item_count = 5 },
       { name = "path", max_item_count = 5 },
     },
@@ -174,7 +174,7 @@ function M.config()
       },
       {
         name = "cmdline",
-        max_item_count = 10,
+        max_item_count = 20,
         group_index = 2,
       },
     },
