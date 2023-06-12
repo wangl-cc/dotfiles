@@ -6,7 +6,14 @@ return {
   -- Better vim.ui.*
   {
     "stevearc/dressing.nvim",
-    event = "UIEnter",
+    lazy = true,
+    init = function()
+      ---@diagnostic disable-next-line: duplicate-set-field
+      vim.ui.select = function(...)
+        require("lazy").load { plugins = { "dressing.nvim" } }
+        return vim.ui.select(...)
+      end
+    end,
     opts = {
       -- vim.ui.input is handled by noice
       input = { enabled = false },
