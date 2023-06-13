@@ -1,3 +1,5 @@
+local tbl = require "util.table"
+
 return {
   -- TODO: Noice route for mini.align and jump
   {
@@ -77,7 +79,31 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    opts = {
+    dependencies = {
+      {
+        "nvim-lualine/lualine.nvim",
+        optinal = true,
+        opts = tbl.merge_options {
+          sections = {
+            lualine_x = {
+              {
+                function()
+                  local status = require("copilot.api").status.data.status
+                  return " " .. (status or "")
+                end,
+                cond = function()
+                  local ok, clients =
+                    pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
+                  return ok and #clients > 0 and package.loaded.copilot
+                end,
+              },
+            },
+          },
+        },
+      },
+    },
+    cmd = "Copilot",
+    opts = tbl.merge_options {
       filetypes = {
         help = false,
         iron = false,

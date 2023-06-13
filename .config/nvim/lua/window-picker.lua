@@ -169,7 +169,7 @@ function M.pick_window(opts)
 end
 
 ---@param opts WindowPickerOptions Options to override default options
-M.setup = function(opts) tbl.extend_inplace(M.options, opts) end
+M.setup = function(opts) tbl.merge(M.options, opts) end
 
 return M
 

@@ -128,7 +128,7 @@ M.timer = nil
 function M.setup(opts)
   opts = opts or {}
 
-  tbl.extend_inplace(M.options, opts)
+  tbl.merge(M.options, opts)
 
   -- Use OSC 11 to check background color if is_dark is not provided
   -- if not M.options.is_dark then

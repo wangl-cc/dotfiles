@@ -9,9 +9,7 @@ local M = {}
 local make_capabilities = cmp_lsp.default_capabilities
 
 local format_group = vim.api.nvim_create_augroup("AutoFormat", { clear = true })
-
----@type boolean[]
-M.autoformat = {}
+M.autoformat = {} ---@type boolean[]
 
 local on_attach_common = function(client, buffer)
   local ft = vim.bo[buffer].filetype
@@ -134,28 +132,14 @@ local on_attach_common = function(client, buffer)
   })
 end
 
----@class LspOptions
----@field root_dir? fun(filename, bufnr): string
----@field name? string
----@field filetypes? string[]|string
----@field autostart? boolean
----@field single_file_support? boolean
----@field on_new_config? fun(config, root_dir)
----@field capabilities table <string, string|table|boolean|function>
----@field cmd? string[]
----@field handlers? function[]
----@field init_options? table<string, string|table|boolean>
----@field on_attach? fun(client, bufnr)
----@field settings? table<string, string|table|boolean>
-
 ---@class LspConfig
 ---@field disabled? boolean Whether to disable this lsp
 ---@field setup_capabilities? fun(capabilities:table):table Setup capabilities
----@field options? LspOptions Options to be passed to lspconfig
+---@field options? table Options to be passed to lspconfig
 
 ---@param opts LspConfig|string Config for lspconfig, if string it is treated as a lua module name
 ---@param reload? boolean Whether to reload the module
----@return LspConfig options opts Processed lspconfig
+---@return LspConfig opts Processed lspconfig
 local function process_config(opts, reload)
   if type(opts) == "string" then
     if reload then
@@ -187,56 +171,19 @@ local function setup_server(server, config)
   return lspconfig[server].setup(new_options)
 end
 
+---@class LspSetupOptions
+---@field autoformat? boolean Whether to autoformat on save
+---@field servers? table<string, LspConfig|string> List of servers to be setup
+
+---@type LspSetupOptions
 M.options = {
   autoformat = true,
-  ---@type table<string, LspConfig|string>
-  servers = {
-    julials = "lsp.julials",
-    lua_ls = {
-      options = {
-        settings = {
-          Lua = {
-            telemetry = { enable = false },
-            workspace = { checkThirdParty = false },
-          },
-        },
-      },
-    },
-    bashls = {
-      options = {
-        filetypes = { "sh", "bash" },
-      },
-    },
-    taplo = {},
-    texlab = {},
-    jsonls = {},
-    ltex = {
-      ---@type LspOptions
-      options = {
-        autostart = false,
-        filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
-      },
-    },
-    pyright = {},
-    typst_lsp = {},
-  },
+  servers = {},
 }
 
+---@param opts LspSetupOptions
 M.setup = function(opts)
-  tbl.extend_inplace(M.options, opts or {})
-  -- auto reload servers' config when config changes
-  util.create_bufwrite_autocmd {
-    pattern = "lsp/*.lua",
-    callback = function(args)
-      local server = vim.fs.basename(args.file):gsub("%.lua$", "")
-      if server == "init" then -- reload this file
-        return util.reload("lsp").setup()
-      end
-      local config = process_config(M.options.servers[server], true)
-      setup_server(server, config)
-    end,
-    group = vim.api.nvim_create_augroup("LspReload", { clear = true }),
-  }
+  if opts then tbl.merge(M.options, opts) end
   register({
     ["]"] = {
       callback = vim.diagnostic.goto_next,

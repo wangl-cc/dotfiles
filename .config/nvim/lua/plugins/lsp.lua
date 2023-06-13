@@ -1,27 +1,26 @@
+local tbl = require "util.table"
+
 return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       { "folke/neoconf.nvim", version = "1", cmd = "Neoconf", config = true },
-      { "folke/neodev.nvim", version = "2", config = true },
       "hrsh7th/cmp-nvim-lsp",
-      "williamboman/mason.nvim",
-      {
-        "williamboman/mason-lspconfig.nvim",
-        opts = {
-          automatic_installation = {},
-        },
-      },
+      "williamboman/mason-lspconfig.nvim",
+      -- NOTE: `mason-null-ls` is not a derect dependency of this plugin,
+      -- but it must load before `null-ls` to work properly,
+      "jay-babu/mason-null-ls.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
     },
-    config = function()
+    config = function(_, opts)
       require("lspconfig.ui.windows").default_options.border = "rounded"
-      require("lsp").setup()
+      require("lsp").setup(opts)
     end,
   },
   {
     "williamboman/mason.nvim",
-    opts = {
+    opts = tbl.merge_options {
       ui = {
         -- TODO: change size of floating window
         border = "rounded",
@@ -34,30 +33,48 @@ return {
     },
   },
   {
-    "jay-babu/mason-null-ls.nvim",
-    event = { "BufReadPre", "BufNewFile" },
+    "williamboman/mason-lspconfig.nvim",
     dependencies = {
       "williamboman/mason.nvim",
-      {
-        "jose-elias-alvarez/null-ls.nvim",
-        config = function()
-          local null_ls = require "null-ls"
-          local builtins = null_ls.builtins
-          null_ls.setup {
-            sources = {
-              builtins.formatting.stylua,
-              builtins.diagnostics.gitlint,
-              -- Python
-              builtins.diagnostics.flake8,
-              builtins.formatting.autopep8,
-              builtins.formatting.autoflake,
-            },
-          }
-        end,
-      },
     },
-    opts = {
-      automatic_installation = true,
+    opts = tbl.merge_options {
+      automatic_installation = {},
     },
+  },
+  {
+    "jay-babu/mason-null-ls.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+    opts = tbl.merge_options {
+      automatic_installation = {},
+    },
+  },
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    ---@alias NullLSBuiltinType "formatting" | "diagnostics" | "code_actions" | "completion" | "hover"
+    ---@alias NullLSBuiltinSpec { type: NullLSBuiltinType, name: string }
+    ---@param opts { sources: NullLSBuiltinSpec[] } Additional builtin sources to be added
+    config = function(_, opts)
+      local null_ls = require "null-ls"
+      local builtins = null_ls.builtins
+      local sources = {}
+      for _, source in ipairs(opts.sources or {}) do
+        local builtin = builtins[source.type][source.name]
+        if builtin then
+          table.insert(sources, builtin)
+        else
+          vim.notify(
+            "Invalid null-ls builtin source: %s.%s" % { source.type, source.name },
+            vim.log.levels.WARN
+          )
+        end
+      end
+      null_ls.setup {
+        border = "rounded",
+        sources = sources,
+      }
+    end,
   },
 }

@@ -17,6 +17,32 @@ local leader_mappings = {
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
     n = { [[<Cmd>Telescope notes<CR>]], desc = "Search notes" },
+    p = {
+      callback = function()
+        local parsers = require "nvim-treesitter.parsers"
+        local parser_list = parsers.available_parsers()
+        table.sort(parser_list)
+        local parser_info = {}
+        for _, lang in ipairs(parser_list) do
+          table.insert(parser_info, {
+            lang = lang,
+            status = parsers.has_parser(lang),
+          })
+        end
+        vim.ui.select(parser_info, {
+          prompt = "Update parser",
+          format_item = function(item)
+            -- use + to search installed parser and - search uninstalled parser
+            return string.format("%s %s", item.status and "+" or "-", item.lang)
+          end,
+        }, function(selected)
+          if selected then
+            require("nvim-treesitter.install").update()(selected.lang)
+          end
+        end)
+      end,
+      desc = "Search a tree-sitter parser to update",
+    },
   },
   g = {
     c = { [[<Cmd>Telescope git_commits<CR>]], desc = "Show git log" },

@@ -1,9 +1,11 @@
+local tbl = require "util.table"
+
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
     version = "2",
     event = "UIEnter",
-    opts = {
+    opts = tbl.merge_options {
       char = "▏",
       context_char = "▏",
       show_current_context = true,
@@ -14,7 +16,7 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     version = "2",
     cmd = "Neotree",
-    opts = {
+    opts = tbl.merge_options {
       close_if_last_window = true,
       popup_border_style = "rounded",
       sort_case_insensitive = true,
@@ -118,7 +120,7 @@ return {
     keys = {
       { "<C-t>", desc = "Toggle terminal", mode = { "n", "i" } },
     },
-    opts = {
+    opts = tbl.merge_options {
       open_mapping = "<C-t>",
       shade_terminals = false,
       start_in_insert = true,

@@ -150,7 +150,7 @@ M.options = {
 M.setup = function(opts)
   opts = opts or {}
   opts.directory = opts.directory and vim.fn.expand(opts.directory) or nil
-  tbl.extend_inplace(M.options, opts)
+  tbl.merge(M.options, opts)
   if not vim.loop.fs_stat(M.options.directory) then
     vim.fn.mkdir(M.options.directory, "p")
   end

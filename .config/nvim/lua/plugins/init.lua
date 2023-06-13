@@ -22,22 +22,7 @@ return {
       "SudoWrite", "SudoEdit",
     },
   },
-  -- Git commands
-  { "tpope/vim-fugitive", cmd = { "Git" } },
 
-  --- LaTeX
-  {
-    "lervag/vimtex",
-    ft = "tex",
-    cmd = "VimtexInverseSearch", -- for inverse search
-    config = function()
-      vim.g.vimtex_view_method = "skim"
-      vim.g.vimtex_view_skim_sync = 1
-      vim.g.vimtex_view_skim_reading_bar = 1
-    end,
-  },
-
-  -- Misc
   --- Waka time
   { "wakatime/vim-wakatime", event = "VeryLazy" },
 }
