@@ -87,14 +87,13 @@ return {
           sections = {
             lualine_x = {
               {
-                function()
-                  local status = require("copilot.api").status.data.status
-                  return " " .. (status or "")
-                end,
+                function() return require("copilot.api").status.data.status end,
+                icon = "",
+                icon_enabled = true,
                 cond = function()
                   local ok, clients =
                     pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
-                  return ok and #clients > 0 and package.loaded.copilot
+                  return ok and #clients > 0
                 end,
               },
             },
