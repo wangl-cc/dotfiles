@@ -63,7 +63,7 @@ using REPL
         # get all `using` and `import` statements which are at the top level
         for (i, arg) in enumerate(ex.args)
             if Base.isexpr(arg, :toplevel)
-                get_usings!(usings, arg)
+                REPL.Numbered.get_usings!(usings, arg)
             elseif Base.isexpr(arg, [:using, :import])
                 push!(usings, popat!(ex.args, i))
             end
