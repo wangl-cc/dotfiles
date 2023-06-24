@@ -5,8 +5,8 @@ return {
   {
     "echasnovski/mini.align",
     keys = {
-      { "ga", desc = "Align code" },
-      { "gA", desc = "Align code with preview" },
+      { "ga", desc = "Align code", mode = { "v", "n" } },
+      { "gA", desc = "Align code with preview", mode = { "v", "n" } },
     },
     config = function() require("mini.align").setup {} end,
   },
@@ -18,10 +18,12 @@ return {
   {
     "kylechui/nvim-surround",
     keys = {
+      -- Normal mode mappings
       { "ys", desc = "Add a surrounding pair" },
       { "yS", desc = "Add a surrounding pair in new line" },
       { "cs", desc = "Change a surrounding pair" },
       { "ds", desc = "Delete a surrounding pair" },
+      -- Visual mode mappings
       { "S", desc = "Add a surrounding pair", mode = "v" },
       { "gS", desc = "Add a surrounding pair in new line", mode = "v" },
     },
@@ -30,8 +32,8 @@ return {
   {
     "numToStr/Comment.nvim",
     keys = {
-      { "gc", desc = "Toggle comment linewise" },
-      { "gb", desc = "Toggle comment blockwise" },
+      { "gc", desc = "Toggle comment linewise", mode = { "v", "n" } },
+      { "gb", desc = "Toggle comment blockwise", mode = { "v", "n" } },
     },
     config = function()
       require("Comment").setup {
