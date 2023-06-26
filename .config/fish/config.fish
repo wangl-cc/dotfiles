@@ -46,6 +46,15 @@ abbr --add yp yadm perms
 abbr --add yg yadm git-crypt
 abbr --add yt yadm transcrypt
 # git }}}
+# brew {{{
+abbr --add b   brew
+abbr --add bi  brew install
+abbr --add bl  brew leaves
+abbr --add bls brew list
+abbr --add br  brew remove
+abbr --add bs  brew search
+abbr --add bu  brew upgrade
+# }}}
 # abbreviates }}}
 
 # environments variables for interactive shells {{{
