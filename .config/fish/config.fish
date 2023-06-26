@@ -109,4 +109,10 @@ if type -q starship
 end
 # starship initialize }}}
 
+# zoxide initialize {{{
+if type -q zoxide
+  zoxide init fish | source
+end
+# zoxide initialize }}}
+
 end # is-interactive }}}
