@@ -10,6 +10,7 @@ return {
         julials = {
           disabled = vim.env.__JULIA_LSP_DISABLE == "true"
             or vim.fn.executable "julia" == 0,
+          autoformat = false,
           setup_capabilities = function(capabilities)
             tbl.merge(capabilities.textDocument.completion.completionItem, {
               snippetSupport = true,

@@ -10,6 +10,12 @@ local make_capabilities = cmp_lsp.default_capabilities
 
 local format_group = vim.api.nvim_create_augroup("AutoFormat", { clear = true })
 M.autoformat = {} ---@type boolean[]
+setmetatable(M.autoformat, {
+  __index = function(_, buffer)
+    if buffer == 0 then buffer = vim.api.nvim_get_current_buf() end
+    return M.autoformat[buffer]
+  end,
+})
 
 local on_attach_common = function(client, buffer)
   local ft = vim.bo[buffer].filetype
@@ -18,7 +24,12 @@ local on_attach_common = function(client, buffer)
       "NULL_LS_FORMATTING"
     ) > 0
   if client.supports_method "textDocument/formatting" then
-    M.autoformat[buffer] = M.options.autoformat
+    local server_opts = M.options.servers[client.name]
+    if server_opts and server_opts.autoformat ~= nil then
+      M.autoformat[buffer] = server_opts.autoformat
+    else
+      M.autoformat[buffer] = M.options.autoformat
+    end
   end
   local format = function(opts)
     opts = vim.tbl_extend("keep", opts or {}, {
@@ -59,6 +70,12 @@ local on_attach_common = function(client, buffer)
         callback = function()
           if M.autoformat[buffer] ~= nil then
             M.autoformat[buffer] = not M.autoformat[buffer]
+            vim.notify(
+              M.autoformat[buffer] and "Enabled format on save"
+                or "Disabled format on save",
+              vim.log.levels.INFO,
+              { title = "Autoformat" }
+            )
           end
         end,
         desc = "Toggle autoformat",
@@ -134,6 +151,7 @@ end
 
 ---@class LspConfig
 ---@field disabled? boolean Whether to disable this lsp
+---@field autoformat? boolean Whether to enable autoformat
 ---@field setup_capabilities? fun(capabilities:table):table Setup capabilities
 ---@field options? table Options to be passed to lspconfig
 
