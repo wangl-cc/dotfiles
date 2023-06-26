@@ -116,3 +116,5 @@ end
 # zoxide initialize }}}
 
 end # is-interactive }}}
+
+# vim:foldmethod=marker:foldlevel=1
