@@ -88,8 +88,6 @@ if type -q fastfetch
       fastfetch
   end
   abbr --add ff fastfetch
-else
-  set -g fish_greeting # set to null to disable greeting
 end
 # fish_greeting }}}
 
