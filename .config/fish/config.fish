@@ -1,4 +1,5 @@
 if status is-interactive # {{{
+
 # abbreviates {{{
 # rm
 abbr --add rm rm -i
@@ -78,6 +79,8 @@ set -gx WAKATIME_HOME $HOME/.config/wakatime
 set -gx BOB_CONFIG $HOME/.config/bob/config.json
 # environments variables for interactive shells }}}
 
+if test $TERM_PROGRAM != "WarpTerminal" # {{{
+
 # fish greeting {{{
 if type -q fastfetch
   # use fastfetch if installed
@@ -108,6 +111,8 @@ if type -q starship
   starship init fish | source
 end
 # starship initialize }}}
+
+end # TERM_PROGRAM is not WarpTerminal }}}
 
 # zoxide initialize {{{
 if type -q zoxide
