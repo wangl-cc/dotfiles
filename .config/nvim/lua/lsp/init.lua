@@ -13,7 +13,14 @@ M.autoformat = {} ---@type boolean[]
 setmetatable(M.autoformat, {
   __index = function(_, buffer)
     if buffer == 0 then buffer = vim.api.nvim_get_current_buf() end
-    return M.autoformat[buffer]
+    return rawget(M.autoformat, buffer)
+  end,
+  __newindex = function(_, buffer, value)
+    if type(value) == "boolean" then
+      rawset(M.autoformat, buffer, value)
+    else -- nil
+      rawset(M.autoformat, buffer, M.options.autoformat)
+    end
   end,
 })
 
@@ -25,11 +32,7 @@ local on_attach_common = function(client, buffer)
     ) > 0
   if client.supports_method "textDocument/formatting" then
     local server_opts = M.options.servers[client.name]
-    if server_opts and server_opts.autoformat ~= nil then
-      M.autoformat[buffer] = server_opts.autoformat
-    else
-      M.autoformat[buffer] = M.options.autoformat
-    end
+    if server_opts then M.autoformat[buffer] = server_opts.autoformat end
   end
   local format = function(opts)
     opts = vim.tbl_extend("keep", opts or {}, {
