@@ -20,6 +20,7 @@ return {
   },
   {
     "williamboman/mason.nvim",
+    version = "1",
     opts = tbl.merge_options {
       ui = {
         -- TODO: change size of floating window
@@ -34,6 +35,7 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    version = "1",
     dependencies = {
       "williamboman/mason.nvim",
     },
@@ -43,6 +45,7 @@ return {
   },
   {
     "jay-babu/mason-null-ls.nvim",
+    version = "2",
     dependencies = {
       "williamboman/mason.nvim",
       "jose-elias-alvarez/null-ls.nvim",

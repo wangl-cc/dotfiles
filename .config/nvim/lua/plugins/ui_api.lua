@@ -8,6 +8,7 @@ return {
   -- Better vim.ui.*
   {
     "stevearc/dressing.nvim",
+    version = "1",
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.ui.select = function(...)
