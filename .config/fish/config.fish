@@ -3,6 +3,8 @@ if status is-interactive # {{{
 # abbreviates {{{
 # rm
 abbr --add rm rm -i
+abbr --add rf rm -f
+abbr --add rr rm -ri
 # ls
 abbr --add l  ls --color
 abbr --add ll ls --color -lh
@@ -48,6 +50,8 @@ abbr --add yt yadm transcrypt
 # git }}}
 # brew {{{
 abbr --add b   brew
+abbr --add bc  brew cleanup
+abbr --add bca brew cleanup --prune=all
 abbr --add bi  brew install
 abbr --add bl  brew leaves
 abbr --add bls brew list
