@@ -54,7 +54,10 @@ return {
         },
       },
     },
-    config = function(_, opts) require("nvim-treesitter.configs").setup(opts) end,
+    config = function(_, opts)
+      opts.ensure_installed = tbl.unique(opts.ensure_installed or {})
+      require("nvim-treesitter.configs").setup(opts)
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
