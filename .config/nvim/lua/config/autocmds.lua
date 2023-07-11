@@ -91,8 +91,13 @@ vim.api.nvim_create_autocmd("FileType", {
     local lang = vim.treesitter.language.get_lang(ft)
     local scm = string.format(
       [[
-        (content) @%s @combined
-        (code) @bash @combined
+        ((content) @injection.content
+         (#set! injection.language "%s")
+         (#set! injection.combined))
+
+        ((code) @injection.content
+         (#set! injection.language "bash")
+         (#set! injection.combined))
       ]],
       lang
     )
