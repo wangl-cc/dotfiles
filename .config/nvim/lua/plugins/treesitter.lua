@@ -5,7 +5,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPre", "BufNewFile" }, -- Load bofore treesitter is loaded
     dependencies = {
-      { "HiPhish/nvim-ts-rainbow2", version = "2" },
       "nvim-treesitter/nvim-treesitter-textobjects",
       "JoosepAlviste/nvim-ts-context-commentstring",
     },
@@ -24,19 +23,6 @@ return {
       },
       indent = {
         enable = false,
-      },
-      rainbow = {
-        enable = true,
-        extended_mode = true,
-        hlgroups = {
-          "rainbowcol1",
-          "rainbowcol2",
-          "rainbowcol3",
-          "rainbowcol4",
-          "rainbowcol5",
-          "rainbowcol6",
-          "rainbowcol7",
-        },
       },
       context_commentstring = {
         enable = true,
@@ -96,5 +82,9 @@ return {
         enable = false,
       }
     end,
+  },
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    event = { "BufReadPre", "BufNewFile" },
   },
 }
