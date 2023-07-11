@@ -69,7 +69,11 @@ return {
           table.insert(sources, builtin)
         else
           vim.notify(
-            "Invalid null-ls builtin source: %s.%s" % { source.type, source.name },
+            string.format(
+              "Invalid null-ls builtin source: %s.%s",
+              source.type,
+              source.name
+            ),
             vim.log.levels.WARN
           )
         end
