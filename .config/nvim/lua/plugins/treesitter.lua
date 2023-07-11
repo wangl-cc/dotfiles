@@ -57,21 +57,6 @@ return {
     config = function(_, opts) require("nvim-treesitter.configs").setup(opts) end,
   },
   {
-    "nvim-treesitter/playground",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      opts = tbl.merge_options {
-        ensure_installed = {
-          "query",
-        },
-        playground = {
-          enable = true,
-        },
-      },
-    },
-    cmd = "TSPlaygroundToggle",
-  },
-  {
     "nvim-treesitter/nvim-treesitter-context",
     cmd = "TSContextToggle",
     config = function()
