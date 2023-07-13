@@ -244,26 +244,36 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    dependencies = {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
-      config = function() require("telescope").load_extension "fzf" end,
-    },
-    config = function()
-      local telescope = require "telescope"
-      local actions = require "telescope.actions"
-      telescope.setup {
-        defaults = {
-          mappings = {
-            i = { -- TODO: open with window picker
-              ["<esc>"] = actions.close, -- quit but esc
-              ["<C-u>"] = false, -- clear promote
-              ["<C-b>"] = actions.preview_scrolling_up,
-              ["<C-f>"] = actions.preview_scrolling_down,
-            },
+    opts = tbl.merge_options {
+      defaults = {
+        prompt_prefix = " ",
+        selection_caret = " ",
+        mappings = {
+          i = { -- TODO: open with window picker
+            ["<esc>"] = "close", -- quit but esc
+            ["<C-u>"] = false, -- clear promote
+            ["<C-b>"] = "preview_scrolling_up",
+            ["<C-f>"] = "preview_scrolling_down",
           },
-          file_ignore_patterns = { "node_modules", "vendor" },
         },
+        file_ignore_patterns = { "node_modules", "vendor" },
+      },
+    },
+    config = function(_, opts)
+      local telescope = require "telescope"
+      telescope.setup(opts)
+      for extension, _ in pairs(opts.extensions or {}) do
+        telescope.load_extension(extension)
+      end
+    end,
+  },
+  {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    build = "make",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      optional = true,
+      opts = tbl.merge_options {
         extensions = {
           fzf = {
             fuzzy = true,
@@ -272,8 +282,7 @@ return {
             case_mode = "smart_case",
           },
         },
-      }
-      require("telescope").load_extension "notes"
-    end,
+      },
+    },
   },
 }
