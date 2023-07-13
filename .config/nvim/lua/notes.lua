@@ -129,9 +129,10 @@ M.open = function(name)
 end
 
 ---@class NotesOptions
----@field directory string
----@field extension string
----@field open Cmd | function():Cmd
+---@field directory? string Directory to store notes
+---@field extension? string Default file extension for notes
+---@field open? Cmd | function():Cmd Open command or function that returns a command
+---@field telescope? table Options passed to telescope picker
 
 ---@type NotesOptions
 M.options = {
@@ -144,7 +145,36 @@ M.options = {
       return "botright 20split"
     end
   end,
+  telescope = {},
 }
+
+local pickers = require "telescope.pickers"
+local finders = require "telescope.finders"
+local conf = require("telescope.config").values
+
+local finder = function()
+  return finders.new_table {
+    results = M.get_note_list(),
+    entry_maker = function(entry)
+      local name = entry.name
+      local path = entry.path
+      return {
+        value = path,
+        display = name,
+        ordinal = name,
+      }
+    end,
+  }
+end
+
+M.picker = pickers.new(M.options.telescope, {
+  prompt_title = "Notes",
+  finder = finder(),
+  previewer = conf.file_previewer(M.options),
+  sorter = conf.generic_sorter(M.options),
+})
+
+M.find = function() M.picker:find() end
 
 ---@param opts? NotesOptions
 M.setup = function(opts)

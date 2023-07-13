@@ -1,4 +1,5 @@
 local register = require("util.keymap").register
+local import = require "util.import"
 
 local lazygit = nil
 
@@ -16,7 +17,7 @@ local leader_mappings = {
     w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
-    n = { [[<Cmd>Telescope notes<CR>]], desc = "Search notes" },
+    n = { callback = import("notes")["find"]:fun(), desc = "Search notes" },
     p = {
       callback = function()
         local parsers = require "nvim-treesitter.parsers"
