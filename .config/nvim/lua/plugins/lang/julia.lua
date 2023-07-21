@@ -64,4 +64,17 @@ return {
       },
     },
   },
+  {
+    "hkupty/iron.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      config = {
+        repl_definition = {
+          julia = {
+            command = { "julia", "--project" },
+          },
+        },
+      },
+    },
+  },
 }

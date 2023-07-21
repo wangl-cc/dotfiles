@@ -1,4 +1,5 @@
 local tbl = require "util.table"
+local import = require "util.import"
 
 return {
   {
@@ -30,6 +31,17 @@ return {
     opts = tbl.merge_options {
       ensure_installed = {
         "python",
+      },
+    },
+  },
+  {
+    "hkupty/iron.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      config = {
+        repl_definition = {
+          python = import("iron.fts.python")["ipython"]:table(),
+        },
       },
     },
   },

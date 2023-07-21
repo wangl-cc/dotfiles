@@ -78,41 +78,34 @@ return {
     keys = {
       { "gs", mode = { "n", "v" }, desc = "Send code to REPL" },
     },
-    config = function()
-      require("iron.core").setup {
-        config = {
-          highlight_last = false,
-          repl_open_cmd = function(bufnr)
-            -- HACK: set the filetype to 'iron' to detect it when needed
-            vim.api.nvim_buf_set_option(bufnr, "filetype", "iron")
-            local win_opts = {
-              number = false,
-              relativenumber = false,
-            }
-            if vim.o.columns <= 180 then
-              return require("iron.view").split.hor.botright(15, win_opts)(bufnr)
-            else
-              return require("iron.view").split.vert.botright(80, win_opts)(bufnr)
-            end
-          end,
-          repl_definition = {
-            julia = {
-              command = { "julia", "--project" },
-            },
-            python = require("iron.fts.python").ipython,
-          },
-        },
-        keymaps = {
-          visual_send = "gs",
-          send_motion = "gs",
-          send_file = "gss",
-          cr = "gs<CR>",
-          interrupt = "gsc",
-          clear = "gsu",
-          exit = "gsd",
-        },
-      }
-    end,
+    opts = tbl.merge_options {
+      config = {
+        highlight_last = false,
+        repl_open_cmd = function(bufnr)
+          -- HACK: set the filetype to 'iron' to detect it when needed
+          vim.api.nvim_buf_set_option(bufnr, "filetype", "iron")
+          local win_opts = {
+            number = false,
+            relativenumber = false,
+          }
+          if vim.o.columns <= 180 then
+            return require("iron.view").split.hor.botright(15, win_opts)(bufnr)
+          else
+            return require("iron.view").split.vert.botright(80, win_opts)(bufnr)
+          end
+        end,
+      },
+      keymaps = {
+        visual_send = "gs",
+        send_motion = "gs",
+        send_file = "gss",
+        cr = "gs<CR>",
+        interrupt = "gsc",
+        clear = "gsu",
+        exit = "gsd",
+      },
+    },
+    config = function(_, opts) require("iron.core").setup(opts) end,
   },
   {
     "akinsho/toggleterm.nvim",
