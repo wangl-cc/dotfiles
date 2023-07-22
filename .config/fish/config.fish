@@ -59,6 +59,22 @@ abbr --add br  brew remove
 abbr --add bs  brew search
 abbr --add bu  brew upgrade
 # }}}
+# cargo {{{
+abbr --add c   cargo
+abbr --add ca  cargo add
+abbr --add crm cargo remove
+
+abbr --add cb  cargo build
+abbr --add cc  cargo check
+abbr --add cf  cargo fmt
+abbr --add cr  cargo run
+abbr --add ct  cargo test
+
+abbr --add ci  cargo install
+abbr --add cil cargo install --locked
+abbr --add cl  cargo install --list
+abbr --add cu  cargo uninstall
+# }}}
 # abbreviates }}}
 
 # environments variables for interactive shells {{{
