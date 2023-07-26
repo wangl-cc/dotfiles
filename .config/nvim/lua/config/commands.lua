@@ -12,3 +12,11 @@ vim.api.nvim_create_user_command(
   import("notes")["find"]:fun(),
   { desc = "Search notes" }
 )
+
+vim.api.nvim_create_user_command("CommentTitle", function(args)
+  local title = args.fargs[1]
+  require("comment-title").comment_title(title)
+end, {
+  desc = "Open a note",
+  nargs = "?",
+})
