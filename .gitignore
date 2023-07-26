@@ -64,6 +64,13 @@
 !.config/iterm2
 !.config/iterm2/com.googlecode.iterm2.plist
 
+# dark mode notify
+!.config/dark-mode-notify
+!.config/dark-mode-notify/*
+.config/dark-mode-notify/launchd.plist
+!.local/bin/dark-mode-notify.swift
+!.local/bin/Makefile
+
 # hammerspoon
 !.hammerspoon
 !.hammerspoon/*

@@ -138,10 +138,17 @@ function M.setup(opts)
   -- After 2448816 and 43e8ec9, the TUI becomes external process
   -- which means we can't get SIGWINCH from nvim,
   -- so we use a timer to check theme periodically
-  if M.timer then M.timer:stop() end
-  M.timer = vim.loop.new_timer()
-  if not M.timer then error "Failed to create timer" end
-  M.timer:start(5000, 5000, vim.schedule_wrap(M.autobg))
+  if vim.loop.os_uname().sysname == "Darwin" then
+    local usr1 = vim.loop.new_signal()
+    if not usr1 then error "Failed to create signal" end
+    usr1:start("sigusr1", vim.schedule_wrap(M.autobg))
+    return
+  else
+    M.timer = vim.loop.new_timer()
+    if not M.timer then error "Failed to create timer" end
+    M.timer:start(5000, 5000, vim.schedule_wrap(M.autobg))
+    return
+  end
 end
 
 return M
