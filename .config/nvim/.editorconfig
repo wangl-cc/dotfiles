@@ -1,8 +1,5 @@
 root = true
 
-[*]
-note_name = neovim_config
-
 [*.lua]
 indent_size = 2
 indent_style = space

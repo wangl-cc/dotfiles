@@ -1,5 +1,4 @@
 local register = require("util.keymap").register
-local import = require "util.import"
 
 local lazygit = nil
 
@@ -17,7 +16,27 @@ local leader_mappings = {
     w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
-    n = { callback = import("notes")["find"]:fun(), desc = "Search notes" },
+    n = {
+      g = {
+        callback = function() require("notes").find { scope = "global" } end,
+        desc = "Search global notes",
+      },
+      p = {
+        callback = function()
+          local bufname = vim.api.nvim_buf_get_name(0)
+          local project = require("notes.path").get_project_root(bufname)
+          require("notes").find { scope = "project", path = project }
+        end,
+        desc = "Search project notes",
+      },
+      b = {
+        callback = function()
+          local bufname = vim.api.nvim_buf_get_name(0)
+          require("notes").find { scope = "buffer", path = bufname }
+        end,
+        desc = "Search buffer notes",
+      },
+    },
     p = {
       callback = function()
         local parsers = require "nvim-treesitter.parsers"
@@ -104,13 +123,33 @@ local leader_mappings = {
     p = { [[<Cmd>Lazy profile<CR>]], desc = "Profile startup time" },
   },
   n = {
-    callback = function()
-      local notes = require "notes"
-      ---@diagnostic disable-next-line undefined field
-      local name = vim.b.note_name or "main"
-      notes.toggle(name)
-    end,
-    desc = "Toggle main note",
+    g = {
+      callback = function() require("notes").toggle({ scope = "global" }, "main") end,
+      desc = "Toggle mail global notes",
+    },
+    p = {
+      callback = function()
+        local bufname = vim.api.nvim_buf_get_name(0)
+        local project = require("notes.path").get_project_root(bufname)
+        local name = project:match "([^/]+)/$"
+        require("notes").toggle({
+          scope = "project",
+          path = project,
+        }, name)
+      end,
+      desc = "Toggle mail project notes",
+    },
+    b = {
+      callback = function()
+        local bufname = vim.api.nvim_buf_get_name(0)
+        local name = bufname:match "([^/]+)/?$"
+        require("notes").toggle({
+          scope = "buffer",
+          path = bufname,
+        }, name)
+      end,
+      desc = "Toggle mail buffer notes",
+    },
   },
 }
 register(leader_mappings, { prefix = "<leader>", silent = true })
