@@ -74,35 +74,60 @@ vim.filetype.add {
     [".fishrc"] = "fish",
   },
   pattern = {
-    [".*##template%.esh"] = function(path, _)
+    [".*##template%.esh"] = function(path)
       local content_ft =
         vim.filetype.match { filename = path:gsub("##template%.esh", "") }
-      return content_ft and "esh_" .. content_ft or "esh_unknown"
+      if not content_ft then return "esh" end
+      local lang = vim.treesitter.language.get_lang(content_ft)
+      local scm = string.format(
+        [[
+            ((content) @injection.content
+             (#set! injection.language "%s")
+             (#set! injection.combined))
+
+            ((code) @injection.content
+             (#set! injection.language "bash")
+             (#set! injection.combined))
+          ]],
+        lang
+      )
+      return "esh",
+        function(bufnr)
+          vim.treesitter.query.set("embedded_template", "injections", scm)
+          vim.treesitter.start(bufnr, "embedded_template")
+        end
     end,
   },
 }
 
--- treesitter for esh
+-- filetype specific settings
+--- file types that use 4 spaces for indentation
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "esh_*" },
+  pattern = { "python", "julia", "rust" },
   callback = function(args)
-    local buffer = args.buf
-    local ft = vim.bo[buffer].filetype:sub(5)
-    local lang = vim.treesitter.language.get_lang(ft)
-    local scm = string.format(
-      [[
-        ((content) @injection.content
-         (#set! injection.language "%s")
-         (#set! injection.combined))
-
-        ((code) @injection.content
-         (#set! injection.language "bash")
-         (#set! injection.combined))
-      ]],
-      lang
-    )
-    vim.treesitter.query.set("embedded_template", "injections", scm)
-    vim.treesitter.start(buffer, "embedded_template")
+    local bufnr = args.buf
+    local bo = vim.bo[bufnr]
+    bo.expandtab = true
+    bo.shiftwidth = 4
+    bo.softtabstop = 4
+    if bo.filetype == "julia" then
+      bo.textwidth = 92
+    elseif bo.filetype == "rust" then
+      bo.textwidth = 100
+    end
+  end,
+  group = group,
+})
+--- file types that use tab for indentation
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "gitconfig", "make" },
+  callback = function(args)
+    local bufnr = args.buf
+    local bo = vim.bo[bufnr]
+    bo.expandtab = false
+    bo.shiftwidth = 8
+    bo.softtabstop = 8
+    bo.tabstop = 8
   end,
   group = group,
 })

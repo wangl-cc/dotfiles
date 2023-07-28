@@ -37,6 +37,18 @@ o.showmatch = true
 -- file encoding
 o.fileencoding = "utf-8"
 
+-- file format
+o.expandtab = true
+o.shiftwidth = 2
+o.softtabstop = 2
+o.tabstop = 8
+-- 80 is the standard terminal width
+-- but the number and sign column takes 5 columns
+-- so the textwidth is 74 to make sure the text is not wrapped
+o.textwidth = 74
+o.fileformat = "unix"
+o.fixendofline = true
+
 -- search
 o.hlsearch = true
 o.incsearch = true
