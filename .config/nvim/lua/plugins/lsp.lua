@@ -84,22 +84,20 @@ return {
       }
     end,
   },
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   optinal = true,
-  --   opts = tbl.merge_options {
-  --     sections = {
-  --       lualine_b = {
-  --         {
-  --           function() return "󰁨" end, -- TODO: a better icon
-  --           cond = function()
-  --             -- FIXME: open a nvim without lsp and than open a buffer with lsp
-  --             -- will cause an error
-  --             return package.loaded.lsp and package.loaded.lsp.autoformat[0]
-  --           end,
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
+  {
+    "nvim-lualine/lualine.nvim",
+    optinal = true,
+    opts = tbl.merge_options {
+      sections = {
+        lualine_b = {
+          {
+            function() return "󰁨" end, -- TODO: a better icon
+            cond = function()
+              return package.loaded.lsp and package.loaded.lsp.autoformat[0]
+            end,
+          },
+        },
+      },
+    },
+  },
 }
