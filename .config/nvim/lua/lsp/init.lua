@@ -25,26 +25,7 @@ setmetatable(M.autoformat, {
 })
 
 local on_attach_common = function(client, buffer)
-  local ft = vim.bo[buffer].filetype
-  local have_nls = #require("null-ls.sources").get_available(
-      ft,
-      "NULL_LS_FORMATTING"
-    ) > 0
-  if client.supports_method "textDocument/formatting" then
-    local server_opts = M.options.servers[client.name]
-    if server_opts then M.autoformat[buffer] = server_opts.autoformat end
-  end
-  local format = function(opts)
-    opts = vim.tbl_extend("keep", opts or {}, {
-      async = true,
-      bufnr = buffer,
-      filter = function(c)
-        if have_nls then return c.name == "null-ls" end
-        return c.name ~= "null-ls"
-      end,
-    })
-    vim.lsp.buf.format(opts)
-  end
+  -- Keymaps
   ---@type KeymapTree
   local mappings = {
     ---@type KeymapTree
@@ -66,23 +47,6 @@ local on_attach_common = function(client, buffer)
     },
     ---@type KeymapTree
     ["<leader>"] = {
-      ---@type KeymapOption
-      f = { callback = format, desc = "Format" },
-      ---@type KeymapOption
-      tf = {
-        callback = function()
-          if M.autoformat[buffer] ~= nil then
-            M.autoformat[buffer] = not M.autoformat[buffer]
-            vim.notify(
-              M.autoformat[buffer] and "Enabled format on save"
-                or "Disabled format on save",
-              vim.log.levels.INFO,
-              { title = "Autoformat" }
-            )
-          end
-        end,
-        desc = "Toggle autoformat",
-      },
       ---@type KeymapOption
       k = { callback = vim.lsp.buf.hover, desc = "Show hover and signature help" },
       ---@type KeymapOption
@@ -137,19 +101,69 @@ local on_attach_common = function(client, buffer)
     },
   }
 
+  -- Format
+  -- Enable formatting if the client supports it or if null-ls is available
+  local ft = vim.bo[buffer].filetype
+  local have_nls = #require("null-ls.sources").get_available(
+      ft,
+      "NULL_LS_FORMATTING"
+    ) > 0
+  if client.supports_method "textDocument/formatting" or have_nls then
+    local leader = mappings["<leader>"]
+    local server_opts = M.options.servers[client.name]
+    if server_opts then M.autoformat[buffer] = server_opts.autoformat end
+    local format = function(opts)
+      local options = {
+        async = true,
+        bufnr = buffer,
+        filter = function(c)
+          if have_nls then return c.name == "null-ls" end
+          return c.name ~= "null-ls"
+        end,
+      }
+      tbl.merge_one(options, opts)
+      vim.lsp.buf.format(options)
+    end
+    ---@type KeymapOption
+    leader.f = { callback = format, desc = "Format" }
+
+    -- Autoformat
+    vim.api.nvim_clear_autocmds {
+      group = format_group,
+      buffer = buffer,
+    }
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = format_group,
+      buffer = buffer,
+      callback = function()
+        if M.autoformat[buffer] then format { async = false } end
+      end,
+    })
+    ---@type KeymapOption
+    leader.tf = {
+      callback = function()
+        if M.autoformat[buffer] ~= nil then
+          M.autoformat[buffer] = not M.autoformat[buffer]
+          vim.notify(
+            M.autoformat[buffer] and "Enabled format on save"
+              or "Disabled format on save",
+            vim.log.levels.INFO,
+            { title = "Autoformat" }
+          )
+        end
+      end,
+      desc = "Toggle autoformat",
+    }
+  end
+
+  -- Register mappings
   register(mappings, { buffer = buffer, silent = true })
 
-  vim.api.nvim_clear_autocmds {
-    group = format_group,
-    buffer = buffer,
-  }
-  vim.api.nvim_create_autocmd("BufWritePre", {
-    group = format_group,
-    buffer = buffer,
-    callback = function()
-      if M.autoformat[buffer] then format { async = false } end
-    end,
-  })
+  -- Attach nvim-navic to LSP clients
+  if client.server_capabilities.documentSymbolProvider then
+    local ok, navic = pcall(require, "nvim-navic")
+    if ok then navic.attach(client, buffer) end
+  end
 end
 
 ---@class LspConfig
@@ -204,7 +218,7 @@ M.options = {
 
 ---@param opts LspSetupOptions
 M.setup = function(opts)
-  if opts then tbl.merge(M.options, opts) end
+  tbl.merge_one(M.options, opts)
   register({
     ["]"] = {
       callback = vim.diagnostic.goto_next,

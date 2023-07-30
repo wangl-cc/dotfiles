@@ -24,7 +24,7 @@ local M = {}
 M.options = {
   autoselect_one = true,
   chars = "FJDKSLA;CMRUEIWOQP",
-  use_winbar = 0, -- 0: never | 1: when cmdheight == 0 | 2: always
+  use_winbar = 1, -- 0: never | 1: when cmdheight == 0 | 2: always
   filter_rule = {
     current = false,
     wo = {},
@@ -169,7 +169,7 @@ function M.pick_window(opts)
 end
 
 ---@param opts WindowPickerOptions Options to override default options
-M.setup = function(opts) tbl.merge(M.options, opts) end
+M.setup = function(opts) tbl.merge_one(M.options, opts) end
 
 return M
 

@@ -12,7 +12,7 @@ return {
             or vim.fn.executable "julia" == 0,
           autoformat = false,
           setup_capabilities = function(capabilities)
-            tbl.merge(capabilities.textDocument.completion.completionItem, {
+            tbl.merge_one(capabilities.textDocument.completion.completionItem, {
               snippetSupport = true,
               preselectSupport = true,
               tagSupport = { valueSet = { 1 } },

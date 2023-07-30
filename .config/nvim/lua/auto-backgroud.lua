@@ -126,9 +126,7 @@ M.timer = nil
 
 ---@param opts AutoBackgroundOptions
 function M.setup(opts)
-  opts = opts or {}
-
-  tbl.merge(M.options, opts)
+  tbl.merge_one(M.options, opts)
 
   -- Use OSC 11 to check background color if is_dark is not provided
   -- if not M.options.is_dark then

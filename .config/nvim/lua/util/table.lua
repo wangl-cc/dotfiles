@@ -39,6 +39,24 @@ function M.merge(base, ...)
   typ.assert(base, "table")
   for i = 1, select("#", ...) do
     local other = select(i, ...)
+    if other then
+      typ.assert(other, "table")
+      unsafe_merge(base, other)
+    end
+  end
+  return base
+end
+
+--- Merge table `other` into the `base`.
+---
+--- If the same key exists in more than one table, the value in the last table will be used.
+---
+---@param base table<any, any> Table to be extended
+---@param other table<any, any> Tables to be merged into base
+---@return table<any, any> # Extended table
+function M.merge_one(base, other)
+  typ.assert(base, "table")
+  if other then
     typ.assert(other, "table")
     unsafe_merge(base, other)
   end
@@ -94,7 +112,7 @@ end
 ---@param opts table The default options
 ---@return fun(_, user_opts: table): table
 M.merge_options = function(opts)
-  return function(_, input_opts) return M.merge(opts, input_opts) end
+  return function(_, input_opts) return M.merge_one(opts, input_opts) end
 end
 
 return M

@@ -23,7 +23,7 @@ function M.config()
   local feedkeys = require "cmp.utils.feedkeys"
   local keymap = require "cmp.utils.keymap"
 
-  local icons = require("util.icons").completion
+  local icons = require("util.icons").kinds
 
   local source_names = {
     nvim_lsp = "LSP",

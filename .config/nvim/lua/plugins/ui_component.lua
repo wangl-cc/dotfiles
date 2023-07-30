@@ -134,29 +134,18 @@ return {
     },
   },
   {
-    "b0o/incline.nvim",
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "1",
     event = "UIEnter",
-    config = function()
-      local get_icon_color = require("nvim-web-devicons").get_icon_color
-      require("incline").setup {
-        render = function(props)
-          local bufname = vim.api.nvim_buf_get_name(props.buf)
-          local filename = vim.fs.basename(bufname)
-          local filetype_icon, color = get_icon_color(filename)
-          return {
-            { filetype_icon, guifg = color },
-            " ",
-            filename,
-          }
-        end,
-        window = {
-          margin = {
-            horizontal = 0,
-            vertical = 0,
-          },
-        },
-      }
-    end,
+    dependencies = {
+      "SmiteshP/nvim-navic",
+    },
+    opts = {
+      attach_navic = false,
+      exclude_filetypes = { "neo-tree", "iron" },
+      kinds = require("util.icons").kinds,
+    },
   },
   {
     "folke/todo-comments.nvim",

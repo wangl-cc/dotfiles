@@ -1,6 +1,6 @@
 local icons = {}
 
-icons.completion = {
+icons.kinds = {
   Class = "",
   Color = "",
   Constant = "",
