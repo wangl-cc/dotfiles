@@ -3,11 +3,7 @@ local tbl = require "util.table"
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPre", "BufNewFile" }, -- Load bofore treesitter is loaded
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "JoosepAlviste/nvim-ts-context-commentstring",
-    },
+    event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
     opts = tbl.merge_options {
       ensure_installed = {
@@ -24,40 +20,46 @@ return {
       indent = {
         enable = false,
       },
-      context_commentstring = {
-        enable = true,
-        enable_autocmd = false,
-      },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["ab"] = "@block.outer",
-            ["ib"] = "@block.inner",
-            ["aa"] = "@parameter.outer",
-            ["ia"] = "@parameter.inner",
-          },
-        },
-        swap = {
-          enable = true,
-          swap_next = {
-            ["<leader>a"] = "@parameter.inner",
-          },
-          swap_previous = {
-            ["<leader>A"] = "@parameter.inner",
-          },
-        },
-      },
     },
     config = function(_, opts)
       opts.ensure_installed = tbl.unique(opts.ensure_installed or {})
       require("nvim-treesitter.configs").setup(opts)
     end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      optional = true,
+      opts = tbl.merge_options {
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+              ["ab"] = "@block.outer",
+              ["ib"] = "@block.inner",
+              ["aa"] = "@parameter.outer",
+              ["ia"] = "@parameter.inner",
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = {
+              ["<leader>a"] = "@parameter.inner",
+            },
+            swap_previous = {
+              ["<leader>A"] = "@parameter.inner",
+            },
+          },
+        },
+      },
+    },
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
