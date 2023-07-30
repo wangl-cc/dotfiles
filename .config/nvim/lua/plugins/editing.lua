@@ -1,45 +1,48 @@
 local tbl = require "util.table"
 
 return {
-  -- TODO: Noice route for mini.align and jump
   {
     "echasnovski/mini.align",
+    name = "mini.align",
     keys = {
       { "ga", desc = "Align code", mode = { "v", "n" } },
       { "gA", desc = "Align code with preview", mode = { "v", "n" } },
     },
-    config = function() require("mini.align").setup {} end,
+    opts = { silent = true },
   },
   {
     "echasnovski/mini.jump",
+    name = "mini.jump",
     event = "VeryLazy",
-    config = function() require("mini.jump").setup {} end,
   },
   {
-    "kylechui/nvim-surround",
+    "echasnovski/mini.ai",
+    name = "mini.ai",
+    event = "VeryLazy",
+  },
+  {
+    "echasnovski/mini.surround",
+    name = "mini.surround",
     keys = {
-      -- Normal mode mappings
       { "ys", desc = "Add a surrounding pair" },
-      { "yS", desc = "Add a surrounding pair in new line" },
       { "cs", desc = "Change a surrounding pair" },
       { "ds", desc = "Delete a surrounding pair" },
-      -- Visual mode mappings
-      { "S", desc = "Add a surrounding pair", mode = "v" },
-      { "gS", desc = "Add a surrounding pair in new line", mode = "v" },
     },
-    config = function() require("nvim-surround").setup {} end,
+    opts = {
+      mappings = {
+        add = "ys",
+        delete = "ds",
+        replace = "cs",
+      },
+    },
   },
   {
-    "numToStr/Comment.nvim",
+    "echasnovski/mini.comment",
+    name = "mini.comment",
     keys = {
       { "gc", desc = "Toggle comment linewise", mode = { "v", "n" } },
-      { "gb", desc = "Toggle comment blockwise", mode = { "v", "n" } },
     },
-    config = function()
-      require("Comment").setup {
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      }
-    end,
+    opts = {},
   },
   {
     "windwp/nvim-autopairs",
