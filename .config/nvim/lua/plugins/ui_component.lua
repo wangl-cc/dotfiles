@@ -157,11 +157,14 @@ return {
     "folke/which-key.nvim",
     version = "1",
     event = "UIEnter",
-    config = function()
+    config = function(_, opts)
       local ops = require("which-key.plugins.presets").operators
       ops["gq"] = "Format"
       local wk = require "which-key"
-      wk.setup {
+      ---@type fun(fun: function): nil
+      local user_mappings = opts.user_mappings
+      opts.user_mappings = nil
+      local options = tbl.merge_one({
         show_help = false,
         show_keys = false,
         plugins = {
@@ -190,7 +193,8 @@ return {
           scroll_down = "<c-f>",
           scroll_up = "<c-b>",
         },
-      }
+      }, opts)
+      wk.setup(options)
       wk.register({
         -- window nav
         ["<CR>"] = "Top this line and put cursor at first non-blank",
@@ -221,6 +225,11 @@ return {
         w = { name = "Workspace action" },
         p = { name = "Package manager action" },
       }, { prefix = "<leader>" })
+      if user_mappings then
+        for mapping in user_mappings do
+          mapping(wk.register)
+        end
+      end
     end,
   },
   {
