@@ -54,11 +54,11 @@ return {
         },
         {
           sections = {
-            lualine_a = { const_string "PLAYGROUND" },
+            lualine_a = { const_string "TREE" },
             lualine_y = { "progress" },
             lualine_z = { "location" },
           },
-          filetypes = { "tsplayground" },
+          filetypes = { "query" },
         },
       },
       sections = {
@@ -137,10 +137,9 @@ return {
               ["neo-tree"] = "File Explorer",
               checkhealth = "Check Health",
               toggleterm = "Terminal",
-              packer = "Packer",
               lspinfo = "LSP Info",
               iron = "REPL",
-              tsplayground = "Playground",
+              query = "Tree",
               startuptime = "Startup Time",
               lazy = "Plugin Manager",
             },
