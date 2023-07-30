@@ -2,7 +2,6 @@
 local g = vim.g
 local o = vim.o
 local opt = vim.opt
-local cmd = vim.cmd
 
 -- leader key
 g.mapleader = " "
@@ -13,12 +12,6 @@ g.loaded_python3_provider = 0
 g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
 g.loaded_node_provider = 0 -- even node is required for copilot but it use its own node
-
---- filetype detection
-cmd.filetype("plugin", "indent", "on")
-
---- syntax highlight
-cmd.syntax "on"
 
 -- use true colors
 o.termguicolors = true
@@ -66,7 +59,7 @@ o.smarttab = true
 o.autoindent = true
 
 -- spell
-o.spelloptions = "camel,noplainbuffer"
+opt.spelloptions = { "camel", "noplainbuffer" }
 
 -- folding
 o.foldexpr = "nvim_treesitter#foldexpr()"
@@ -81,16 +74,6 @@ o.scrolloff = 3
 -- disable error bell
 o.errorbells = false
 
--- NOTE: don't set cmdheight to 0 here
--- it will break the statusline in neovim 0.8.0
--- but it's ok for master branch
--- this options will be set by noice automatically
--- so don't set it here
--- o.cmdheight = 0
-
--- check modeline
-o.modelines = 1
-
 -- always show tab line
 o.showtabline = 2
 
@@ -98,7 +81,7 @@ o.showtabline = 2
 o.laststatus = 3
 
 -- display sign in number column
-o.signcolumn = "number"
+o.signcolumn = "yes:1"
 
 -- Auto write
 o.autowrite = true
