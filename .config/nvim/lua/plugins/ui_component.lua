@@ -1,4 +1,5 @@
 local tbl = require "util.table"
+local import = require "util.import"
 
 return {
   {
@@ -143,7 +144,10 @@ return {
     },
     opts = {
       attach_navic = false,
-      exclude_filetypes = { "neo-tree", "iron" },
+      --HACK: the file type `""` will disable all buffer without a file type.
+      -- This is needed for Trouble to work properly,
+      -- because its filetype is set a bit late.
+      exclude_filetypes = { "neo-tree", "iron", "Trouble", "toggleterm", "" },
       kinds = require("util.icons").kinds,
     },
   },
@@ -231,6 +235,24 @@ return {
         end
       end
     end,
+  },
+  {
+    "folke/trouble.nvim",
+    cmd = { "Trouble", "TroubleToggle" },
+    opts = { use_diagnostic_signs = true },
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      optional = true,
+      opts = tbl.merge_options {
+        defaults = {
+          mappings = {
+            i = {
+              ["<c-t>"] = import("trouble.providers.telescope")["open_with_trouble"]:fun(),
+            },
+          },
+        },
+      },
+    },
   },
   {
     "nvim-telescope/telescope.nvim",

@@ -41,7 +41,14 @@ return {
             lualine_y = { "progress" },
             lualine_z = { "location" },
           },
-          filetypes = { "lspinfo", "checkhealth", "startuptime", "lazy", "noice" },
+          filetypes = {
+            "lspinfo",
+            "checkhealth",
+            "startuptime",
+            "lazy",
+            "noice",
+            "Trouble",
+          },
         },
         {
           sections = {

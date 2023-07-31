@@ -1,4 +1,5 @@
 local register = require("util.keymap").register
+local import = require "util.import"
 
 local lazygit = nil
 
@@ -18,7 +19,7 @@ local leader_mappings = {
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
     n = {
       g = {
-        callback = function() require("notes").find { scope = "global" } end,
+        callback = import("notes")["find"] { scope = "global" },
         desc = "Search global notes",
       },
       p = {
@@ -151,6 +152,25 @@ local leader_mappings = {
       desc = "Toggle mail buffer notes",
     },
   },
+  x = {
+    x = { callback = import("trouble")["toggle"](), desc = "Open trouble" },
+    w = {
+      callback = import("trouble")["toggle"] { mode = "workspace_diagnostics" },
+      desc = "Open trouble in workspace mode",
+    },
+    d = {
+      callback = import("trouble")["toggle"] { mode = "document_diagnostics" },
+      desc = "Open trouble in document mode",
+    },
+    q = {
+      callback = import("trouble")["toggle"] { mode = "quickfix" },
+      desc = "Open trouble in quickfix mode",
+    },
+    l = {
+      callback = import("trouble")["toggle"] { mode = "loclist" },
+      desc = "Open trouble in loclist mode",
+    },
+  },
 }
 register(leader_mappings, { prefix = "<leader>", silent = true })
 -- fold keymaps with IndentBlanklineRefresh
@@ -227,6 +247,10 @@ register({
       [[<Cmd>tabnext<CR>]],
       desc = "Next tab",
     },
+    x = {
+      callback = import("trouble")["next"] { skip_groups = true, jump = true },
+      desc = "Next trouble",
+    },
   },
   ["["] = {
     b = {
@@ -236,6 +260,10 @@ register({
     t = {
       [[<Cmd>tabprevious<CR>]],
       desc = "Previous tab",
+    },
+    x = {
+      callback = import("trouble")["previous"] { skip_groups = true, jump = true },
+      desc = "Previous trouble",
     },
   },
 }, { silent = true })

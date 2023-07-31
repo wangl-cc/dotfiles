@@ -39,6 +39,7 @@ function M.config()
     return col ~= 0 and buf_get_char(0, row, col):match "%s" == nil
   end
 
+  ---@diagnostic disable: missing-fields
   cmp.setup {
     window = {
       completion = {

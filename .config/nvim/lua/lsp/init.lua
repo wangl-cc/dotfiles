@@ -3,6 +3,7 @@ local lspconfig = require "lspconfig"
 local cmp_lsp = require "cmp_nvim_lsp"
 local tbl = require "util.table"
 local register = require("util.keymap").register
+local import = require "util.import"
 
 local M = {}
 
@@ -24,7 +25,7 @@ setmetatable(M.autoformat, {
   end,
 })
 
-local on_attach_common = function(client, buffer)
+local function on_attach_common(client, buffer)
   -- Keymaps
   ---@type KeymapTree
   local mappings = {
@@ -39,6 +40,10 @@ local on_attach_common = function(client, buffer)
       },
       ---@type KeymapOption
       r = { [[<Cmd>Telescope lsp_references<CR>]], desc = "Go to references" },
+      R = {
+        import("trouble")["open"] { mode = "lsp_references" },
+        desc = "List references",
+      },
       ---@type KeymapOption
       i = {
         [[<Cmd>Telescope lsp_implementations<CR>]],

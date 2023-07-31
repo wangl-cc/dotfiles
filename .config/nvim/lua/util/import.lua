@@ -50,6 +50,14 @@ function Lazy:__index(key)
   return LazySub.new(parent, sub)
 end
 
+function Lazy:__call(...)
+  local params = { ... }
+  return function()
+    local f = self:mtl()
+    return f(unpack(params))
+  end
+end
+
 ---@param mod string
 ---@return Import.LazyMod
 function LazyMod.new(mod)
