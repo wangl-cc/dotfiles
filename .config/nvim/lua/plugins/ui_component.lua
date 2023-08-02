@@ -17,6 +17,29 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     version = "2",
     cmd = "Neotree",
+    dependencies = {
+      "s1n7ax/nvim-window-picker",
+      name = "window-picker",
+      version = "2",
+      opts = {
+        show_prompt = false,
+        picker_config = {
+          statusline_winbar_picker = {
+            use_winbar = "smart",
+          },
+        },
+        filter_rules = {
+          bo = {
+            filetype = {
+              "neo-tree",
+              "Trouble",
+              "notify",
+              "noice",
+            },
+          },
+        },
+      },
+    },
     opts = tbl.merge_options {
       close_if_last_window = true,
       popup_border_style = "rounded",

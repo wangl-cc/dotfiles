@@ -1,46 +1,33 @@
-local M = {
-  "folke/tokyonight.nvim",
-  version = "2",
-  lazy = false,
-  priority = 1000,
-}
+local tbl = require "util.table"
 
-function M.config()
-  local is_sshr = vim.env.SSHR_PORT ~= nil
-  local cmd_core = "defaults read -g AppleInterfaceStyle"
-  local cmd_full
-  if is_sshr then
-    cmd_full = {
-      "ssh",
-      vim.env.LOCAL_HOST,
-      "-o",
-      "StrictHostKeyChecking=no",
-      "-p",
-      vim.env.SSHR_PORT,
-      cmd_core,
-    }
-  else
-    cmd_full = vim.fn.split(cmd_core)
-  end
-
-  local is_dark = function() return vim.fn.systemlist(cmd_full)[1] == "Dark" end
-
-  local tokyonight = require "tokyonight.config"
-  tokyonight.setup {
-    styles = {
-      floats = "transparent",
+return {
+  ---@type LazyPluginSpec
+  {
+    "wangl-cc/auto-bg.nvim",
+    event = "UIEnter",
+    build = "make",
+    opts = {},
+  },
+  {
+    "folke/tokyonight.nvim",
+    version = "2",
+    lazy = false,
+    priority = 1000,
+    opts = tbl.merge_options {
+      styles = {
+        floats = "transparent",
+      },
+      sidebars = { "qf" },
+      on_highlights = function(hl, c)
+        hl.WindowPickerStatusLine = { fg = c.black, bg = c.blue }
+        hl.WindowPickerStatusLineNC = { fg = c.black, bg = c.blue }
+        hl.WindowPickerWinBar = { fg = c.black, bg = c.blue }
+        hl.WindowPickerWinBarNC = { fg = c.black, bg = c.blue }
+      end,
     },
-    sidebars = { "qf" },
-    on_highlights = function(hl, c)
-      hl.rainbowcol6 = { fg = c.magenta2 }
-      hl.WindowPicker = { fg = c.black, bg = c.blue }
-      hl.WindowPickerNC = { fg = c.black, bg = c.blue }
+    config = function(_, opts)
+      require("tokyonight").setup(opts)
+      vim.cmd.colorscheme "tokyonight"
     end,
-  }
-  vim.cmd.colorscheme "tokyonight"
-  if vim.fn.has "mac" == 1 or (is_sshr and vim.env.LOCAL_OS == "Darwin") then
-    require("auto-backgroud").setup { is_dark = is_dark }
-  end
-end
-
-return M
+  },
+}
