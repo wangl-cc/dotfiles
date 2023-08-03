@@ -159,7 +159,6 @@ return {
   },
   {
     "utilyre/barbecue.nvim",
-    name = "barbecue",
     version = "1",
     event = "UIEnter",
     dependencies = {
