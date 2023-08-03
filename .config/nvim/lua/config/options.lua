@@ -113,9 +113,6 @@ opt.clipboard:append { "unnamedplus" }
 -- tex flavor
 g.tex_flavor = "latex"
 
--- Remove neotree legacy commands
-g.neo_tree_remove_legacy_commands = 1
-
 -- Set WAKATIME_HOME here instead of shell rc file
 -- because nvim may be not started from shell
 vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
