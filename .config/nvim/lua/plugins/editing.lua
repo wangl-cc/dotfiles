@@ -45,6 +45,11 @@ return {
     opts = {},
   },
   {
+    "nvim-pack/nvim-spectre",
+    cmd = "Spectre",
+    opts = {},
+  },
+  {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     config = function()
