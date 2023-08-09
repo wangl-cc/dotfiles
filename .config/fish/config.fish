@@ -65,11 +65,14 @@ abbr --add ca  cargo add
 abbr --add crm cargo remove
 
 abbr --add cb  cargo build
-abbr --add cc  cargo check
+abbr --add cck cargo check
 abbr --add cf  cargo fmt
 abbr --add cr  cargo run
-abbr --add ct  cargo test
-
+if type -q cargo-nextest
+  abbr --add ct  cargo nextest run
+else
+  abbr --add ct  cargo test
+end
 abbr --add ci  cargo install
 abbr --add cil cargo install --locked
 abbr --add cl  cargo install --list
