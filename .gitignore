@@ -94,6 +94,10 @@
 .config/nvim/parser
 .config/nvim/parser-info
 
+# MAA
+!.config/maa
+!.config/maa/**
+
 # pip
 !.config/pip
 !.config/pip/pip.conf
