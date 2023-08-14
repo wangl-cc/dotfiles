@@ -97,6 +97,7 @@
 # MAA
 !.config/maa
 !.config/maa/**
+.config/maa/asst.toml
 
 # pip
 !.config/pip
