@@ -31,6 +31,7 @@ params = { plan_index = 0 }
 #------------------------------ Fight -----------------------------#
 [[tasks]]
 type = "Fight"
+params = { expiring_medicine = 3 }
 
 # fight the last stage if on event period
 [[tasks.variants]]
