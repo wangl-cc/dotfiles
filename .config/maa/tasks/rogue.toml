@@ -1,0 +1,13 @@
+[[tasks]]
+type = "StartUp"
+params = { client_type = "Official", start_game_enabled = true }
+
+[[tasks]]
+type = "Roguelike"
+[tasks.params]
+theme = "Sami"
+mode = 1
+core_char = "百炼嘉维尔"
+
+[[tasks]]
+type = "CloseDown"
