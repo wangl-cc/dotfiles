@@ -12,8 +12,6 @@ type = "Infrast"
 mode = 10000
 facility = ["Trade", "Reception", "Mfg", "Control", "Power", "Office", "Dorm"]
 dorm_trust_enabled = true
-report_to_penguin = true
-penguin_id = "084310065"
 filename = "normal.json"
 
 [[tasks.variants]]
@@ -31,7 +29,11 @@ params = { plan_index = 0 }
 #------------------------------ Fight -----------------------------#
 [[tasks]]
 type = "Fight"
-params = { expiring_medicine = 3 }
+
+[tasks.params]
+expiring_medicine = 3
+report_to_penguin = true
+penguin_id = "084310065"
 
 # fight the last stage if on event period
 [[tasks.variants]]
