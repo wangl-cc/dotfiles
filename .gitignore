@@ -35,10 +35,6 @@
 !.gitconfig
 !install.sh
 
-# Conda
-!.config/conda
-!.config/conda/condarc##template.esh
-
 # FastFetch
 !.config/fastfetch
 !.config/fastfetch/config.*

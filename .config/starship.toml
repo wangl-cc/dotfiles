@@ -17,7 +17,7 @@ $git_branch$git_commit\
 $package$julia$lua$rust\
 $git_state$git_status\
 $fill \
-$jobs$conda\
+$jobs\
 $line_break $status$character\
 """
 right_format = """\
@@ -123,10 +123,6 @@ modified = " $count "
 symbol = "󰏗 "
 
 # Language symbols are nf-seti-* symbols
-[conda]
-symbol = " "
-format = "at [$symbol$environment]($style) "
-
 [julia]
 symbol = " "
 
