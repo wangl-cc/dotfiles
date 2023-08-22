@@ -41,7 +41,7 @@
 
 # FastFetch
 !.config/fastfetch
-!.config/fastfetch/config.conf
+!.config/fastfetch/config.*
 
 # Fish Shell
 !.fishrc
