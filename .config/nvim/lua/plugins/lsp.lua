@@ -23,8 +23,9 @@ return {
     version = "1",
     opts = tbl.merge_options {
       ui = {
-        -- TODO: change size of floating window
         border = "rounded",
+        width = 0.8,
+        height = 0.8,
         icons = {
           package_installed = "●",
           package_pending = "◉",
