@@ -92,8 +92,8 @@
 
 # MAA
 !.config/maa
-!.config/maa/**
-.config/maa/asst.toml
+!.config/maa/tasks/*
+!.config/maa/infrast/*
 
 # pip
 !.config/pip
