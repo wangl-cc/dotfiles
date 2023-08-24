@@ -94,19 +94,10 @@ abbr --add cu  cargo uninstall
 # environments variables for interactive shells {{{
 # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
 if type -q nvim
-  if set -q NVIM # inside nvim
-    abbr --add vi nvr
-    abbr --add vim nvr
-    abbr --add nvim nvr
-    # if neovim-remote is not installed, fallback to nvim
-    if not type -q nvr
-      # this definition works but not as good as nvr
-      # thus neovim-remote is highly recommended
-      function nvr --description "neovim remote"
-        nvim --server $NVIM --remote $argv
-      end
-    end
-    # environments variables set in nvim
+  if set -q NVIM; and type -q nvr
+    abbr --add vi nvr -O
+    abbr --add vim nvr -O
+    abbr --add nvim nvr -O
   else
     abbr --add vi nvim
     abbr --add vim nvim
