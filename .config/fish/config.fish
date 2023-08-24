@@ -21,24 +21,33 @@ abbr --add jp julia --project
 # git {{{
 abbr --add g   git
 abbr --add ga  git add
+abbr --add gaa git add --all
 abbr --add gb  git branch
-abbr --add gbl git branch -l
 abbr --add gba git branch -a
+abbr --add gbd git branch -d
+abbr --add gbl git branch -l
 abbr --add gc  git commit
+abbr --add gcl git clone
 abbr --add gco git checkout
-abbr --add gcm git checkout master
 abbr --add gcb git checkout -b
 abbr --add gci git check-ignore -v
 abbr --add gd  git diff
 abbr --add gds git diff --staged
 abbr --add gl  git log
 abbr --add gp  git push
+abbr --add gpt git push --tags
 abbr --add gpl git pull
 abbr --add gr  git remote
 abbr --add grv git remote -v
 abbr --add gra git remote add
 abbr --add gs  git status
 abbr --add gsu git status -u
+abbr --add gt  git tag
+if type -q lazygit
+  abbr --add gg  lazygit
+end
+# git }}}
+# yadm {{{
 abbr --add y  yadm
 abbr --add ya yadm alt
 abbr --add yb yadm bootstrap
@@ -47,7 +56,7 @@ abbr --add ye yadm encrypt
 abbr --add yp yadm perms
 abbr --add yg yadm git-crypt
 abbr --add yt yadm transcrypt
-# git }}}
+# yadm }}}
 # brew {{{
 abbr --add b   brew
 abbr --add bc  brew cleanup
@@ -55,6 +64,7 @@ abbr --add bca brew cleanup --prune=all
 abbr --add bi  brew install
 abbr --add bl  brew leaves
 abbr --add bls brew list
+abbr --add blc brew list --cask
 abbr --add br  brew remove
 abbr --add bs  brew search
 abbr --add bu  brew upgrade
@@ -63,11 +73,12 @@ abbr --add bu  brew upgrade
 abbr --add c   cargo
 abbr --add ca  cargo add
 abbr --add crm cargo remove
-
-abbr --add cb  cargo build
-abbr --add cck cargo check
-abbr --add cf  cargo fmt
 abbr --add cr  cargo run
+abbr --add cb  cargo build
+abbr --add ccl cargo clean
+abbr --add cck cargo check
+abbr --add cp  cargo clippy --all-targets --all-features -- -D warnings
+abbr --add cf  cargo fmt
 if type -q cargo-nextest
   abbr --add ct  cargo nextest run
 else
