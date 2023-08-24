@@ -25,6 +25,19 @@ setmetatable(M.autoformat, {
   end,
 })
 
+local function telescope(builtin, opts)
+  opts = tbl.merge_one({
+    jump_type = "never",
+    layout_config = {
+      height = 12,
+    },
+  }, opts)
+  return function()
+    opts = require("telescope.themes").get_cursor(opts)
+    require("telescope.builtin")[builtin](opts)
+  end
+end
+
 local function on_attach_common(client, buffer)
   -- Keymaps
   ---@type KeymapTree
@@ -32,21 +45,27 @@ local function on_attach_common(client, buffer)
     ---@type KeymapTree
     g = {
       ---@type KeymapOption
-      d = { [[<Cmd>Telescope lsp_definitions<CR>]], desc = "Go to definition" },
+      d = {
+        callback = telescope "lsp_definitions",
+        desc = "Go to definition",
+      },
       ---@type KeymapOption
       D = {
-        [[<Cmd>Telescope lsp_type_definitions<CR>]],
+        callback = telescope "lsp_type_definitions",
         desc = "Go to type definitions",
       },
       ---@type KeymapOption
-      r = { [[<Cmd>Telescope lsp_references<CR>]], desc = "Go to references" },
+      r = {
+        callback = telescope "lsp_references",
+        desc = "Go to references",
+      },
       R = {
         import("trouble")["open"] { mode = "lsp_references" },
         desc = "List references",
       },
       ---@type KeymapOption
       i = {
-        [[<Cmd>Telescope lsp_implementations<CR>]],
+        callback = telescope "lsp_implementations",
         desc = "Go to implementations",
       },
     },
