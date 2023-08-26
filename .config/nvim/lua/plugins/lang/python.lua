@@ -8,8 +8,10 @@ return {
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
+        ---@diagnostic disable: missing-fields
         ---@type lspconfig.options.pyright
         pyright = {},
+        ---@diagnostic enable: missing-fields
       },
     },
   },
@@ -40,7 +42,7 @@ return {
     opts = tbl.merge_options {
       config = {
         repl_definition = {
-          python = import("iron.fts.python")["ipython"]:table(),
+          python = import("iron.fts.python"):get("ipython"):tbl(),
         },
       },
     },

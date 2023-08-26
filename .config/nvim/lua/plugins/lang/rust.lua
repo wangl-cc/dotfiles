@@ -7,10 +7,12 @@ return {
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
+        ---@diagnostic disable: missing-fields
         rust_analyzer = {
           ---@type lspconfig.options.rust_analyzer
           options = {},
         },
+        ---@diagnostic enable: missing-fields
       },
     },
   },

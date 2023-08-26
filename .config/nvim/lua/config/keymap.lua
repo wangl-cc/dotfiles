@@ -1,7 +1,11 @@
-local register = require("util.keymap").register
+local register = require "util.keymap"
 local import = require "util.import"
 
 local lazygit = nil
+
+local notes = import "notes"
+local notes_find = notes:get "find"
+local notes_toggle = notes:get "toggle"
 
 local leader_mappings = {
   ["/"] = {
@@ -19,22 +23,21 @@ local leader_mappings = {
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
     n = {
       g = {
-        callback = import("notes")["find"] { scope = "global" },
+        callback = notes_find:with { scope = "global" },
         desc = "Search global notes",
       },
       p = {
-        callback = function()
+        callback = notes_find:with_fun(function()
           local bufname = vim.api.nvim_buf_get_name(0)
           local project = require("notes.path").get_project_root(bufname)
-          require("notes").find { scope = "project", path = project }
-        end,
+          return { scope = "project", path = project }
+        end),
         desc = "Search project notes",
       },
       b = {
-        callback = function()
-          local bufname = vim.api.nvim_buf_get_name(0)
-          require("notes").find { scope = "buffer", path = bufname }
-        end,
+        callback = notes_find:with_fun(
+          function() return { scope = "buffer", path = vim.api.nvim_buf_get_name(0) } end
+        ),
         desc = "Search buffer notes",
       },
     },
@@ -125,53 +128,53 @@ local leader_mappings = {
   },
   n = {
     g = {
-      callback = function() require("notes").toggle({ scope = "global" }, "main") end,
-      desc = "Toggle mail global notes",
+      callback = notes_toggle:with({ scope = "global" }, "main"),
+      desc = "Toggle main global notes",
     },
     p = {
-      callback = function()
+      callback = notes_toggle:with_fun(function()
         local bufname = vim.api.nvim_buf_get_name(0)
         local project = require("notes.path").get_project_root(bufname)
         local name = project:match "([^/]+)/$"
-        require("notes").toggle({
-          scope = "project",
-          path = project,
-        }, name)
-      end,
+        return { scope = "project", path = project }, name
+      end),
       desc = "Toggle mail project notes",
     },
     b = {
-      callback = function()
+      callback = notes_toggle:with_fun(function()
         local bufname = vim.api.nvim_buf_get_name(0)
-        local name = bufname:match "([^/]+)/?$"
-        require("notes").toggle({
-          scope = "buffer",
-          path = bufname,
-        }, name)
-      end,
+        local name = bufname:match "([^/]+)$"
+        return { scope = "buffer", path = bufname }, name
+      end),
       desc = "Toggle mail buffer notes",
     },
   },
-  x = {
-    x = { callback = import("trouble")["toggle"](), desc = "Open trouble" },
-    w = {
-      callback = import("trouble")["toggle"] { mode = "workspace_diagnostics" },
-      desc = "Open trouble in workspace mode",
-    },
-    d = {
-      callback = import("trouble")["toggle"] { mode = "document_diagnostics" },
-      desc = "Open trouble in document mode",
-    },
-    q = {
-      callback = import("trouble")["toggle"] { mode = "quickfix" },
-      desc = "Open trouble in quickfix mode",
-    },
-    l = {
-      callback = import("trouble")["toggle"] { mode = "loclist" },
-      desc = "Open trouble in loclist mode",
-    },
+}
+
+local trouble = import "trouble"
+---@type Import.LazySub
+local trouble_toggle = trouble:get("toggle")
+
+leader_mappings.x = {
+  x = { callback = trouble_toggle:with(), desc = "Open trouble" },
+  w = {
+    callback = trouble_toggle:with { mode = "workspace_diagnostics" },
+    desc = "Open trouble in workspace mode",
+  },
+  d = {
+    callback = trouble_toggle:with { mode = "document_diagnostics" },
+    desc = "Open trouble in document mode",
+  },
+  q = {
+    callback = trouble_toggle:with { mode = "quickfix" },
+    desc = "Open trouble in quickfix mode",
+  },
+  l = {
+    callback = trouble_toggle:with { mode = "loclist" },
+    desc = "Open trouble in loclist mode",
   },
 }
+
 register(leader_mappings, { prefix = "<leader>", silent = true })
 -- fold keymaps with IndentBlanklineRefresh
 local fold = {
@@ -248,7 +251,7 @@ register({
       desc = "Next tab",
     },
     x = {
-      callback = import("trouble")["next"] { skip_groups = true, jump = true },
+      callback = trouble:get("next"):with { skip_groups = true, jump = true },
       desc = "Next trouble",
     },
   },
@@ -262,7 +265,7 @@ register({
       desc = "Previous tab",
     },
     x = {
-      callback = import("trouble")["previous"] { skip_groups = true, jump = true },
+      callback = trouble:get("previous"):with { skip_groups = true, jump = true },
       desc = "Previous trouble",
     },
   },

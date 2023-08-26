@@ -1,9 +1,13 @@
+--- Lazy import module
+
 ---@class Import
 
 ---@class Import.Lazy
----@field func fun(self: Import.Lazy): fun()
----@field table fun(self: Import.Lazy): table
----@field mtl fun(self: Import.Lazy): any
+---@field get fun(self: Import.Lazy, key: string): Import.LazySub
+---@field with fun(self: Import.Lazy, ...): fun(): nil
+---@field with_fun fun(self: Import.Lazy, args: fun(): ...): fun(): nil
+---@field tbl fun(self: Import.Lazy): table
+---@field mtl fun(self: Import.Lazy): any Meterialize the lazy object
 local Lazy = {}
 
 ---@class Import.LazyMod: Import.Lazy
@@ -19,18 +23,47 @@ local LazySub = {}
 function Lazy.new()
   local obj = setmetatable({}, Lazy)
 
-  --- Return a lazy function from given lazy object
-  ---@return fun(...): any
-  function obj:fun()
-    return function(...)
-      local mtl = self:mtl()
-      return mtl(...)
+  --- Create a sub lazy object from given lazy object and key
+  ---
+  ---@param key string
+  ---@return Import.LazySub
+  function obj:get(key)
+    local parent = self
+    local sub = key
+    return LazySub.new(parent, sub)
+  end
+
+  --- Create a closure from given lazy object and args
+  ---
+  ---@param ... unknown
+  ---@return fun(): nil
+  function obj:with(...)
+    local args = { ... }
+    return function()
+      local f = self:mtl()
+      return f(unpack(args))
+    end
+  end
+
+  --- Create a closure from given lazy object and given function
+  ---
+  --- The function will be called when the closure is called.
+  ---@param fun fun(): ...
+  ---@return fun(): nil
+  function obj:with_fun(fun)
+    return function()
+      local f = self:mtl()
+      f(fun())
     end
   end
 
   --- Create a lazy table from given lazy object
+  ---
+  --- Note, this is not working for iterate by `pairs` or `ipairs`.
+  --- This is because the `__pairs` metamethod are not supported in LuaJIT by default.
+  --- So `vim.tbl_extend` will not works as well.
   ---@return table
-  function obj:table()
+  function obj:tbl()
     return setmetatable({}, {
       __index = function(_, key)
         local mtl = self:mtl()
@@ -40,22 +73,6 @@ function Lazy.new()
   end
 
   return obj
-end
-
----@param key string
----@return Import.LazySub
-function Lazy:__index(key)
-  local parent = self
-  local sub = key
-  return LazySub.new(parent, sub)
-end
-
-function Lazy:__call(...)
-  local params = { ... }
-  return function()
-    local f = self:mtl()
-    return f(unpack(params))
-  end
 end
 
 ---@param mod string
@@ -90,16 +107,6 @@ function LazySub.new(parent, sub)
 end
 
 --- Lazy import
----
---- Usage:
---- ```lua
----   local import = require("import")
----   local foo = import("foo"):table() -- the foo module is not loaded yet
----   foo.bar -- the foo module is loaded now
----   local qux = import("baz").qux:fun() -- the baz module is not loaded yet
----   qux() -- the baz module is loaded now
---- ```
----
 ---@param mod string
 ---@return Import.LazyMod
 local import = function(mod) return LazyMod.new(mod) end

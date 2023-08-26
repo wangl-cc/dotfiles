@@ -7,11 +7,13 @@ return {
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
+        ---@diagnostic disable: missing-fields
         ---@type lspconfig.options.jsonls
         jsonls = {},
         ---@type lspconfig.options.yamlls
         yamlls = {},
         taplo = {},
+        ---@diagnostic enable: missing-fields
       },
     },
   },

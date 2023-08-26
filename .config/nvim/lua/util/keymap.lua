@@ -1,14 +1,12 @@
 -- A convenience way to register keymaps like `which-key.nvim`
 
-local M = {}
-
 ---@alias KeymapMode string Mode of keymap
 
 ---@private
 --- Wrap mode in a table if it is not a table
 ---@param mode KeymapMode|KeymapMode[]
 ---@return KeymapMode[]
-local warp = function(mode) return type(mode) == "table" and mode or { mode } end
+local function warp(mode) return type(mode) == "table" and mode or { mode } end
 
 ---@private
 --- Pop the given key from given table if it exists, otherwise return default
@@ -16,7 +14,7 @@ local warp = function(mode) return type(mode) == "table" and mode or { mode } en
 ---@param key integer|string
 ---@param default? any
 ---@return any|nil
-local pop = function(tbl, key, default)
+local function pop(tbl, key, default)
   if tbl[key] == nil then return default end
   local val = tbl[key]
   tbl[key] = nil
@@ -43,7 +41,7 @@ end
 --- Process options for `vim.api.nvim_set_keymap`
 ---@param opts KeymapOption Options of keymap to be setup
 ---@return KeymapOption opts Modified options for keymap
-local setup_opts = function(opts)
+local function setup_opts(opts)
   if opts.expr and opts.replace_keycodes ~= false then
     opts.replace_keycodes = true
   end
@@ -61,7 +59,7 @@ end
 ---@param lhs string
 ---@param rhs string
 ---@param opts KeymapOption
-local set_keymap = function(buffer, mode, lhs, rhs, opts)
+local function set_keymap(buffer, mode, lhs, rhs, opts)
   if buffer then
     for _, m in ipairs(mode) do
       vim.api.nvim_buf_set_keymap(buffer, m, lhs, rhs, opts)
@@ -88,7 +86,7 @@ end
 ---@param tree KeymapTree
 ---@param suffix string
 ---@param defaults KeymapOption
-local function register(buffer, mode, prefix, tree, suffix, defaults)
+local function register_impl(buffer, mode, prefix, tree, suffix, defaults)
   for key, node in pairs(tree) do
     if type(node) == "table" then
       if node[1] ~= nil or node.callback ~= nil then -- KeymapSpec
@@ -103,7 +101,7 @@ local function register(buffer, mode, prefix, tree, suffix, defaults)
         mode = warp(pop(opts, "mode", mode))
         set_keymap(buffer, mode, lhs, rhs, setup_opts(opts))
       else -- KeymapTree
-        register(buffer, mode, prefix .. key, node, suffix, defaults)
+        register_impl(buffer, mode, prefix .. key, node, suffix, defaults)
       end
     elseif type(node) == "function" then -- KeymapCallback
       local rhs = ""
@@ -146,7 +144,7 @@ end
 --- ```
 ---@param tree KeymapTree
 ---@param opts? KeymapDefaults
-M.register = function(tree, opts)
+local function register(tree, opts)
   opts = opts and vim.deepcopy(opts) or {}
   -- Pop some fields from opts to make it a KeymapOption
   local buffer = pop(opts, "buffer") ---@type number|nil
@@ -155,7 +153,7 @@ M.register = function(tree, opts)
   local mode = warp(pop(opts, "mode", { "n" })) ---@type KeymapMode[]
   ---@diagnostic disable-next-line: cast-type-mismatch
   ---@cast opts KeymapOption
-  register(buffer, mode, prefix, tree, suffix, setup_opts(opts))
+  register_impl(buffer, mode, prefix, tree, suffix, setup_opts(opts))
 end
 
-return M
+return register

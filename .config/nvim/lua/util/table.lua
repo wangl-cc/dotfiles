@@ -52,7 +52,7 @@ end
 --- If the same key exists in more than one table, the value in the last table will be used.
 ---
 ---@param base table<any, any> Table to be extended
----@param other table<any, any> Tables to be merged into base
+---@param other? table<any, any> Tables to be merged into base
 ---@return table<any, any> # Extended table
 function M.merge_one(base, other)
   typ.assert(base, "table")

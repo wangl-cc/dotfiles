@@ -17,6 +17,7 @@ return {
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
+        ---@diagnostic disable: missing-fields
         texlab = {},
         typst_lsp = {},
         ltex = {
@@ -26,6 +27,7 @@ return {
             filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
           },
         },
+        ---@diagnostic enable: missing-fields
       },
     },
   },

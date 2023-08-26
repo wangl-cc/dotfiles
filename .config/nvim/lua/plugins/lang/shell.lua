@@ -7,12 +7,14 @@ return {
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
+        ---@diagnostic disable: missing-fields
         ---@type lspconfig.options.bashls
         bashls = {
           options = {
             filetypes = { "sh", "bash" },
           },
         },
+        ---@diagnostic enable: missing-fields
       },
     },
   },

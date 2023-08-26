@@ -11,6 +11,7 @@ return {
     opts = tbl.merge_options {
       servers = {
         lua_ls = {
+          ---@diagnostic disable: missing-fields
           ---@type lspconfig.options.lua_ls
           options = {
             settings = {
@@ -20,6 +21,7 @@ return {
               },
             },
           },
+          ---@diagnostic enable: missing-fields
         },
       },
     },

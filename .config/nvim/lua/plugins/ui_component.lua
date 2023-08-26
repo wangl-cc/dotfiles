@@ -249,7 +249,9 @@ return {
         defaults = {
           mappings = {
             i = {
-              ["<c-t>"] = import("trouble.providers.telescope")["open_with_trouble"]:fun(),
+              ["<c-t>"] = import("trouble.providers.telescope")
+                :get("open_with_trouble")
+                :with(),
             },
           },
         },

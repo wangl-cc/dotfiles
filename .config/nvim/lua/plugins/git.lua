@@ -24,7 +24,7 @@ return {
       },
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
-        local register = require("util.keymap").register
+        local register = require "util.keymap"
         -- Navigation
         register({
           ["]"] = {
