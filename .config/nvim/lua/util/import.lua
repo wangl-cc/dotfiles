@@ -106,7 +106,17 @@ function LazySub.new(parent, sub)
   return obj
 end
 
---- Lazy import
+--- Lazy import a module
+---
+--- ```lua
+--- local foo = import "foo" -- foo a lua module to be imported
+--- local bar = foo:get "bar" -- bar is a key of foo
+--- bar:with() -- return a closure to call foo.bar
+--- bar:with(1, 2, 3) -- return a closure to call foo.bar(1, 2, 3)
+--- -- return a closure to call foo.bar(1, 2, 3), but the args will be evaluated when the closure is called
+--- bar:with_fun(function()
+---   return 1, 2, 3
+--- end)
 ---@param mod string
 ---@return Import.LazyMod
 local import = function(mod) return LazyMod.new(mod) end
