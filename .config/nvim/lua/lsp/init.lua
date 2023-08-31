@@ -2,6 +2,7 @@ local lspconfig = require "lspconfig"
 local tbl = require "util.table"
 local register = require "util.keymap"
 local nu = require "util.nil"
+local keymap = require "lsp.keymap"
 
 local install = require "lsp.install"
 
@@ -11,8 +12,8 @@ local M = {}
 ---@param buffer integer
 ---@param autofmt boolean|nil
 local function on_attach_common(client, buffer, autofmt)
-  -- Register default mappings
-  register(require "lsp.keymap", { buffer = buffer, silent = true })
+  -- Keymap
+  keymap(buffer)
 
   -- Format
   -- If autofmt is nil, use global autofmt, otherwise use the value passed in
