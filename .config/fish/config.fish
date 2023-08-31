@@ -77,7 +77,6 @@ abbr --add cr  cargo run
 abbr --add cb  cargo build
 abbr --add ccl cargo clean
 abbr --add cck cargo check
-abbr --add cp  cargo clippy --all-targets --all-features -- -D warnings
 abbr --add cf  cargo fmt
 if type -q cargo-nextest
   abbr --add ct  cargo nextest run
@@ -87,7 +86,9 @@ end
 abbr --add ci  cargo install
 abbr --add cil cargo install --locked
 abbr --add cl  cargo install --list
+abbr --add clp  cargo clippy --all-targets --all-features -- -D warnings
 abbr --add cu  cargo uninstall
+abbr --add cup cargo update
 # }}}
 # abbreviates }}}
 
