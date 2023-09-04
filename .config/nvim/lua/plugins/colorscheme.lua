@@ -14,6 +14,7 @@ return {
     lazy = false,
     priority = 1000,
     opts = tbl.merge_options {
+      style = "moon",
       styles = {
         floats = "transparent",
       },
