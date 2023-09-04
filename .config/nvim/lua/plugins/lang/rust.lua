@@ -10,7 +10,15 @@ return {
         ---@diagnostic disable: missing-fields
         rust_analyzer = {
           ---@type lspconfig.options.rust_analyzer
-          options = {},
+          options = {
+            settings = {
+              ["rust-analyzer"] = {
+                cargo = {
+                  allFeatures = true,
+                },
+              },
+            },
+          },
         },
         ---@diagnostic enable: missing-fields
       },
