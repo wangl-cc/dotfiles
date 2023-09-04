@@ -1,9 +1,16 @@
+-- status line, buffer line and winbar
+
 local tbl = require "util.table"
 local icons = require "util.icons"
+local import = require "util.import"
+
 local uppercase_filetype = function() return vim.bo.filetype:upper() end
 local const_string = function(str)
   return function() return str end
 end
+
+local lazy_status = import "lazy.status"
+local bd = import("mini.bufremove"):get "delete"
 
 return {
   {
@@ -11,7 +18,7 @@ return {
     event = "UIEnter",
     opts = tbl.merge_options {
       options = {
-        theme = "tokyonight",
+        theme = "auto",
         globalstatus = true,
         component_separators = { left = "", right = "│" },
         section_separators = { left = "", right = "" },
@@ -20,6 +27,7 @@ return {
         "neo-tree",
         "quickfix",
         "toggleterm",
+        "trouble",
         {
           sections = {
             lualine_a = { const_string "TELESCOPE" },
@@ -37,6 +45,26 @@ return {
         },
         {
           sections = {
+            lualine_a = { const_string "LAZY" },
+            lualine_b = {
+              function()
+                local lazy = require "lazy"
+                return "Loaded: " .. lazy.stats().loaded .. "/" .. lazy.stats().count
+              end,
+            },
+            lualine_c = {
+              {
+                lazy_status:get("updates"):with(),
+                cond = lazy_status:get("has_updates"):with(),
+              },
+            },
+            lualine_y = { "progress" },
+            lualine_z = { "location" },
+          },
+          filetypes = { "lazy" },
+        },
+        {
+          sections = {
             lualine_a = { uppercase_filetype },
             lualine_y = { "progress" },
             lualine_z = { "location" },
@@ -45,9 +73,7 @@ return {
             "lspinfo",
             "checkhealth",
             "startuptime",
-            "lazy",
             "noice",
-            "Trouble",
           },
         },
         {
@@ -132,32 +158,64 @@ return {
           { "filetype" },
         },
       },
-      tabline = {
-        lualine_a = {
+    },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    version = "4",
+    event = "UIEnter",
+    ---@diagnostic disable: missing-fields
+    opts = tbl.merge_options {
+      ---@type bufferline.Options
+      options = {
+        close_command = bd:with("__ARG__", false),
+        right_mouse_command = bd:with("__ARG__", false),
+        diagnostics = "nvim_lsp",
+        diagnostics_indicator = function(_, _, diag)
+          local dicons = icons.diagnostic
+          local ret = (diag.error and dicons.error .. diag.error .. " " or "")
+            .. (diag.warning and dicons.warn .. diag.warning or "")
+          return vim.trim(ret)
+        end,
+        separator_style = "slant",
+        indicator = { style = "underline" },
+        hover = {
+          enabled = true,
+          delay = 200,
+          reveal = { "close" },
+        },
+        offsets = {
           {
-            "buffers",
-            show_modified_status = true,
-            show_filename_only = true,
-            mode = 0,
-            symbols = { alternate_file = "" },
-            filetype_names = {
-              ["neo-tree"] = "File Explorer",
-              checkhealth = "Check Health",
-              toggleterm = "Terminal",
-              lspinfo = "LSP Info",
-              iron = "REPL",
-              query = "Tree",
-              startuptime = "Startup Time",
-              lazy = "Plugin Manager",
-            },
+            filetype = "neo-tree",
+            text = "File Explorer",
+            highlight = "Directory",
+            text_align = "center",
           },
         },
-        lualine_b = {},
-        lualine_c = {},
-        lualine_x = {},
-        lualine_y = {},
-        lualine_z = { { "tabs", mode = 1 } },
       },
+    },
+    ---@diagnostic enable: missing-fields
+    ---@param opts bufferline.UserConfig
+    config = function(_, opts)
+      local bufferline = require "bufferline"
+      bufferline.groups.builtin.pinned.icon = ""
+      bufferline.setup(opts)
+    end,
+  },
+  {
+    "utilyre/barbecue.nvim",
+    version = "1",
+    event = "UIEnter",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+    },
+    opts = {
+      attach_navic = false,
+      -- HACK: the file type `""` will disable all buffer without a file type.
+      -- This is needed for Trouble to work properly,
+      -- because its filetype is set a bit late.
+      exclude_filetypes = { "neo-tree", "iron", "Trouble", "toggleterm", "" },
+      kinds = require("util.icons").kinds,
     },
   },
 }

@@ -45,6 +45,10 @@ return {
     opts = {},
   },
   {
+    "echasnovski/mini.bufremove",
+    name = "mini.bufremove",
+  },
+  {
     "nvim-pack/nvim-spectre",
     cmd = "Spectre",
     opts = {},

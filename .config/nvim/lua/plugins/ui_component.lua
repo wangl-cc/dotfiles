@@ -138,22 +138,6 @@ return {
     },
   },
   {
-    "utilyre/barbecue.nvim",
-    version = "1",
-    event = "UIEnter",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-    },
-    opts = {
-      attach_navic = false,
-      --HACK: the file type `""` will disable all buffer without a file type.
-      -- This is needed for Trouble to work properly,
-      -- because its filetype is set a bit late.
-      exclude_filetypes = { "neo-tree", "iron", "Trouble", "toggleterm", "" },
-      kinds = require("util.icons").kinds,
-    },
-  },
-  {
     "folke/todo-comments.nvim",
     version = "1",
     event = "UIEnter",

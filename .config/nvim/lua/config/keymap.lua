@@ -7,10 +7,28 @@ local notes = import "notes"
 local notes_find = notes:get "find"
 local notes_toggle = notes:get "toggle"
 
+local bd = import("mini.bufremove"):get "delete"
+local bufferline = import "bufferline"
+local groups = import "bufferline.groups"
+
 local leader_mappings = {
   ["/"] = {
     [[<Cmd>nohlsearch<CR><Cmd>match<CR>]],
     desc = "nohlsearch and clear match",
+  },
+  b = {
+    d = { bd:with(0, false), desc = "Remove current buffer" },
+    D = { bd:with(0, true), desc = "Force remove current buffer" },
+    p = {
+      callback = groups:get("toggle_pin"):with(),
+      desc = "Pin current buffer",
+    },
+    P = {
+      callback = groups:get("action"):with("ungrouped", "close"),
+      desc = "Clear all ungrouped buffers",
+    },
+    g = { bufferline:get("pick"):with(), desc = "Pick a buffer" },
+    G = { bufferline:get("close_with_pick"):with(), desc = "Pick a buffer to close" },
   },
   s = {
     t = { [[<Cmd>Telescope<CR>]], desc = "Search telescope sources" },
@@ -153,7 +171,7 @@ local leader_mappings = {
 
 local trouble = import "trouble"
 ---@type Import.LazySub
-local trouble_toggle = trouble:get("toggle")
+local trouble_toggle = trouble:get "toggle"
 
 leader_mappings.x = {
   x = { callback = trouble_toggle:with(), desc = "Open trouble" },
@@ -240,10 +258,13 @@ register({
     if not require("noice.lsp").scroll(-4) then return "<C-b>" end
   end,
 }, { silent = true, expr = true })
+
+local cycle = bufferline:get "cycle"
+-- Navigate with ] and [
 register({
   ["]"] = {
     b = {
-      [[<Cmd>bnext<CR>]],
+      cycle:with(1),
       desc = "Next buffer",
     },
     t = {
@@ -257,7 +278,7 @@ register({
   },
   ["["] = {
     b = {
-      [[<Cmd>bprevious<CR>]],
+      cycle:with(-1),
       desc = "Previous buffer",
     },
     t = {
@@ -270,6 +291,7 @@ register({
     },
   },
 }, { silent = true })
+
 -- ISSUE: move to left will not trigger redraw
 register({
   ["<C-a>"] = "<Home>",

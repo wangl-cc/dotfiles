@@ -4,8 +4,9 @@
 
 ---@class Import.Lazy
 ---@field get fun(self: Import.Lazy, key: string): Import.LazySub
----@field with fun(self: Import.Lazy, ...): fun(): nil
----@field with_fun fun(self: Import.Lazy, args: fun(): ...): fun(): nil
+---@field callable fun(self: Import.Lazy): fun(...): nil
+---@field with fun(self: Import.Lazy, ...): fun(...): nil
+---@field with_fun fun(self: Import.Lazy, args: fun(): ...): fun(...): nil
 ---@field tbl fun(self: Import.Lazy): table
 ---@field mtl fun(self: Import.Lazy): any Meterialize the lazy object
 local Lazy = {}
@@ -33,27 +34,54 @@ function Lazy.new()
     return LazySub.new(parent, sub)
   end
 
+  --- Create a closure from given lazy object
+  ---
+  ---@return fun(...): any
+  function obj:callable()
+    return function(...)
+      local f = self:mtl()
+      return f(...)
+    end
+  end
+
   --- Create a closure from given lazy object and args
   ---
   ---@param ... unknown
-  ---@return fun(): nil
+  ---@return fun(...): any
   function obj:with(...)
     local args = { ... }
-    return function()
+    return function(...)
       local f = self:mtl()
-      return f(unpack(args))
+      local i = 1
+      local temp = {} -- avoid modify args
+      for j, v in ipairs(args) do
+        if type(v) == "string" and v == "__ARG__" then
+          temp[j] = select(i, ...)
+          i = i + 1
+        else
+          temp[j] = v
+        end
+      end
+      return f(unpack(temp))
     end
   end
 
   --- Create a closure from given lazy object and given function
   ---
-  --- The function will be called when the closure is called.
   ---@param fun fun(): ...
-  ---@return fun(): nil
+  ---@return fun(...): any
   function obj:with_fun(fun)
-    return function()
+    return function(...)
       local f = self:mtl()
-      f(fun())
+      local args = { fun() }
+      local i = 1
+      for j, v in ipairs(args) do
+        if type(v) == "string" and v == "__ARG__" then
+          args[j] = select(i, ...)
+          i = i + 1
+        end
+      end
+      return f(unpack(args))
     end
   end
 

@@ -65,6 +65,8 @@ opt.spelloptions = { "camel", "noplainbuffer" }
 o.foldexpr = "nvim_treesitter#foldexpr()"
 o.foldnestmax = 3
 
+o.mousemoveevent = true
+
 -- highlight current line
 o.cursorline = true
 

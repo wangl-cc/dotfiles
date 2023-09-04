@@ -1,5 +1,3 @@
-local log = require "util.log"
-
 local M = {}
 
 M.server_list = {}
