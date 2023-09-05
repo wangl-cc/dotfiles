@@ -47,6 +47,8 @@
 # Configuration under XDG_CONFIG_HOME {{{
 !/.config
 
+/.config/*
+
 # WakaTime
 !/.config/wakatime
 /.config/wakatime/*
