@@ -7,6 +7,8 @@
 
 !/.gitignore
 !/.gitmodules
+!/.gitattributes
+!/.git-crypt
 
 !/README.md
 !/LICENSE
@@ -45,10 +47,14 @@
 # Configuration under XDG_CONFIG_HOME {{{
 !/.config
 
-# Wakatime dir contains token and installation of the CLI
-.config/wakatime
-# GitHub Copilot dir contains token and other runtime data
-.config/github-copilot
+# WakaTime
+!/.config/wakatime
+/.config/wakatime/*
+!/.config/wakatime/.wakatime.cfg
+
+# Github Copilot
+!/.config/github-copilot
+/.config/github-copilot/versions.json
 
 # Fish Shell
 !/.config/fish
