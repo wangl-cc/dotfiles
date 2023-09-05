@@ -1,4 +1,4 @@
 [core]
 channel = "beta"
-[components]
+[core.components]
 resource = false
