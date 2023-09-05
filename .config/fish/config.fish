@@ -153,7 +153,7 @@ if test "$TERM_PROGRAM" = "Kitty"; and test "$SHLVL" -eq 1 # {{{
   function autobg --on-event fish_prompt
     set -l bg (defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light)
     if test "$bg" != "$__system_current_bg"
-      set -g __system_current_bg bg
+      set -g __system_current_bg $bg
       if test "$bg" = "Dark"
         kitty @ --password=LNtakb4_TAKB set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
       else
