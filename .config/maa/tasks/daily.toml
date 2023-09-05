@@ -37,7 +37,7 @@ penguin_id = "084310065"
 
 [[tasks.variants]]
 params = { stage = "CV-7" }
-condition = { type = "DateTime", start = "2023-09-05T16:00:00", end = "2023-19-10T03:59:59" }
+condition = { type = "DateTime", start = "2023-09-05T16:00:00", end = "2023-09-19T03:59:59" }
 # fight 1-7 otherwise
 [[tasks.variants]]
 params = { stage = "1-7" }
