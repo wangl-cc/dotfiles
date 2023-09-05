@@ -147,6 +147,22 @@ end
 
 end # TERM_PROGRAM is not WarpTerminal }}}
 
+if test "$TERM_PROGRAM" = "Kitty"; and test "$SHLVL" -eq 1 # {{{
+  set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
+  set -g __system_current_bg Unknown
+  function autobg --on-event fish_prompt
+    set -l bg (defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light)
+    if test "$bg" != "$__system_current_bg"
+      set -g __system_current_bg bg
+      if test "$bg" = "Dark"
+        kitty @ --password=LNtakb4_TAKB set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
+      else
+        kitty @ --password=LNtakb4_TAKB set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
+      end
+    end
+  end
+end # TERM_PROGRAM is Kitty }}}
+
 # zoxide initialize {{{
 if type -q zoxide
   zoxide init fish | source

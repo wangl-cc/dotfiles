@@ -90,6 +90,10 @@
 .config/nvim/parser
 .config/nvim/parser-info
 
+# Kitty
+!.config/kitty
+!.config/kitty/*
+
 # MAA
 !.config/maa
 !.config/maa/tasks/*
