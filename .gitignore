@@ -96,6 +96,7 @@
 
 # MAA
 !.config/maa
+!.config/maa/cli.toml
 !.config/maa/tasks/*
 !.config/maa/infrast/*
 

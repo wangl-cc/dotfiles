@@ -1,0 +1,4 @@
+[core]
+channel = "beta"
+[components]
+resource = false
