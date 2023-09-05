@@ -12,7 +12,6 @@ return {
         "diff",
         "embedded_template",
       },
-      parser_install_dir = vim.fn.stdpath "config",
       auto_install = true,
       highlight = {
         enable = true,
