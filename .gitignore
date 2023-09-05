@@ -81,7 +81,6 @@
 
 # pip
 !/.config/pip
-!/.config/pip/pip.conf
 
 # Starship
 !/.config/starship.toml
