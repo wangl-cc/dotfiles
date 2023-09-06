@@ -155,9 +155,9 @@ if test "$TERM_PROGRAM" = "Kitty"; and test "$SHLVL" -eq 1 # {{{
     if test "$bg" != "$__system_current_bg"
       set -g __system_current_bg $bg
       if test "$bg" = "Dark"
-        kitty @ --password=LNtakb4_TAKB set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
+        kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
       else
-        kitty @ --password=LNtakb4_TAKB set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
+        kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
       end
     end
   end
