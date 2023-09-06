@@ -1,11 +1,6 @@
-local kitty_bundleID = "net.kovidgoyal.kitty"
+-- hs.loadSpoon "EmmyLua"
+hs.application.enableSpotlightForNameSearches(true)
 
-hs.hotkey.bind({ "option" }, "space", function()
-  local app = hs.application.get(kitty_bundleID)
+local kitty = require "kitty"
 
-  if not app then
-    app = hs.application.open(kitty_bundleID, 5, true)
-  else
-    app:selectMenuItem { "Shell", "New OS Window" }
-  end
-end)
+kitty.bind({ "option" }, "space")
