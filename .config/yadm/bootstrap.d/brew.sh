@@ -11,15 +11,7 @@ if [[ "$brew_url" != "$brew_mirror" ]]; then
   export HOMEBREW_BREW_GIT_REMOTE="$brew_mirror"
 fi
 
-brew_core="$(brew --repo homebrew/core)"
-brew_core_url=$(git -C "$brew_core" remote get-url origin)
-brew_core_mirror="$homebrew_mirror/homebrew-core.git"
-if [[ "$brew_core_url" != "$brew_core_mirror" ]]; then
-  export HOMEBREW_CORE_GIT_REMOTE="$brew_core_mirror"
-  brew tap --force-auto-update homebrew/core
-fi
-
-for tap in cask{,-fonts,-drivers,-versions} command-not-found services; do
+for tap in cask{-fonts,-drivers,-versions} command-not-found services; do
   repo=$(brew --repo "homebrew/$tap")
   if [ -d "$repo" ]; then
     url=$(git -C "$repo" remote get-url origin)
