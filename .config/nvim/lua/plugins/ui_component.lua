@@ -113,6 +113,7 @@ return {
   },
   {
     "akinsho/toggleterm.nvim",
+    version = "2",
     cmd = "ToggleTerm",
     keys = {
       { "<C-t>", desc = "Toggle terminal", mode = { "n", "i" } },
@@ -128,6 +129,7 @@ return {
         border = "rounded",
         width = math.floor(vim.o.columns * 0.8),
         height = math.floor(vim.o.lines * 0.8),
+        winblend = 10,
       },
       highlights = {
         NormalFloat = { link = "NormalFloat" },
