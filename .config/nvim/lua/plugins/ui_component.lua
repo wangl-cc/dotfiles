@@ -127,8 +127,10 @@ return {
       direction = "float",
       float_opts = {
         border = "rounded",
+        row = 0,
+        col = math.floor(vim.o.columns * 0.1),
         width = math.floor(vim.o.columns * 0.8),
-        height = math.floor(vim.o.lines * 0.8),
+        height = math.floor(vim.o.lines * 0.4),
         winblend = 10,
       },
       highlights = {
