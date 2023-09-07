@@ -33,7 +33,6 @@ return {
       timeout = 3000,
       level = vim.log.levels.INFO,
       icons = require("util.icons").loglevel,
-      on_open = function(win) vim.api.nvim_win_set_option(win, "winblend", 10) end,
     },
   },
   -- Incremental vim.lsp.buf.rename
@@ -47,7 +46,7 @@ return {
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter",
-        optinal = true,
+        optional = true,
         opts = tbl.merge_options {
           ensure_installed = {
             "vim",
@@ -62,7 +61,7 @@ return {
       },
       {
         "nvim-lualine/lualine.nvim",
-        optinal = true,
+        optional = true,
         opts = tbl.merge_options {
           sections = {
             lualine_x = {
@@ -164,7 +163,7 @@ return {
         },
         notify = {
           win_options = {
-            winblend = 20,
+            winblend = 10,
           },
         },
       },
@@ -177,9 +176,6 @@ return {
           filter = {
             any = {
               { event = "msg_show", find = "^Hunk %d+ of %d" },
-              { event = "msg_show", find = "^<$" }, -- This occurs frequently but I don't know why
-              { event = "msg_show", find = "^>" }, -- vim-sneak
-              { event = "msg_show", find = "^RPC%[Error%]" },
             },
           },
         },
@@ -195,8 +191,6 @@ return {
           opts = {
             title = "Error",
             level = vim.log.levels.ERROR,
-            merge = false,
-            replace = false,
           },
         },
         {
@@ -207,14 +201,11 @@ return {
               { event = "msg_show", find = "^Warn" },
               { event = "msg_show", find = "^W%d+:" },
               { event = "msg_show", find = "^No hunks$" },
-              { event = "msg_show", find = "^not found:" }, -- vim-sneak warning
             },
           },
           opts = {
             title = "Warning",
             level = vim.log.levels.WARN,
-            merge = false,
-            replace = false,
           },
         },
         {
