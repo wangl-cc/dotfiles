@@ -156,6 +156,12 @@ local leader_mappings = {
           lazygit = require("toggleterm.terminal").Terminal:new {
             cmd = "lazygit",
             hidden = true,
+            float_opts = {
+              row = math.floor(vim.o.lines * 0.1),
+              col = math.floor(vim.o.columns * 0.1),
+              width = math.floor(vim.o.columns * 0.8),
+              height = math.floor(vim.o.lines * 0.8),
+            },
           }
         end
         lazygit:toggle()
