@@ -1,8 +1,8 @@
-local lspconfig = require "lspconfig"
 local tbl = require "util.table"
 local register = require "util.keymap"
 local nu = require "util.nil"
 local keymap = require "lsp.keymap"
+local setup = require "lsp.setup"
 
 local install = require "lsp.install"
 
@@ -61,7 +61,7 @@ local function setup_server(server, config)
   local new_options = vim.deepcopy(options)
   new_options.on_attach = on_attach
   new_options.capabilities = capabilities
-  return lspconfig[server].setup(new_options)
+  return setup.register(server, new_options)
 end
 
 ---@class LspSetupOptions
@@ -97,6 +97,8 @@ M.setup = function(opts)
   end
 
   install.ensure_installed()
+
+  setup.setup()
 end
 
 return M
