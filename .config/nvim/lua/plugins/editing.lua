@@ -96,7 +96,7 @@ return {
     dependencies = {
       {
         "nvim-lualine/lualine.nvim",
-        optinal = true,
+        optional = true,
         opts = tbl.merge_options {
           sections = {
             lualine_x = {

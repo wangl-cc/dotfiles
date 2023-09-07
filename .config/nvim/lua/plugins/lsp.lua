@@ -1,4 +1,5 @@
 local tbl = require "util.table"
+local icons = require "util.icons"
 
 return {
   {
@@ -23,11 +24,7 @@ return {
         border = "rounded",
         width = 0.8,
         height = 0.8,
-        icons = {
-          package_installed = "●",
-          package_pending = "◉",
-          package_uninstalled = "○",
-        },
+        icons = icons.package,
       },
     },
   },
@@ -51,18 +48,31 @@ return {
     config = function(_, opts) require("lsp.null-ls").setup(opts) end,
   },
   {
-    "nvim-lualine/lualine.nvim",
-    optinal = true,
+    "akinsho/bufferline.nvim",
+    optional = true,
     opts = tbl.merge_options {
-      sections = {
-        lualine_b = {
-          {
-            function() return "󰁨" end,
+      ---@diagnostic disable: missing-fields
+      ---@type bufferline.Options
+      options = {
+        custom_areas = {
+          left = function()
             ---@diagnostic disable-next-line: undefined-field
-            cond = function() return vim.b.autofmt end,
-          },
+            local autofmt = vim.b.autofmt
+            local symbol
+            if autofmt == nil then
+              symbol = " "
+            elseif autofmt then
+              symbol = " "
+            else
+              symbol = " "
+            end
+            return {
+              { text = symbol, link = "Special" },
+            }
+          end,
         },
       },
+      ---@diagnostic enable: missing-fields
     },
   },
 }

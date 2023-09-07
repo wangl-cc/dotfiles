@@ -33,7 +33,7 @@ icons.diagnostic = {
   error = " ", -- nf-fa-times_circle
   warn  = " ", -- nf-fa-exclamation_circle
   info  = " ", -- nf-fa-info_circle
-  hint  = " ", -- nf-cod-lightbulb
+  hint  = " ", -- nf-fa-check_circle
 }
 
 -- stylua: ignore
@@ -47,16 +47,23 @@ icons.loglevel = {
 
 -- stylua: ignore
 icons.diff = {
-  added    = " ", -- nf-fa-plus_square
-  modified = " ", -- nf-fa-square
-  removed  = " ", -- nf-fa-minus_squarel
+  added    = " ", -- nf-fa-plus_circle
+  removed  = " ", -- nf-fa-minus_circle
+  modified = " ", -- nf-fa-circle_o
 }
 
 -- stylua: ignore
 icons.file_status = {
-  modified = "●", -- U+25CF
-  readonly = "", -- nf-fa-lock
-  new      = "", -- nf-fa-plus_circle
+  modified = " ", -- nf-fa-circle
+  readonly = " ", -- nf-fa-lock
+  new      = " ", -- nf-fa-plus_circle
+}
+
+-- stylua: ignore
+icons.package = {
+  package_installed   = " ", -- nf-fa-circle
+  package_pending     = " ", -- nf-fa-dot_circle_o
+  package_uninstalled = " ", -- nf-fa-circle_o
 }
 
 return icons
