@@ -119,10 +119,6 @@ g.tex_flavor = "latex"
 -- because nvim may be not started from shell
 vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
 
--- NOTE: use nvim inside nvim, there are some notes
--- 1. nvim --remote works but not well, nvr is much more recommended;
--- 2. this doesn't work in vim command line :!, only works in terminal inside nvim;
--- 3. environment variables must be set here instead of shell rc file;
 if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr -O"
   vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"

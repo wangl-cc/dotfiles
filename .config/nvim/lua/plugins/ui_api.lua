@@ -218,6 +218,22 @@ return {
           },
         },
         {
+          view = "notify",
+          ---@type NoiceFilter
+          filter = {
+            ---@param msg NoiceMessage
+            cond = function(msg)
+              local opts = msg.opts
+              if opts["title"] then return opts["title"] == "Git" end
+              return false
+            end,
+          },
+          opts = {
+            title = "Git",
+            merge = true,
+          },
+        },
+        {
           view = "popup",
           filter = {
             any = {

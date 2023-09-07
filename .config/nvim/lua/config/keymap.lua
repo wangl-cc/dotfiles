@@ -11,6 +11,8 @@ local bd = import("mini.bufremove"):get "delete"
 local bufferline = import "bufferline"
 local groups = import "bufferline.groups"
 
+local function git_notify(msg) vim.notify(msg, vim.log.levels.INFO, { title = "Git" }) end
+
 local leader_mappings = {
   ["/"] = {
     [[<Cmd>nohlsearch<CR><Cmd>match<CR>]],
@@ -87,12 +89,67 @@ local leader_mappings = {
     },
   },
   g = {
-    c = { [[<Cmd>Telescope git_commits<CR>]], desc = "Show git log" },
-    b = {
+    c = {
+      callback = function()
+        local Job = require "plenary.job"
+        ---@diagnostic disable-next-line: missing-fields
+        Job:new({
+          command = "git",
+          args = { "commit" },
+          cwd = vim.fn.getcwd(),
+          env = {
+            HOME = vim.env.HOME,
+            PATH = vim.env.PATH,
+            GIT_EDITOR = "nvr -cc split --remote-wait",
+            NVIM = vim.v.servername,
+          },
+          on_stdout = function(_, data) git_notify(data) end,
+          on_stderr = function(_, data) git_notify(data) end,
+        }):start()
+      end,
+      desc = "Git commit",
+    },
+    p = {
+      callback = function()
+        local Job = require "plenary.job"
+        ---@diagnostic disable-next-line: missing-fields
+        Job:new({
+          command = "git",
+          args = { "push" },
+          cwd = vim.fn.getcwd(),
+          env = {
+            PATH = vim.env.PATH,
+          },
+          on_stdout = function(_, data) git_notify(data) end,
+          on_stderr = function(_, data) git_notify(data) end,
+        }):start()
+      end,
+      desc = "Git push",
+    },
+    P = {
+      function()
+        local Job = require "plenary.job"
+        ---@diagnostic disable-next-line: missing-fields
+        Job:new({
+          command = "git",
+          args = { "pull" },
+          cwd = vim.fn.getcwd(),
+          env = {
+            PATH = vim.env.PATH,
+          },
+          on_stdout = function(_, data) git_notify(data) end,
+          on_stderr = function(_, data) git_notify(data) end,
+        }):start()
+      end,
+      desc = "Git pull",
+    },
+    l = { [[<Cmd>Telescope git_commits<CR>]], desc = "Show git log" },
+    f = {
       [[<Cmd>Telescope git_bcommits<CR>]],
       desc = "Show git log of current file",
     },
     s = { [[<Cmd>Telescope git_status<CR>]], desc = "Show git status" },
+    b = { [[<Cmd>Telescope git_branches<CR>]], desc = "Show git branches" },
     g = {
       callback = function()
         if not lazygit then

@@ -1,7 +1,6 @@
 local tbl = require "util.table"
 
 return {
-  { "tpope/vim-fugitive", cmd = { "Git" } },
   {
     "jose-elias-alvarez/null-ls.nvim",
     opts = tbl.merge_options {
