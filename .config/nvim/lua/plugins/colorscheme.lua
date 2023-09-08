@@ -24,6 +24,9 @@ return {
         hl.WindowPickerStatusLineNC = { fg = c.black, bg = c.blue }
         hl.WindowPickerWinBar = { fg = c.black, bg = c.blue }
         hl.WindowPickerWinBarNC = { fg = c.black, bg = c.blue }
+        hl["@keyword.function"] = { fg = c.magenta, style = "italic" }
+        hl["Conditional"] = { fg = c.magenta, style = "italic" }
+        hl["Repeat"] = { fg = c.magenta, style = "italic" }
       end,
     },
     config = function(_, opts)
