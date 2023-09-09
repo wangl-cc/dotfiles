@@ -55,20 +55,20 @@ return {
       ---@type bufferline.Options
       options = {
         custom_areas = {
-          left = function()
+          right = function()
             ---@diagnostic disable-next-line: undefined-field
             local autofmt = vim.b.autofmt
-            local symbol
-            if autofmt == nil then
-              symbol = " "
-            elseif autofmt then
-              symbol = " "
-            else
-              symbol = " "
-            end
-            return {
-              { text = symbol, link = "Special" },
+            local msgs = {
+              { text = " Format ", link = "DiagnosticInfo" },
+              { text = "", link = "DiagnosticOk" },
+              { text = "", link = "DiagnosticWarn" },
             }
+            if autofmt then
+              msgs[2].text = "  "
+            else
+              msgs[3].text = "  "
+            end
+            return msgs
           end,
         },
       },
