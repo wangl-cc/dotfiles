@@ -49,7 +49,7 @@ show_always = true
 
 [directory]
 format = "at [$path]($style)[$read_only]($read_only_style) "
-read_only = "  "
+read_only = " 󰌾 "
 
 [fill]
 symbol = "─"
@@ -76,6 +76,7 @@ format = "took [$duration]($style) "
 min_time = 10_000
 
 [character]
+# use nf-fa-chevron for arrow
 success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 vimcmd_symbol = "[](bold green)"
@@ -91,27 +92,27 @@ time_format = "%a %r"
 
 # Git {{{
 [git_branch]
-symbol = " "
+symbol = "󰘬 " # nf-md-source_branch
 
 [git_commit]
 format = "on [\\($hash$tag\\)]($style) "
 tag_disabled = false
-tag_symbol = " 󰓹 "                       # nf-fa-tag
+tag_symbol = " 󰓼 "                       # nf-md-tag_outline
 
 # This module is a bit costly
 [git_status]
 format = "$ahead_behind$conflicted$stashed$renamed$modified$deleted$untracked$staged"
 # all with trailing space is needed
-ahead = " $count "                        # nf-fa-arrow_circle_up
-behind = " $count "                       # nf-fa-arrow_circle_down
-diverged = " $ahead_count $behind_count " # nf-fa-pause_circle
-conflicted = " "                          # nf-fa-times_circle
-stashed = " $count "                      # nf-fa-dot_circle_o
-staged = " $count "                       # nf-fa-check_circle
-renamed = " $count "                      # nf-fa-arrow_circle_o_right
-deleted = " $count "                      # nf-fa-minus_circle
-untracked = " $count "                    # nf-fa-plus_circle
-modified = " $count "                     # nf-fa-circle_o
+ahead = "󰳢 $count "                        # nf-md-arrow_up_circle_outline
+behind = "󰳜 $count "                       # nf-md-arrow_down_circle_outline
+diverged = "󰿤 $ahead_count $behind_count " # nf-md-swap_vertical_circle_outline
+conflicted = "󰅚 "                          # nf-md-close_circle_outline
+stashed = "󰻃 $count "                      # nf-md-record_circle_outline
+staged = "󰗡 $count "                       # nf-md-check_circle_outline
+renamed = "󰳠 $count "                      # nf-md-arrow_right_circle_outline
+deleted = "󰍷 $count "                      # nf-md-minus_circle_outline
+untracked = "󰐙 $count "                    # nf-md-plus_circle_outline
+modified = "󰝶 $count "                     # nf-md-pencil_circle_outline
 # }}}
 
 # Language or enviroment {{{
