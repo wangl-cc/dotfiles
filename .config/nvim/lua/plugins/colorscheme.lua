@@ -1,5 +1,14 @@
 local tbl = require "util.table"
 
+local function hl_default(name)
+  local default = require("tokyonight.treesitter").defaults[name]
+    or vim.api.nvim_get_hl(0, { name = name })
+  if vim.tbl_isempty(default) then
+    require("util.log").error("Failed to get highlight group: " .. name, "Highlight")
+  end
+  return default
+end
+
 local function hl_override(hl, name, opts)
   local g = hl[name]
   if g and not g.link then
@@ -7,10 +16,9 @@ local function hl_override(hl, name, opts)
       g[k] = v
     end
   else -- if g is not defined or g link to other group
-    if not g then g = vim.api.nvim_get_hl(0, { name = name }) end
+    if not g then g = hl_default(name) end
     while g.link do
-      -- get link of g from hl or from vim
-      g = hl[g.link] or vim.api.nvim_get_hl(0, { name = g.link })
+      g = hl[g.link] or hl_default(g.link)
     end
     local g2 = vim.deepcopy(g)
     for k, v in pairs(opts) do
