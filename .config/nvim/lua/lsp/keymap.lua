@@ -1,4 +1,3 @@
-local tbl = require "util.table"
 local import = require "util.import"
 local register = require "util.keymap"
 
@@ -6,38 +5,22 @@ local builtins = import "telescope.builtin"
 
 ---@param buffer number
 return function(buffer)
-  ---@param builtin string
-  ---@param opts? table
-  local function telescope(builtin, opts)
-    opts = tbl.merge_one({
-      bufnr = buffer,
-      jump_type = "never",
-      layout_config = {
-        height = 12,
-      },
-    }, opts)
-    return function()
-      opts = require("telescope.themes").get_cursor(opts)
-      require("telescope.builtin")[builtin](opts)
-    end
-  end
-
   ---@type KeymapTree
   local maps = {
     g = {
       ---@type KeymapOption
       d = {
-        callback = telescope "lsp_definitions",
+        callback = builtins:get("lsp_definitions"):with { jump_type = "never" },
         desc = "Go to definition",
       },
       ---@type KeymapOption
       D = {
-        callback = telescope "lsp_type_definitions",
+        callback = builtins:get("lsp_definitions"):with { jump_type = "never" },
         desc = "Go to type definitions",
       },
       ---@type KeymapOption
       r = {
-        callback = telescope "lsp_references",
+        callback = builtins:get("lsp_references"):with { jump_type = "never" },
         desc = "Go to references",
       },
       R = {
@@ -46,7 +29,7 @@ return function(buffer)
       },
       ---@type KeymapOption
       i = {
-        callback = telescope "lsp_implementations",
+        callback = builtins:get("lsp_implementations"):with { jump_type = "never" },
         desc = "Go to implementations",
       },
     },
