@@ -5,7 +5,7 @@ return {
     "neovim/nvim-lspconfig",
     optional = true,
     dependencies = {
-      { "folke/neodev.nvim", version = "2", config = true },
+      { "folke/neodev.nvim", config = true },
     },
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
