@@ -25,6 +25,10 @@ local function on_attach_common(client, buffer, autofmt)
     local ok, navic = pcall(require, "nvim-navic")
     if ok then navic.attach(client, buffer) end
   end
+
+  -- Attach lsp_signature to LSP clients
+  local ok, signature = pcall(require, "lsp_signature")
+  if ok then signature.on_attach(nil, buffer) end
 end
 
 ---@class LspConfig

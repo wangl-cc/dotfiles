@@ -36,10 +36,6 @@ return function(buffer)
     ---@type KeymapTree
     ["<leader>"] = {
       ---@type KeymapOption
-      k = { callback = vim.lsp.buf.hover, desc = "Show hover and signature help" },
-      ---@type KeymapOption
-      K = { callback = vim.lsp.buf.signature_help, desc = "Show signature help" },
-      ---@type KeymapOption
       ["."] = { callback = vim.lsp.buf.code_action, desc = "Show code actions" },
       ---@type KeymapTree
       s = {

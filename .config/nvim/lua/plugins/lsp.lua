@@ -75,4 +75,15 @@ return {
       ---@diagnostic enable: missing-fields
     },
   },
+  -- Auto trigger signature help
+  {
+    "ray-x/lsp_signature.nvim",
+    opts = tbl.merge_options {
+      bind = true,
+      noice = true,
+      handler_opts = {
+        border = "rounded",
+      },
+    },
+  },
 }
