@@ -12,7 +12,7 @@ return {
   },
   {
     "lewis6991/gitsigns.nvim",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     opts = tbl.merge_options {
       numhl = true,
       current_line_blame_opts = {

@@ -5,7 +5,7 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     version = "2",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     opts = tbl.merge_options {
       char = "▏",
       context_char = "▏",
@@ -144,13 +144,13 @@ return {
   {
     "folke/todo-comments.nvim",
     version = "1",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     config = true,
   },
   {
     "folke/which-key.nvim",
     version = "1",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     config = function(_, opts)
       local ops = require("which-key.plugins.presets").operators
       ops["gq"] = "Format"

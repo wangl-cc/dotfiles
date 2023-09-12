@@ -15,7 +15,7 @@ local bd = import("mini.bufremove"):get "delete"
 return {
   {
     "nvim-lualine/lualine.nvim",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     opts = tbl.merge_options {
       options = {
         theme = "auto",
@@ -163,7 +163,7 @@ return {
   {
     "akinsho/bufferline.nvim",
     version = "4",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     ---@diagnostic disable: missing-fields
     opts = tbl.merge_options {
       ---@type bufferline.Options
@@ -205,7 +205,7 @@ return {
   {
     "utilyre/barbecue.nvim",
     version = "1",
-    event = "UIEnter",
+    event = "User ColorSchemeLoaded",
     dependencies = {
       "SmiteshP/nvim-navic",
     },

@@ -12,8 +12,7 @@ return {
   {
     "folke/tokyonight.nvim",
     version = "2",
-    lazy = false,
-    priority = 1000,
+    event = "UIEnter",
     opts = tbl.merge_options {
       style = "moon",
       styles = {
@@ -48,6 +47,7 @@ return {
     config = function(_, opts)
       require("tokyonight").setup(opts)
       vim.cmd.colorscheme "tokyonight"
+      vim.cmd.doautocmd { args = { "User", "ColorSchemeLoaded" } }
     end,
   },
 }
