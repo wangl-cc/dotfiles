@@ -62,6 +62,9 @@ function Lazy.new()
           temp[j] = v
         end
       end
+      for j = i, select("#", ...) do
+        table.insert(temp, select(j, ...))
+      end
       return f(unpack(temp))
     end
   end
@@ -80,6 +83,9 @@ function Lazy.new()
           args[j] = select(i, ...)
           i = i + 1
         end
+      end
+      for j = i, select("#", ...) do
+        table.insert(args, select(j, ...))
       end
       return f(unpack(args))
     end

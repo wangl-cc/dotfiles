@@ -239,7 +239,7 @@ return {
             i = {
               ["<c-t>"] = import("trouble.providers.telescope")
                 :get("open_with_trouble")
-                :with(),
+                :callable(),
             },
           },
         },
