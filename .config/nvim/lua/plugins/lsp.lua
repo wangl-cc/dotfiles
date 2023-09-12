@@ -59,9 +59,9 @@ return {
             ---@diagnostic disable-next-line: undefined-field
             local autofmt = vim.b.autofmt
             local msgs = {
-              { text = " Format ", link = "DiagnosticInfo" },
-              { text = "", link = "DiagnosticOk" },
-              { text = "", link = "DiagnosticWarn" },
+              { text = " Format ", link = "DiagnosticSignInfo" },
+              { text = "", link = "DiagnosticSignHint" },
+              { text = "", link = "DiagnosticSignWarn" },
             }
             if autofmt then
               msgs[2].text = "  "

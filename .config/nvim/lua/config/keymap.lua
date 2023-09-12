@@ -330,6 +330,10 @@ register({
       cycle:with(1),
       desc = "Next buffer",
     },
+    d = {
+      callback = vim.diagnostic.goto_next,
+      desc = "Next diagnostic",
+    },
     t = {
       [[<Cmd>tabnext<CR>]],
       desc = "Next tab",
@@ -343,6 +347,10 @@ register({
     b = {
       cycle:with(-1),
       desc = "Previous buffer",
+    },
+    d = {
+      callback = vim.diagnostic.goto_prev,
+      desc = "Previous diagnostic",
     },
     t = {
       [[<Cmd>tabprevious<CR>]],
