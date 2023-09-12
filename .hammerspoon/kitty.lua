@@ -49,11 +49,11 @@ function M.hotkey_win()
   local current_hotkeywin = nil
   local count = 0
   while not current_hotkeywin do
-    if count > 10 then
+    if count > 100 then
       hs.alert.show "Failed to get hotkey window"
       return
     end
-    hs.timer.usleep(100000) -- 100ms
+    hs.timer.usleep(10000) -- 10ms
     count = count + 1
     M.remote_run {
       "set-window-title",
