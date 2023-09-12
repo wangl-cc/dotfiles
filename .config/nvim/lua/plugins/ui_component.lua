@@ -211,13 +211,14 @@ return {
         },
       }, { prefix = "z" })
       wk.register({
-        s = { name = "Search source" },
-        g = { name = "Git source" },
-        t = { name = "Toggle target" },
-        c = { name = "Rename target" },
-        h = { name = "Hunk action" },
-        w = { name = "Workspace action" },
-        p = { name = "Package manager action" },
+        b = { name = "buffer action" },
+        c = { name = "rename target" },
+        g = { name = "git action" },
+        n = { name = "note action" },
+        p = { name = "package manager action" },
+        s = { name = "search source" },
+        t = { name = "toggle target" },
+        x = { name = "trouble action" },
       }, { prefix = "<leader>" })
       if user_mappings then
         for mapping in user_mappings do
