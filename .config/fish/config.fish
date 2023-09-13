@@ -114,7 +114,7 @@ set -gx WAKATIME_HOME $HOME/.config/wakatime
 set -gx BOB_CONFIG $HOME/.config/bob/config.json
 # environments variables for interactive shells }}}
 
-if test "$TERM_PROGRAM" != "WarpTerminal" # {{{
+if test "$TERM_PROGRAM" != "WarpTerminal"
 
 # fish greeting {{{
 if type -q fastfetch
@@ -145,23 +145,46 @@ if type -q starship
 end
 # starship initialize }}}
 
-end # TERM_PROGRAM is not WarpTerminal }}}
+end # TERM_PROGRAM != WarpTerminal }}}
 
-if test "$TERM_PROGRAM" = "Kitty"; and test "$SHLVL" -eq 1 # {{{
-  set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
-  set -g __system_current_bg Unknown
-  function autobg --on-event fish_prompt
-    set -l bg (defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light)
-    if test "$bg" != "$__system_current_bg"
-      set -g __system_current_bg $bg
-      if test "$bg" = "Dark"
-        kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
-      else
-        kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
-      end
+# auto background {{{
+function get_bg --description 'Get current background'
+  defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light
+end
+
+set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
+set -g __system_current_bg (get_bg)
+function autobg --on-event fish_prompt
+  set -l bg (get_bg)
+  if test "$bg" != "$__system_current_bg"
+    set -g __system_current_bg $bg
+  end
+end
+
+
+if test "$TERM_PROGRAM" = "Kitty"
+  function kitty_autobg --on-variable __system_current_bg
+    if test "$__system_current_bg" = "Dark"
+      kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
+    else
+      kitty @ --to unix:/tmp/kitty set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
     end
   end
-end # TERM_PROGRAM is Kitty }}}
+end
+
+if type -q bat
+  function bat_theme --on-variable __system_current_bg
+    if test "$__system_current_bg" = "Dark"
+      set -gx BAT_THEME tokyonight_moon
+    else
+      set -gx BAT_THEME tokyonight_day
+    end
+  end
+  bat_theme
+  abbr --add cat bat
+end
+
+# Auto background }}}
 
 # zoxide initialize {{{
 if type -q zoxide

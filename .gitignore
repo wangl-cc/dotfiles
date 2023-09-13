@@ -94,6 +94,9 @@
 # Starship
 !/.config/starship.toml
 
+# bat
+!/.config/bat
+
 # YADM
 !/.config/yadm
 # }}}
