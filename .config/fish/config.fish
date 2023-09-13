@@ -169,6 +169,15 @@ if type -q zoxide
 end
 # zoxide initialize }}}
 
+# Homebrew command-not-found initialize {{{
+if test -n $HOMEBREW_PREFIX
+  set -l handler $HOMEBREW_PREFIX/Library/Taps/homebrew/homebrew-command-not-found/handler.fish
+  if test -f $handler
+    source $handler
+  end
+end
+# Homebrew command-not-found initialize }}}
+
 end # is-interactive }}}
 
 # vim:foldmethod=marker:foldlevel=1
