@@ -1,0 +1,16 @@
+[core]
+	pager = git delta
+[interactive]
+	diffFilter = delta --color-only
+[diff]
+	colorMoved = default
+[delta]
+	navigate = true
+	side-by-side = true
+	syntax-theme = ansi
+
+# TODO: better color themes for dark and in light background
+[alias]
+	delta = !delta $(defaults read -g AppleInterfaceStyle &>/dev/null || echo --light)
+
+# vim: set ft=gitconfig sw=8 ts=8 sts=8 noet :
