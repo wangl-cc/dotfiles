@@ -1,0 +1,40 @@
+# Brew
+
+## Shell and command line tools
+brew "fish"
+brew "starship"  # Prompt
+brew "fastfetch" # System info
+brew "zoxide"    # Better cd
+brew "ripgrep"   # Better grep
+brew "fd"        # Better find
+brew "git-delta" # Better diff pager
+brew "bat"       # Better cat
+brew "fzf"       # Fuzzy finder
+brew "aria2"     # Downloader
+
+## NeoVim and plugin dependencies
+brew "neovim"
+brew "neovim-remote"      # NeoVim remote command
+brew "gnu-sed" if OS.mac? # GNU sed (dependency of nvim plugin)
+
+## Development tools
+### Python
+brew "python"
+### Julia
+brew "juliaup"
+### Rust
+brew "rust"
+
+# Casks (only for macOS)
+
+## Applications
+cask "kitty"
+
+## Fonts
+tap "homebrew/cask-fonts"
+cask "font-fira-code" 
+cask "font-victor-mono"
+cask "font-symbols-only-nerd-font"
+
+# Other taps provided by Homebrew
+tap "homebrew/command-not-found"
