@@ -36,7 +36,7 @@ return {
         hls.WindowPickerStatusLineNC = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBar = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBarNC = { fg = c.black, bg = c.blue }
-        hls["@keyword.function"] = base_on("Function", { style = "italic" }) -- e.g. `function`, `end` in Julia
+        hls["@keyword.function"] = hls["@keyword"] -- e.g. `function`, `end` in Julia
         hls["@keyword.operator"] = base_on("@operator", { style = "italic" }) -- e.g. `in`, `isa` in Julia, `and`, `or` in Lua
         hls["Conditional"] = base_on("Statement", { style = "italic" }) -- e.g. `if`, `else`, `elseif`, `end` in Julia
         hls["Repeat"] = base_on("Statement", { style = "italic" }) -- e.g. `for`, `while`, `end` in Julia
