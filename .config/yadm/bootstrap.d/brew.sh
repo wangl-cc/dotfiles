@@ -34,7 +34,13 @@ parse_spec() {
   fi
 }
 
-installed_formulae="$(brew list --formula)"
+# PERF: we iterate over all installed formulae for each required formula
+# this is not efficient, but it's simple and works not bad
+
+# WARN: version of required formulae (e.g. python@3.9) is not allowed
+# and the version of installed formulae will be ignored
+
+installed_formulae=($(brew list --formula))
 required_formulae=(
   # Shell and Command Line tools
   "fish"       # Shell
@@ -64,17 +70,21 @@ for formula_spec in "${required_formulae[@]}"; do
   if [ -z "$formula" ]; then
     continue
   fi
-  if grep -q "formula" <<< "$installed_formulae"; then
-    echo -e "  Installing \033[1;33m$formula\033[0m..."
-    brew install "$formula"
-  fi
+  for installed_formula in "${installed_formulae[@]}"; do
+    installed_formula="${installed_formula%%@*}"
+    if [[ "$formula" == "$installed_formula" ]]; then
+      continue 2
+    fi
+  done
+  echo -e "    Installing \033[1;33m$formula\033[0m..."
+  brew install "$formula"
 done
 
 if [ "$(uname -s)" != "Darwin" ]; then
   echo -e "  Skipping casks on non-Darwin system..."
   exit 0
 fi
-installed_casks="$(brew list --cask)"
+installed_casks=($(brew list --cask))
 required_casks=(
   "kitty"        # Terminal
   # Fonts
@@ -88,8 +98,12 @@ for cask_spec in "${required_casks[@]}"; do
   if [ -z "$cask" ]; then
     continue
   fi
-  if grep -q "cask" <<< "$installed_casks"; then
-    echo -e "  Installing $cask..."
-    brew install --cask "$cask"
-  fi
+  for installed_cask in "${installed_casks[@]}"; do
+    installed_cask="${installed_cask%%@*}"
+    if [[ "$cask" == "$installed_cask" ]]; then
+      continue 2
+    fi
+  done
+  echo -e "    Installing $cask..."
+  brew install --cask "$cask"
 done
