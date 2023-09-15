@@ -36,6 +36,7 @@ return {
         hls.WindowPickerStatusLineNC = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBar = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBarNC = { fg = c.black, bg = c.blue }
+        hls["@keyword"].fg = c.magenta2 -- The original color is purple, which is not very obvious in the light theme
         hls["@keyword.function"] = hls["@keyword"] -- e.g. `function`, `end` in Julia
         hls["@keyword.operator"] = base_on("@operator", { style = "italic" }) -- e.g. `in`, `isa` in Julia, `and`, `or` in Lua
         hls["Conditional"] = base_on("Statement", { style = "italic" }) -- e.g. `if`, `else`, `elseif`, `end` in Julia
