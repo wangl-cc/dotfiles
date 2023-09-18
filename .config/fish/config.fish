@@ -148,19 +148,6 @@ end
 end # TERM_PROGRAM != WarpTerminal }}}
 
 # auto background {{{
-function get_bg --description 'Get current background'
-  defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light
-end
-
-set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
-set -g __system_current_bg (get_bg)
-function autobg --on-event fish_prompt
-  set -l bg (get_bg)
-  if test "$bg" != "$__system_current_bg"
-    set -g __system_current_bg $bg
-  end
-end
-
 
 if test "$TERM_PROGRAM" = "Kitty"
   function kitty_autobg --on-variable __system_current_bg
@@ -182,6 +169,18 @@ if type -q bat
   end
   bat_theme
   abbr --add cat bat
+end
+
+function get_bg --description 'Get current background'
+  defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light
+end
+
+set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
+function autobg --on-event fish_prompt
+  set -l bg (get_bg)
+  if test "$bg" != "$__system_current_bg"
+    set -g __system_current_bg $bg
+  end
 end
 
 # Auto background }}}
