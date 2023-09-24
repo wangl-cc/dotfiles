@@ -2,6 +2,7 @@ local import = require "util.import"
 local register = require "util.keymap"
 
 local builtins = import "telescope.builtin"
+local trouble_open = import("trouble"):get "open"
 
 ---@param buffer number
 return function(buffer)
@@ -10,27 +11,18 @@ return function(buffer)
     g = {
       ---@type KeymapOption
       d = {
-        callback = builtins:get("lsp_definitions"):with { jump_type = "never" },
+        callback = trouble_open:with { mode = "lsp_definitions" },
         desc = "Go to definition",
       },
       ---@type KeymapOption
       D = {
-        callback = builtins:get("lsp_definitions"):with { jump_type = "never" },
+        callback = trouble_open:with { mode = "lsp_type_definitions" },
         desc = "Go to type definitions",
       },
       ---@type KeymapOption
       r = {
-        callback = builtins:get("lsp_references"):with { jump_type = "never" },
+        callback = trouble_open:with { mode = "lsp_references" },
         desc = "Go to references",
-      },
-      R = {
-        callback = import("trouble"):get("open"):with { mode = "lsp_references" },
-        desc = "List references",
-      },
-      ---@type KeymapOption
-      i = {
-        callback = builtins:get("lsp_implementations"):with { jump_type = "never" },
-        desc = "Go to implementations",
       },
     },
     ---@type KeymapTree
