@@ -30,6 +30,7 @@ abbr --add gc  git commit
 abbr --add gcl git clone
 abbr --add gco git checkout
 abbr --add gcb git checkout -b
+abbr --add gcm git checkout main
 abbr --add gci git check-ignore -v
 abbr --add gd  git diff
 abbr --add gds git diff --staged
