@@ -56,7 +56,7 @@ required_formulae=(
   "aria2"      # Downloader
   # Programming Languages
   "python"  # Latest Python 3
-  "rust"    # Latest Rust
+  # "rust"    # Latest Rust
   "juliaup" # Julia installer
   # NeoVim and plugin dependencies
   "neovim"         # NeoVim
