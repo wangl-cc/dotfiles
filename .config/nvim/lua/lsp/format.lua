@@ -29,6 +29,8 @@ local toggle_autofmt = function(buffer)
       b.autofmt and "Enabled format on save" or "Disabled format on save",
       "Auto Format"
     )
+  else
+    require("util.log").warn("Autofmt is invalid", "Auto Format")
   end
 end
 
