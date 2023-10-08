@@ -7,7 +7,9 @@ type = "Roguelike"
 [tasks.params]
 theme = "Sami"
 mode = 1
-core_char = "百炼嘉维尔"
+[tasks.params.core_char]
+alternatives = ["百炼嘉维尔"]
+description = "a character"
 
 [[tasks]]
 type = "CloseDown"

@@ -29,18 +29,30 @@ params = { plan_index = 0 }
 #------------------------------ Fight -----------------------------#
 [[tasks]]
 type = "Fight"
+strategy = "merge"
 
 [tasks.params]
-expiring_medicine = 3
 report_to_penguin = true
 penguin_id = "084310065"
+
+# use all expiring medicine on Sunday Evening
+[[tasks.variants]]
+params = { expiring_medicine = 1000 }
+
+[tasks.variants.condition]
+type = "Combined"
+conditions = [
+  { type = "Time", start = "18:00:00" },
+  { type = "Weekday", weekdays = ["Sun"] },
+]
+
+# fight 1-7 by default
+[[tasks.variants]]
+params = { stage = "1-7" }
 
 [[tasks.variants]]
 params = { stage = "CV-7" }
 condition = { type = "DateTime", start = "2023-09-05T16:00:00", end = "2023-09-19T03:59:59" }
-# fight 1-7 otherwise
-[[tasks.variants]]
-params = { stage = "1-7" }
 
 #------------------------------ Mall ------------------------------#
 # Mall after 18:00
@@ -49,7 +61,8 @@ type = "Mall"
 [tasks.params]
 shopping = true
 credit_fight = true
-buy_first = ["招聘许可", "龙门币"]
+# buy_first = ["招聘许可", "龙门币"]
+buy_first = ["招聘许可"]            # This is temporary fix for maa-cli#68
 blacklist = ["碳", "家具", "加急许可"]
 [[tasks.variants]]
 condition = { type = "Time", start = "18:00:00" }

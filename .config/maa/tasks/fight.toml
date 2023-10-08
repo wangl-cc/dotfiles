@@ -12,7 +12,9 @@ report_to_penguin = true
 penguin_id = "084310065"
 
 [[tasks.variants]]
-params = { stage = "1-7" }
+[tasks.variants.params.stage]
+default = "1-7"
+description = "a stage to fight"
 
 #--------------------------- Close Game ---------------------------#
 [[tasks]]
