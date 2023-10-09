@@ -32,7 +32,7 @@
 # Cargo
 !/.cargo
 /.cargo/*
-!/.cargo/config##template.esh
+!/.cargo/config
 
 # Julia
 !/.julia
