@@ -1,0 +1,37 @@
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[diff]
+	colorMoved = default
+[delta]
+	navigate = true
+	side-by-side = true
+
+[delta "tokyonight-day"]
+  minus-style                   = syntax "#dfccd4"
+  minus-non-emph-style          = syntax "#dfccd4"
+  minus-emph-style              = syntax "#d99ea2"
+  minus-empty-line-marker-style = syntax "#dfccd4"
+  line-numbers-minus-style      = "#c25d64"
+  plus-style                    = syntax "#aecde6"
+  plus-non-emph-style           = syntax "#aecde6"
+  plus-emph-style               = syntax "#57a7bc"
+  plus-empty-line-marker-style  = syntax "#aecde6"
+  line-numbers-plus-style       = "#399a96"
+  line-numbers-zero-style       = "#a8aecb"
+
+[delta "tokyonight-moon"]
+  minus-style                   = syntax "#3a273a"
+  minus-non-emph-style          = syntax "#3a273a"
+  minus-emph-style              = syntax "#6b2e43"
+  minus-empty-line-marker-style = syntax "#3a273a"
+  line-numbers-minus-style      = "#b55a67"
+  plus-style                    = syntax "#273849"
+  plus-non-emph-style           = syntax "#273849"
+  plus-emph-style               = syntax "#305f6f"
+  plus-empty-line-marker-style  = syntax "#273849"
+  line-numbers-plus-style       = "#627259"
+  line-numbers-zero-style       = "#3b4261"
+
+# vim: set ft=gitconfig sw=8 ts=8 sts=8 noet :

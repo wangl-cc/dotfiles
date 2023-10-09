@@ -173,6 +173,16 @@ if type -q bat
   abbr --add cat bat
 end
 
+if type -q delta
+  function delta_features --on-variable __system_current_bg
+    if test "$__system_current_bg" = "Dark"
+      set -gx DELTA_FEATURES tokyonight-moon
+    else
+      set -gx DELTA_FEATURES tokyonight-day
+    end
+  end
+end
+
 if test (uname -s) = "Darwin"
   function get_bg --description 'Get current background'
       defaults read -g AppleInterfaceStyle 2>/dev/null || echo Light

@@ -97,6 +97,9 @@
 # bat
 !/.config/bat
 
+# delta
+!/.config/delta
+
 # YADM
 !/.config/yadm
 # }}}

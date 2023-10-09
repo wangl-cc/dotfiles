@@ -46,6 +46,6 @@
 	st = status
 [include]
 <% if command -v delta >/dev/null 2>&1; then -%>
-	path = config.d/delta.gitconfig
+	path = ../delta/delta.gitconfig
 <% fi -%>
 <%# vim: set sw=8 ts=8 sts=8 noet : -%>
