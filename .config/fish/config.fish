@@ -152,34 +152,30 @@ end # TERM_PROGRAM != WarpTerminal }}}
 
 if test -n "$KITTY_LISTEN_ON"
   set -g __kitty_theme_dir $HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty
-  function kitty_autobg --on-variable __system_current_bg
-    if test "$__system_current_bg" = "Dark"
-      kitty @set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
-    else
-      kitty @set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
-    end
+  function kitty_colors_dark --on-event autobg_swith_to_dark
+    kitty @set-colors -a -c "$__kitty_theme_dir/tokyonight_moon.conf"
+  end
+  function kitty_colors_light --on-event autobg_swith_to_light
+    kitty @set-colors -a -c "$__kitty_theme_dir/tokyonight_day.conf"
   end
 end
 
 if type -q bat
-  function bat_theme --on-variable __system_current_bg
-    if test "$__system_current_bg" = "Dark"
-      set -gx BAT_THEME tokyonight_moon
-    else
-      set -gx BAT_THEME tokyonight_day
-    end
+  function bat_theme_dark --on-event autobg_swith_to_dark
+    set -gx BAT_THEME tokyonight_moon
   end
-  bat_theme
+  function bat_theme_light --on-event autobg_swith_to_light
+    set -gx BAT_THEME tokyonight_day
+  end
   abbr --add cat bat
 end
 
 if type -q delta
-  function delta_features --on-variable __system_current_bg
-    if test "$__system_current_bg" = "Dark"
-      set -gx DELTA_FEATURES tokyonight-moon
-    else
-      set -gx DELTA_FEATURES tokyonight-day
-    end
+  function delta_features_dark --on-event autobg_swith_to_dark
+    set -gx DELTA_FEATURES tokyonight-moon
+  end
+  function delta_features_light --on-event autobg_swith_to_light
+    set -gx DELTA_FEATURES tokyonight-day
   end
 end
 
@@ -197,6 +193,11 @@ function autobg --on-event fish_prompt
   set -l bg (get_bg)
   if test "$bg" != "$__system_current_bg"
     set -g __system_current_bg $bg
+    if test "$__system_current_bg" = "Dark"
+      emit autobg_swith_to_dark
+    else
+      emit autobg_swith_to_light
+    end
   end
 end
 
