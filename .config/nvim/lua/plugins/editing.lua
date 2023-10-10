@@ -21,20 +21,13 @@ return {
     event = "VeryLazy",
   },
   {
-    "echasnovski/mini.surround",
-    name = "mini.surround",
+    "kylechui/nvim-surround",
     keys = {
       { "ys", desc = "Add a surrounding pair" },
       { "cs", desc = "Change a surrounding pair" },
       { "ds", desc = "Delete a surrounding pair" },
     },
-    opts = {
-      mappings = {
-        add = "ys",
-        delete = "ds",
-        replace = "cs",
-      },
-    },
+    opts = {},
   },
   {
     "echasnovski/mini.comment",
