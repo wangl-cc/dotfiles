@@ -55,23 +55,6 @@ end
 using REPL
 @safe_using LazyStartup
 
-# This a temporary fix for JuliaLang/julia#49319
-# should be removed when #50064 is merged
-@static if isdefined(REPL, :Numbered)
-    function REPL.Numbered.get_usings!(usings, ex)
-        ex isa Expr || return usings
-        # get all `using` and `import` statements which are at the top level
-        for (i, arg) in enumerate(ex.args)
-            if Base.isexpr(arg, :toplevel)
-                REPL.Numbered.get_usings!(usings, arg)
-            elseif Base.isexpr(arg, [:using, :import])
-                push!(usings, popat!(ex.args, i))
-            end
-        end
-        return usings
-    end
-end
-
 atreplinit() do repl
     if !isdefined(repl, :interface)
         repl.interface = REPL.setup_interface(repl)
