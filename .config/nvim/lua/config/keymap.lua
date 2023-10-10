@@ -111,6 +111,7 @@ local leader_mappings = {
     },
     p = {
       callback = function()
+        git_notify "Pushing..."
         local Job = require "plenary.job"
         ---@diagnostic disable-next-line: missing-fields
         Job:new({
