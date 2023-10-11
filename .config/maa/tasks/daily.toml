@@ -12,7 +12,7 @@ type = "Infrast"
 mode = 10000
 facility = ["Trade", "Reception", "Mfg", "Control", "Power", "Office", "Dorm"]
 dorm_trust_enabled = true
-filename = "normal.json"
+filename = "gacha.json"
 
 [[tasks.variants]]
 condition = { type = "Time", end = "12:00:00" }
