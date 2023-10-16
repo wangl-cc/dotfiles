@@ -85,9 +85,17 @@ penguin_id = "084310065"
 condition = { type = "Time", start = "18:00:00" }
 params = { times = 4 }
 
+# consume refresh times
+[[tasks.variants]]
+params = { times = 1 }
+
 #------------------------------ Award -----------------------------#
 [[tasks]]
 type = "Award"
+
+[tasks.params]
+award = true
+mail = true
 
 #--------------------------- Close Game ---------------------------#
 [[tasks]]
