@@ -17,7 +17,6 @@
     "cpu",
     "gpu",
     "memory",
-    "disk",
     "locale",
     "break",
     "colors"
