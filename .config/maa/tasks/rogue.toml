@@ -4,11 +4,19 @@ params = { client_type = "Official", start_game_enabled = true }
 
 [[tasks]]
 type = "Roguelike"
+
 [tasks.params]
 theme = "Sami"
-mode = 1
+
+# Don't enter the second floor when the investment mode is enabled.
+investment_enter_second_floor = false
+
+[tasks.params.mode]
+default = 1
+description = "a fighting mode (0: point , 1: investment)"
+
 [tasks.params.core_char]
-alternatives = ["百炼嘉维尔"]
+alternatives = ["百炼嘉维尔", "焰影苇草"]
 description = "a character"
 
 [[tasks]]
