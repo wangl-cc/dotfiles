@@ -2,9 +2,14 @@ set -e
 
 echo -e "\n\033[1;35mSetting up homebrew...\033[0m"
 
-export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
-homebrew_tap_mirror="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew"
+if [[ "$CODESPACES" == "true" ]]; then
+  # Don't use mirrors on Codespaces
+  homebrew_tap_mirror="https://github.com/homebrew"
+else
+  export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+  export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+  homebrew_tap_mirror="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew"
+fi
 
 echo -e "  Checking missing \033[1;34mTaps\033[0m..."
 for tap in cask-fonts command-not-found services; do
