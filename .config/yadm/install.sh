@@ -58,8 +58,8 @@ clone() {
   # Remove the temporary directory
   rm -rf "$temp"
   cd "$HOME"
-  git_verbose submodule update --init --recursive
   git_verbose reset -- .
+  git_verbose submodule update --init --recursive
   $GIT ls-files --deleted | while IFS= read -r file; do
     git_verbose checkout -- ":/$file"
   done
