@@ -2,17 +2,22 @@ set -e
 
 echo -e "\n\033[1;35mSetting up homebrew...\033[0m"
 
-if [[ "$CODESPACES" == "true" ]]; then
-  # Don't use mirrors on Codespaces
+if [[ -n "$CODESPACES" || -n "$HOMEBREW_NO_MIRROR" ]]; then
+  echo -e "  Detected \033[1;33mCodespaces\033[0m, skipping mirrors..."
   homebrew_tap_mirror="https://github.com/homebrew"
 else
+  echo -e "  Setting up \033[1;33mTUNA mirrors\033[0m for homebrew..."
   export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
   export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
   homebrew_tap_mirror="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew"
 fi
 
-echo -e "  Checking missing \033[1;34mTaps\033[0m..."
-for tap in cask-fonts command-not-found services; do
+taps=("commmand-not-found")
+if [ "$(uname -s)" == "Darwin" ]; then
+  taps+=("homebrew/cask-fonts")
+fi
+
+for tap in "${taps[@]}"; do
   repo=$(brew --repo "homebrew/$tap")
   mirror="$homebrew_tap_mirror/homebrew-$tap.git"
   if [ -d "$repo" ]; then
@@ -69,7 +74,9 @@ required_formulae=(
   "gnu-sed@Darwin" # GNU sed
 )
 
+brew update
 echo -e "  Checking missing \033[1;34mFormulae\033[0m..."
+export HOMEBREW_NO_AUTO_UPDATE=1
 for formula_spec in "${required_formulae[@]}"; do
   formula="$(parse_spec "$formula_spec")"
   if [ -z "$formula" ]; then
