@@ -12,7 +12,7 @@ else
   homebrew_tap_mirror="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew"
 fi
 
-taps=("commmand-not-found")
+taps=("command-not-found")
 if [ "$(uname -s)" == "Darwin" ]; then
   taps+=("homebrew/cask-fonts")
 fi
