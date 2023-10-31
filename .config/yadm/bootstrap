@@ -20,6 +20,11 @@ if [ "$(uname -s)" = 'Linux' ]; then
   fi
 fi
 
+# Install linuxbrew on GitHub Codespaces
+if [ -n "$CODESPACES" ]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
 if command -v brew >/dev/null 2>&1; then
   bash "$bootstrap_dir/brew.sh"
 fi
