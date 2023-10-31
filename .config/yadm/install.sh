@@ -1,97 +1,65 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Color Codes
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[0;33m'
-readonly BLUE='\033[0;34m'
-readonly PURPLE='\033[0;35m'
-readonly CYAN='\033[0;36m'
-readonly NC='\033[0m' # No Color
+# Description: Installations script for dotfiles
+# Author: Loong Wang (@wangl-cc)
+# LICENSE: MIT
 
-# Variables
+__INSTALL_SRC_DIR=$(realpath $(dirname ${BASH_SOURCE[0]}))
+
+# Load libraries
+source $__INSTALL_SRC_DIR/utils/log.sh
+
+set -e
+
+# ENVIRONMENT VARIABLES
 GIT=${GIT-"git"}
-export PATH="$HOME/.local/bin:$PATH"
 
-# Logging
-LOG_LEVEL=2
-trace() {
-  if [ $LOG_LEVEL -le 0 ]; then
-    echo -e "${CYAN}TRACE:${NC} $1"
-  fi
-}
-debug() {
-  if [ $LOG_LEVEL -le 1 ]; then
-    echo -e "${PURPLE}DEBUG:${NC} $1"
-  fi
-}
-info() {
-  if [ $LOG_LEVEL -le 2 ]; then
-    echo -e "$1"
-  fi
-}
-warn() {
-  if [ $LOG_LEVEL -le 3 ]; then
-    echo -e "${YELLOW}WARN${NC}:  $1"
-  fi
-}
-error() {
-  if [ $LOG_LEVEL -le 4 ]; then
-    echo -e "${RED}ERROR${NC}: $1>&2"
-    exit 1
-  fi
+__git_can_quiet() {
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      clone|pull|reset|checkout|submodule)
+        return 0
+        ;;
+      -C)
+        shift 2
+        ;;
+      *)
+        return 1
+    esac
+  done
 }
 
-color() {
-  echo "${2:-$BLUE}$1${NC}"
-}
-
-ok() {
-  info "$(color "$1" "$GREEN")"
-}
-
-# Logging for git
-can_quiet() {
-  subcmd=$1
-  $GIT "$subcmd" -h | grep -q -- --quiet
-}
-can_verbose() {
-  subcmd=$1
-  $GIT "$subcmd" -h | grep -q -- --verbose
-}
 git_verbose() {
-  trace "$GIT $*"
-  if [[ $LOG_LEVEL -le 2 && $(can_verbose "$1") ]]; then
-    $GIT "$@" --verbose
-  elif [[ $LOG_LEVEL -ge 4 && $(can_quiet "$1") ]]; then
-    $GIT "$@" --quiet
-  else
-    $GIT "$@"
+  local args=("$@")
+  if [ $LOGLEVEL -ge 3 ]; then
+    if __git_can_quiet "${args[0]}"; then
+      args=(${args[@]} -q)
+    fi
   fi
+  trace "$GIT ${args[@]}"
+  $GIT "${args[@]}"
 }
 
-config() {
+clone() {
+  local temp
+  temp=$(mktemp -d)
+  cd "$temp"
+  # Clone the repository in the temporary directory
+  git_verbose clone --no-checkout "$1" "$temp" --branch "$2"
+  # Configure the repository
   git_verbose config core.bare false
   git_verbose config core.worktree "$HOME"
   git_verbose config yadm.managed true
   git_verbose config core.sparsecheckout true
   git_verbose config core.sparseCheckoutCone false
   git_verbose sparse-checkout set --no-cone '/*' '!/README.md' '!/LICENSE' '!/install.sh' '!/.github'
-}
-
-
-clone_core() {
-  local temp
-  temp=$(mktemp -d)
-  cd "$temp" || error "Unable to change to temp directory: $temp"
-  git_verbose clone --no-checkout "$1" "$temp" --branch "$2" ||
-    error "Unable to clone repository $(color "$1") with branch $(color "$2")"
-  config || error "Unable to configure repository"
-  mv "$temp/.git" "$HOME" || error "Unable to move .git directory"
+  # Move the repository to the home directory
+  mv "$temp/.git" "$HOME"
+  # Remove the temporary directory
   rm -rf "$temp"
-  cd ~ || error "Unable to change to home directory: $HOME"
-  git_verbose reset HEAD
+  cd "$HOME"
   git_verbose submodule update --init --recursive
+  git_verbose reset -- .
   $GIT ls-files --deleted | while IFS= read -r file; do
     git_verbose checkout -- ":/$file"
   done
@@ -101,76 +69,119 @@ clone_core() {
     warn "Please review and resolve any differences appropriately."
   fi
   ok "Clone succeed"
-}
 
-clone() {
-  force=$1
-  url=$2
-  branch=$3
-  repo="$HOME/.git"
-  if [ -d "repo" ]; then if [ "$force" = "true" ]; then
-      warn "Repository already exists, force clone"
-      rm -rf "$repo"
-      clone_core "$url" "$branch"
-    else
-      warn "Repository already exists, pull latest changes"
-      git_verbose -C "$repo" pull --quiet
+  info "Expand templates"
+  ESH_SHELL="/bin/bash" yadm alt
+
+  if [[ -z "$NONINTERACTIVE" && -z "$CODESPACES" ]]; then
+    read -rp "Do you want to bootstrap? [y/N] " -n 1; echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      yadm bootstrap
     fi
   else
-    clone_core "$url" "$branch"
+    yadm bootstrap
+  fi
+}
+
+fetch() {
+  local url=$1
+  local branch=$2
+  local repo="$HOME/.git"
+  # clone $url to $repo
+  if [ -d "$repo" ]; then
+    if [ "$force" = "true" ]; then
+      warn "Repository already exists, force clone"
+      rm -rf "$repo"
+      clone "$url" "$branch"
+    else
+      # check if remote of $repo is $url
+      local remote_url=$($GIT -C "$repo" remote get-url origin)
+      if [ "$remote_url" != "$url" ]; then
+        error "Repository already exists, but remote is not $url"
+      fi
+      info "Repository already exists, pull latest changes"
+      git_verbose -C "$repo" pull
+    fi
+  else
+    clone "$url" "$branch"
   fi
 }
 
 usage() {
 cat <<EOM
 Usage: $(basename "$0") [options] [command]
+
 Options:
-  -h Show this help message and exit
+  -p Specify repository protocol (default: https, available: https, ssh)
+  -c Specify repository code host (default: github.com)
+  -u Specify repository owner (default: wangl-cc)
+  -r Specify repository name (default: dotfiles)
+  -l Specify repository url (default: generated from -p, -c, -u, -r)
+  -b Specify repository branch (default: master)
+
   -f Force clone repository and overwrite existing one
+
   -v Verbose output, repeat for more verbosity
   -q Quiet output, repeat for less verbosity
-  -u Specify repository owner
-  -r Specify repository name
-  -b Specify repository branch
-  -l Specify repository url
+
+  -h Show this help message and exit
+
+ENVIRONMENT VARIABLES:
+  NONINTERACTIVE: If set to any value, do not prompt for confirmation
 EOM
 }
 
 main() {
-  while getopts "hfmvqu:r:b:l:" opt; do
+  force=false
+  local protocol="https"
+  local host="github.com"
+  local owner="wangl-cc"
+  local repo="dotfiles"
+  local branch="master"
+  local url
+
+  while getopts "p:c:u:r:l:b:fvqh" opt; do
     case $opt in
-      h) usage; exit 0;;
-      f) force=true;;
-      v) (( LOG_LEVEL-- ));;
-      q) (( LOG_LEVEL++ ));;
+      p) protocol="$OPTARG";;
+      c) host="$OPTARG";;
       u) owner="$OPTARG";;
       r) repo="$OPTARG";;
-      b) branch="$OPTARG";;
       l) url="$OPTARG";;
+      b) branch="$OPTARG";;
+
+      f) force=true;;
+
+      v) (( LOGLEVEL-- ));;
+      q) (( LOGLEVEL++ ));;
+
+      h) usage; exit 0;;
       *) usage; exit 1;;
     esac
   done
 
-  force=${force-"false"}
-  owner=${owner:-"wangl-cc"}
-  repo=${repo:-"dotfiles"}
-  branch=${branch:-"master"}
-  url=${url:-"https://github.com/$owner/$repo.git"}
-  
+  if [ -z "$url" ]; then
+    if [ $protocol = "https" ]; then
+      url="https://$host/$owner/$repo.git"
+    elif [ $protocol = "ssh" ]; then
+      url="git@$host:$owner/$repo.git"
+    else
+      error "Unknown protocol: $protocol"
+    fi
+  fi
+
+
+  export PATH="$HOME/.local/bin:$PATH"
+
   debug "GIT: $(color "$GIT")"
   debug "PATH: $(color "$PATH")"
-  debug "LOG_LEVEL: $(color "$LOG_LEVEL")"
+  debug "LOGLEVEL: $(color "$LOGLEVEL")"
   debug "force: $(color "$force")"
   debug "owner: $(color "$owner")"
   debug "repo: $(color "$repo")"
   debug "branch: $(color "$branch")"
   debug "url: $(color "$url")"
 
-  clone "$force" "$url" "$branch"
-  link_yadm
-  export ESH_SHELL="/bin/bash"
-  yadm alt
-  yadm bootstrap
+  fetch "$url" "$branch"
 }
 
 main "$@"
