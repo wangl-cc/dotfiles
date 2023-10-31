@@ -4,7 +4,7 @@
 # Author: Loong Wang (@wangl-cc)
 # LICENSE: MIT
 
-__INSTALL_SRC_DIR=$(realpath $(dirname ${BASH_SOURCE[0]}))
+__INSTALL_SRC_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
 # Load libraries
 source $__INSTALL_SRC_DIR/utils/log.sh

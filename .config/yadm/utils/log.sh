@@ -7,7 +7,7 @@
 __LOG_SOURCED=1
 
 # load color library
-__LOG_SRC_DIR=$(realpath $(dirname ${BASH_SOURCE[0]}))
+__LOG_SRC_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 source $__LOG_SRC_DIR/color.sh
 
 # Global log level, from 0 to 5, default to 2.

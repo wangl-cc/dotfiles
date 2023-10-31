@@ -26,6 +26,9 @@ local opts = {
   defaults = {
     lazy = true,
   },
+  checker = {
+    check_pinned = true,
+  },
   performance = {
     rtp = {
       disabled_plugins = {

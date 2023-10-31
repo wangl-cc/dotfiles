@@ -1,6 +1,7 @@
 #!/bin/sh
 
-bootstrap_dir="$(dirname "$0")/bootstrap.d"
+__BOOTSTRAP_SRC_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+bootstrap_dir="$__BOOTSTRAP_SRC_DIR/bootstrap.d"
 
 if [ "$(uname -s)" = 'Darwin' ]; then
   bash "$bootstrap_dir/macOS.sh"
