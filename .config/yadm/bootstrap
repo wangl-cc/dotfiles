@@ -5,7 +5,8 @@ bootstrap_dir="$__BOOTSTRAP_SRC_DIR/bootstrap.d"
 
 # Install linuxbrew on GitHub Codespaces
 if [[ -n "$CODESPACES" && ! -e /home/linuxbrew/.linuxbrew ]]; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  export NONINTERACTIVE=1 PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 if [ "$(uname -s)" = 'Darwin' ]; then
