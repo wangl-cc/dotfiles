@@ -1,0 +1,8 @@
+ignore-globs:
+  - .git
+  - .DS_Store
+
+color:
+  theme: custom
+
+date: "+%Y-%m-%d %H:%M:%S"

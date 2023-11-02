@@ -103,6 +103,9 @@ Manifest.toml
 # delta
 !/.config/delta
 
+# lsd
+!/.config/lsd
+
 # YADM
 !/.config/yadm
 # }}}
