@@ -8,9 +8,9 @@ abbr --add rr rm -ri
 # ls
 if type -q lsd
   abbr --add l  lsd
-  abbr --add ls lsd -lh
-  abbr --add ll lsd -lh
-  abbr --add la lsd -Alh
+  abbr --add ls lsd
+  abbr --add ll lsd -l
+  abbr --add la lsd -Al
   abbr --add tree lsd --tree
 else
   abbr --add l  ls --color
