@@ -6,9 +6,16 @@ abbr --add rm rm -i
 abbr --add rf rm -f
 abbr --add rr rm -ri
 # ls
-abbr --add l  ls --color
-abbr --add ll ls --color -lh
-abbr --add la ls --color -Alh
+if type -q lsd
+  abbr --add l  lsd
+  abbr --add ls lsd -lh
+  abbr --add ll lsd -lh
+  abbr --add la lsd -Alh
+else
+  abbr --add l  ls --color
+  abbr --add ll ls --color -lh
+  abbr --add la ls --color -Alh
+end
 # cd
 abbr --add .. cd ..
 abbr --add ... cd ../..
