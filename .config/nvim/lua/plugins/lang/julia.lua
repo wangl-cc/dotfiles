@@ -10,6 +10,7 @@ return {
         julials = {
           disabled = vim.env.__JULIA_LSP_DISABLE == "true"
             or vim.fn.executable "julia" == 0,
+          mason = false,
           autofmt = false,
           ---@type lspconfig.options.julials
           options = {
