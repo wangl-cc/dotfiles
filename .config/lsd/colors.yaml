@@ -1,23 +1,23 @@
-user: dark_yellow
-group: dark_green
+user: dark_magenta
+group: dark_cyan
 permission:
-  read: dark_green
-  write: dark_yellow
-  exec: dark_blue
+  read: dark_blue
+  write: dark_cyan
+  exec: dark_magenta
   exec-sticky: dark_magenta
-  no-access: dark_red
+  no-access: dark_grey
   octal: dark_cyan
   acl: dark_cyan
   context: dark_cyan
 date:
-  hour-old: dark_red
-  day-old: dark_yellow
-  older: dark_green
+  hour-old: dark_magenta
+  day-old: dark_cyan
+  older: dark_blue
 size:
   none: dark_grey
-  small: dark_green
-  medium: dark_yellow
-  large: dark_red
+  small: dark_blue
+  medium: dark_cyan
+  large: dark_magenta
 inode:
   valid: dark_green
   invalid: dark_red
