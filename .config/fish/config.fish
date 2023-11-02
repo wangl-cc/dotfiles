@@ -11,6 +11,7 @@ if type -q lsd
   abbr --add ls lsd -lh
   abbr --add ll lsd -lh
   abbr --add la lsd -Alh
+  abbr --add tree lsd --tree
 else
   abbr --add l  ls --color
   abbr --add ll ls --color -lh
