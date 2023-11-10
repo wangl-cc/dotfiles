@@ -84,6 +84,7 @@ Manifest.toml
 !/.config/nvim/**
 # The minimal configuration is used for testing
 /.config/nvim/minimal.lua
+/.config/nvim/lazy-lock.json
 
 # Kitty
 !/.config/kitty

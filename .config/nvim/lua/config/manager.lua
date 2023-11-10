@@ -3,16 +3,11 @@ if not vim.loop.fs_stat(path) then
   vim.fn.system {
     "git",
     "clone",
-    "--filter",
-    "blob:none",
+    "--filter=blob:none",
+    "--branch=stable",
     "https://github.com/folke/lazy.nvim.git",
     path,
   }
-  local f = io.open(vim.fn.stdpath "config" .. "/lazy-lock.json", "r")
-  if f then
-    local lock = vim.json.decode(f:read "*a")
-    vim.fn.system { "git", "-C", path, "checkout", lock["lazy.nvim"].commit }
-  end
 end
 vim.opt.rtp:prepend(path)
 
