@@ -38,10 +38,6 @@
 !/.julia
 /.julia/*
 !/.julia/config
-!/.julia/environments
-/.julia/environments/__*
-/.julia/environments/v*
-Manifest.toml
 
 # hammerspoon
 !/.hammerspoon
