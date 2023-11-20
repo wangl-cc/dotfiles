@@ -12,7 +12,7 @@ type = "Infrast"
 mode = 10000
 facility = ["Trade", "Reception", "Mfg", "Control", "Power", "Office", "Dorm"]
 dorm_trust_enabled = true
-filename = "gacha.json"
+filename = "normal.json"
 replenish = true
 
 [[tasks.variants]]
