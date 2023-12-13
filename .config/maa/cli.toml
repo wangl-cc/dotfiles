@@ -2,7 +2,7 @@
 channel = "beta"
 
 [resource]
-auto_update = true
+# auto_update = true
 backend = "git"
 # backend = "libgit2"
 
