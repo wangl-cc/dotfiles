@@ -1,4 +1,12 @@
 [core]
 channel = "beta"
-[core.components]
-resource = false
+
+[resource]
+auto_update = true
+backend = "git"
+# backend = "libgit2"
+
+# [resource.remote]
+# branch = "main"
+# ssh_key = "~/.ssh/id_ed25519"
+# url = "git@github.com:MaaAssistantArknights/MaaResource.git"
