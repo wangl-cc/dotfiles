@@ -16,15 +16,14 @@ filename = "normal.json"
 replenish = true
 
 [[tasks.variants]]
-condition = { type = "Time", end = "12:00:00" }
+condition = { type = "Time", start = "7:00:00", end = "13:00:00" }
 params = { plan_index = 1 }
 
 [[tasks.variants]]
-condition = { type = "Time", start = "12:00:00", end = "18:00:00" }
+condition = { type = "Time", start = "13:00:00", end = "19:00:00" }
 params = { plan_index = 2 }
 
 [[tasks.variants]]
-condition = { type = "Time", start = "18:00:00" }
 params = { plan_index = 0 }
 
 #------------------------------ Fight -----------------------------#
