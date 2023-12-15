@@ -27,6 +27,8 @@ params = { plan_index = 2 }
 params = { plan_index = 0 }
 
 #------------------------------ Fight -----------------------------#
+
+#============================= Fight 1 ============================#
 [[tasks]]
 type = "Fight"
 strategy = "merge"
@@ -46,13 +48,30 @@ conditions = [
   { type = "Weekday", weekdays = ["Sun"] },
 ]
 
-# fight 1-7 by default
 [[tasks.variants]]
-params = { stage = "1-7" }
+params = { stage = "RS-7" }
+condition = { type = "DateTime", start = "2023-12-05T16:00:00", end = "2023-12-19T03:59:59" }
 
+#============================= Fight 2 ============================#
+[[tasks]]
+type = "Fight"
+strategy = "merge"
+
+[tasks.params]
+stage = "1-7"
+report_to_penguin = true
+penguin_id = "084310065"
+
+# use all expiring medicine on Sunday Evening
 [[tasks.variants]]
-params = { stage = "ZT-8" }
-condition = { type = "DateTime", start = "2023-11-01T16:00:00", end = "2023-11-21T03:59:59" }
+params = { expiring_medicine = 1000 }
+
+[tasks.variants.condition]
+type = "Combined"
+conditions = [
+  { type = "Time", start = "18:00:00" },
+  { type = "Weekday", weekdays = ["Sun"] },
+]
 
 #------------------------------ Mall ------------------------------#
 # Mall after 18:00

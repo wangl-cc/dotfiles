@@ -6,7 +6,7 @@ channel = "beta"
 backend = "git"
 # backend = "libgit2"
 
-# [resource.remote]
+[resource.remote]
 # branch = "main"
 # ssh_key = "~/.ssh/id_ed25519"
-# url = "git@github.com:MaaAssistantArknights/MaaResource.git"
+url = "https://git.maa-org.net/MAA/MaaResource"
