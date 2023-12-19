@@ -73,7 +73,7 @@ conditions = [
 ]
 
 [[tasks.variants]]
-stage = "1-7"
+params = { stage = "1-7" }
 
 #------------------------------ Mall ------------------------------#
 # Mall after 18:00
