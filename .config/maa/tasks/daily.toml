@@ -58,7 +58,6 @@ type = "Fight"
 strategy = "merge"
 
 [tasks.params]
-stage = "1-7"
 report_to_penguin = true
 penguin_id = "084310065"
 
@@ -72,6 +71,9 @@ conditions = [
   { type = "Time", start = "18:00:00" },
   { type = "Weekday", weekdays = ["Sun"] },
 ]
+
+[[tasks.variants]]
+stage = "1-7"
 
 #------------------------------ Mall ------------------------------#
 # Mall after 18:00
