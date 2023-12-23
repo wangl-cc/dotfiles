@@ -49,7 +49,7 @@ conditions = [
 ]
 
 [[tasks.variants]]
-params = { stage = "FC-5" }
+params = { stage = "FC-6" }
 condition = { type = "DateTime", start = "2023-12-22T16:00:00", end = "2024-01-01T03:59:59" }
 
 #============================= Fight 2 ============================#
