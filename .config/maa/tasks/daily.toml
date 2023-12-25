@@ -96,7 +96,7 @@ type = "Recruit"
 refresh = true
 select = [4, 5]
 confirm = [3, 4, 5]
-skip_robot = true
+skip_robot = false
 recruitment_time = { '3' = 460 }
 report_to_penguin = true
 penguin_id = "084310065"
