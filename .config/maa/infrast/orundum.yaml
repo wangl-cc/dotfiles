@@ -1,0 +1,126 @@
+title: 搓玉模式排班
+description: 333，搓玉
+author: wangl-cc
+
+plans:
+  - name: 夜班 (12h)
+    description: 企鹅物流 + 迷迭香组(1+1) + 自动化组 + 泡泡组
+    Fiammetta: { enable: true, target: 龙舌兰, order: pre }
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [阿米娅, 森蚺, 琴柳, 令, 夕]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 卡夫卡]
+          sort: true
+        - product: LMD
+          operators: [但书, 伺夜, 黑键]
+        - product: Orundum
+          operators: [能天使, 德克萨斯, 拉普兰德]
+      manufacture:
+        - product: Pure Gold
+          operators: [砾, 至简, 迷迭香]
+        - product: Pure Gold
+          operators: [清流, 温蒂, 异客]
+        - product: Originium Shard
+          operators: [泡泡, 火神, 褐果]
+      power:
+        - operators: [Lancet-2]
+        - operators: [澄闪]
+        - operators: [炎狱炎熔]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 上午 (6h)
+    description: 企鹅物流 + 喀兰组 + 莱茵组 + 自动化组 + 水月组
+    Fiammetta: { enable: true, target: 巫恋, order: pre }
+    drones: { enable: true, room: trading, index: 1, order: pre }
+    rooms:
+      control:
+        - operators: [诗怀雅, 凯尔希, 灵知, 森蚺, 玛恩纳]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 柏喙]
+          sort: true
+        - product: LMD
+          operators: [能天使, 德克萨斯, 拉普兰德]
+        - product: Orundum
+          operators: [孑, 银灰, 崖心]
+      hire:
+        - operators: [斥罪]
+      manufacture:
+        - product: Pure Gold
+          operators: [多萝西, 淬羽赫默, 白面鸮]
+        - product: Pure Gold
+          operators: [清流, 温蒂, 异客]
+        - product: Originium Shard
+          operators: [水月, 香草, 杰西卡]
+      meeting:
+        - operators: [跃跃, 红]
+      power:
+        - operators: [Lancet-2]
+        - operators: [雷蛇]
+        - operators: [炎狱炎熔]
+      dormitory:
+        - operators: [流明]
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 下午（6h)
+    description: 喀兰组 + 迷迭香组(1+1) + 自动化组 + 莱茵组
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [诗怀雅, 灵知, 琴柳, 令, 夕]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 柏喙]
+          sort: true
+        - product: LMD
+          operators: [但书, 伺夜, 黑键]
+        - product: Orundum
+          operators: [孑, 崖心, 银灰]
+      manufacture:
+        - product: Pure Gold
+          operators: [砾, 至简, 迷迭香]
+        - product: Pure Gold
+          operators: [多萝西, 淬羽赫默, 白面鸮]
+        - product: Originium Shard
+          operators: [泡泡, 火神, 褐果]
+      power:
+        - operators: [格雷伊]
+        - operators: [澄闪]
+        - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+# yaml-language-server: $schema=./.schema.json

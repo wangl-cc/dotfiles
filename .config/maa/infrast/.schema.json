@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "MAA Infrastructure Plan",
+  "description": "JSON schema for MAA infrastructure plan configuration.",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the Maa infrastructure plan"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the Maa copilot infrastructure plan"
+    },
+    "plans": {
+      "type": "array",
+      "description": "A list of infrastructure plans",
+      "items": {
+        "$ref": "#/definitions/plan"
+      }
+    }
+  },
+  "required": [
+    "plans"
+  ],
+  "definitions": {
+    "plan": {
+      "type": "object",
+      "description": "Infrastructure plan",
+      "additionalProperties": false,
+      "required": [
+        "rooms"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the plan"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the plan"
+        },
+        "period": {
+          "type": "array",
+          "description": "Period list",
+          "items": {
+            "$ref": "#/definitions/planPeriod"
+          }
+        },
+        "duration": {
+          "type": "number",
+          "description": "Duration of the plan. Reserved."
+        },
+        "Fiammetta": {
+          "type": "object",
+          "description": "Fiammetta configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enable": {
+              "type": "boolean",
+              "description": "Enable Fiammetta"
+            },
+            "target": {
+              "$ref": "#/definitions/operator"
+            },
+            "order": {
+              "$ref": "#/definitions/order"
+            }
+          },
+          "required": [
+            "enable",
+            "target",
+            "order"
+          ]
+        },
+        "drones": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Drones configuration",
+          "properties": {
+            "enable": {
+              "type": "boolean",
+              "description": "Enable drones"
+            },
+            "room": {
+              "type": "string",
+              "description": "Target room type to use drones",
+              "enum": [
+                "trading",
+                "manufacture"
+              ]
+            },
+            "index": {
+              "$ref": "#/definitions/index"
+            },
+            "rule": {
+              "type": "string",
+              "description": "The usage of drones. Reserved"
+            },
+            "order": {
+              "$ref": "#/definitions/order"
+            }
+          }
+        },
+        "rooms": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "All arknights infrastructure rooms.",
+          "properties": {
+            "control": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roomConfig"
+              },
+              "maxItems": 1
+            },
+            "manufacture": {
+              "type": "array",
+              "maxItems": 5,
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/roomConfig"
+                  },
+                  {
+                    "properties": {
+                      "product": {
+                        "type": "string",
+                        "enum": [
+                          "Battle Record",
+                          "Pure Gold",
+                          "Dualchip",
+                          "Originium Shard"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "trading": {
+              "type": "array",
+              "maxItems": 5,
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/roomConfig"
+                  },
+                  {
+                    "properties": {
+                      "product": {
+                        "type": "string",
+                        "enum": [
+                          "LMD",
+                          "Orundum"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "meeting": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roomConfig"
+              },
+              "maxItems": 1
+            },
+            "hire": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roomConfig"
+              },
+              "maxItems": 1
+            },
+            "power": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roomConfig"
+              },
+              "maxItems": 3
+            },
+            "dormitory": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roomConfig"
+              },
+              "maxItems": 4
+            }
+          }
+        }
+      }
+    },
+    "planPeriod": {
+      "type": "array",
+      "description": "Period of the plan",
+      "items": {
+        "$ref": "#/definitions/planPeriodTimeFormat"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "planPeriodTimeFormat": {
+      "type": "string",
+      "description": "Time notation in HH:MM format (24 hours format)",
+      "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "roomConfig": {
+      "type": "object",
+      "properties": {
+        "operators": {
+          "type": "array",
+          "description": "Operators list",
+          "items": {
+            "$ref": "#/definitions/operator"
+          },
+          "maxItems": 5
+        },
+        "sort": {
+          "type": "boolean",
+          "description": "Sort operators in the same order as listed in operators"
+        },
+        "skip": {
+          "type": "boolean",
+          "description": "Skip this room or not"
+        },
+        "candidates": {
+          "type": "array",
+          "description": "Candidate operators list. Conflict with autofill",
+          "items": {
+            "$ref": "#/definitions/operator"
+          }
+        },
+        "autofill": {
+          "type": "boolean",
+          "description": "Autofill with default algorithm or not. Conflict with candidates"
+        }
+      }
+    },
+    "operator": {
+      "type": "string",
+      "description": "Operator name in your game client language"
+    },
+    "order": {
+      "type": "string",
+      "description": "Execution before or after infrastructure plan",
+      "enum": [
+        "pre",
+        "post"
+      ]
+    },
+    "index": {
+      "type": "integer",
+      "description": "Index of the infrastructure room.",
+      "minimum": 0,
+      "maximum": 5
+    }
+  }
+}
