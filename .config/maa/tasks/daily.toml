@@ -30,6 +30,7 @@ params = { plan_index = 0 }
 
 #============================= Fight 1 ============================#
 [[tasks]]
+name = "Fight Event Stage"
 type = "Fight"
 strategy = "merge"
 
@@ -54,6 +55,7 @@ condition = { type = "DateTime", start = "2023-12-22T16:00:00", end = "2024-01-0
 
 #============================= Fight 2 ============================#
 [[tasks]]
+name = "Fight Fallback"
 type = "Fight"
 strategy = "merge"
 
