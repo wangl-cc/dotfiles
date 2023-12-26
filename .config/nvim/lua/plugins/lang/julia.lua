@@ -24,6 +24,19 @@ return {
               },
             },
             ---@diagnostic enable: missing-fields
+            ---@param client lsp.Client
+            ---@param bufnr integer
+            on_attach = function(client, bufnr)
+              vim.api.nvim_buf_create_user_command(
+                bufnr,
+                "JuliaLSReIndex",
+                function() client.rpc.notify "julia/refreshLanguageServer" end,
+                {
+                  nargs = 0,
+                  desc = "Re-index Julia Language Server Cache",
+                }
+              )
+            end,
           },
         },
       },
