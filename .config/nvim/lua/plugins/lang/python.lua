@@ -16,7 +16,7 @@ return {
     },
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     optional = true,
     opts = tbl.merge_options {
       ---@type NullLSBuiltinSpec[]

@@ -2,7 +2,7 @@ local tbl = require "util.table"
 
 return {
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     opts = tbl.merge_options {
       ---@type NullLSBuiltinSpec[]
       sources = {

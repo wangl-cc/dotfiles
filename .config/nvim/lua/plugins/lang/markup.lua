@@ -18,6 +18,16 @@ return {
     },
   },
   {
+    "nvimtools/none-ls.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      ---@type NullLSBuiltinSpec[]
+      sources = {
+        { type = "formatting", name = "prettier" },
+      },
+    },
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = tbl.merge_options {

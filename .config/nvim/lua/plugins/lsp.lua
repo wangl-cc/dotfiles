@@ -9,7 +9,7 @@ return {
       { "folke/neoconf.nvim", version = "1", cmd = "Neoconf", config = true },
       "hrsh7th/cmp-nvim-lsp",
       "williamboman/mason-lspconfig.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
+      "nvimtools/none-ls.nvim",
     },
     config = function(_, opts)
       require("lspconfig.ui.windows").default_options.border = "rounded"
@@ -41,7 +41,7 @@ return {
     },
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     dependencies = {
       "jay-babu/mason-null-ls.nvim",
     },
