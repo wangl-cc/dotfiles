@@ -1,9 +1,3 @@
-#----------------------------- StartUp ----------------------------#
-[[tasks]]
-type = "StartUp"
-params = { client_type = "Official", start_game_enabled = true }
-
-#------------------------------ Fight -----------------------------#
 [[tasks]]
 type = "Fight"
 
@@ -19,7 +13,3 @@ description = "number of medicine to use"
 [tasks.variants.params.stage]
 default = "1-7"
 description = "a stage to fight"
-
-#--------------------------- Close Game ---------------------------#
-[[tasks]]
-type = "CloseDown"
