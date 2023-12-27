@@ -29,6 +29,11 @@ return function(buffer)
     ["<leader>"] = {
       ---@type KeymapOption
       ["."] = { callback = vim.lsp.buf.code_action, desc = "Show code actions" },
+      ---@type KeymapOption
+      ["k"] = {
+        callback = vim.lsp.buf.hover,
+        desc = "Show hover information",
+      },
       ---@type KeymapTree
       s = {
         ---@type KeymapOption

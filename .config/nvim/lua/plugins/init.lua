@@ -23,21 +23,21 @@ return {
   },
 
   -- More hover provider
-  {
-    "lewis6991/hover.nvim",
-    opts = {
-      init = function()
-        require "hover.providers.lsp"
-        require "hover.providers.gh"
-        require "hover.providers.man"
-        require "hover.providers.dictionary"
-      end,
-      title = false,
-      preview_opts = {
-        border = "rounded",
-      },
-    },
-  },
+  -- {
+  --   "lewis6991/hover.nvim",
+  --   opts = {
+  --     init = function()
+  --       require "hover.providers.lsp"
+  --       require "hover.providers.gh"
+  --       require "hover.providers.man"
+  --       require "hover.providers.dictionary"
+  --     end,
+  --     title = false,
+  --     preview_opts = {
+  --       border = "rounded",
+  --     },
+  --   },
+  -- },
 
   -- Waka time
   { "wakatime/vim-wakatime", event = "VeryLazy" },

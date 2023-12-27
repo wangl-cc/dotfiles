@@ -364,13 +364,6 @@ register({
   },
 }, { silent = true })
 
-register {
-  K = {
-    callback = import("hover"):get("hover"):with(),
-    desc = "Show hover doc",
-  },
-}
-
 -- ISSUE: move to left will not trigger redraw
 register({
   ["<C-a>"] = "<Home>",
