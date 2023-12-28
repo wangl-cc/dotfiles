@@ -1,10 +1,8 @@
-[core]
-channel = "beta"
+"$schema" = "https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/cli.schema.json"
 
 [resource]
 # auto_update = true
-backend = "git"
-# backend = "libgit2"
+backend = "libgit2"
 
 [resource.remote]
 # branch = "main"

@@ -4,12 +4,5 @@ type = "Fight"
 [tasks.params]
 report_to_penguin = true
 penguin_id = "084310065"
-
-[[tasks.variants]]
-[tasks.variants.params.medicine]
-default = 0
-description = "number of medicine to use"
-
-[tasks.variants.params.stage]
-default = "1-7"
-description = "a stage to fight"
+stage = { default = "1-7", description = "a stage to fight" }
+medicine = { default = 0, description = "number of medicine to use" }
