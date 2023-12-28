@@ -6,5 +6,5 @@ backend = "libgit2"
 
 [resource.remote]
 # branch = "main"
-# ssh_key = "~/.ssh/id_ed25519"
-url = "https://git.maa-org.net/MAA/MaaResource"
+ssh_key = "~/.ssh/id_ed25519"
+url = "git@github.com:MaaAssistantArknights/MaaResource.git"
