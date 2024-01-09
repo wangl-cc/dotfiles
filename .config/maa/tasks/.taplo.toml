@@ -1,3 +1,5 @@
+exclude = [".taplo.toml"]
+
 [formatting]
 inline_table_expand = false
 
