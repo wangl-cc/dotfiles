@@ -41,6 +41,14 @@ return {
 
   -- Waka time
   { "wakatime/vim-wakatime", event = "VeryLazy" },
+
+  ---@type LazyPluginSpec
+  {
+    "wangl-cc/im-switch.nvim",
+    dev = true,
+    event = "VeryLazy",
+    opts = {},
+  },
 }
 
 -- vim:ts=2:sw=2:et

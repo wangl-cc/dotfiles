@@ -4,8 +4,8 @@ return {
   ---@type LazyPluginSpec
   {
     "wangl-cc/auto-bg.nvim",
+    dev = true,
     event = "UIEnter",
-    build = "make",
     opts = {},
   },
   ---@type LazyPluginSpec

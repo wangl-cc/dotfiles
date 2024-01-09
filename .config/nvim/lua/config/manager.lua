@@ -12,6 +12,11 @@ end
 vim.opt.rtp:prepend(path)
 
 local opts = {
+  dev = {
+    path = "~/Repos/nvim-plugins",
+    pattern = { "wangl-cc" },
+    fallback = true,
+  },
   install = {
     colorscheme = { "tokyonight" },
   },
