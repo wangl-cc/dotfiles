@@ -45,9 +45,11 @@ return {
   ---@type LazyPluginSpec
   {
     "wangl-cc/im-switch.nvim",
+    cmd = "IMSwitch",
     dev = true,
-    event = "VeryLazy",
-    opts = {},
+    opts = {
+      filter = false,
+    },
   },
 }
 
