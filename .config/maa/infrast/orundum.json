@@ -43,7 +43,9 @@
           },
           {
             "autofill": true,
-            "operators": []
+            "operators": [
+              "车尔尼"
+            ]
           },
           {
             "autofill": true,
@@ -307,7 +309,9 @@
           },
           {
             "autofill": true,
-            "operators": []
+            "operators": [
+              "车尔尼"
+            ]
           },
           {
             "autofill": true,

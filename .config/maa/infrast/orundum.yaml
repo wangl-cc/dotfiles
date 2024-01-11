@@ -39,7 +39,7 @@ plans:
           autofill: true
         - operators: [爱丽丝]
           autofill: true
-        - operators: []
+        - operators: [车尔尼]
           autofill: true
         - operators: []
           autofill: true
@@ -119,7 +119,7 @@ plans:
           autofill: true
         - operators: [爱丽丝]
           autofill: true
-        - operators: []
+        - operators: [车尔尼]
           autofill: true
         - operators: []
           autofill: true

@@ -43,7 +43,9 @@
           },
           {
             "autofill": true,
-            "operators": []
+            "operators": [
+              "车尔尼"
+            ]
           },
           {
             "autofill": true,
@@ -87,7 +89,7 @@
             "operators": [
               "断罪者",
               "食铁兽",
-              "红豆"
+              "槐琥"
             ],
             "product": "Battle Record"
           }
@@ -309,7 +311,9 @@
           },
           {
             "autofill": true,
-            "operators": []
+            "operators": [
+              "车尔尼"
+            ]
           },
           {
             "autofill": true,
@@ -352,7 +356,7 @@
             "operators": [
               "断罪者",
               "食铁兽",
-              "红豆"
+              "槐琥"
             ],
             "product": "Battle Record"
           }
