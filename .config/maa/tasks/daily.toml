@@ -50,7 +50,7 @@ conditions = [
 ]
 
 [[tasks.variants]]
-params = { stage = "FC-6" }
+params = { stage = "WB-7" }
 condition = { type = "OnSideStory", client = "Official" }
 
 #============================= Fight 2 ============================#
