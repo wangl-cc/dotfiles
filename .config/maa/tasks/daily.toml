@@ -43,7 +43,7 @@ penguin_id = "084310065"
 params = { expiring_medicine = 1000 }
 
 [tasks.variants.condition]
-type = "Combined"
+type = "And"
 conditions = [
   { type = "Time", start = "18:00:00" },
   { type = "Weekday", weekdays = ["Sun"] },
@@ -68,7 +68,7 @@ penguin_id = "084310065"
 params = { expiring_medicine = 1000 }
 
 [tasks.variants.condition]
-type = "Combined"
+type = "And"
 conditions = [
   { type = "Time", start = "18:00:00" },
   { type = "Weekday", weekdays = ["Sun"] },
