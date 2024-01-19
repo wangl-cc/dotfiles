@@ -12,6 +12,10 @@ return {
     end,
   },
   {
+    "kaarmu/typst.vim",
+    ft = "typst",
+  },
+  {
     "neovim/nvim-lspconfig",
     optional = true,
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
