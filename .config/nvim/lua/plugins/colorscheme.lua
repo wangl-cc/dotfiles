@@ -11,7 +11,7 @@ return {
   ---@type LazyPluginSpec
   {
     "folke/tokyonight.nvim",
-    version = "2",
+    version = "3",
     event = "UIEnter",
     opts = tbl.merge_options {
       style = "moon",
