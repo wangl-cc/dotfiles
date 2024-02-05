@@ -121,6 +121,7 @@ end
 set -gx ESH_SHELL /bin/bash
 set -gx WAKATIME_HOME $HOME/.config/wakatime
 set -gx BOB_CONFIG $HOME/.config/bob/config.json
+set -gx MAA_LOG info
 # environments variables for interactive shells }}}
 
 if test "$TERM_PROGRAM" != "WarpTerminal"
