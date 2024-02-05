@@ -1,0 +1,10 @@
+[[tasks]]
+type = "SSSCopilot"
+
+[tasks.params.filename]
+alternatives = ["自走机械搏斗场.json", "塔山农业实验平台.json"]
+description = "sss copilot filename"
+
+[tasks.params.loop_times]
+default = 1
+description = "loop times"
