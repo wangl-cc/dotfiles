@@ -42,6 +42,13 @@ return {
   -- Waka time
   { "wakatime/vim-wakatime", event = "VeryLazy" },
 
+  -- auto remove search highlight and rehighlight when using n or N
+  {
+    "nvimdev/hlsearch.nvim",
+    event = "BufEnter",
+    opts = {},
+  },
+
   ---@type LazyPluginSpec
   {
     "wangl-cc/im-switch.nvim",
