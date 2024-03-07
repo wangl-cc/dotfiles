@@ -3,14 +3,10 @@ local import = require "util.import"
 
 return {
   {
-    "lukas-reineke/indent-blankline.nvim",
-    version = "2",
-    event = "User ColorSchemeLoaded",
+    "nvimdev/indentmini.nvim",
+    event = "BufEnter",
     opts = tbl.merge_options {
       char = "▏",
-      context_char = "▏",
-      show_current_context = true,
-      show_current_context_start = true,
     },
   },
   {

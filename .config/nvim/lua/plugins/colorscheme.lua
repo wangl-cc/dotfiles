@@ -32,10 +32,16 @@ return {
           return vim.tbl_extend("force", hl, opts)
         end
 
+        -- highlight for indentmini
+        hls.IndentLine = { fg = c.fg_gutter, nocombine = true }
+
+        -- highlight for window-picker
         hls.WindowPickerStatusLine = { fg = c.black, bg = c.blue }
         hls.WindowPickerStatusLineNC = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBar = { fg = c.black, bg = c.blue }
         hls.WindowPickerWinBarNC = { fg = c.black, bg = c.blue }
+
+        -- highlight for treesitter
         hls["@keyword"].fg = c.magenta2 -- The original color is purple, which is not very obvious in the light theme
         hls["@keyword.function"] = hls["@keyword"] -- e.g. `function`, `end` in Julia
         hls["@keyword.operator"] = base_on("@operator", { style = "italic" }) -- e.g. `in`, `isa` in Julia, `and`, `or` in Lua
