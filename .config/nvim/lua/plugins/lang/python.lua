@@ -11,19 +11,8 @@ return {
         ---@diagnostic disable: missing-fields
         ---@type lspconfig.options.pyright
         pyright = {},
+        ruff_lsp = {},
         ---@diagnostic enable: missing-fields
-      },
-    },
-  },
-  {
-    "nvimtools/none-ls.nvim",
-    optional = true,
-    opts = tbl.merge_options {
-      ---@type NullLSBuiltinSpec[]
-      sources = {
-        { type = "formatting", name = "autopep8" },
-        { type = "formatting", name = "autoflake" },
-        { type = "diagnostics", name = "flake8" },
       },
     },
   },
