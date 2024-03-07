@@ -44,6 +44,10 @@
 	ci = commit
 	br = branch
 	st = status
+[log]
+	mailmap = true
+[mailmap]
+	file = ~/.config/git/mailmap
 [include]
 <% if command -v delta >/dev/null 2>&1; then -%>
 	path = ../delta/delta.gitconfig
