@@ -24,7 +24,7 @@ end
 ---@alias KeymapCallback fun(opts: table): string|nil
 
 ---@private
---- Options acccepted by `vim.keymap.set`
+--- Options accepted by `vim.keymap.set`
 ---@class KeymapOption
 ---@field nowait? boolean Don't wait for additional keys if true
 ---@field silent? boolean Don't echo the command if true

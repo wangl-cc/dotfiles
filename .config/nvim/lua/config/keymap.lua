@@ -194,12 +194,12 @@ local leader_mappings = {
   c = {
     w = {
       [[: %s/\V\<<C-r><C-w>\>/<C-r><C-w>]],
-      desc = "Rename all matchs of cword",
+      desc = "Rename all matches of cword",
       silent = false,
     },
     W = {
       [[: %s/\V<C-r><C-a>/<C-r><C-a>]],
-      desc = "Rename all matchs of cWORD",
+      desc = "Rename all matches of cWORD",
       silent = false,
     },
   },
