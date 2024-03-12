@@ -2,15 +2,6 @@ local tbl = require "util.table"
 
 return {
   {
-    "nvimtools/none-ls.nvim",
-    opts = tbl.merge_options {
-      ---@type NullLSBuiltinSpec[]
-      sources = {
-        { type = "diagnostics", name = "gitlint" },
-      },
-    },
-  },
-  {
     "lewis6991/gitsigns.nvim",
     event = "User ColorSchemeLoaded",
     opts = tbl.merge_options {
@@ -85,6 +76,24 @@ return {
       end,
       yadm = {
         enable = true,
+      },
+    },
+  },
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = tbl.merge_options {
+      linters_by_ft = {
+        gitcommit = {},
+      },
+    },
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      ensure_installed = {
+        "gitlint",
       },
     },
   },

@@ -8,12 +8,11 @@ return {
     opts = tbl.merge_options {
       servers = {
         ---@diagnostic disable: missing-fields
-        ---@type lspconfig.options.bashls
-        bashls = {
-          options = {
-            filetypes = { "sh", "bash" },
-          },
-        },
+        ---@type lspconfig.options.jsonls
+        jsonls = {},
+        ---@type lspconfig.options.yamlls
+        yamlls = {},
+        taplo = {},
         ---@diagnostic enable: missing-fields
       },
     },
@@ -23,8 +22,11 @@ return {
     optional = true,
     opts = tbl.merge_options {
       ensure_installed = {
-        "bash",
-        "fish",
+        "json",
+        "jsonc",
+        "json5",
+        "yaml",
+        "toml",
       },
     },
   },
@@ -33,7 +35,10 @@ return {
     optional = true,
     opts = tbl.merge_options {
       formatters_by_ft = {
-        fish = { "fish_indent" },
+        json = { "prettierd" },
+        jsonc = { "prettierd" },
+        json5 = { "prettierd" },
+        yaml = { "prettierd" },
       },
     },
   },
@@ -41,8 +46,18 @@ return {
     "mfussenegger/nvim-lint",
     optional = true,
     opts = tbl.merge_options {
-      linters_by_ft = {
-        fish = "fish",
+      linters_by_filepattern = {
+        ["%.github/workflows/.+%.ya?ml"] = "actionlint",
+      },
+    },
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      ensure_installed = {
+        "prettierd",
+        "actionlint",
       },
     },
   },

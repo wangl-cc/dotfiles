@@ -27,12 +27,20 @@ return {
     },
   },
   {
-    "nvimtools/none-ls.nvim",
+    "stevearc/conform.nvim",
     optional = true,
     opts = tbl.merge_options {
-      ---@type NullLSBuiltinSpec[]
-      sources = {
-        { type = "formatting", name = "stylua" },
+      formatters_by_ft = {
+        lua = { "stylua" },
+      },
+    },
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      ensure_installed = {
+        "stylua",
       },
     },
   },

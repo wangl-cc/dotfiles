@@ -14,6 +14,13 @@ local groups = import "bufferline.groups"
 local function git_notify(msg) vim.notify(msg, vim.log.levels.INFO, { title = "Git" }) end
 
 local leader_mappings = {
+  f = {
+    callback = import("conform"):get("format"):with {
+      async = true,
+      lsp_fallback = true,
+    },
+    desc = "Format current buffer",
+  },
   b = {
     d = { bd:with(0, false), desc = "Remove current buffer" },
     D = { bd:with(0, true), desc = "Force remove current buffer" },

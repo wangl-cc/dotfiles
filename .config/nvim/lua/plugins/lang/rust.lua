@@ -16,6 +16,9 @@ return {
                 cargo = {
                   allFeatures = true,
                 },
+                check = {
+                  command = "clippy",
+                },
               },
             },
           },
@@ -24,7 +27,6 @@ return {
       },
     },
   },
-
   {
     "nvim-treesitter/nvim-treesitter",
     optional = true,

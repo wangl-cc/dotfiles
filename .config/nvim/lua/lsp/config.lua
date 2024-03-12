@@ -8,25 +8,16 @@ local nu = require "util.nil"
 local M = {}
 
 ---@class LspGlobalOptions
----@field autofmt? boolean Whether to autofmt on save
-M.options = {
-  autofmt = true,
-}
+M.options = {}
 
 ---@type table<string, table>
 M.servers = {}
 
 ---@param client lsp.Client
 ---@param buffer integer
----@param autofmt boolean|nil
-local function on_attach_common(client, buffer, autofmt)
+local function on_attach_common(client, buffer)
   -- Keymap
   lsp_keymap(buffer)
-
-  -- Format
-  -- If autofmt is nil, use global autofmt, otherwise use the value passed in
-  autofmt = nu.or_default(autofmt, M.options.autofmt)
-  require("lsp.format").setup(client, buffer, autofmt)
 
   -- Attach nvim-navic to LSP clients
   if client.supports_method "textDocument/documentSymbol" then
@@ -41,7 +32,6 @@ end
 
 ---@class LspConfig
 ---@field disabled? boolean Whether to disable this lsp
----@field autofmt? boolean Whether to enable autofmt
 ---@field mason? boolean Whether to install lsp with mason
 ---@field options? table Options to be passed to lspconfig
 
@@ -59,13 +49,11 @@ function M.register(server, config)
   if options.on_attach then
     local on_attach_old = options.on_attach
     options.on_attach = function(client, bufnr)
-      on_attach_common(client, bufnr, config.autofmt)
+      on_attach_common(client, bufnr)
       on_attach_old(client, bufnr)
     end
   else
-    options.on_attach = function(client, bufnr)
-      on_attach_common(client, bufnr, config.autofmt)
-    end
+    options.on_attach = on_attach_common
   end
   options.capabilities =
     require("cmp_nvim_lsp").default_capabilities(options.capabilities)
