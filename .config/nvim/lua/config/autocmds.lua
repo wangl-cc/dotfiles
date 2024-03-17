@@ -162,7 +162,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
       else
         vim.defer_fn(function()
           vim.cmd.cclose()
-          trouble.open "quickfix"
+          if not vim.tbl_isempty(vim.fn.getqflist()) then trouble.open "quickfix" end
         end, 0)
       end
     end
