@@ -13,9 +13,6 @@ return {
           options = {
             settings = {
               ["rust-analyzer"] = {
-                cargo = {
-                  allFeatures = true,
-                },
                 check = {
                   command = "clippy",
                 },
