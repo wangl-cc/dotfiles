@@ -39,8 +39,13 @@ return {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
     opts = tbl.merge_options {
-      ignore_install = {
+      ensure_installed = {
         "latex",
+      },
+      highlight = {
+        disable = {
+          "latex",
+        },
       },
     },
   },
