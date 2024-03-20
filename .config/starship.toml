@@ -14,7 +14,6 @@ format = """ \
 $username$hostname$localip\
 $directory\
 $git_branch$git_commit\
-$package$julia$lua$rust\
 $git_state$git_status\
 $fill \
 $jobs\
@@ -55,7 +54,7 @@ read_only = " 󰌾 "
 symbol = "─"
 
 [jobs]
-format = "with [$number backgroud job$symbol]($style) " # this is a trick to make it plural
+format = "with [$number background job$symbol]($style) " # this is a trick to make it plural
 symbol = "s"
 number_threshold = 1
 symbol_threshold = 2
@@ -115,20 +114,7 @@ untracked = "󰐙 $count "                    # nf-md-plus_circle_outline
 modified = "󰝶 $count "                     # nf-md-pencil_circle_outline
 # }}}
 
-# Language or enviroment {{{
-[package]
-symbol = "󰏗 "
-
-# Language symbols are nf-seti-* symbols
-[julia]
-symbol = " "
-
-[lua]
-symbol = " "
-lua_binary = "fake-lua"
-
-[rust]
-symbol = ' '
+# Language or environment {{{
 
 # [env_var]
 
