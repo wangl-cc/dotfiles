@@ -27,18 +27,8 @@ o.confirm = true
 -- when a bracket is inserted, briefly jump to the matching one
 o.showmatch = true
 
--- file encoding
-o.fileencoding = "utf-8"
-
 -- file format
-o.expandtab = true
-o.shiftwidth = 2
-o.softtabstop = 2
-o.tabstop = 8
--- 80 is the standard terminal width
--- but the number and sign column takes 5 columns
--- so the textwidth is 74 to make sure the text is not wrapped
-o.textwidth = 74
+o.fileencoding = "utf-8"
 o.fileformat = "unix"
 o.fixendofline = true
 
@@ -52,9 +42,6 @@ o.splitbelow = true
 o.splitright = true
 
 -- Indent
-o.tabstop = 2
-o.shiftwidth = 2
-o.expandtab = true
 o.smarttab = true
 o.autoindent = true
 
@@ -82,7 +69,7 @@ o.showtabline = 2
 -- always show a global status line, require nvim-0.7
 o.laststatus = 3
 
--- display sign in number column
+-- display sign with fixed width
 o.signcolumn = "yes:1"
 
 -- Auto write
@@ -100,14 +87,6 @@ opt.guicursor = {
   "i-ci-ve:ver25-Cursor/lCursor",
   "r-cr-o:hor20-Cursor/lCursor",
 }
-
--- gui font, only works for GUI version like `neovide`
-o.guifont = "JetBrainsMono Nerd Font:h13"
-
-if g.goneovim == 1 then
-  o.cmdheight = 0 -- goneovim has its own cmdline
-  o.scrolloff = 0 -- This is not works well in goneovim
-end
 
 -- clipboard
 opt.clipboard:append { "unnamedplus" }
@@ -129,3 +108,112 @@ if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr -O"
   vim.env.GIT_EDITOR = "nvr -cc split --remote-wait"
 end
+
+-- File specific options
+
+---@alias IndentStyle "tab" | "space"
+
+---@type table<string, IndentStyle>
+local indent_style_by_ft = {
+  gitconfig = "tab",
+  make = "tab",
+}
+
+---@type table<string, number>
+local indent_size_by_ft = {
+  python = 4,
+  julia = 4,
+  rust = 4,
+  fish = 4,
+}
+
+---@type table<string, number>
+local tab_width_by_ft = {}
+
+---@type table<string, number>
+local max_line_length_by_ft = {
+  julia = 92,
+  rust = 100,
+}
+local default_max_line_length = 76
+
+local default_indent_style = "space"
+local default_indent_size = 2
+
+local group = vim.api.nvim_create_augroup("options", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(args)
+    local bufnr = args.buf
+    local bo = vim.bo[bufnr]
+
+    if bo.buftype ~= "" then return end
+
+    local ft = bo.filetype
+
+    -- Respect the `editorconfig` settings
+    local editorconfig = vim.b[bufnr].editorconfig
+    if not editorconfig or type(editorconfig) ~= "table" then editorconfig = {} end
+    local indent_style = editorconfig.indent_style
+      or indent_style_by_ft[ft]
+      or default_indent_style
+    local indent_size = tonumber(editorconfig.indent_size) or indent_size_by_ft[ft]
+    local tab_width = tonumber(editorconfig.tab_width) or tab_width_by_ft[ft]
+    local max_line_length = editorconfig.max_line_length or max_line_length_by_ft[ft]
+
+    if indent_style == "space" then
+      bo.expandtab = true
+    elseif indent_style == "tab" then
+      bo.expandtab = false
+    else
+      require("util.log").warn(
+        "Unknown indent style " .. indent_style .. ", fallback to 'space'",
+        "options"
+      )
+      bo.expandtab = true
+    end
+
+    if indent_size then
+      bo.shiftwidth = indent_size
+      bo.softtabstop = -1
+    else
+      if indent_style == "space" then
+        bo.shiftwidth = default_indent_size
+        bo.softtabstop = -1
+      else
+        bo.shiftwidth = 0
+        bo.softtabstop = 0
+      end
+    end
+
+    if tab_width then
+      bo.tabstop = tab_width
+    else
+      if indent_size then
+        bo.tabstop = indent_size
+      elseif indent_style == "space" then
+        bo.tabstop = default_indent_size
+      end
+    end
+
+    if max_line_length then
+      local n = tonumber(max_line_length)
+      if n then
+        bo.textwidth = n
+      elseif max_line_length == "off" then
+        bo.textwidth = 0
+      else
+        require("util.log").warn(
+          "Invalid max line length "
+            .. max_line_length
+            .. ", fallback to "
+            .. default_max_line_length,
+          "options"
+        )
+        bo.textwidth = default_max_line_length
+      end
+    else
+      bo.textwidth = default_max_line_length
+    end
+  end,
+  group = group,
+})

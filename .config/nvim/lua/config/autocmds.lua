@@ -71,7 +71,6 @@ vim.filetype.add {
   filename = {
     condarc = "yaml",
     [".condarc"] = "yaml",
-    [".fishrc"] = "fish",
   },
   pattern = {
     [".*##template%.esh"] = function(path)
@@ -99,38 +98,6 @@ vim.filetype.add {
     end,
   },
 }
-
--- filetype specific settings
---- file types that use 4 spaces for indentation
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "python", "julia", "rust" },
-  callback = function(args)
-    local bufnr = args.buf
-    local bo = vim.bo[bufnr]
-    bo.expandtab = true
-    bo.shiftwidth = 4
-    bo.softtabstop = 4
-    if bo.filetype == "julia" then
-      bo.textwidth = 92
-    elseif bo.filetype == "rust" then
-      bo.textwidth = 100
-    end
-  end,
-  group = group,
-})
---- file types that use tab for indentation
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "gitconfig", "make" },
-  callback = function(args)
-    local bufnr = args.buf
-    local bo = vim.bo[bufnr]
-    bo.expandtab = false
-    bo.shiftwidth = 8
-    bo.softtabstop = 8
-    bo.tabstop = 8
-  end,
-  group = group,
-})
 
 -- When open a directory, load neo-tree and open the directory with it
 vim.api.nvim_create_autocmd("BufEnter", {
