@@ -161,11 +161,15 @@ return {
 
       vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
         callback = function(args)
+          local bo = vim.bo[args.buf]
+
+          -- Skip linting if the buffer is not a normal buffer
+          if bo.buftype ~= "" then return end
+
           local lint = require "lint"
 
           -- Try to lint with linters defined for the filetype
-          local ft = vim.bo[args.buf].filetype
-          local ft_opts = linters_by_ft[ft] or {}
+          local ft_opts = linters_by_ft[bo.filetype] or {}
           if ft_opts.linters then lint.try_lint(ft_opts.linters) end
 
           -- Try to lint with linters defined for the file path pattern
