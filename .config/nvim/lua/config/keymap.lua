@@ -177,7 +177,6 @@ local leader_mappings = {
     t = { [[<Cmd>Neotree toggle<CR>]], desc = "Toggle the file explorer" },
     c = { [[<Cmd>TSContextToggle<CR>]], desc = "Toggle treesitter context" },
     p = { [[<Cmd>TSPlaygroundToggle<CR>]], desc = "Toggle treesitter playground" },
-    i = { [[<Cmd>IndentBlanklineToggle<CR>]], desc = "Toggle indent guides" },
     r = {
       callback = function()
         local ok, iron = pcall(require, "iron.core")
@@ -261,50 +260,6 @@ leader_mappings.x = {
 }
 
 register(leader_mappings, { prefix = "<leader>", silent = true })
--- fold keymaps with IndentBlanklineRefresh
-local fold = {
-  o = {
-    [[zo<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Open one fold under the cursor",
-  },
-  O = {
-    [[zO<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Open all folds under the cursor",
-  },
-  c = {
-    [[zc<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Close one fold under the cursor",
-  },
-  C = {
-    [[zC<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Close all folds under the cursor",
-  },
-  a = {
-    [[za<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Toggle one fold under the cursor",
-  },
-  A = {
-    [[zA<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Toggle all folds under the cursor",
-  },
-  v = {
-    [[zv<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Open enough folds to view the cursor line",
-  },
-  x = {
-    [[zx<Cmd>IndentBlanklineRefresh<CR>]],
-    desc = "Re-apply fold level, then do zv",
-  },
-  X = { [[zX<Cmd>IndentBlanklineRefresh<CR>]], desc = "Re-apply fold level" },
-  m = { [[zm<Cmd>IndentBlanklineRefresh<CR>]], desc = "Decrease fold level" },
-  M = { [[zM<Cmd>IndentBlanklineRefresh<CR>]], desc = "Close all folds" },
-  r = { [[zr<Cmd>IndentBlanklineRefresh<CR>]], desc = "Increase fold level" },
-  R = { [[zR<Cmd>IndentBlanklineRefresh<CR>]], desc = "Open all folds" },
-  n = { [[zn<Cmd>IndentBlanklineRefresh<CR>]], desc = "Disable fold" },
-  N = { [[zN<Cmd>IndentBlanklineRefresh<CR>]], desc = "Enable fold" },
-  i = { [[zi<Cmd>IndentBlanklineRefresh<CR>]], desc = "Toggle foldenable" },
-}
-register(fold, { prefix = "z", silent = true })
 register({
   ["<C-\\>"] = {
     function()
