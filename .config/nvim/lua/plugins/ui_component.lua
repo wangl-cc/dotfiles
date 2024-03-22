@@ -164,9 +164,6 @@ return {
             enabled = true,
           },
         },
-        presets = {
-          z = false,
-        },
         operators = {
           ga = "Align code",
           gA = "Align code with preview",
