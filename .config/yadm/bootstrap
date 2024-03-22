@@ -3,23 +3,35 @@
 __BOOTSTRAP_SRC_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 bootstrap_dir="$__BOOTSTRAP_SRC_DIR/bootstrap.d"
 
-# Install linuxbrew on GitHub Codespaces
-if [[ -n "$CODESPACES" && ! -e /home/linuxbrew/.linuxbrew ]]; then
-  export NONINTERACTIVE=1 PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
+export CURRENT_INDENT=0
 
+export ACTION_COLOR=35
+export TARGET_COLOR=34
+
+echo_indent() {
+  for ((i = 0; i < CURRENT_INDENT; i++)); do
+    echo -n "  "
+  done
+  echo -e "$1"
+}
+
+colorize() {
+  # shellcheck disable=SC2028
+  echo "\033[1;${1}m${2}\033[0m"
+}
+
+# Make sure the binary path of homebrew is in the PATH
 if [ "$(uname -s)" = 'Darwin' ]; then
-  bash "$bootstrap_dir/macOS.sh"
-  # setup path to homebrew temporary to find packages installed by homebrew
   if [ "$(uname -m)" = 'arm64' ]; then
-    export PATH="/opt/homebrew/bin:$PATH"
+    if [ -e /opt/homebrew/bin ]; then
+      export PATH="/opt/homebrew/bin:$PATH"
+    fi
   else
-    export PATH="/usr/local/bin:$PATH"
+    if [ -e /usr/local/bin ]; then
+      export PATH="/usr/local/bin:$PATH"
+    fi
   fi
-fi
-
-if [ "$(uname -s)" = 'Linux' ]; then
+elif [ "$(uname -s)" = 'Linux' ]; then
   # set path to homebrew temporary to find packages installed by homebrew
   # if linuxbrew in installed other location, the PATH should be set manually
   if [ -e /home/linuxbrew/.linuxbrew ]; then
@@ -27,12 +39,23 @@ if [ "$(uname -s)" = 'Linux' ]; then
   fi
 fi
 
+
+# Use USTC mirrors for homebrew if not in GitHub Codespaces and not set HOMEBREW_NO_MIRROR
+if [[ -z "$CODESPACES" && -z "$HOMEBREW_NO_MIRROR" ]]; then
+  export HOMEBREW_MIRROR_DOMAIN="https://mirrors.ustc.edu.cn"
+fi
+
+# run bootstrap scripts for macOS
+if [ "$(uname -s)" = 'Darwin' ]; then
+  bash "$bootstrap_dir/macOS.sh"
+fi
+
+# run bootstrap scripts for Homebrew
 if command -v brew >/dev/null 2>&1; then
   bash "$bootstrap_dir/brew.sh"
 fi
 
+# run bootstrap scripts for fish-shell
 if command -v fish >/dev/null 2>&1; then
   fish "$bootstrap_dir/fish.fish"
 fi
-
-# vim:ts=2:sw=2:et:fdm=marker
