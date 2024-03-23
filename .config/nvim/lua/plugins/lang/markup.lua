@@ -54,8 +54,7 @@ return {
     optional = true,
     opts = tbl.merge_options {
       linters_by_ft = {
-        markdown = { "markdownlint", "vale" },
-        latex = "vale",
+        markdown = { "markdownlint" },
       },
     },
   },
@@ -65,7 +64,6 @@ return {
     opts = tbl.merge_options {
       ensure_installed = {
         "markdownlint",
-        "vale",
       },
     },
   },
