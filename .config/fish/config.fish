@@ -104,13 +104,13 @@ if type -q cargo # {{{
         abbr --add ct cargo nextest run
     else
         abbr --add ct cargo test
-        abbr --add ci cargo install
-        abbr --add cil cargo install --locked
-        abbr --add cl cargo install --list
-        abbr --add clp cargo clippy --all-targets --all-features -- -D warnings
-        abbr --add cu cargo uninstall
-        abbr --add cup cargo update
     end
+    abbr --add ci cargo install
+    abbr --add cil cargo install --locked
+    abbr --add cl cargo install --list
+    abbr --add clp cargo clippy --all-targets --all-features -- -D warnings
+    abbr --add cu cargo uninstall
+    abbr --add cup cargo update
 end # }}}
 
 if type -q nvim # {{{
