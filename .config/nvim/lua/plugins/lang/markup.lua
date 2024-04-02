@@ -24,13 +24,6 @@ return {
         ---@diagnostic disable: missing-fields
         texlab = {},
         typst_lsp = {},
-        ltex = {
-          ---@type lspconfig.options.ltex
-          options = {
-            autostart = false,
-            filetypes = { "plaintex", "tex", "bib", "markdown", "rst" },
-          },
-        },
         ---@diagnostic enable: missing-fields
       },
     },
