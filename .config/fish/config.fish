@@ -108,7 +108,7 @@ if type -q cargo # {{{
     abbr --add ci cargo install
     abbr --add cil cargo install --locked
     abbr --add cl cargo install --list
-    abbr --add clp cargo clippy --all-targets --all-features -- -D warnings
+    abbr --add clp cargo clippy --all-targets -- -D warnings
     abbr --add cu cargo uninstall
     abbr --add cup cargo update
 end # }}}
