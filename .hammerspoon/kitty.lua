@@ -22,18 +22,6 @@ function M.remote_run(cmd)
   return output
 end
 
-function M.all_windows() return hs.window.filter.new({ kitty = {} }):getWindows() end
-
----@param wins hs.window[]|nil
----@return hs.window|nil
-function M.find_hotkeywin(wins)
-  if not wins then wins = M.all_windows() end
-  for _, win in ipairs(wins) do
-    if win:title() == M.window_title then return win end
-  end
-  return nil
-end
-
 function M.hotkey_win()
   local app = hs.application.get "kitty"
 
@@ -43,32 +31,7 @@ function M.hotkey_win()
     return
   end
 
-  local current_screen = hs.mouse.getCurrentScreen()
-
-  local id = (M.remote_run "launch --type=os-window"):sub(1, -2) -- remove the last \n
-  local current_hotkeywin = nil
-  local count = 0
-  while not current_hotkeywin do
-    if count > 100 then
-      hs.alert.show "Failed to get hotkey window"
-      return
-    end
-    hs.timer.usleep(10000) -- 10ms
-    count = count + 1
-    M.remote_run {
-      "set-window-title",
-      "--match=id:" .. id,
-      "--temporary",
-      M.window_title,
-    }
-    current_hotkeywin = M.find_hotkeywin()
-  end
-
-  if current_hotkeywin:isFullScreen() then current_hotkeywin:toggleFullScreen() end
-
-  -- Move the hotkey window to the current screen and focus it
-  current_hotkeywin:moveToScreen(current_screen)
-  current_hotkeywin:focus()
+  M.remote_run "launch --type=os-window"
 end
 
 function M.bind(mods, key) hs.hotkey.bind(mods, key, M.hotkey_win) end
