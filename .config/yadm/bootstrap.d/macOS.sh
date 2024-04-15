@@ -129,8 +129,8 @@ echo_setup "Safari"
   defaults_write com.apple.Safari AutoOpenSafeDownloads -bool false
   # open new windows with start page
   defaults_write com.apple.Safari NewWindowBehavior -int 4
-  # open new tabs with empty page
-  defaults_write com.apple.Safari NewTabBehavior -int 1
+  # open new tabs with start page
+  defaults_write com.apple.Safari NewTabBehavior -int 4
   # campact tab layout
   defaults_write com.apple.Safari ShowStandaloneTabBar -bool false
   # don't warn about fraudulent websites, this is a privacy concern
