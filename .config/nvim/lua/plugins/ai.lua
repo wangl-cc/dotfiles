@@ -43,20 +43,23 @@ return {
     },
   },
   {
-    "jackMort/ChatGPT.nvim",
-    cmd = { "ChatGPT", "ChatGPTRun" },
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    cmd = {
+      "CopilotChat",
+      "CopilotChatCommit",
+      "CopilotChatCommitStaged",
+    },
+    dependencies = "zbirenbaum/copilot.lua",
     opts = {
-      api_host_cmd = "echo -n api.groq.com/openai",
-      api_key_cmd = "security find-generic-password -w -a loong -s groq",
-      actions_paths = {
-        vim.fn.stdpath "config" .. "/lua/plugins/ai/actions.json",
-      },
-      openai_params = {
-        model = "llama2-70b-4096",
-        max_tokens = 4096,
-      },
-      openai_edit_params = {
-        model = "llama2-70b-4096",
+      window = {
+        layout = "float",
+        width = 0.8,
+        height = 0.4,
+        title = "",
+        relative = "editor",
+        border = "rounded",
+        row = 0,
       },
     },
   },

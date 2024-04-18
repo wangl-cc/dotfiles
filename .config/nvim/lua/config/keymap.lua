@@ -176,7 +176,6 @@ local leader_mappings = {
   t = {
     t = { [[<Cmd>Neotree toggle<CR>]], desc = "Toggle the file explorer" },
     c = { [[<Cmd>TSContextToggle<CR>]], desc = "Toggle treesitter context" },
-    p = { [[<Cmd>TSPlaygroundToggle<CR>]], desc = "Toggle treesitter playground" },
     r = {
       callback = function()
         local ok, iron = pcall(require, "iron.core")
@@ -188,6 +187,10 @@ local leader_mappings = {
         end
       end,
       desc = "Toggle REPL",
+    },
+    p = {
+      callback = import("CopilotChat"):get("toggle"):with(),
+      desc = "Toggle CopilotChat",
     },
   },
   c = {
