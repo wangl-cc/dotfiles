@@ -151,6 +151,7 @@ end
 --- bar:with_fun(function()
 ---   return 1, 2, 3
 --- end)
+--- bar:tbl() -- return a table to access foo.bar
 ---@param mod string
 ---@return Import.LazyMod
 local import = function(mod) return LazyMod.new(mod) end

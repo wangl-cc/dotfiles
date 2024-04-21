@@ -1,6 +1,17 @@
 -- A convenience way to register keymaps like `which-key.nvim`
 
----@alias KeymapMode string Mode of keymap
+---@alias KeymapMode
+---| '"n"' -- Normal mode
+---| '"s"' -- Select mode
+---| '"x"' -- Visual mode
+---| '"v"' -- Visual and Select mode
+---| '"o"' -- Operator-pending mode
+---| '"i"' -- Insert mode
+---| '"c"' -- Command-line mode
+---| '"l"' -- Insert, Command-line, and Lang-Arg mode
+---| '"t"' -- Terminal mode
+---| '"o"' -- Operator-pending mode
+---| '"m"' -- Motion mode
 
 ---@private
 --- Wrap mode in a table if it is not a table
@@ -55,17 +66,17 @@ end
 ---@private
 --- Set keymap for given buffer when buffer is not nil, otherwise set it globally
 ---@param buffer buffer|nil
----@param mode KeymapMode[]
+---@param modes KeymapMode[]
 ---@param lhs string
 ---@param rhs string
 ---@param opts KeymapOption
-local function set_keymap(buffer, mode, lhs, rhs, opts)
+local function set_keymap(buffer, modes, lhs, rhs, opts)
   if buffer then
-    for _, m in ipairs(mode) do
+    for _, m in ipairs(modes) do
       vim.api.nvim_buf_set_keymap(buffer, m, lhs, rhs, opts)
     end
   else
-    for _, m in ipairs(mode) do
+    for _, m in ipairs(modes) do
       vim.api.nvim_set_keymap(m, lhs, rhs, opts)
     end
   end
@@ -98,8 +109,8 @@ local function register_impl(buffer, mode, prefix, tree, suffix, defaults)
           opts.callback = rhs
           rhs = ""
         end
-        mode = warp(pop(opts, "mode", mode))
-        set_keymap(buffer, mode, lhs, rhs, setup_opts(opts))
+        local local_mode = warp(pop(opts, "mode", mode))
+        set_keymap(buffer, local_mode, lhs, rhs, setup_opts(opts))
       else -- KeymapTree
         register_impl(buffer, mode, prefix .. key, node, suffix, defaults)
       end
