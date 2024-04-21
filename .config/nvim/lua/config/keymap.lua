@@ -7,6 +7,8 @@ local notes = import "notes"
 local notes_find = notes:get "find"
 local notes_toggle = notes:get "toggle"
 
+local copilot_chat = import "CopilotChat"
+
 local bd = import("mini.bufremove"):get "delete"
 local bufferline = import "bufferline"
 local groups = import "bufferline.groups"
@@ -203,6 +205,21 @@ local leader_mappings = {
       [[: %s/\V<C-r><C-a>/<C-r><C-a>]],
       desc = "Rename all matches of cWORD",
       silent = false,
+    },
+    t = {
+      callback = copilot_chat:get("toggle"):with(),
+      desc = "Toggle Copilot Chat",
+    },
+    c = {
+      callback = copilot_chat:get("toggle"):with {
+        window = {
+          layout = "float",
+          width = 1,
+          height = 1,
+          border = "none",
+        },
+      },
+      desc = "Open a full screen Copilot Chat",
     },
   },
   p = {

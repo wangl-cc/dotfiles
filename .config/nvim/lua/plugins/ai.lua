@@ -44,23 +44,20 @@ return {
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "canary",
-    cmd = {
-      "CopilotChat",
-      "CopilotChatCommit",
-      "CopilotChatCommitStaged",
-    },
+    version = "2",
+    cmd = { "CopilotChat" },
     dependencies = "zbirenbaum/copilot.lua",
+    ---@type CopilotChat.config
     opts = {
-      window = {
-        layout = "float",
-        width = 0.8,
-        height = 0.4,
-        title = "",
-        relative = "editor",
-        border = "rounded",
-        row = 0,
-      },
+      question_header = "## User",
+      answer_header = "## Copilot",
+      error_header = "## Error",
+      separator = ":",
+      show_help = false,
+      selection = function(source)
+        local cs = require "CopilotChat.select"
+        return cs.visual(source) or cs.buffer(source)
+      end,
     },
   },
 }

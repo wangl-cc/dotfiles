@@ -74,6 +74,10 @@ return {
             "checkhealth",
             "startuptime",
             "noice",
+            "copilot-chat",
+            "copilot-diff",
+            "copilot-system-prompt",
+            "copilot-user-selection",
           },
         },
         {
@@ -214,7 +218,17 @@ return {
       -- HACK: the file type `""` will disable all buffer without a file type.
       -- This is needed for Trouble to work properly,
       -- because its filetype is set a bit late.
-      exclude_filetypes = { "neo-tree", "iron", "Trouble", "toggleterm", "" },
+      exclude_filetypes = {
+        "neo-tree",
+        "iron",
+        "Trouble",
+        "toggleterm",
+        "copilot-chat",
+        "copilot-diff",
+        "copilot-system-prompt",
+        "copilot-user-selection",
+        "",
+      },
       kinds = require("util.icons").kinds,
     },
   },
