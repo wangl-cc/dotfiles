@@ -87,7 +87,7 @@
 
 # MAA
 !/.config/maa
-/.config/maa/asst.toml
+/.config/maa/profiles/default.toml
 
 # pip
 !/.config/pip

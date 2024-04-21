@@ -1,0 +1,9 @@
+"$schema" = "https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/asst.schema.json"
+
+[connection]
+address = "127.0.0.1:5555"
+config = "CompatPOSIXShell"
+
+[instance_options]
+touch_mode = "MaaTouch"
+deployment_with_pause = false
