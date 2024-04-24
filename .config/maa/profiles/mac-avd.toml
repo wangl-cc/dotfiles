@@ -2,7 +2,7 @@
 
 [connection]
 address = "127.0.0.1:5555"
-config = "CompatPOSIXShell"
+config = "CompatMac"
 
 [instance_options]
 touch_mode = "MaaTouch"
