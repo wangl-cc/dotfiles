@@ -127,7 +127,6 @@ return {
         col = math.floor(vim.o.columns * 0.1),
         width = math.floor(vim.o.columns * 0.8),
         height = math.floor(vim.o.lines * 0.4),
-        winblend = 10,
       },
       highlights = {
         NormalFloat = { link = "NormalFloat" },
