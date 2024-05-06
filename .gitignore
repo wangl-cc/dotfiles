@@ -106,6 +106,9 @@
 
 # YADM
 !/.config/yadm
+
+# dark-mode-notify
+!/.config/dark-mode-notify
 # }}}
 
 # }}}

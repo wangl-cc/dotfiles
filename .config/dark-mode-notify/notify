@@ -1,0 +1,45 @@
+#!/usr/bin/env fish
+
+# Setup the background color of neovim based on the current theme
+if type -q nvim; and type -q nvr
+    set -l nvim_bg
+    if test $DARKMODE -eq 1
+        set nvim_bg dark
+    else
+        set nvim_bg light
+    end
+    for server in (nvr --serverlist)
+        nvr --servername $server +"set bg=$nvim_bg"
+    end
+end
+
+if test $DARKMODE -eq 1
+    set bg dark
+    set theme tokyonight_moon
+else
+    set bg light
+    set theme tokyonight_day
+end
+
+# Setup kitty terminal background color based on the current theme
+# check kitty is installed
+if type -q kitty
+    set -l KITTY_SOCKET /tmp/kitty
+    if test -S $KITTY_SOCKET
+        set -l KITTY_THEME_DIR "$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
+        set -gx KITTY_LISTEN_ON "unix:$KITTY_SOCKET"
+        if test $IS_DARK -eq 1
+            kitty @set-colors -a -c "$KITTY_THEME_DIR/$theme.conf"
+        else
+            kitty @set-colors -a -c "$KITTY_THEME_DIR/$theme.conf"
+        end
+    end
+end
+
+# Setup some environment variables read by some cli tools by set fish Universal Variables
+if type -q bat
+    set -Ux BAT_THEME $theme
+end
+if type -q delta
+    set -Ux DELTA_FEATURES $theme
+end

@@ -8,7 +8,7 @@
 	navigate = true
 	side-by-side = true
 
-[delta "tokyonight-day"]
+[delta "tokyonight_day"]
   minus-style                   = syntax "#dfccd4"
   minus-non-emph-style          = syntax "#dfccd4"
   minus-emph-style              = syntax "#d99ea2"
@@ -21,7 +21,7 @@
   line-numbers-plus-style       = "#399a96"
   line-numbers-zero-style       = "#a8aecb"
 
-[delta "tokyonight-moon"]
+[delta "tokyonight_moon"]
   minus-style                   = syntax "#3a273a"
   minus-non-emph-style          = syntax "#3a273a"
   minus-emph-style              = syntax "#6b2e43"

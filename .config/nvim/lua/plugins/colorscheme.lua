@@ -3,13 +3,6 @@ local tbl = require "util.table"
 return {
   ---@type LazyPluginSpec
   {
-    "wangl-cc/auto-bg.nvim",
-    dev = true,
-    event = "UIEnter",
-    opts = {},
-  },
-  ---@type LazyPluginSpec
-  {
     "folke/tokyonight.nvim",
     version = "3",
     event = "UIEnter",
