@@ -28,7 +28,7 @@ if type -q kitty
     if test -S $KITTY_SOCKET
         set -l KITTY_THEME_DIR "$HOME/.config/kitty/catppuccin"
         set -gx KITTY_LISTEN_ON "unix:$KITTY_SOCKET"
-        if test $IS_DARK -eq 1
+        if test $DARKMODE -eq 1
             kitty @set-colors -a -c "$KITTY_THEME_DIR/$theme.conf"
         else
             kitty @set-colors -a -c "$KITTY_THEME_DIR/$theme.conf"
