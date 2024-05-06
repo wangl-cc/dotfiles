@@ -50,7 +50,7 @@ conditions = [
 ]
 
 [[tasks.variants]]
-params = { stage = "BB-7" }
+params = { stage = "14-16" }
 condition = { type = "OnSideStory", client = "Official" }
 
 #============================= Fight 2 ============================#
@@ -84,6 +84,7 @@ type = "Mall"
 [tasks.params]
 shopping = true
 credit_fight = true
+select_formation = 4
 buy_first = ["招聘许可", "龙门币"]
 blacklist = ["碳", "家具", "加急许可"]
 [[tasks.variants]]
@@ -118,6 +119,8 @@ type = "Award"
 [tasks.params]
 award = true
 mail = true
+orundum = true
+specialaccess = true
 
 #--------------------------- Close Game ---------------------------#
 [[tasks]]
