@@ -98,14 +98,9 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-context",
     cmd = "TSContextToggle",
-    config = function()
-      require("treesitter-context").setup {
-        -- set to false at setup,
-        -- because it's loaded by TSContextToggle command
-        -- and which will toggle this option
-        enable = false,
-      }
-    end,
+    opts = {
+      enable = false,
+    },
   },
   {
     "HiPhish/rainbow-delimiters.nvim",
@@ -131,7 +126,7 @@ return {
     "mfussenegger/nvim-lint",
     dependencies = {
       "williamboman/mason.nvim",
-      "williamboman/mason-tool-installer.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     event = { "BufReadPre", "BufNewFile" },
     config = function(_, opts)

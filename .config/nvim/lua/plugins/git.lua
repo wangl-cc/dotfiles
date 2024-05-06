@@ -3,7 +3,7 @@ local tbl = require "util.table"
 return {
   {
     "lewis6991/gitsigns.nvim",
-    event = "User ColorSchemeLoaded",
+    event = "UIEnter",
     opts = tbl.merge_options {
       numhl = true,
       current_line_blame_opts = {

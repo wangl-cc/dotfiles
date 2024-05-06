@@ -15,10 +15,10 @@ end
 
 if test $DARKMODE -eq 1
     set bg dark
-    set theme tokyonight_moon
+    set theme macchiato
 else
     set bg light
-    set theme tokyonight_day
+    set theme latte
 end
 
 # Setup kitty terminal background color based on the current theme
@@ -26,7 +26,7 @@ end
 if type -q kitty
     set -l KITTY_SOCKET /tmp/kitty
     if test -S $KITTY_SOCKET
-        set -l KITTY_THEME_DIR "$HOME/.local/share/nvim/lazy/tokyonight.nvim/extras/kitty"
+        set -l KITTY_THEME_DIR "$HOME/.config/kitty/catppuccin"
         set -gx KITTY_LISTEN_ON "unix:$KITTY_SOCKET"
         if test $IS_DARK -eq 1
             kitty @set-colors -a -c "$KITTY_THEME_DIR/$theme.conf"

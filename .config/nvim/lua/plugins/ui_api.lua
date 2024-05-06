@@ -77,7 +77,7 @@ return {
         },
       },
     },
-    event = "User ColorSchemeLoaded",
+    event = "UIEnter",
     version = "1",
     opts = tbl.merge_options {
       cmdline = {

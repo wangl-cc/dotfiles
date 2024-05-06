@@ -139,13 +139,13 @@ return {
   {
     "folke/todo-comments.nvim",
     version = "1",
-    event = "User ColorSchemeLoaded",
+    event = "UIEnter",
     config = true,
   },
   {
     "folke/which-key.nvim",
     version = "1",
-    event = "User ColorSchemeLoaded",
+    event = "UIEnter",
     config = function(_, opts)
       local ops = require("which-key.plugins.presets").operators
       ops["gq"] = "Format"
