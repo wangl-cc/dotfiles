@@ -3,10 +3,18 @@ local import = require "util.import"
 
 return {
   {
-    "nvimdev/indentmini.nvim",
-    event = "BufEnter",
+    "lukas-reineke/indent-blankline.nvim",
+    version = "3",
+    main = "ibl",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      -- make sure treesitter loads before indent-blankline
+      "nvim-treesitter/nvim-treesitter",
+    },
     opts = tbl.merge_options {
-      char = "▏",
+      indent = {
+        char = "▏",
+      },
     },
   },
   {
