@@ -1,5 +1,7 @@
 #!/usr/bin/env fish
 
+echo "Notify at $(date '+%Y-%m-%d %H:%M:%S')"
+
 # Setup the background color of neovim based on the current theme
 if type -q nvim; and type -q nvr
     set -l nvim_bg
