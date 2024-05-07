@@ -4,12 +4,90 @@
 # Author: Loong Wang (@wangl-cc)
 # LICENSE: MIT
 
-__INSTALL_SRC_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
-
-# Load libraries
-source $__INSTALL_SRC_DIR/utils/log.sh
-
 set -e
+
+# color definitions
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[0;33m'
+readonly BLUE='\033[0;34m'
+readonly PURPLE='\033[0;35m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
+
+# color the string
+#
+# Usage: color "string" "color"
+#
+# ## Arguments:
+#
+# - string: The string to color
+# - color: The color to use, should be ANSI color code, default to BLUE
+color() {
+  echo -n "${2:-$BLUE}$1${NC}"
+}
+
+# color the string with newline
+#
+# Usage: colorln "string" "color"
+#
+# ## Arguments:
+#
+# - string: The string to color
+# - color: The color to use, should be ANSI color code, default to BLUE
+colorln() {
+  echo "${2:-$BLUE}$1${NC}"
+}
+
+# Global log level, from 0 to 5, default to 2.
+# 0 is the most verbose, 5 is the least verbose.
+# Log level can be change by setting LOGLEVEL environment variable,
+# and in the script, you can use `LOGLEVEL=3` to change log level,
+# or ((LOGLEVEL++)) to increase log level by 1.
+LOGLEVEL=${LOGLEVEL:-2}
+
+# Logging Functions
+
+# show with cyan TRACE prefix, only show when LOGLEVEL <= 0
+trace() {
+  if [ "$LOGLEVEL" -le 0 ]; then
+    echo -e "${CYAN}TRACE:${NC} $*"
+  fi
+}
+
+# show with purple DEBUG prefix, only show when LOGLEVEL <= 1
+debug() {
+  if [ "$LOGLEVEL" -le 1 ]; then
+    echo -e "${PURPLE}DEBUG:${NC} $*"
+  fi
+}
+
+# show with no prefix, only show when LOGLEVEL <= 2
+info() {
+  if [ "$LOGLEVEL" -le 2 ]; then
+    echo -e "$@"
+  fi
+}
+
+# colorized info
+ok() {
+  info "${GREEN}$*${NC}"
+}
+
+# show with yellow WARN prefix, and only show when LOGLEVEL <= 3
+warn() {
+  if [ "$LOGLEVEL" -le 3 ]; then
+    echo -e "${YELLOW}WARN${NC}:  $1"
+  fi
+}
+
+# show with red ERROR prefix and exit with code 1, only used when LOGLEVEL <= 4
+error() {
+  if [ "$LOGLEVEL" -le 4 ]; then
+    echo -e "${RED}ERROR${NC}: $1>&2"
+    exit 1
+  fi
+}
 
 # ENVIRONMENT VARIABLES
 GIT=${GIT-"git"}
@@ -31,12 +109,12 @@ __git_can_quiet() {
 
 git_verbose() {
   local args=("$@")
-  if [ $LOGLEVEL -ge 3 ]; then
+  if [ "$LOGLEVEL" -ge 3 ]; then
     if __git_can_quiet "${args[0]}"; then
       args=(${args[@]} -q)
     fi
   fi
-  trace "$GIT ${args[@]}"
+  trace "$GIT ${args[*]}"
   $GIT "${args[@]}"
 }
 
@@ -95,7 +173,8 @@ fetch() {
       clone "$url" "$branch"
     else
       # check if remote of $repo is $url
-      local remote_url=$($GIT -C "$repo" remote get-url origin)
+      local remote_url
+      remote_url=$($GIT -C "$repo" remote get-url origin)
       if [ "$remote_url" != "$url" ]; then
         error "Repository already exists, but remote is not $url"
       fi
@@ -160,9 +239,9 @@ main() {
   done
 
   if [ -z "$url" ]; then
-    if [ $protocol = "https" ]; then
+    if [ "$protocol" = "https" ]; then
       url="https://$host/$owner/$repo.git"
-    elif [ $protocol = "ssh" ]; then
+    elif [ "$protocol" = "ssh" ]; then
       url="git@$host:$owner/$repo.git"
     else
       error "Unknown protocol: $protocol"
