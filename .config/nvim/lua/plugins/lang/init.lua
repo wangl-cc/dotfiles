@@ -130,7 +130,6 @@ return {
     },
     event = { "BufReadPre", "BufNewFile" },
     config = function(_, opts)
-      -- S
       local linters_by_ft = opts.linters_by_ft or {}
       for ft, ft_linter_opts in pairs(linters_by_ft) do
         if type(ft_linter_opts) == "string" then

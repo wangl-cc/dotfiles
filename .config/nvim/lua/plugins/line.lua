@@ -9,6 +9,16 @@ local const_string = function(str)
   return function() return str end
 end
 
+local function capitalize(str) return str:sub(1, 1):upper() .. str:sub(2) end
+
+local normalize = function(str)
+  local parts = vim.split(str, "[_-]")
+  for i, part in ipairs(parts) do
+    parts[i] = capitalize(part)
+  end
+  return table.concat(parts, " ")
+end
+
 local lazy_status = import "lazy.status"
 local bd = import("mini.bufremove"):get "delete"
 
@@ -20,8 +30,8 @@ return {
       options = {
         theme = "auto",
         globalstatus = true,
-        component_separators = { left = "", right = "│" },
-        section_separators = { left = "", right = "" },
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
       },
       extensions = {
         "neo-tree",
@@ -123,16 +133,72 @@ return {
             end,
           },
           {
-            "filename",
-            file_status = true,
-            symbols = icons.file_status,
-          },
-        },
-        lualine_c = {
-          {
             "diagnostics",
             sources = { "nvim_diagnostic" },
             symbols = icons.diagnostic,
+          },
+        },
+        lualine_c = {
+          -- Indent method
+          {
+            function()
+              if vim.bo.expandtab then
+                return "Spaces: " .. vim.bo.shiftwidth
+              else
+                return "Tab Size: " .. vim.bo.tabstop
+              end
+            end,
+          },
+          -- file encoding
+          {
+            function() return vim.bo.fileencoding:upper() end,
+          },
+          -- file format
+          {
+            "fileformat",
+            symbols = {
+              dos = "CRLF",
+              unix = "LF",
+              mac = "CR",
+            },
+          },
+          -- file type
+          {
+            "filetype",
+            icons_enabled = false,
+            fmt = capitalize,
+          },
+          -- LSP
+          {
+            function()
+              local ft = vim.bo.filetype
+              if ft == "" then return "" end
+              local clients = vim.lsp.get_clients { bufnr = 0 }
+              for _, client in ipairs(clients) do
+                ---@diagnostic disable-next-line undefined-field
+                local filetypes = client.config.filetypes
+                if filetypes and vim.tbl_contains(filetypes, ft) then
+                  return normalize(client.name)
+                end
+              end
+              return ""
+            end,
+            icon = "L:",
+          },
+          -- formatter
+          {
+            function()
+              local ft = vim.bo.filetype
+              if ft == "" then return "" end
+              local formatters = require("conform").list_formatters()
+              for _, formatter in ipairs(formatters) do
+                if formatter.available and formatter.name ~= "trim_whitespace" then
+                  return normalize(formatter.name)
+                end
+              end
+              return ""
+            end,
+            icon = "F:",
           },
         },
         lualine_x = {
@@ -157,9 +223,6 @@ return {
               return str:format(pattern, result.current, result.total)
             end,
           },
-          { "encoding" },
-          { "fileformat" },
-          { "filetype" },
         },
       },
     },
