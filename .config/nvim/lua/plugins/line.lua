@@ -203,6 +203,7 @@ return {
     config = function(_, opts)
       local bufferline = require "bufferline"
       bufferline.groups.builtin.pinned.icon = ""
+      opts.highlights = require("catppuccin.groups.integrations.bufferline").get()
       bufferline.setup(opts)
     end,
   },
