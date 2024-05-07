@@ -8,7 +8,7 @@ return {
   -- Better vim.ui.*
   {
     "stevearc/dressing.nvim",
-    version = "1",
+    version = "2",
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.ui.select = function(...)
@@ -78,7 +78,7 @@ return {
       },
     },
     event = "UIEnter",
-    version = "1",
+    version = "2",
     opts = tbl.merge_options {
       cmdline = {
         format = {
