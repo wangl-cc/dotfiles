@@ -15,7 +15,6 @@ g.loaded_node_provider = 0 -- even node is required for copilot but it use its o
 
 -- use true colors
 o.termguicolors = true
-o.pumblend = 10
 
 -- show line number and relative line number
 o.number = true

@@ -12,6 +12,8 @@ return {
         light = "latte",
         dark = "macchiato",
       },
+      kitty = false, -- force no kitty workaround
+      transparent_background = true,
       default_integrations = false,
       ---@type CtpIntegrations
       integrations = {
@@ -58,13 +60,6 @@ return {
         semantic_tokens = true,
         which_key = true,
       },
-      ---@type CtpHighlightOverrideFn
-      custom_highlights = function(C)
-        return {
-          -- Make the background of the border of floating windows the same as the body background
-          FloatBorder = { fg = C.blue, bg = C.mantle },
-        }
-      end,
     },
     config = function(_, opts)
       require("catppuccin").setup(opts)

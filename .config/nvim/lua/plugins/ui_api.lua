@@ -161,11 +161,6 @@ return {
           },
           position = { row = 2 },
         },
-        notify = {
-          win_options = {
-            winblend = 10,
-          },
-        },
       },
       status = {
         hunk = { find = "^Hunk %d+ of %d" },
