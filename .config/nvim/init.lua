@@ -1,10 +1,8 @@
-local auto_reload = require("util.reload").auto_reload
-
 -- plugin unrelated configurations
-auto_reload "config/options"
-auto_reload "config/autocmds"
-auto_reload "config/commands"
-auto_reload "config/keymap"
+require "config/options"
+require "config/autocmds"
+require "config/commands"
+require "config/keymap"
 
 -- load plugins
 require "config/manager"
