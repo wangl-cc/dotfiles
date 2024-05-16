@@ -12,10 +12,6 @@ return {
     end,
   },
   {
-    "kaarmu/typst.vim",
-    ft = "typst",
-  },
-  {
     "neovim/nvim-lspconfig",
     optional = true,
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
@@ -34,6 +30,7 @@ return {
     opts = tbl.merge_options {
       ensure_installed = {
         "latex",
+        "typst",
       },
       highlight = {
         disable = {
