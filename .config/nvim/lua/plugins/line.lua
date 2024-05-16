@@ -192,7 +192,7 @@ return {
               end
               return ""
             end,
-            icon = "L:",
+            icon = "LS:",
           },
           -- formatter
           {
@@ -207,7 +207,7 @@ return {
               end
               return ""
             end,
-            icon = "F:",
+            icon = "FMT:",
           },
         },
         lualine_x = {
