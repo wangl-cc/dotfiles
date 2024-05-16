@@ -149,6 +149,15 @@ return {
               end
             end,
           },
+          -- line width
+          {
+            function()
+              local tw = vim.bo.textwidth
+              if tw == 0 then return "" end
+              return tw
+            end,
+            icon = "Line Width:",
+          },
           -- file encoding
           {
             function() return vim.bo.fileencoding:upper() end,
