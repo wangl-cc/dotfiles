@@ -349,3 +349,8 @@ register({
   ["<C-b>"] = "<S-Left>",
   ["<C-w>"] = "<S-Right>",
 }, { silent = true, mode = { "c" } })
+
+register({
+  ["<Up>"] = "gk",
+  ["<Down>"] = "gj",
+}, { silent = true, mode = { "n", "x" } })
