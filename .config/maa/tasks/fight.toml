@@ -5,4 +5,5 @@ type = "Fight"
 report_to_penguin = true
 penguin_id = "084310065"
 stage = { default = "1-7", description = "a stage to fight" }
+series = { default = 1 }
 medicine = { default = 0, description = "number of medicine to use" }
