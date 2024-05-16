@@ -133,6 +133,9 @@ local tab_width_by_ft = {}
 local max_line_length_by_ft = {
   julia = 92,
   rust = 100,
+  latex = 0,
+  typst = 0,
+  markdown = 0,
 }
 local default_max_line_length = 76
 
