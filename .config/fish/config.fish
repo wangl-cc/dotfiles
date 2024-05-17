@@ -47,7 +47,7 @@ abbr --add gds git diff --staged
 abbr --add gl git log
 abbr --add gp git push
 abbr --add gpt git push --tags
-abbr --add gpl git pull
+abbr --add gpl git pull --ff-only
 abbr --add gr git remote
 abbr --add grv git remote -v
 abbr --add gra git remote add
