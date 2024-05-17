@@ -156,7 +156,7 @@ return {
               if tw == 0 then return "" end
               return tw
             end,
-            icon = "Line Width:",
+            icon = "LW:",
           },
           -- file encoding
           {
