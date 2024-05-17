@@ -126,15 +126,27 @@ return {
       open_mapping = "<C-t>",
       shade_terminals = false,
       start_in_insert = true,
+      persist_mode = false, -- always start in insert mode
       insert_mappings = true,
       terminal_mappings = true,
       direction = "float",
       float_opts = {
-        border = "rounded",
+        -- like rounded but removed the top borders
+        border = {
+          "", -- top left corner
+          "", -- top border
+          "", -- top right corner
+          "│", -- right border
+          "╯", -- bottom right corner
+          "─", -- bottom border
+          "╰", -- bottom left corner
+          "│", -- left border
+        },
         row = 0,
-        col = math.floor(vim.o.columns * 0.1),
-        width = math.floor(vim.o.columns * 0.8),
-        height = math.floor(vim.o.lines * 0.4),
+        -- dynamically set the position and size of the terminal
+        col = function() return math.floor(vim.o.columns * 0.1) end,
+        width = function() return math.floor(vim.o.columns * 0.8) end,
+        height = function() return math.max(20, math.floor(vim.o.lines * 0.4)) end,
       },
       highlights = {
         NormalFloat = { link = "NormalFloat" },
