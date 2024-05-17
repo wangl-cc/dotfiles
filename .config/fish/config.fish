@@ -59,8 +59,6 @@ if type -q lazygit
 end
 # git }}}
 
-abbr --add ssh ssh -t
-
 if type -q brew # {{{
     abbr --add b brew
     abbr --add bc brew cleanup
