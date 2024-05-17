@@ -92,6 +92,7 @@ opt.clipboard:append { "unnamedplus" }
 
 -- tex flavor
 g.tex_flavor = "latex"
+g.filetype_typ = "typst"
 
 local icons = require("util.icons").diagnostic
 for name, icon in pairs(icons) do
