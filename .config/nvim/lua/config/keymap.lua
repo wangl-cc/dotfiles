@@ -163,10 +163,11 @@ local leader_mappings = {
             cmd = "lazygit",
             hidden = true,
             float_opts = {
-              row = math.floor(vim.o.lines * 0.1),
-              col = math.floor(vim.o.columns * 0.1),
-              width = math.floor(vim.o.columns * 0.8),
-              height = math.floor(vim.o.lines * 0.8),
+              border = "rounded",
+              row = function() return math.floor(vim.o.lines * 0.1) end,
+              col = function() return math.floor(vim.o.columns * 0.1) end,
+              width = function() return math.floor(vim.o.columns * 0.8) end,
+              height = function() return math.floor(vim.o.lines * 0.8) end,
             },
           }
         end
