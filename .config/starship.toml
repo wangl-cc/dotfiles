@@ -24,6 +24,8 @@ $cmd_duration$time\
 """
 add_newline = true
 
+command_timeout = 100
+
 # Modules
 # General {{{
 # hostname and localip always show together, only on ssh
