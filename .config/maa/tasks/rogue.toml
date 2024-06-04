@@ -8,16 +8,10 @@ type = "Roguelike"
 [tasks.params]
 theme = "Sami"
 
-# Don't enter the second floor when the investment mode is enabled.
-investment_enter_second_floor = false
-
-[tasks.params.mode]
-default = 1
-description = "a fighting mode (0: point , 1: investment)"
-
-[tasks.params.core_char]
-alternatives = ["百炼嘉维尔", "焰影苇草"]
-description = "a character"
+core_char = "维什戴尔"
+squad = "远程战术分队"
+roles = "稳扎稳打"
+mode = 0
 
 [[tasks]]
 type = "CloseDown"
