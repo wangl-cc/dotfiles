@@ -78,7 +78,7 @@ return {
       },
     },
     event = "UIEnter",
-    version = "2",
+    version = "4",
     opts = tbl.merge_options {
       cmdline = {
         format = {
