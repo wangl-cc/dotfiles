@@ -4,9 +4,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     optional = true,
-    dependencies = {
-      { "folke/neodev.nvim", config = true },
-    },
     ---@type LspSetupOptions | fun(_, LspSetupOptions): LspSetupOptions
     opts = tbl.merge_options {
       servers = {
@@ -23,6 +20,19 @@ return {
           },
           ---@diagnostic enable: missing-fields
         },
+      },
+    },
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    version = "1",
+    dependencies = {
+      { "Bilal2453/luvit-meta" },
+    },
+    opts = {
+      library = {
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
       },
     },
   },
