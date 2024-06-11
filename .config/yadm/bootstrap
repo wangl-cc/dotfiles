@@ -39,12 +39,6 @@ elif [ "$(uname -s)" = 'Linux' ]; then
   fi
 fi
 
-
-# Use USTC mirrors for homebrew if not in GitHub Codespaces and not set HOMEBREW_NO_MIRROR
-if [[ -z "$CODESPACES" && -z "$HOMEBREW_NO_MIRROR" ]]; then
-  export HOMEBREW_MIRROR_DOMAIN="https://mirrors.ustc.edu.cn"
-fi
-
 # run bootstrap scripts for macOS
 if [ "$(uname -s)" = 'Darwin' ]; then
   bash "$bootstrap_dir/macOS.sh"
