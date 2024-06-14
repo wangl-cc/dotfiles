@@ -3,8 +3,8 @@ using Base.Meta
 """
     @safe_using Pkg Pkg = UUID ...
 
-Simmilar to `using`, but you can specify the package UUID.
-Besides if given pacakges is not installed,
+Similar to `using`, but you can specify the package UUID.
+Besides if given packages is not installed,
 install them into `@v#.#` environment.
 """
 macro safe_using(pkgs...)
@@ -38,7 +38,7 @@ function _safe_using(pkgs...)
     end
     if !isempty(missing_pkgs.args)
         ex = quote
-            @info "Installing missing pacakges"
+            @info "Installing missing packages"
             import Pkg
             current_project = Base.active_project()
             Pkg.activate()
