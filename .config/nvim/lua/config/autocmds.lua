@@ -108,30 +108,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
   group = group,
 })
 
--- When open a quickfix window, load trouble and open the quickfix window with it
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "qf" },
-  callback = function()
-    local ok, trouble = pcall(require, "trouble")
-    if ok then
-      -- Check whether we deal with a quickfix or location list buffer, close the window and open the
-      -- corresponding Trouble window instead.
-      if vim.fn.getloclist(0, { filewinid = 1 }).filewinid ~= 0 then
-        vim.defer_fn(function()
-          vim.cmd.lclose()
-          trouble.open "loclist"
-        end, 0)
-      else
-        vim.defer_fn(function()
-          vim.cmd.cclose()
-          if not vim.tbl_isempty(vim.fn.getqflist()) then trouble.open "quickfix" end
-        end, 0)
-      end
-    end
-  end,
-  group = group,
-})
-
 -- Nohlsearch after entering insert mode
 vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   callback = function()
