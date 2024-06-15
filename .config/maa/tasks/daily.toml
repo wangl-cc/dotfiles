@@ -38,16 +38,10 @@ strategy = "merge"
 report_to_penguin = true
 penguin_id = "084310065"
 
-# use all expiring medicine on Sunday Evening
+# use all expiring medicine on Sunday
 [[tasks.variants]]
 params = { expiring_medicine = 1000 }
-
-[tasks.variants.condition]
-type = "And"
-conditions = [
-  { type = "Time", start = "18:00:00" },
-  { type = "Weekday", weekdays = ["Sun"] },
-]
+condition = { type = "Weekday", weekdays = ["Sun"] }
 
 [[tasks.variants]]
 params = { stage = "BP-6" }
@@ -63,16 +57,10 @@ strategy = "merge"
 report_to_penguin = true
 penguin_id = "084310065"
 
-# use all expiring medicine on Sunday Evening
+# use all expiring medicine on Sunday
 [[tasks.variants]]
 params = { expiring_medicine = 1000 }
-
-[tasks.variants.condition]
-type = "And"
-conditions = [
-  { type = "Time", start = "18:00:00" },
-  { type = "Weekday", weekdays = ["Sun"] },
-]
+condition = { type = "Weekday", weekdays = ["Sun"] }
 
 [[tasks.variants]]
 params = { stage = "1-7", series = 3 }
