@@ -241,8 +241,8 @@ return {
   },
   {
     "folke/trouble.nvim",
+    version = "3",
     cmd = { "Trouble", "TroubleToggle" },
-    opts = { use_diagnostic_signs = true },
     dependencies = {
       "nvim-telescope/telescope.nvim",
       optional = true,
@@ -250,13 +250,14 @@ return {
         defaults = {
           mappings = {
             i = {
-              ["<c-t>"] = import("trouble.providers.telescope")
-                :get("open_with_trouble")
-                :callable(),
+              ["<c-t>"] = import("trouble.providers.telescope"):get("open"):callable(),
             },
           },
         },
       },
+    },
+    opts = {
+      focus = true,
     },
   },
   {
