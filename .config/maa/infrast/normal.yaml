@@ -3,47 +3,10 @@ description: 342，生产钱和经验
 author: wangl-cc
 
 plans:
-  - name: 夜班 (12h)
-    description: 迷迭香组(1+1) + 自动化组 + 红云组 + 最大经验
-    Fiammetta: { enable: true, target: 龙舌兰, order: pre }
+  - name: 仅收菜
+    description: 仅收菜
     drones: { enable: true, room: manufacture, index: 3, order: pre }
-    rooms:
-      control:
-        - operators: [阿米娅, 森蚺, 琴柳, 令, 夕]
-      trading:
-        - product: LMD
-          operators: [巫恋, 龙舌兰, 卡夫卡]
-          sort: true
-        - product: LMD
-          operators: [但书, 伺夜, 黑键]
-      manufacture:
-        - product: Pure Gold
-          operators: [温蒂, 清流, 异客]
-        - product: Pure Gold
-          operators: [砾, 至简, 迷迭香]
-        - product: Battle Record
-          operators: [红云, 帕拉斯, 刻俄柏]
-          sort: true
-        - product: Battle Record
-          operators: [断罪者, 食铁兽, 槐琥]
-      power:
-        - operators: [Lancet-2]
-        - operators: [澄闪]
-        - operators: [炎狱炎熔]
-      hire:
-        - operators: [絮雨]
-      meeting:
-        - operators: [陈, 伊内丝]
-          sort: true
-      dormitory:
-        - operators: [塑心]
-          autofill: true
-        - operators: [爱丽丝]
-          autofill: true
-        - operators: [车尔尼]
-          autofill: true
-        - operators: []
-          autofill: true
+    rooms: {}
 
   - name: 上午班 (6h)
     description: 喀兰组 + 莱茵组 + 自动化组 + 红云组 + 最大经验
@@ -111,6 +74,48 @@ plans:
         - operators: [格雷伊]
         - operators: [澄闪]
         - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 夜班 (12h)
+    description: 迷迭香组(1+1) + 自动化组 + 红云组 + 最大经验
+    Fiammetta: { enable: true, target: 龙舌兰, order: pre }
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [阿米娅, 森蚺, 琴柳, 令, 夕]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 卡夫卡]
+          sort: true
+        - product: LMD
+          operators: [但书, 伺夜, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 异客]
+        - product: Pure Gold
+          operators: [砾, 至简, 迷迭香]
+        - product: Battle Record
+          operators: [红云, 帕拉斯, 刻俄柏]
+          sort: true
+        - product: Battle Record
+          operators: [断罪者, 食铁兽, 槐琥]
+      power:
+        - operators: [Lancet-2]
+        - operators: [澄闪]
+        - operators: [炎狱炎熔]
       hire:
         - operators: [絮雨]
       meeting:

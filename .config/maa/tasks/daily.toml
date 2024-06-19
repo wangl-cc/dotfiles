@@ -16,15 +16,21 @@ filename = "normal.json"
 replenish = true
 
 [[tasks.variants]]
-condition = { type = "Time", start = "07:00:00", end = "13:00:00" }
-params = { plan_index = 1 }
+condition = { type = "Time", start = "07:00:00", end = "12:00:00" }
+params = { plan_index = { default = 1, description = "index of plan" } }
 
 [[tasks.variants]]
-condition = { type = "Time", start = "13:00:00", end = "19:00:00" }
-params = { plan_index = 2 }
+condition = { type = "Time", start = "12:00:00", end = "17:00:00" }
+params = { plan_index = { default = 2, description = "index of plan" } }
 
 [[tasks.variants]]
-params = { plan_index = 0 }
+condition = { type = "Time", start = "17:00:00", end = "23:00:00" }
+params = { plan_index = { default = 3, description = "index of plan" } }
+
+[[tasks.variants]]
+[tasks.variants.params]
+facility = []
+plan_index = { default = 0, description = "index of plan" }
 
 #------------------------------ Fight -----------------------------#
 
@@ -76,7 +82,7 @@ select_formation = 4
 buy_first = ["招聘许可", "龙门币"]
 blacklist = ["碳", "家具", "加急许可"]
 [[tasks.variants]]
-condition = { type = "Time", start = "18:00:00" }
+condition = { type = "Time", start = "17:00:00" }
 
 #----------------------------- Recruit ----------------------------#
 # Recruit after 18:00
@@ -93,7 +99,7 @@ report_to_penguin = true
 penguin_id = "084310065"
 
 [[tasks.variants]]
-condition = { type = "Time", start = "18:00:00" }
+condition = { type = "Time", start = "17:00:00" }
 params = { times = 4 }
 
 # consume refresh times
