@@ -91,12 +91,12 @@ return {
         highlight_last = false,
         repl_open_cmd = function(bufnr)
           -- HACK: set the filetype to 'iron' to detect it when needed
-          vim.api.nvim_buf_set_option(bufnr, "filetype", "iron")
+          vim.api.nvim_set_option_value("filetype", "iron", { buf = bufnr })
           local win_opts = {
             number = false,
             relativenumber = false,
           }
-          if vim.o.columns <= 180 then
+          if vim.o.columns < 200 then
             return require("iron.view").split.hor.botright(15, win_opts)(bufnr)
           else
             return require("iron.view").split.vert.botright(80, win_opts)(bufnr)
