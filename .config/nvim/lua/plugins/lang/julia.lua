@@ -57,7 +57,7 @@ return {
       config = {
         repl_definition = {
           julia = {
-            command = { "julia", "--project" },
+            command = { "julia", "--project", "-tauto" },
           },
         },
       },
