@@ -75,14 +75,18 @@ params = { stage = "1-7", series = 3 }
 # Mall before 7:00
 [[tasks]]
 type = "Mall"
+
 [tasks.params]
 shopping = true
-credit_fight = true
-select_formation = 4
 buy_first = ["招聘许可", "龙门币"]
 blacklist = ["碳", "家具", "加急许可"]
+
 [[tasks.variants]]
-condition = { type = "Time", start = "07:00:00" }
+condition = { type = "Time", end = "07:00:00" }
+params = { credit_fight = true, select_formation = 4 }
+
+[[tasks.variants]]
+params = {}
 
 #----------------------------- Recruit ----------------------------#
 [[tasks]]
