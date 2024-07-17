@@ -86,7 +86,7 @@ condition = { type = "Time", end = "07:00:00" }
 params = { credit_fight = true, select_formation = 4 }
 
 [[tasks.variants]]
-params = {}
+params = { shopping = true }
 
 #----------------------------- Recruit ----------------------------#
 [[tasks]]
