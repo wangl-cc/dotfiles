@@ -43,13 +43,16 @@ o.splitright = true
 -- Indent
 o.smarttab = true
 o.autoindent = true
+o.shiftround = true
 
 -- spell
 opt.spelloptions = { "camel", "noplainbuffer" }
 
 -- folding
+o.foldmethod = "expr"
 o.foldexpr = "nvim_treesitter#foldexpr()"
 o.foldnestmax = 3
+o.foldlevelstart = 99
 
 o.mousemoveevent = true
 
@@ -77,6 +80,9 @@ o.autowrite = true
 -- short message, details see :h 'shortmess'
 o.shortmess = "aoOsWAIF"
 
+-- preview incremental editing results
+o.inccommand = "split"
+
 -- gui cursor, only works when 'termguicolors' is on
 -- The 'guicursor' don't use the highlight group by default,
 -- this is a modified version of the default 'guicursor' with highlight group
@@ -87,8 +93,8 @@ opt.guicursor = {
   "r-cr-o:hor20-Cursor/lCursor",
 }
 
--- clipboard
-opt.clipboard:append { "unnamedplus" }
+-- clipboard provider (for ssh session use OSC52)
+if not vim.env.SSH_TTY then opt.clipboard:append { "unnamedplus" } end
 
 -- tex flavor
 g.tex_flavor = "latex"
@@ -102,7 +108,7 @@ end
 
 -- Set WAKATIME_HOME here instead of shell rc file
 -- because nvim may be not started from shell
-vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
+vim.env.WAKATIME_HOME = vim.uv.os_homedir() .. "/.config/wakatime"
 
 if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr -O"
