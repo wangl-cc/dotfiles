@@ -1,3 +1,11 @@
+_G.LDU = {
+  tbl = require "util.table",
+  icons = require "util.icons",
+  color = require "util.color",
+  import = require "util.import",
+  register = require "util.keymap",
+}
+
 -- plugin unrelated configurations
 require "config/options"
 require "config/autocmds"

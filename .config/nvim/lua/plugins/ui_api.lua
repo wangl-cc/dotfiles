@@ -2,7 +2,7 @@
 This file contains the plugins that change apperence of some api
 --]]
 
-local tbl = require "util.table"
+local tbl = LDU.tbl
 
 return {
   -- Better vim.ui.*

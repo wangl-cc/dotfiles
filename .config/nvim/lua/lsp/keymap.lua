@@ -1,5 +1,5 @@
-local import = require "util.import"
-local register = require "util.keymap"
+local import = LDU.import
+local register = LDU.register
 
 local builtins = import "telescope.builtin"
 local trouble_open = import("trouble"):get "open"

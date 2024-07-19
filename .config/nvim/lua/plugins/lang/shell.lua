@@ -1,4 +1,4 @@
-local tbl = require "util.table"
+local tbl = LDU.tbl
 
 return {
   {

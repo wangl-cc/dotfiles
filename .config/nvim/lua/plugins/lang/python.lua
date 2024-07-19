@@ -1,5 +1,5 @@
-local tbl = require "util.table"
-local import = require "util.import"
+local tbl = LDU.tbl
+local import = LDU.import
 
 return {
   {

@@ -1,5 +1,5 @@
-local register = require "util.keymap"
-local import = require "util.import"
+local register = LDU.register
+local import = LDU.import
 
 local lazygit = nil
 

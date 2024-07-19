@@ -100,7 +100,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
   once = true,
   callback = function(args)
     local bufname = args.file
-    local stats = vim.loop.fs_stat(bufname)
+    local stats = vim.uv.fs_stat(bufname)
     if stats and stats.type == "directory" then
       require("neo-tree.setup.netrw").hijack()
     end

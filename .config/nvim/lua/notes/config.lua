@@ -1,4 +1,4 @@
-local tbl = require "util.table"
+local tbl = LDU.tbl
 
 local M = {}
 
@@ -46,7 +46,7 @@ M.setup = function(opts)
     if opts.directory then opts.directory = vim.fs.normalize(opts.directory) end
     tbl.merge_one(M.options, opts)
   end
-  if not vim.loop.fs_stat(M.options.directory) then
+  if not vim.uv.fs_stat(M.options.directory) then
     vim.fn.mkdir(M.options.directory, "p")
   end
 end
