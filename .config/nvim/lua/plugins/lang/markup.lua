@@ -40,6 +40,15 @@ return {
     },
   },
   {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = tbl.merge_options {
+      formatters_by_ft = {
+        markdown = { "prettierd" },
+      },
+    },
+  },
+  {
     "mfussenegger/nvim-lint",
     optional = true,
     opts = tbl.merge_options {
@@ -54,6 +63,7 @@ return {
     opts = tbl.merge_options {
       ensure_installed = {
         "markdownlint",
+        "prettierd",
       },
     },
   },
