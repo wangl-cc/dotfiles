@@ -9,16 +9,6 @@ local const_string = function(str)
   return function() return str end
 end
 
-local capitalize = require("util.string").capitalize
-
-local normalize = function(str)
-  local parts = vim.split(str, "[_-]")
-  for i, part in ipairs(parts) do
-    parts[i] = capitalize(part)
-  end
-  return table.concat(parts, " ")
-end
-
 local lazy_status = import "lazy.status"
 local bd = import("mini.bufremove"):get "delete"
 
@@ -206,12 +196,6 @@ return {
               mac = "CR",
             },
           },
-          -- file type
-          {
-            "filetype",
-            icons_enabled = false,
-            fmt = capitalize,
-          },
           -- LSP
           {
             function()
@@ -222,12 +206,21 @@ return {
                 ---@diagnostic disable-next-line undefined-field
                 local filetypes = client.config.filetypes
                 if filetypes and vim.tbl_contains(filetypes, ft) then
-                  return normalize(client.name)
+                  return client.name
                 end
               end
               return ""
             end,
             icon = "LS:",
+          },
+          -- Linter
+          {
+            function()
+              local linters = vim.b.linters
+              if not linters or vim.tbl_isempty(linters) then return "" end
+              return table.concat(linters, ", ")
+            end,
+            icon = "LT:",
           },
           -- formatter
           {
@@ -235,18 +228,16 @@ return {
               local ft = vim.bo.filetype
               if ft == "" then return "" end
               local formatters = require("conform").list_formatters()
+              local valid_formatters = {}
               for _, formatter in ipairs(formatters) do
                 if formatter.available and formatter.name ~= "trim_whitespace" then
-                  return normalize(formatter.name)
+                  table.insert(valid_formatters, formatter.name)
                 end
               end
-              return ""
+              return table.concat(valid_formatters, ", ")
             end,
             icon = "FMT:",
           },
-          -- TODO: Linter
-          -- There is no common api of nvim-lint to get the current linter
-          -- We need to find a way to get the current linter
         },
         -- Section X: reserved to show plugin information
         lualine_x = {},

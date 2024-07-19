@@ -1,2 +1,2 @@
 [default]
-extend-ignore-words-re = ["[Nn]oice"]
+extend-ignore-words-re = ["[Nn]oice", "charcol"]
