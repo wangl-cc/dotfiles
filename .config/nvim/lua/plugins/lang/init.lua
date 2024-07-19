@@ -153,7 +153,7 @@ return {
         end
       end
 
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
         callback = function(args)
           local bo = vim.bo[args.buf]
 
