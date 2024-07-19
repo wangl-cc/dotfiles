@@ -1,4 +1,4 @@
-local tbl = LDU.tbl
+local tbl = require "util.table"
 
 return {
   {
@@ -14,7 +14,7 @@ return {
       },
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
-        local register = LDU.register
+        local register = require "util.keymap"
         -- Navigation
         register({
           ["]"] = {

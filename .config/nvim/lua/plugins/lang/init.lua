@@ -1,4 +1,4 @@
-local tbl = LDU.tbl
+local tbl = require "util.table"
 local icons = require "util.icons"
 
 return {

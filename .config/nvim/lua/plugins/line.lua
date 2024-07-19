@@ -1,8 +1,8 @@
 -- status line, buffer line and winbar
 
-local tbl = LDU.tbl
+local tbl = require "util.table"
 local icons = require "util.icons"
-local import = LDU.import
+local import = require "util.import"
 
 local uppercase_filetype = function() return vim.bo.filetype:upper() end
 local const_string = function(str)

@@ -1,7 +1,7 @@
 local lsp_install = require "lsp.install"
 local lsp_keymap = require "lsp.keymap"
 
-local tbl = LDU.tbl
+local tbl = require "util.table"
 
 local nu = require "util.nil"
 

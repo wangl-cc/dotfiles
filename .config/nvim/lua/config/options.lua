@@ -102,7 +102,7 @@ end
 
 -- Set WAKATIME_HOME here instead of shell rc file
 -- because nvim may be not started from shell
-vim.env.WAKATIME_HOME = vim.uv.os_homedir() .. "/.config/wakatime"
+vim.env.WAKATIME_HOME = vim.loop.os_homedir() .. "/.config/wakatime"
 
 if vim.fn.executable "nvr" == 1 then
   vim.env.VISUAL = "nvr -O"
