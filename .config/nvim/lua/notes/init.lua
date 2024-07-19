@@ -36,10 +36,10 @@ end
 
 ---@param note notes.Note
 local function open_note(note)
-  if not vim.loop.fs_stat(vim.fs.dirname(note.path)) then
+  if not vim.uv.fs_stat(vim.fs.dirname(note.path)) then
     vim.fn.mkdir(vim.fs.dirname(note.path), "p")
   end
-  if not vim.loop.fs_stat(note.path) then
+  if not vim.uv.fs_stat(note.path) then
     vim.fn.writefile({ "# " .. name2title(note.name) }, note.path)
   end
   open_win(note)

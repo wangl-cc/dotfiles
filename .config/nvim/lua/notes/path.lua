@@ -2,7 +2,7 @@ local options = require("notes.config").options
 
 local M = {}
 
-local path_sep = vim.loop.os_uname().sysname == "Windows" and "\\" or "/"
+local path_sep = vim.uv.os_uname().sysname == "Windows" and "\\" or "/"
 local path_sep_len = #path_sep
 
 --- Check if the directory has the correct path separator at the end, if not add it
@@ -71,7 +71,7 @@ function M.note_path(scope, name) return M.note_dir(scope) .. M.check_extension(
 function M.find_notes(ntbl, nlist, dir, prefix)
   dir = check_dir(dir)
   prefix = prefix and check_dir(prefix)
-  local stat = vim.loop.fs_stat(dir)
+  local stat = vim.uv.fs_stat(dir)
   if not stat or stat.type ~= "directory" then return end
   for path, type in vim.fs.dir(dir) do
     local name = prefix and prefix .. path or path
