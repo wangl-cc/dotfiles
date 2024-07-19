@@ -1,6 +1,6 @@
 local tbl = require "util.table"
 
-local copilot_icon = ""
+local capitalize = require("util.string").capitalize
 
 local cached_colors = {
   theme = nil,
@@ -50,9 +50,7 @@ return {
             lualine_x = {
               {
                 function()
-                  return copilot_icon
-                    .. " "
-                    .. require("copilot.api").status.data.message
+                  return " " .. require("copilot.api").status.data.message
                 end,
                 cond = function()
                   if not package.loaded.copilot then return false end
@@ -64,7 +62,7 @@ return {
                   local status = require("copilot.api").status.data.status or ""
                   return cached_colors[status_color[status]]
                 end,
-                on_click = function() require("CopilotChat").toggle() end,
+                on_click = function() vim.cmd "Copilot" end,
               },
             },
           },
@@ -93,17 +91,13 @@ return {
     version = "2",
     cmd = { "CopilotChat" },
     dependencies = "zbirenbaum/copilot.lua",
-    ---@type CopilotChat.config
     opts = {
-      question_header = "## User",
-      answer_header = "## Copilot",
-      error_header = "## Error",
-      separator = ":",
+      question_header = "  " .. (capitalize(vim.env.USER) or "User") .. " ",
+      answer_header = "  Copilot ",
+      error_header = "  Error ",
+      auto_insert_mode = true,
       show_help = false,
-      selection = function(source)
-        local cs = require "CopilotChat.select"
-        return cs.visual(source) or cs.buffer(source)
-      end,
+      history_path = vim.fn.stdpath "state" .. "/copilot_chat_history",
     },
   },
 }
