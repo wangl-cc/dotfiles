@@ -27,12 +27,10 @@ return {
     },
     opts = {},
   },
+  -- helper of nvim 0.10 native comment
   {
-    "echasnovski/mini.comment",
-    name = "mini.comment",
-    keys = {
-      { "gc", desc = "Toggle comment linewise", mode = { "v", "n" } },
-    },
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
     opts = {},
   },
   {
