@@ -39,7 +39,6 @@ return {
   {
     "smjonas/inc-rename.nvim",
     event = "UIEnter",
-    config = true,
   },
   {
     "folke/noice.nvim",
@@ -59,26 +58,9 @@ return {
           },
         },
       },
-      {
-        "nvim-lualine/lualine.nvim",
-        optional = true,
-        opts = tbl.merge_options {
-          sections = {
-            lualine_x = {
-              {
-                function() return package.loaded.noice.api.status.hunk.get() end,
-                cond = function()
-                  return package.loaded.noice
-                    and package.loaded.noice.api.status.hunk.has()
-                end,
-              },
-            },
-          },
-        },
-      },
     },
     event = "UIEnter",
-    version = "4",
+    version = "*",
     opts = tbl.merge_options {
       cmdline = {
         format = {
@@ -125,7 +107,6 @@ return {
       },
       messages = {
         enabled = true,
-        view_search = false,
       },
       history = { view = "popup" },
       views = {
@@ -162,10 +143,11 @@ return {
           position = { row = 2 },
         },
       },
-      status = {
-        hunk = { find = "^Hunk %d+ of %d" },
-      },
       routes = {
+        -- Hunk navigation of gitsigns ()
+        -- An ideal way is use virtual text to show the hunk number like search
+        -- But there are some issues, so ignore this messages is also Ok
+        -- because the hunk number is not important
         {
           opts = { skip = true },
           filter = {
@@ -176,6 +158,10 @@ return {
         },
         {
           view = "notify",
+          opts = {
+            title = "Error",
+            level = vim.log.levels.ERROR,
+          },
           filter = {
             any = {
               { error = true },
@@ -183,13 +169,13 @@ return {
               { event = "msg_show", find = "^E%d+:" },
             },
           },
-          opts = {
-            title = "Error",
-            level = vim.log.levels.ERROR,
-          },
         },
         {
           view = "notify",
+          opts = {
+            title = "Warning",
+            level = vim.log.levels.WARN,
+          },
           filter = {
             any = {
               { warning = true },
@@ -198,34 +184,19 @@ return {
               { event = "msg_show", find = "^No hunks$" },
             },
           },
-          opts = {
-            title = "Warning",
-            level = vim.log.levels.WARN,
-          },
         },
         {
           view = "notify",
-          ---@type NoiceFilter
+          opts = {
+            title = "Git",
+            merge = true,
+          },
           filter = {
-            ---@param msg NoiceMessage
             cond = function(msg)
               local opts = msg.opts
               if opts["title"] then return opts["title"] == "Git" end
               return false
             end,
-          },
-          opts = {
-            title = "Git",
-            merge = true,
-          },
-        },
-        {
-          view = "popup",
-          filter = {
-            any = {
-              { event = "msg_history_show" },
-              { event = "msg_show", min_height = 10 },
-            },
           },
         },
       },

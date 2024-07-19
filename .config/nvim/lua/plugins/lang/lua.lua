@@ -35,6 +35,7 @@ return {
     },
     opts = {
       library = {
+        { "lazy.nvim", words = { "lazy", "Lazy" } },
         { path = "luvit-meta/library", words = { "vim%.uv" } },
       },
     },

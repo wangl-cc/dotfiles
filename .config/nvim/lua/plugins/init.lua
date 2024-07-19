@@ -1,6 +1,6 @@
 return {
   -- Lazy can manage itself
-  { "folke/lazy.nvim", version = "10" },
+  { "folke/lazy.nvim", version = "*" },
 
   -- Startup time
   { "dstein64/vim-startuptime", cmd = "StartupTime" },

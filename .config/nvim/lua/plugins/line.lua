@@ -9,7 +9,7 @@ local const_string = function(str)
   return function() return str end
 end
 
-local function capitalize(str) return str:sub(1, 1):upper() .. str:sub(2) end
+local capitalize = require("util.string").capitalize
 
 local normalize = function(str)
   local parts = vim.split(str, "[_-]")
@@ -21,6 +21,39 @@ end
 
 local lazy_status = import "lazy.status"
 local bd = import("mini.bufremove"):get "delete"
+
+local location = {
+  function()
+    local cur_line = vim.fn.line "."
+    local cur_col = vim.fn.charcol "."
+    local total_lines = vim.fn.line "$"
+    local progress
+    if cur_line == 1 then
+      progress = "Top"
+    elseif cur_line == total_lines then
+      progress = "Bot"
+    else
+      progress = string.format("%d%%%%", math.floor(cur_line / total_lines * 100))
+    end
+    return string.format("%d:%d %s", cur_line, cur_col, progress)
+  end,
+}
+
+local time = {
+  function() return os.date "%R" end,
+  icon = "",
+}
+
+local function with_time(sections)
+  sections.lualine_z = { time }
+  return sections
+end
+
+local function with_time_and_location(sections)
+  sections.lualine_y = { location }
+  sections.lualine_z = { time }
+  return sections
+end
 
 return {
   {
@@ -34,18 +67,32 @@ return {
         section_separators = { left = "", right = "" },
       },
       extensions = {
-        "neo-tree",
-        "quickfix",
-        "toggleterm",
-        "trouble",
         {
-          sections = {
+          sections = with_time {
+            lualine_a = {
+              function() return "ToggleTerm #" .. vim.b.toggle_number end,
+            },
+          },
+          filetypes = { "toggleterm" },
+        },
+        {
+          sections = with_time {
+            lualine_a = {
+              function()
+                return vim.fn.fnamemodify(vim.uv.cwd() or vim.fn.getcwd(), ":~")
+              end,
+            },
+          },
+          filetypes = { "neo-tree" },
+        },
+        {
+          sections = with_time {
             lualine_a = { const_string "TELESCOPE" },
           },
           filetypes = { "TelescopePrompt", "TelescopeResults" },
         },
         {
-          sections = {
+          sections = with_time {
             lualine_a = { "mode" },
             lualine_b = {
               { "filename", file_status = false },
@@ -54,7 +101,7 @@ return {
           filetypes = { "iron" },
         },
         {
-          sections = {
+          sections = with_time {
             lualine_a = { const_string "LAZY" },
             lualine_b = {
               function()
@@ -62,22 +109,18 @@ return {
                 return "Loaded: " .. lazy.stats().loaded .. "/" .. lazy.stats().count
               end,
             },
-            lualine_c = {
+            lualine_y = {
               {
                 lazy_status:get("updates"):with(),
                 cond = lazy_status:get("has_updates"):with(),
               },
             },
-            lualine_y = { "progress" },
-            lualine_z = { "location" },
           },
           filetypes = { "lazy" },
         },
         {
-          sections = {
+          sections = with_time_and_location {
             lualine_a = { uppercase_filetype },
-            lualine_y = { "progress" },
-            lualine_z = { "location" },
           },
           filetypes = {
             "lspinfo",
@@ -91,27 +134,23 @@ return {
           },
         },
         {
-          sections = {
+          sections = with_time_and_location {
             lualine_a = { uppercase_filetype },
             lualine_b = { { "filename", file_status = false } },
-            lualine_y = { "progress" },
-            lualine_z = { "location" },
           },
           filetypes = { "help", "man" },
         },
         {
-          sections = {
+          sections = with_time_and_location {
             lualine_a = { const_string "TREE" },
-            lualine_y = { "progress" },
-            lualine_z = { "location" },
           },
           filetypes = { "query" },
         },
       },
-      sections = {
-        lualine_a = {
-          { "mode", icons_enabled = true },
-        },
+      sections = with_time_and_location {
+        -- Section A: mode
+        lualine_a = { "mode" },
+        -- Section B: git status
         lualine_b = {
           {
             "branch",
@@ -132,12 +171,8 @@ return {
                 }
             end,
           },
-          {
-            "diagnostics",
-            sources = { "nvim_diagnostic" },
-            symbols = icons.diagnostic,
-          },
         },
+        -- Section C: information of current buffer
         lualine_c = {
           -- Indent method
           {
@@ -209,30 +244,14 @@ return {
             end,
             icon = "FMT:",
           },
+          -- TODO: Linter
+          -- There is no common api of nvim-lint to get the current linter
+          -- We need to find a way to get the current linter
         },
-        lualine_x = {
-          {
-            function()
-              if vim.v.hlsearch == 0 then return "" end
-              local result = vim.fn.searchcount { timeout = 500, maxcount = 99 }
-              if result.total == 0 or result.current == 0 then return "" end
-              local str
-              if result.incomplete == 1 then
-                str = "/%s [?/?]"
-              elseif result.incomplete == 2 then
-                if result.current > result.maxcount then
-                  str = "/%s [>%d/>%d]"
-                else
-                  str = "/%s [%d/>%d]"
-                end
-              else
-                str = "/%s [%d/%d]"
-              end
-              local pattern = vim.fn.getreg("/"):gsub("%%", "%%%%")
-              return str:format(pattern, result.current, result.total)
-            end,
-          },
-        },
+        -- Section X: reserved to show plugin information
+        lualine_x = {},
+        -- Section Y: location
+        -- Section Z: time
       },
     },
   },
