@@ -4,7 +4,7 @@ local register = require "util.keymap"
 local builtins = import "telescope.builtin"
 local trouble_open = import("trouble"):get "open"
 
----@param buffer number
+---@param buffer integer
 return function(buffer)
   ---@type KeymapTree
   local maps = {
@@ -33,6 +33,19 @@ return function(buffer)
       ["k"] = {
         callback = vim.lsp.buf.hover,
         desc = "Show hover information",
+      },
+      --@type KeymapOption
+      ["th"] = {
+        callback = function()
+          local inlay_hint = vim.lsp.inlay_hint
+          local filter = { bufnr = buffer }
+          if inlay_hint.is_enabled(filter) then
+            inlay_hint.enable(false, filter)
+          else
+            inlay_hint.enable(true, filter)
+          end
+        end,
+        desc = "Toggle inlay hints",
       },
       ---@type KeymapTree
       s = {

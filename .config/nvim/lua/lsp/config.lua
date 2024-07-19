@@ -13,7 +13,7 @@ M.options = {}
 ---@type table<string, table>
 M.servers = {}
 
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param buffer integer
 local function on_attach_common(client, buffer)
   -- Keymap
@@ -25,9 +25,10 @@ local function on_attach_common(client, buffer)
     if ok then navic.attach(client, buffer) end
   end
 
-  -- Attach lsp_signature to LSP clients
-  local ok, signature = pcall(require, "lsp_signature")
-  if ok then signature.on_attach(nil, buffer) end
+  -- Enable inlay hints
+  if client.supports_method "textDocument/inlayHint" then
+    vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+  end
 end
 
 ---@class LspConfig

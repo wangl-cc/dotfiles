@@ -15,6 +15,9 @@ return {
               Lua = {
                 telemetry = { enable = false },
                 workspace = { checkThirdParty = false },
+                hint = {
+                  enable = true,
+                },
               },
             },
           },
