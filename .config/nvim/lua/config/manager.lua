@@ -11,14 +11,15 @@ if not vim.uv.fs_stat(path) then
 end
 vim.opt.rtp:prepend(path)
 
+---@type LazyConfig
 local opts = {
   dev = {
     path = "~/Repos/NeoVim",
-    pattern = { "wangl-cc" },
+    patterns = { "wangl-cc" },
     fallback = true,
   },
   install = {
-    colorscheme = { "tokyonight" },
+    colorscheme = { "catppuccin" },
   },
   ui = {
     border = "rounded",
