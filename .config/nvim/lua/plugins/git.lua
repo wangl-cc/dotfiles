@@ -74,9 +74,6 @@ return {
           },
         }, { prefix = "<leader>", buffer = buffer })
       end,
-      yadm = {
-        enable = true,
-      },
     },
   },
   {
