@@ -20,10 +20,15 @@ return {
                   missingrefs = "all",
                   disabledDirs = { "test", "docs" },
                 },
+                inlayHints = {
+                  static = {
+                    enabled = true,
+                  },
+                },
               },
             },
             ---@diagnostic enable: missing-fields
-            ---@param client lsp.Client
+            ---@param client vim.lsp.Client
             ---@param bufnr integer
             on_attach = function(client, bufnr)
               vim.api.nvim_buf_create_user_command(
