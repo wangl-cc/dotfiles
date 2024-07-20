@@ -18,6 +18,11 @@ return {
     },
   },
   {
+    "lukas-reineke/headlines.nvim",
+    ft = { "markdown" },
+    opts = {},
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     version = "3",
     cmd = "Neotree",
