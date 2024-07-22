@@ -3,10 +3,6 @@ local import = require "util.import"
 
 local lazygit = nil
 
-local notes = import "notes"
-local notes_find = notes:get "find"
-local notes_toggle = notes:get "toggle"
-
 local copilot_chat = import "CopilotChat"
 
 local bd = import("mini.bufremove"):get "delete"
@@ -54,26 +50,6 @@ local leader_mappings = {
     w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
-    n = {
-      g = {
-        callback = notes_find:with { scope = "global" },
-        desc = "Search global notes",
-      },
-      p = {
-        callback = notes_find:with_fun(function()
-          local bufname = vim.api.nvim_buf_get_name(0)
-          local project = require("notes.path").get_project_root(bufname)
-          return { scope = "project", path = project }
-        end),
-        desc = "Search project notes",
-      },
-      b = {
-        callback = notes_find:with_fun(
-          function() return { scope = "buffer", path = vim.api.nvim_buf_get_name(0) } end
-        ),
-        desc = "Search buffer notes",
-      },
-    },
     p = {
       callback = function()
         local parsers = require "nvim-treesitter.parsers"
@@ -238,29 +214,6 @@ local leader_mappings = {
     s = { [[<Cmd>Lazy sync<CR>]], desc = "Install, clean and update plugins" },
     x = { [[<Cmd>Lazy clean<CR>]], desc = "Clean unused plugins" },
     p = { [[<Cmd>Lazy profile<CR>]], desc = "Profile startup time" },
-  },
-  n = {
-    g = {
-      callback = notes_toggle:with({ scope = "global" }, "main"),
-      desc = "Toggle main global notes",
-    },
-    p = {
-      callback = notes_toggle:with_fun(function()
-        local bufname = vim.api.nvim_buf_get_name(0)
-        local project = require("notes.path").get_project_root(bufname)
-        local name = project:match "([^/]+)/$"
-        return { scope = "project", path = project }, name
-      end),
-      desc = "Toggle mail project notes",
-    },
-    b = {
-      callback = notes_toggle:with_fun(function()
-        local bufname = vim.api.nvim_buf_get_name(0)
-        local name = bufname:match "([^/]+)$"
-        return { scope = "buffer", path = bufname }, name
-      end),
-      desc = "Toggle mail buffer notes",
-    },
   },
 }
 
