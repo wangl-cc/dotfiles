@@ -37,12 +37,20 @@ local leader_mappings = {
     g = { bufferline:get("pick"):with(), desc = "Pick a buffer" },
     G = { bufferline:get("close_with_pick"):with(), desc = "Pick a buffer to close" },
   },
+  [":"] = {
+    [[<Cmd>Telescope command_history<CR>]],
+    desc = "Search command history",
+  },
+  [" "] = {
+    [[<Cmd>Telescope<CR>]],
+    desc = "Search telescope sources",
+  },
   s = {
-    t = { [[<Cmd>Telescope<CR>]], desc = "Search telescope sources" },
     f = { [[<Cmd>Telescope find_files<CR>]], desc = "Search files in CWD" },
     k = { [[<Cmd>Telescope keymaps<CR>]], desc = "Search keymaps" },
     b = { [[<Cmd>Telescope buffers<CR>]], desc = "Search buffers" },
     h = { [[<Cmd>Telescope help_tags<CR>]], desc = "Search help tags" },
+    H = { [[<Cmd>Telescope highlights<CR>]], desc = "Search highlights" },
     w = { [[<Cmd>Telescope live_grep<CR>]], desc = "Grep words in CWD" },
     c = { [[<Cmd>Telescope todo-comments todo<CR>]], desc = "Search todo comments" },
     a = { [[<Cmd>Telescope diagnostics<CR>]], desc = "Search all diagnostics" },
