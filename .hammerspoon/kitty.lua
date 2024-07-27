@@ -34,6 +34,4 @@ function M.hotkey_win()
   M.remote_run "launch --type=os-window"
 end
 
-function M.bind(mods, key) hs.hotkey.bind(mods, key, M.hotkey_win) end
-
 return M
