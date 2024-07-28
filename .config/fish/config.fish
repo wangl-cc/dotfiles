@@ -1,5 +1,13 @@
 not status is-interactive; and return
 
+# if in WarpTerminal {{{
+set NOT_IN_WARP true
+
+if test $TERM_PROGRAM = WarpTerminal
+    set NOT_IN_WARP false
+end
+# }}}
+
 # rm {{{
 abbr --add rm rm -i
 abbr --add rf rm -f
@@ -112,37 +120,34 @@ if type -q cargo # {{{
 end # }}}
 
 if type -q nvim # {{{
-    # don't set EDITOR, EDITOR has a higher priority than VISUAL in Homebrew
-    if set -q NVIM; and type -q nvr
-        abbr --add vi nvr -O
-        abbr --add vim nvr -O
-        abbr --add nvim nvr -O
-        # VISUAL is set in the nvim configuration
-    else
-        abbr --add vi nvim
-        abbr --add vim nvim
-        abbr --add nvim nvim
-        set -gx VISUAL nvim
-    end
+    # nv is a wrapper for nvim
+    abbr --add vi nv
+    abbr --add vim nv
+    abbr --add nvim nv
+    set -gx VISUAL nv
 else
     abbr --add vi vim
     set -gx VISUAL vim
 end # }}}
 
 if type -q fzf # {{{
-    set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+    if type -q fd
+        set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+    end
     set -gx FZF_DEFAULT_OPTS '--color=16'
 end # }}}
 
 if type -q fastfetch # {{{
     abbr --add ff fastfetch
-    function fish_greeting
-        fastfetch
+    if $NOT_IN_WARP
+        function fish_greeting
+            fastfetch
+        end
     end
 end # }}}
 
 # prompt {{{
-type -q starship; and starship init fish | source
+$NOT_IN_WARP; and type -q starship; and starship init fish | source
 # }}}
 
 # misc {{{
@@ -153,16 +158,18 @@ set -gx MAA_LOG info
 # }}}
 
 # vi mode {{{
-set -g fish_key_bindings fish_vi_key_bindings
-function fish_user_key_bindings
-    fish_default_key_bindings -M insert # set default key bindings for insert mode
-    # then execute the vi-bindings so they take precedence when there's a conflict.
-    fish_vi_key_bindings --no-erase insert
+if $NOT_IN_WARP
+    set -g fish_key_bindings fish_vi_key_bindings
+    function fish_user_key_bindings
+        fish_default_key_bindings -M insert # set default key bindings for insert mode
+        # then execute the vi-bindings so they take precedence when there's a conflict.
+        fish_vi_key_bindings --no-erase insert
+    end
+    set fish_cursor_default block
+    set fish_cursor_insert line
+    set fish_cursor_replace underscore
+    set fish_cursor_replace_one underscore
 end
-set fish_cursor_default block
-set fish_cursor_insert line
-set fish_cursor_replace underscore
-set fish_cursor_replace_one underscore
 # }}}
 
 # vim:foldmethod=marker
