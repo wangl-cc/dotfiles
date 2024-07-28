@@ -1,0 +1,26 @@
+#!/usr/bin/env fish
+# A wrapper script to start neovim
+
+type -q nvim; or exit 127 # nvim not found
+
+# If this is executed inside neovim, open it in a vertical split
+if set -q NVIM; and type -q nvr
+    nvr -O $argv
+    exit $status
+end
+
+# If this is executed inside WarpTerminal, open it in kitty
+if test $TERM_PROGRAM = WarpTerminal
+    set -l socket /tmp/kitty
+    if not test -S $socket
+        echo "Kitty is not started yet, start it first"
+        open -a kitty
+    end
+    kitty @launch --to=unix:$socket --cwd=(pwd) \
+        --type=os-window --os-window-state=fullscreen \
+        nvim $argv
+    exit $status
+end
+
+# Otherwise, just start neovim
+nvim $argv
