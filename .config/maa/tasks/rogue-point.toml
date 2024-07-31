@@ -9,6 +9,7 @@ type = "Roguelike"
 core_char = "维什戴尔"
 roles = "稳扎稳打"
 mode = 0
+investment_enabled = false
 
 [tasks.params.theme]
 alternatives = ["Mizuki", "Sami", "Sarkaz"]
@@ -17,7 +18,7 @@ description = "theme"
 
 [tasks.params.squad]
 alternatives = ["指挥分队", "远程战术分队", "蓝图测绘分队"]
-default_index = 1
+default_index = 3
 description = "squad"
 
 [[tasks]]
