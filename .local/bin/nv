@@ -9,8 +9,8 @@ if set -q NVIM; and type -q nvr
     exit $status
 end
 
-# If this is executed inside WarpTerminal, open it in kitty
-if test $TERM_PROGRAM = WarpTerminal
+# If this is not executed in kitty, open it in a new kitty window
+if test "$TERM_PROGRAM" != Kitty
     set -l socket /tmp/kitty
     if not test -S $socket
         echo "Kitty is not started yet, start it first"
