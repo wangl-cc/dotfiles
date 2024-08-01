@@ -1,0 +1,11 @@
+cli:
+  channel: Alpha
+core:
+  channel: Beta
+  test_time: 0 # disable speed test, download from GitHub directly
+resource:
+  backend: libgit2
+  remote:
+    ssh_key: ~/.ssh/id_ed25519
+    url: git@github.com:MaaAssistantArknights/MaaResource.git
+# yaml-language-server: $schema=https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/cli.schema.json
