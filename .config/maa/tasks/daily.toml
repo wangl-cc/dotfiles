@@ -50,7 +50,7 @@ params = { expiring_medicine = 1000 }
 condition = { type = "Weekday", weekdays = ["Sun"] }
 
 [[tasks.variants]]
-params = { stage = "HE-7" }
+params = { stage = "AS-7" }
 condition = { type = "OnSideStory", client = "Official" }
 
 #============================= Fight 2 ============================#
