@@ -62,7 +62,34 @@ return {
                   local status = require("copilot.api").status.data.status or ""
                   return cached_colors[status_color[status]]
                 end,
-                on_click = function() vim.cmd "Copilot" end,
+                on_click = function()
+                  local status = require("copilot.api").status.data
+                  if status.status == "Warning" then
+                    vim.notify(
+                      status.message,
+                      vim.log.levels.WARN,
+                      { title = "Copilot" }
+                    )
+                  elseif status.status == "Normal" then
+                    vim.notify(
+                      "Everything went well!",
+                      vim.log.levels.INFO,
+                      { title = "Copilot" }
+                    )
+                  elseif status.status == "InProgress" then
+                    vim.notify(
+                      "Waiting for suggestions...",
+                      vim.log.levels.INFO,
+                      { title = "Copilot" }
+                    )
+                  elseif #status.message > 0 then
+                    vim.notify(
+                      status.message,
+                      vim.log.levels.INFO,
+                      { title = "Copilot" }
+                    )
+                  end
+                end,
               },
             },
           },
