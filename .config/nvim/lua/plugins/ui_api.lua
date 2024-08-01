@@ -39,6 +39,7 @@ return {
   {
     "smjonas/inc-rename.nvim",
     event = "UIEnter",
+    opts = {},
   },
   {
     "folke/noice.nvim",
