@@ -18,9 +18,6 @@ return {
                     "inactive-code",
                   },
                 },
-                check = {
-                  command = "clippy",
-                },
               },
             },
           },
