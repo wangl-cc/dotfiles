@@ -1,13 +1,5 @@
 not status is-interactive; and return
 
-# if in WarpTerminal {{{
-set NOT_IN_WARP true
-
-if test $TERM_PROGRAM = WarpTerminal
-    set NOT_IN_WARP false
-end
-# }}}
-
 # rm {{{
 abbr --add rm rm -i
 abbr --add rf rm -f
@@ -139,15 +131,13 @@ end # }}}
 
 if type -q fastfetch # {{{
     abbr --add ff fastfetch
-    if $NOT_IN_WARP
-        function fish_greeting
-            fastfetch
-        end
+    function fish_greeting
+        fastfetch
     end
 end # }}}
 
 # prompt {{{
-$NOT_IN_WARP; and type -q starship; and starship init fish | source
+type -q starship; and starship init fish | source
 # }}}
 
 # misc {{{
@@ -158,18 +148,16 @@ set -gx MAA_LOG info
 # }}}
 
 # vi mode {{{
-if $NOT_IN_WARP
-    set -g fish_key_bindings fish_vi_key_bindings
-    function fish_user_key_bindings
-        fish_default_key_bindings -M insert # set default key bindings for insert mode
-        # then execute the vi-bindings so they take precedence when there's a conflict.
-        fish_vi_key_bindings --no-erase insert
-    end
-    set fish_cursor_default block
-    set fish_cursor_insert line
-    set fish_cursor_replace underscore
-    set fish_cursor_replace_one underscore
+set -g fish_key_bindings fish_vi_key_bindings
+function fish_user_key_bindings
+    fish_default_key_bindings -M insert # set default key bindings for insert mode
+    # then execute the vi-bindings so they take precedence when there's a conflict.
+    fish_vi_key_bindings --no-erase insert
 end
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_replace underscore
+set fish_cursor_replace_one underscore
 # }}}
 
 # vim:foldmethod=marker
