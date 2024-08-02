@@ -2,6 +2,7 @@ cli:
   channel: Alpha
 core:
   channel: Beta
+  api_url: https://github.com/MaaAssistantArknights/MaaRelease/raw/main/MaaAssistantArknights/api/version/
   test_time: 0 # disable speed test, download from GitHub directly
 resource:
   backend: libgit2
