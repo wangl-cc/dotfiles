@@ -17,7 +17,7 @@ end
 
 local kitty = require "kitty"
 
-global_shortcut("k", kitty.hotkey_win)
+global_shortcut("n", kitty.hotkey_win)
 
 local bob = require "bob"
 
