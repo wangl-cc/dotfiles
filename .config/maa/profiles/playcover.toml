@@ -1,0 +1,7 @@
+"$schema" = "https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/asst.schema.json"
+
+[connection]
+preset = "PlayCover"
+
+[instance_options]
+deployment_with_pause = false
