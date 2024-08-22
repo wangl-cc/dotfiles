@@ -1,6 +1,6 @@
 [user]
 	name = Loong
-	email = wangl.cc@outlook.com
+	email = 40141251+wangl-cc@users.noreply.github.com
 <% if gpg -k | grep 'sub' | grep 'S' >/dev/null 2>&1; then -%>
 	signingkey = <% gpg -k --keyid-format short | grep 'sub' | grep 'S' | sed 's/^.*\/\([^ ]*\) .*$/"\1!"/' -%>
 [gpg]
