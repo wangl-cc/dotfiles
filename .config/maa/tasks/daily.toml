@@ -14,6 +14,7 @@ facility = ["Trade", "Reception", "Mfg", "Control", "Power", "Office", "Dorm"]
 dorm_trust_enabled = true
 filename = "normal.json"
 replenish = true
+continue_training = true
 
 [[tasks.variants]]
 condition = { type = "Time", start = "07:00:00", end = "12:00:00" }
@@ -50,7 +51,7 @@ params = { expiring_medicine = 1000 }
 condition = { type = "Weekday", weekdays = ["Sun"] }
 
 [[tasks.variants]]
-params = { stage = "AS-7" }
+params = { stage = "SL-8" }
 condition = { type = "OnSideStory", client = "Official" }
 
 #============================= Fight 2 ============================#
