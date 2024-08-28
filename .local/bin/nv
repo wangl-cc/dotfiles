@@ -9,6 +9,13 @@ if set -q NVIM; and type -q nvr
     exit $status
 end
 
+# If this is executed in SSH, just start neovim
+if test -n "$SSH_CLIENT"
+    nvim $argv
+    exit $status
+end
+
+
 # If this is not executed in kitty, open it in a new kitty window
 if test "$TERM_PROGRAM" != Kitty
     set -l socket /tmp/kitty
