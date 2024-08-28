@@ -1,5 +1,12 @@
 not status is-interactive; and return
 
+# tar {{{
+abbr --add tx tar -xf # extract
+abbr --add tc tar -cf # create
+# set COPYFILE_DISABLE=1 to prevent tar from creating ._ files on macOS
+set -gx COPYFILE_DISABLE 1
+# }}}
+
 # rm {{{
 abbr --add rm rm -i
 abbr --add rf rm -f
