@@ -10,28 +10,35 @@ type = "Infrast"
 
 [tasks.params]
 mode = 10000
-facility = ["Trade", "Reception", "Mfg", "Control", "Power", "Office", "Dorm"]
+facility = [
+  "Trade",
+  "Reception",
+  "Mfg",
+  "Control",
+  "Power",
+  "Office",
+  "Training",
+  "Dorm",
+]
 dorm_trust_enabled = true
-filename = "normal.json"
+filename = "normal-ng.json"
 replenish = true
 continue_training = true
 
 [[tasks.variants]]
-condition = { type = "Time", start = "07:00:00", end = "12:00:00" }
+condition = { type = "Time", start = "08:00:00", end = "11:59:59" }
 params = { plan_index = { default = 1, description = "index of plan" } }
 
 [[tasks.variants]]
-condition = { type = "Time", start = "12:00:00", end = "17:00:00" }
+condition = { type = "Time", start = "12:00:00", end = "15:59:59" }
 params = { plan_index = { default = 2, description = "index of plan" } }
 
 [[tasks.variants]]
-condition = { type = "Time", start = "17:00:00", end = "23:00:00" }
+condition = { type = "Time", start = "16:00:00", end = "23:59:59" }
 params = { plan_index = { default = 3, description = "index of plan" } }
 
 [[tasks.variants]]
-[tasks.variants.params]
-facility = []
-plan_index = { default = 0, description = "index of plan" }
+params = { plan_index = { default = 0, description = "index of plan" } }
 
 #------------------------------ Fight -----------------------------#
 
@@ -39,38 +46,33 @@ plan_index = { default = 0, description = "index of plan" }
 [[tasks]]
 name = "Fight Event Stage"
 type = "Fight"
-strategy = "merge"
 
 [tasks.params]
 report_to_penguin = true
 penguin_id = "084310065"
-
-# use all expiring medicine on Sunday
-[[tasks.variants]]
 params = { expiring_medicine = 1000 }
-condition = { type = "Weekday", weekdays = ["Sun"] }
 
+# On any side story open, fight given side story stage
 [[tasks.variants]]
-params = { stage = "SL-8" }
 condition = { type = "OnSideStory", client = "Official" }
+params = { stage = "DT-6" }
 
-#============================= Fight 2 ============================#
-[[tasks]]
-name = "Fight Fallback"
-type = "Fight"
-strategy = "merge"
-
-[tasks.params]
-report_to_penguin = true
-penguin_id = "084310065"
-
-# use all expiring medicine on Sunday
+# Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
+# PR-C-1 on Thursday, 1-7 for the rest of the week
 [[tasks.variants]]
-params = { expiring_medicine = 1000 }
-condition = { type = "Weekday", weekdays = ["Sun"] }
-
+condition = { type = "Weekday", weekdays = ["Mon"], timezone = "Official" }
+params = { stage = "PR-A-2" }
 [[tasks.variants]]
-params = { stage = "1-7", series = 3 }
+condition = { type = "Weekday", weekdays = ["Tue"], timezone = "Official" }
+params = { stage = "PR-B-2" }
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Wed"], timezone = "Official" }
+params = { stage = "PR-D-2" }
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Thu"], timezone = "Official" }
+params = { stage = "PR-C-1" }
+[[tasks.variants]]
+params = { stage = "1-7" }
 
 #------------------------------ Mall ------------------------------#
 # Mall before 7:00
