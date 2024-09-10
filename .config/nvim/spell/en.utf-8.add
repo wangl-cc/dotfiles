@@ -1,14 +1,14 @@
 tex
 gui
 utf
+vim
 nvim
 lua
 sudo
-NERD
-REPL
 julia
 esc
 cmd
+REPL
 RPC
 JIT
 LSP
