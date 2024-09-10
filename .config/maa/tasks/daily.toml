@@ -50,7 +50,7 @@ type = "Fight"
 [tasks.params]
 report_to_penguin = true
 penguin_id = "084310065"
-params = { expiring_medicine = 1000 }
+expiring_medicine = 1000
 
 # On any side story open, fight given side story stage
 [[tasks.variants]]
