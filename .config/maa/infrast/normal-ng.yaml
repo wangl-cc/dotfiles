@@ -97,9 +97,9 @@ plans:
           operators: [但书, 空弦, 黑键]
       manufacture:
         - product: Pure Gold
-          operators: [夜烟, 斑点, 乌尔比安]
-        - product: Pure Gold
           operators: [槐琥, 苍苔, 迷迭香]
+        - product: Pure Gold
+          operators: [夜烟, 斑点, 乌尔比安]
         - product: Battle Record
           operators: [断罪者, 食铁兽, 安哲拉]
         - product: Battle Record
