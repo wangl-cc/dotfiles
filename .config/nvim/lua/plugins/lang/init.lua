@@ -130,6 +130,16 @@ return {
     },
     event = { "BufReadPre", "BufNewFile" },
     config = function(_, opts)
+      local custom_linters = opts.custom_linters or {}
+      for name, linter in pairs(custom_linters) do
+        if linter.parser_from_pattern then
+          linter.parser =
+            require("lint.parser").from_pattern(unpack(linter.parser_from_pattern))
+          linter.parser_from_pattern = nil
+        end
+        require("lint").linters[name] = linter
+      end
+
       local linters_by_ft = opts.linters_by_ft or {}
       for ft, ft_linter_opts in pairs(linters_by_ft) do
         if type(ft_linter_opts) == "string" then
