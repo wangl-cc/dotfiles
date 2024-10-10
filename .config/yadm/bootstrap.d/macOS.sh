@@ -124,18 +124,18 @@ echo_setup "Finder"
   defaults_write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 echo_done
 
-echo_setup "Safari"
-  # don't open safe files automatically
-  defaults_write com.apple.Safari AutoOpenSafeDownloads -bool false
-  # open new windows with start page
-  defaults_write com.apple.Safari NewWindowBehavior -int 4
-  # open new tabs with start page
-  defaults_write com.apple.Safari NewTabBehavior -int 4
-  # campact tab layout
-  defaults_write com.apple.Safari ShowStandaloneTabBar -bool false
-  # don't warn about fraudulent websites, this is a privacy concern
-  # when enabled, websites will be uploaded to check if they are fraudulent
-  defaults_write com.apple.Safari WarnAboutFraudulentWebsites -bool false
-echo_done
+# echo_setup "Safari"
+#   # don't open safe files automatically
+#   defaults_write com.apple.Safari AutoOpenSafeDownloads -bool false
+#   # open new windows with start page
+#   defaults_write com.apple.Safari NewWindowBehavior -int 4
+#   # open new tabs with start page
+#   defaults_write com.apple.Safari NewTabBehavior -int 4
+#   # campact tab layout
+#   defaults_write com.apple.Safari ShowStandaloneTabBar -bool false
+#   # don't warn about fraudulent websites, this is a privacy concern
+#   # when enabled, websites will be uploaded to check if they are fraudulent
+#   defaults_write com.apple.Safari WarnAboutFraudulentWebsites -bool false
+# echo_done
 
 echo_done
