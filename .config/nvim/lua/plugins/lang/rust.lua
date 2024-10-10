@@ -18,6 +18,9 @@ return {
                     "inactive-code",
                   },
                 },
+                rustfmt = {
+                  extraArgs = { "+nightly" },
+                },
               },
             },
           },
