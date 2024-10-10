@@ -114,17 +114,23 @@ return {
     },
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    version = "2",
-    cmd = { "CopilotChat" },
-    dependencies = "zbirenbaum/copilot.lua",
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    version = false, -- set this if you want to always pull the latest change
     opts = {
-      question_header = "  " .. (capitalize(vim.env.USER) or "User") .. " ",
-      answer_header = "  Copilot ",
-      error_header = "  Error ",
-      auto_insert_mode = true,
-      show_help = false,
-      history_path = vim.fn.stdpath "state" .. "/copilot_chat_history",
+      provider = "copilot",
+    },
+    build = "make BUILD_FROM_SOURCE=true",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- for providers='copilot'
+      {
+        "ManderingProgrammer/render-markdown.nvim",
+        optional = true,
+        ft = { "markdown", "Avante" },
+        opts = tbl.merge_options {
+          file_types = { "markdown", "Avante" },
+        },
+      },
     },
   },
 }
