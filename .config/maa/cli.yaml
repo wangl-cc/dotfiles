@@ -7,6 +7,6 @@ core:
 resource:
   backend: libgit2
   remote:
-    ssh_key: ~/.ssh/id_ed25519
     url: git@github.com:MaaAssistantArknights/MaaResource.git
+    use_ssh_agent: true
 # yaml-language-server: $schema=https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/cli.schema.json
