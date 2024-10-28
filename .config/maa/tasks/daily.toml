@@ -71,7 +71,7 @@ params = { stage = "PR-D-2" }
 condition = { type = "Weekday", weekdays = ["Thu"], timezone = "Official" }
 params = { stage = "PR-C-1" }
 [[tasks.variants]]
-params = { stage = "1-7" }
+params = { stage = "1-7", series = 3 }
 
 #------------------------------ Mall ------------------------------#
 # Mall before 7:00
