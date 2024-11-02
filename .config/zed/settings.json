@@ -12,29 +12,44 @@
       "provider": "zed.dev",
       "model": "claude-3-5-sonnet-latest"
     },
+    "default_width": 400,
     "version": "2"
   },
   "telemetry": {
     "diagnostics": false,
     "metrics": false
   },
-  // Vim settings
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always",
+    "use_multiline_find": true,
     "toggle_relative_line_numbers": true
   },
-  // Theme settings
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
     "dark": "Catppuccin Macchiato"
   },
-  // Buffer font settings
   "buffer_font_size": 13,
   "buffer_font_family": "FiraCode Nerd Font",
-  // UI settings
-  "ui_font_size": 15,
+  "ui_font_family": ".SystemUIFont",
+  "ui_font_size": 14,
+  "scrollbar": {
+    "show": "system"
+  },
+  "tab_bar": {
+    "show_nav_history_buttons": false
+  },
+  "tabs": {
+    "close_position": "left",
+    "git_status": true
+  },
+  "chat_panel": {
+    "button": false
+  },
+  "preferred_line_length": 80,
+  "wrap_guides": [80],
+  "tab_size": 2,
   // Terminal settings
   "terminal": {
     "working_directory": "current_project_directory",
@@ -46,14 +61,8 @@
       // make the command wait for the given buffer to be closed.
       "GIT_EDITOR": "zed --wait --add"
     },
-    "detect_venv": {
-      "on": {
-        "directories": [".env", "env", ".venv", "venv"],
-        "activate_script": "fish"
-      }
-    }
+    "detect_venv": "off"
   },
-  // LSP settings
   "inlay_hints": {
     "enabled": true
   },
@@ -69,18 +78,30 @@
       }
     }
   },
-  // General editor settings
-  "tab_size": 2,
-  // Language specific settings
   "languages": {
     "Python": {
-      "tab_size": 4
+      "tab_size": 4,
+      "indent_guides": {
+        "coloring": "indent_aware",
+        "background_coloring": "indent_aware"
+      }
+    },
+    "YAML": {
+      "tab_size": 4,
+      "indent_guides": {
+        "coloring": "indent_aware",
+        "background_coloring": "indent_aware"
+      }
     },
     "Rust": {
-      "tab_size": 4
+      "tab_size": 4,
+      "preferred_line_length": 100,
+      "wrap_guides": [100]
     },
     "Julia": {
-      "tab_size": 4
+      "tab_size": 4,
+      "preferred_line_length": 92,
+      "wrap_guides": [92]
     },
     "Fish": {
       "tab_size": 4,
@@ -89,6 +110,15 @@
           "command": "fish_indent"
         }
       }
+    },
+    "Markdown": {
+      "preferred_line_length": 1000,
+      "soft_wrap": "editor_width",
+      "remove_trailing_whitespace_on_save": false
+    },
+    "LaTeX": {
+      "preferred_line_length": 1000,
+      "soft_wrap": "editor_width"
     }
   }
 }
