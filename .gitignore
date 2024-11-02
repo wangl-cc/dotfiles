@@ -72,6 +72,12 @@
 /.config/nvim/minimal.lua
 /.config/nvim/lazy-lock.json
 
+# Zed Editor
+!/.config/zed/
+/.config/zed/*
+!/.config/zed/settings.json
+!/.config/zed/keymap.json
+
 # Kitty
 !/.config/kitty
 

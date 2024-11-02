@@ -123,10 +123,10 @@ if type -q nvim # {{{
     abbr --add vi nv
     abbr --add vim nv
     abbr --add nvim nv
-    set -gx VISUAL nv
+    set -q VISUAL; or set -gx VISUAL nv
 else
     abbr --add vi vim
-    set -gx VISUAL vim
+    set -q VISUAL; or set -gx VISUAL vim
 end # }}}
 
 if type -q fzf # {{{
