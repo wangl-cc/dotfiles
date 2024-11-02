@@ -41,9 +41,7 @@ params = { plan_index = { default = 0, description = "index of plan" } }
 
 #------------------------------ Fight -----------------------------#
 
-#============================= Fight 1 ============================#
 [[tasks]]
-name = "Fight Event Stage"
 type = "Fight"
 
 [tasks.params]
@@ -54,7 +52,7 @@ expiring_medicine = 1000
 # On any side story open, fight given side story stage
 [[tasks.variants]]
 condition = { type = "OnSideStory", client = "Official" }
-params = { stage = "GO-8" }
+params = { stage = "PV-9" }
 
 # Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
 # PR-C-1 on Thursday, 1-7 for the rest of the week
