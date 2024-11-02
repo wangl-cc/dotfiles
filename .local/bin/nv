@@ -15,19 +15,5 @@ if test -n "$SSH_CLIENT"
     exit $status
 end
 
-
-# If this is not executed in kitty, open it in a new kitty window
-if test "$TERM_PROGRAM" != Kitty
-    set -l socket /tmp/kitty
-    if not test -S $socket
-        echo "Kitty is not started yet, start it first"
-        open -a kitty
-    end
-    kitty @launch --to=unix:$socket --cwd=(pwd) \
-        --type=os-window --os-window-state=fullscreen \
-        nvim $argv
-    exit $status
-end
-
 # Otherwise, just start neovim
 nvim $argv
