@@ -136,16 +136,31 @@ if type -q fzf # {{{
     set -gx FZF_DEFAULT_OPTS '--color=16'
 end # }}}
 
-if type -q fastfetch # {{{
-    abbr --add ff fastfetch
-    function fish_greeting
-        fastfetch
-    end
-end # }}}
+# Configurations are not needed or not working in Warp Terminal
+if test "$TERM_PROGRAM" != WarpTerminal # {{{
+    if type -q fastfetch # {{{
+        abbr --add ff fastfetch
+        function fish_greeting
+            fastfetch
+        end
+    end # }}}
 
-# prompt {{{
-type -q starship; and starship init fish | source
-# }}}
+    # starship prompt
+    type -q starship; and starship init fish | source
+
+    # vi mode {{{
+    set -g fish_key_bindings fish_vi_key_bindings
+    function fish_user_key_bindings
+        fish_default_key_bindings -M insert # set default key bindings for insert mode
+        # then execute the vi-bindings so they take precedence when there's a conflict.
+        fish_vi_key_bindings --no-erase insert
+    end
+    set fish_cursor_default block
+    set fish_cursor_insert line
+    set fish_cursor_replace underscore
+    set fish_cursor_replace_one underscore
+    # }}}
+end
 
 # misc {{{
 set -gx ESH_SHELL /bin/bash
@@ -154,17 +169,5 @@ set -gx BOB_CONFIG $HOME/.config/bob/config.json
 set -gx MAA_LOG info
 # }}}
 
-# vi mode {{{
-set -g fish_key_bindings fish_vi_key_bindings
-function fish_user_key_bindings
-    fish_default_key_bindings -M insert # set default key bindings for insert mode
-    # then execute the vi-bindings so they take precedence when there's a conflict.
-    fish_vi_key_bindings --no-erase insert
-end
-set fish_cursor_default block
-set fish_cursor_insert line
-set fish_cursor_replace underscore
-set fish_cursor_replace_one underscore
-# }}}
 
 # vim:foldmethod=marker
