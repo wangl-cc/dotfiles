@@ -7,6 +7,22 @@
 // from the command palette.
 [
   {
+    "context": "Editor",
+    "bindings": {
+      // Ctrl+Space is used to switch input method on macOS
+      "ctrl-space": null
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "cmd-g": [
+        "workspace::SendKeystrokes",
+        ": new center terminal enter lazygit enter"
+      ]
+    }
+  },
+  {
     "context": "Dock",
     "bindings": {
       "ctrl-w h": ["workspace::ActivatePaneInDirection", "Left"],

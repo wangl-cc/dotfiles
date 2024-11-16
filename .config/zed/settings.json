@@ -44,6 +44,9 @@
     "close_position": "left",
     "git_status": true
   },
+  "collaboration_panel": {
+    "button": false
+  },
   "chat_panel": {
     "button": false
   },
@@ -84,7 +87,16 @@
       "indent_guides": {
         "coloring": "indent_aware",
         "background_coloring": "indent_aware"
-      }
+      },
+      "language_servers": ["ruff"],
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "language_server": {
+            "name": "ruff"
+          }
+        }
+      ]
     },
     "YAML": {
       "tab_size": 4,
@@ -118,7 +130,9 @@
     },
     "LaTeX": {
       "preferred_line_length": 1000,
-      "soft_wrap": "editor_width"
+      "soft_wrap": "editor_width",
+      // Inlay hints for LaTeX is useless and annoying
+      "inlay_hints": { "enabled": false }
     }
   }
 }
