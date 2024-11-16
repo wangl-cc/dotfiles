@@ -118,6 +118,12 @@ if type -q cargo # {{{
     abbr --add cup cargo update
 end # }}}
 
+if type -q uv # {{{
+    # uv is a python package manager as an alternative to pip
+    # There is a uvx command as pipx alternative provided globally commands
+    abbr --add maturin uvx maturin
+end # }}}
+
 if type -q nvim # {{{
     # nv is a wrapper for nvim
     abbr --add vi nv
@@ -136,31 +142,25 @@ if type -q fzf # {{{
     set -gx FZF_DEFAULT_OPTS '--color=16'
 end # }}}
 
-# Configurations are not needed or not working in Warp Terminal
-if test "$TERM_PROGRAM" != WarpTerminal # {{{
-    if type -q fastfetch # {{{
-        abbr --add ff fastfetch
-        function fish_greeting
-            fastfetch
-        end
-    end # }}}
+if type -q fastfetch # {{{
+    abbr --add ff fastfetch
+end # }}}
 
-    # starship prompt
-    type -q starship; and starship init fish | source
+# starship prompt
+type -q starship; and starship init fish | source
 
-    # vi mode {{{
-    set -g fish_key_bindings fish_vi_key_bindings
-    function fish_user_key_bindings
-        fish_default_key_bindings -M insert # set default key bindings for insert mode
-        # then execute the vi-bindings so they take precedence when there's a conflict.
-        fish_vi_key_bindings --no-erase insert
-    end
-    set fish_cursor_default block
-    set fish_cursor_insert line
-    set fish_cursor_replace underscore
-    set fish_cursor_replace_one underscore
-    # }}}
+# vi mode {{{
+set -g fish_key_bindings fish_vi_key_bindings
+function fish_user_key_bindings
+    fish_default_key_bindings -M insert # set default key bindings for insert mode
+    # then execute the vi-bindings so they take precedence when there's a conflict.
+    fish_vi_key_bindings --no-erase insert
 end
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_replace underscore
+set fish_cursor_replace_one underscore
+# }}}
 
 # misc {{{
 set -gx ESH_SHELL /bin/bash
