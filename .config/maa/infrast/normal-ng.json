@@ -154,8 +154,7 @@
         ],
         "meeting": [
           {
-            "operators": ["陈", "伊内丝"],
-            "sort": true
+            "operators": ["伺夜", "红"]
           }
         ],
         "power": [
@@ -239,7 +238,8 @@
         ],
         "meeting": [
           {
-            "operators": ["伺夜", "红"]
+            "operators": ["陈", "伊内丝"],
+            "sort": true
           }
         ],
         "power": [

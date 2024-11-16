@@ -50,6 +50,8 @@ plans:
     rooms:
       control:
         - operators: [阿斯卡纶, 薇薇安娜, 焰尾, 歌蕾蒂娅, 戴菲恩]
+      meeting:
+        - operators: [伺夜, 红]
       trading:
         - product: LMD
           operators: [巫恋, 龙舌兰, 明椒]
@@ -71,9 +73,6 @@ plans:
         - operators: [炎狱炎熔]
       hire:
         - operators: [斥罪]
-      meeting:
-        - operators: [陈, 伊内丝]
-          sort: true
       dormitory:
         - operators: []
           autofill: true
@@ -111,7 +110,8 @@ plans:
       hire:
         - operators: [絮雨]
       meeting:
-        - operators: [伺夜, 红]
+        - operators: [陈, 伊内丝]
+          sort: true
       dormitory:
         - operators: [塑心]
           autofill: true
