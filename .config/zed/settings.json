@@ -88,7 +88,7 @@
         "coloring": "indent_aware",
         "background_coloring": "indent_aware"
       },
-      "language_servers": ["ruff"],
+      "language_servers": ["!pyright", "..."],
       "format_on_save": "on",
       "formatter": [
         {
