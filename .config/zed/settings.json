@@ -105,7 +105,6 @@
       ]
     },
     "YAML": {
-      "tab_size": 4,
       "indent_guides": {
         "coloring": "indent_aware",
         "background_coloring": "indent_aware"
