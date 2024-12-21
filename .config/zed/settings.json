@@ -50,6 +50,11 @@
   "chat_panel": {
     "button": false
   },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  },
   "preferred_line_length": 80,
   "wrap_guides": [80],
   "tab_size": 2,
