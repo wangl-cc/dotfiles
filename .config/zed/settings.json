@@ -62,7 +62,7 @@
       "VISUAL": "zed --add",
       // For git commands like `git commit`, a `--wait` flag is needed to
       // make the command wait for the given buffer to be closed.
-      "GIT_EDITOR": "zed --wait --add"
+      "GIT_EDITOR": "zed --wait"
     },
     "detect_venv": "off"
   },
