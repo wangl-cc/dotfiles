@@ -79,6 +79,27 @@
           "extraArgs": ["+nightly"]
         }
       }
+    },
+    "pylsp": {
+      "initialization_options": {
+        "plugins": {
+          "autopep8": {
+            "enabled": false
+          },
+          "flake8": {
+            "enabled": false
+          },
+          "pycodestyle": {
+            "enabled": false
+          },
+          "pydocstyle": {
+            "enabled": false
+          },
+          "yapf": {
+            "enabled": false
+          }
+        }
+      }
     }
   },
   "languages": {
