@@ -45,15 +45,6 @@
 
 /.config/*
 
-# WakaTime
-!/.config/wakatime
-/.config/wakatime/*
-!/.config/wakatime/.wakatime.cfg
-
-# Github Copilot
-!/.config/github-copilot
-/.config/github-copilot/versions.json
-
 # Fish Shell
 !/.config/fish
 # The fish_variables file is used to store host specific variables
