@@ -14,11 +14,11 @@
     }
   },
   {
-    "context": "vim_mode == normal",
+    "context": "Workspace",
     "bindings": {
       "cmd-g": [
-        "workspace::SendKeystrokes",
-        ": new center terminal enter lazygit enter"
+        "task::Spawn",
+        { "task_name": "lazygit", "reveal_target": "center" }
       ]
     }
   },
@@ -47,7 +47,8 @@
       "A": "project_panel::NewDirectory",
       "d": ["project_panel::Trash", { "skip_prompt": false }],
       "y": "project_panel::Copy",
-      "p": "project_panel::Paste"
+      "p": "project_panel::Paste",
+      "m": "project_panel::CollapseAllEntries"
     }
   },
   {

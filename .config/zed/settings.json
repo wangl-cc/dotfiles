@@ -15,6 +15,16 @@
     "default_width": 400,
     "version": "2"
   },
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "git-firefly": true,
+    "julia": true,
+    "latex": true,
+    "ruff": true,
+    "toml": true,
+    "typos": true,
+    "wakatime": true
+  },
   "telemetry": {
     "diagnostics": false,
     "metrics": false
@@ -25,6 +35,8 @@
     "use_multiline_find": true,
     "toggle_relative_line_numbers": true
   },
+  "pane_split_direction_horizontal": "down",
+  "pane_split_direction_vertical": "right",
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
@@ -34,26 +46,33 @@
   "buffer_font_family": "FiraCode Nerd Font",
   "ui_font_family": ".SystemUIFont",
   "ui_font_size": 14,
+  "use_system_path_prompts": false,
   "scrollbar": {
-    "show": "system"
+    "show": "system",
+    "axes": {
+      "horizontal": false
+    }
   },
   "tab_bar": {
     "show_nav_history_buttons": false
   },
   "tabs": {
     "close_position": "left",
-    "git_status": true
+    "show_diagnostics": "errors"
   },
   "collaboration_panel": {
     "button": false
   },
   "chat_panel": {
-    "button": false
+    "button": "never"
   },
   "git": {
     "inline_blame": {
       "enabled": false
     }
+  },
+  "indent_guides": {
+    "coloring": "indent_aware"
   },
   "preferred_line_length": 80,
   "wrap_guides": [80],
@@ -61,15 +80,21 @@
   // Terminal settings
   "terminal": {
     "working_directory": "current_project_directory",
+    // Use zed itself as editor for CLI tools that require an editor.
+    // The `--add` flag makes zed open the file in current workspace.
+    // The `--wait` flag makes command (git) wait for the file to be closed.
     "env": {
-      // Use zed itself as editor for CLI tools that require an editor.
-      // The `--add` flag makes zed open the file in current workspace.
       "VISUAL": "zed --add",
-      // For git commands like `git commit`, a `--wait` flag is needed to
-      // make the command wait for the given buffer to be closed.
       "GIT_EDITOR": "zed --wait"
     },
-    "detect_venv": "off"
+    // To use ALT+<key> shortcuts in terminal on macOS
+    "option_as_meta": true,
+    "shell": {
+      "program": "fish"
+    },
+    "toolbar": {
+      "breadcrumbs": false
+    }
   },
   "inlay_hints": {
     "enabled": true
@@ -84,15 +109,33 @@
           "extraArgs": ["+nightly"]
         }
       }
+    },
+    "texlab": {
+      "settings": {
+        "texlab": {
+          "latexindent": {
+            "modifyLineBreaks": true
+          },
+          "onSave": true,
+          "build": {
+            "executable": "tectonic",
+            "args": [
+              "-X",
+              "compile",
+              "%f",
+              "--untrusted",
+              "--synctex",
+              "--keep-logs",
+              "--keep-intermediates"
+            ]
+          }
+        }
+      }
     }
   },
   "languages": {
     "Python": {
       "tab_size": 4,
-      "indent_guides": {
-        "coloring": "indent_aware",
-        "background_coloring": "indent_aware"
-      },
       "language_servers": ["!pylsp", "..."],
       "format_on_save": "on",
       "formatter": [
@@ -141,8 +184,10 @@
     "LaTeX": {
       "preferred_line_length": 1000,
       "soft_wrap": "editor_width",
-      // Inlay hints for LaTeX is useless and annoying
-      "inlay_hints": { "enabled": false }
+      "hard_tabs": true // latexindent use tab to indent by default
+    },
+    "Git Config": {
+      "hard_tabs": true
     }
   }
 }
