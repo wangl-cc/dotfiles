@@ -1,0 +1,84 @@
+#!/usr/bin/env fish
+#
+# Script to setup fish shell host specific (universal) variables
+
+not set -q CURRENT_INDENT; and set -g CURRENT_INDENT 0
+
+function indent
+    string repeat -N -n $CURRENT_INDENT "  "
+end
+
+function colorize
+    set_color $argv[1]
+    echo -n $argv[2]
+    set_color normal
+end
+
+function begin_section
+    indent
+    echo (set_color -o blue)"$argv"(set_color normal)
+    set CURRENT_INDENT (math $CURRENT_INDENT + 1)
+end
+
+function end_section
+    set -g CURRENT_INDENT (math $CURRENT_INDENT - 1)
+    indent
+    echo (set_color -o blue)Done!(set_color normal)
+end
+
+function set_Ux --description "Verbose version of set -Ux"
+    set -l var $argv[1]
+    set -l val $argv[2..-1]
+
+    set -Uq $var; and test "$$var" = "$val"; and return
+
+    indent
+    echo (set_color -o blue)Set (set_color green)$val(set_color normal) to (set_color cyan)$var
+    set -Ux $var $val
+end
+
+function prepend_path
+    set -l path $argv[1]
+
+    test -d $path; or return
+
+    contains -- $path $fish_user_paths; and return
+    contains -- $path $newpaths; and return
+
+    indent
+    echo (set_color -o blue)Prepend (set_color -u green)$path(set_color normal) to (set_color -i cyan)fish_user_paths(set_color normal)
+    set -Up fish_user_paths $path
+end
+
+begin_section "Setting up fish shell environment variables"
+
+if test (uname -s) = Darwin
+    set -l homebrew_prefix
+    if test (uname -m) = arm64
+        set homebrew_prefix /opt/homebrew
+    else
+        set homebrew_prefix /usr/local
+    end
+
+    set -l brew = "$homebrew_prefix/bin/brew"
+    if test -d $homebrew_prefix; and test -x $brew
+        begin_section "Setting up Homebrew"
+        set_Ux HOMEBREW_PREFIX ($brew --prefix)
+        set_Ux HOMEBREW_CELLAR ($brew --cellar)
+        set_Ux HOMEBREW_REPOSITORY ($brew --repository)
+
+        prepend_path $HOMEBREW_PREFIX/sbin
+        prepend_path $HOMEBREW_PREFIX/bin
+
+        if test -n "$HOMEBREW_MIRROR_DOMAIN"
+            set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
+            set_Ux HOMEBREW_BOTTLE_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
+        end
+        end_section
+    end
+end
+
+prepend_path $HOME/.local/bin
+prepend_path $HOME/.cargo/bin
+
+end_section

@@ -1,0 +1,190 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette
+{
+  "assistant": {
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-3-5-sonnet-latest"
+    },
+    "default_width": 400,
+    "version": "2"
+  },
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "git-firefly": true,
+    "julia": true,
+    "latex": true,
+    "ruff": true,
+    "toml": true,
+    "typos": true,
+    "wakatime": true
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always",
+    "use_multiline_find": true,
+    "toggle_relative_line_numbers": true
+  },
+  "pane_split_direction_horizontal": "down",
+  "pane_split_direction_vertical": "right",
+  "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Macchiato"
+  },
+  "buffer_font_size": 13,
+  "buffer_font_family": "FiraCode Nerd Font",
+  "ui_font_family": ".SystemUIFont",
+  "ui_font_size": 14,
+  "use_system_path_prompts": false,
+  "scrollbar": {
+    "show": "system",
+    "axes": {
+      "horizontal": false
+    }
+  },
+  "tab_bar": {
+    "show_nav_history_buttons": false
+  },
+  "tabs": {
+    "close_position": "left",
+    "show_diagnostics": "errors"
+  },
+  "collaboration_panel": {
+    "button": false
+  },
+  "chat_panel": {
+    "button": "never"
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  },
+  "indent_guides": {
+    "coloring": "indent_aware"
+  },
+  "preferred_line_length": 80,
+  "wrap_guides": [80],
+  "tab_size": 2,
+  // Terminal settings
+  "terminal": {
+    "working_directory": "current_project_directory",
+    // Use zed itself as editor for CLI tools that require an editor.
+    // The `--wait` flag makes command wait for the file to be closed.
+    "env": {
+      "VISUAL": "zed --wait"
+    },
+    // To use ALT+<key> shortcuts in terminal on macOS
+    "option_as_meta": true,
+    "shell": {
+      "program": "fish"
+    },
+    "detect_venv": {
+      "on": {
+        "activate_script": "fish"
+      }
+    },
+    "toolbar": {
+      "breadcrumbs": false
+    }
+  },
+  "inlay_hints": {
+    "enabled": true
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "checkOnSave": {
+          "command": "clippy"
+        },
+        "rustfmt": {
+          "extraArgs": ["+nightly"]
+        }
+      }
+    },
+    "texlab": {
+      "settings": {
+        "texlab": {
+          "latexindent": {
+            "modifyLineBreaks": true
+          },
+          "onSave": true,
+          "build": {
+            "executable": "tectonic",
+            "args": [
+              "-X",
+              "compile",
+              "%f",
+              "--untrusted",
+              "--synctex",
+              "--keep-logs",
+              "--keep-intermediates"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "languages": {
+    "Python": {
+      "tab_size": 4,
+      "language_servers": ["!pylsp", "..."],
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "code_actions": {
+            "source.organizeImports.ruff": true,
+            "source.fixAll.ruff": true
+          }
+        },
+        {
+          "language_server": {
+            "name": "ruff"
+          }
+        }
+      ]
+    },
+    "Rust": {
+      "tab_size": 4,
+      "preferred_line_length": 100,
+      "wrap_guides": [100]
+    },
+    "Julia": {
+      "tab_size": 4,
+      "preferred_line_length": 92,
+      "wrap_guides": [92]
+    },
+    "Fish": {
+      "tab_size": 4,
+      "formatter": {
+        "external": {
+          "command": "fish_indent"
+        }
+      }
+    },
+    "Markdown": {
+      "preferred_line_length": 1000,
+      "soft_wrap": "editor_width",
+      "remove_trailing_whitespace_on_save": false
+    },
+    "LaTeX": {
+      "preferred_line_length": 1000,
+      "soft_wrap": "editor_width",
+      "hard_tabs": true // latexindent use tab to indent by default
+    },
+    "Git Config": {
+      "hard_tabs": true
+    }
+  }
+}

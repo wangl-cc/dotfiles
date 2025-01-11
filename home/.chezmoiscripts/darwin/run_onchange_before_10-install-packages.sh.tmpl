@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+{{ if eq .chezmoi.os "darwin" }}
+{{   $homebrew_prefix := "/opt/homebrew" }}
+{{   if eq .chezmoi.arch "arm64" }}
+{{     $homebrew_prefix := "/opt/homebrew" }}
+{{   else }}
+{{     $homebrew_prefix := "/usr/local" }}
+{{   end }}
+{{   $brew := joinPath $homebrew_prefix "bin/brew" }}
+{{   if isExecutable $brew }}
+brew="{{ $brew }}"
+
+{{ $brews := list
+  "fish"
+  "starship"
+  "eza"
+  "zoxide"
+  "ripgrep"
+  "fd"
+  "bat"
+  "bat-extras"
+  "git-delta"
+  "dust"
+  "fzf"
+  "lazygit"
+  "fastfetch"
+  "gh"
+  "gpg"
+  "pinentry-mac"
+}}
+{{ $casks := list
+  "iterm2"
+  "font-fira-code"
+  "font-fira-code-nerd-font"
+  "zed"
+  "zen-browser"
+}}
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+{{ range ($brews | sortAlpha | uniq) -}}
+brew "{{ . }}"
+{{ end -}}
+{{ range ($casks | sortAlpha | uniq) -}}
+cask "{{ . }}"
+{{ end -}}
+EOF
+
+{{   else }}
+echo "Homebrew is not installed, please run the following command to install it and retry"
+echo '/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"'
+{{   end }}
+{{ end }}

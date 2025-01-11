@@ -1,0 +1,274 @@
+{
+  "author": "wangl-cc",
+  "description": "333，搓玉",
+  "plans": [
+    {
+      "Fiammetta": {
+        "enable": true,
+        "order": "pre",
+        "target": "龙舌兰"
+      },
+      "description": "企鹅物流 + 迷迭香组(1+1) + 自动化组 + 泡泡组",
+      "drones": {
+        "enable": true,
+        "index": 3,
+        "order": "pre",
+        "room": "manufacture"
+      },
+      "name": "夜班 (12h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["阿米娅", "森蚺", "琴柳", "令", "夕"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["塑心"]
+          },
+          {
+            "autofill": true,
+            "operators": ["爱丽丝"]
+          },
+          {
+            "autofill": true,
+            "operators": ["车尔尼"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["絮雨"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["砾", "至简", "迷迭香"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["清流", "温蒂", "异客"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["泡泡", "火神", "褐果"],
+            "product": "Originium Shard"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["陈", "伊内丝"],
+            "sort": true
+          }
+        ],
+        "power": [
+          {
+            "operators": ["Lancet-2"]
+          },
+          {
+            "operators": ["澄闪"]
+          },
+          {
+            "operators": ["炎狱炎熔"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "卡夫卡"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "伺夜", "黑键"],
+            "product": "LMD"
+          },
+          {
+            "operators": ["能天使", "德克萨斯", "拉普兰德"],
+            "product": "Orundum"
+          }
+        ]
+      }
+    },
+    {
+      "Fiammetta": {
+        "enable": true,
+        "order": "pre",
+        "target": "巫恋"
+      },
+      "description": "企鹅物流 + 喀兰组 + 莱茵组 + 自动化组 + 水月组",
+      "drones": {
+        "enable": true,
+        "index": 1,
+        "order": "pre",
+        "room": "trading"
+      },
+      "name": "上午 (6h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["诗怀雅", "凯尔希", "灵知", "森蚺", "玛恩纳"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["流明"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          },
+          {
+            "autofill": true,
+            "operators": []
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["斥罪"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["多萝西", "淬羽赫默", "白面鸮"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["清流", "温蒂", "异客"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["水月", "香草", "杰西卡"],
+            "product": "Originium Shard"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["跃跃", "红"]
+          }
+        ],
+        "power": [
+          {
+            "operators": ["Lancet-2"]
+          },
+          {
+            "operators": ["雷蛇"]
+          },
+          {
+            "operators": ["炎狱炎熔"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "柏喙"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["能天使", "德克萨斯", "拉普兰德"],
+            "product": "LMD"
+          },
+          {
+            "operators": ["孑", "银灰", "崖心"],
+            "product": "Orundum"
+          }
+        ]
+      }
+    },
+    {
+      "description": "喀兰组 + 迷迭香组(1+1) + 自动化组 + 莱茵组",
+      "drones": {
+        "enable": true,
+        "index": 3,
+        "order": "pre",
+        "room": "manufacture"
+      },
+      "name": "下午（6h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["诗怀雅", "灵知", "琴柳", "令", "夕"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["塑心"]
+          },
+          {
+            "autofill": true,
+            "operators": ["爱丽丝"]
+          },
+          {
+            "autofill": true,
+            "operators": ["车尔尼"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["絮雨"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["砾", "至简", "迷迭香"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["多萝西", "淬羽赫默", "白面鸮"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["泡泡", "火神", "褐果"],
+            "product": "Originium Shard"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["陈", "伊内丝"],
+            "sort": true
+          }
+        ],
+        "power": [
+          {
+            "operators": ["格雷伊"]
+          },
+          {
+            "operators": ["澄闪"]
+          },
+          {
+            "operators": ["雷蛇"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "柏喙"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "伺夜", "黑键"],
+            "product": "LMD"
+          },
+          {
+            "operators": ["孑", "崖心", "银灰"],
+            "product": "Orundum"
+          }
+        ]
+      }
+    }
+  ],
+  "title": "搓玉模式排班"
+}

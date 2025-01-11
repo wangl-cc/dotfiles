@@ -1,0 +1,77 @@
+[
+  {
+    "label": "lazygit",
+    "command": "lazygit",
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": { "program": "fish" }
+  },
+  {
+    "label": "Test current package",
+    "command": "cargo",
+    "args": [
+      "nextest",
+      "run",
+      "-p",
+      "$ZED_CUSTOM_RUST_PACKAGE",
+      "--no-fail-fast"
+    ],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Test current package (all features)",
+    "command": "cargo",
+    "args": [
+      "nextest",
+      "run",
+      "-p",
+      "$ZED_CUSTOM_RUST_PACKAGE",
+      "--all-features",
+      "--no-fail-fast"
+    ],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Test current package (all features, ignored only)",
+    "command": "cargo",
+    "args": [
+      "nextest",
+      "run",
+      "-p",
+      "$ZED_CUSTOM_RUST_PACKAGE",
+      "--all-features",
+      "--run-ignored",
+      "only",
+      "--no-fail-fast"
+    ],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Test current package (doc tests)",
+    "command": "cargo",
+    "args": [
+      "test",
+      "-p",
+      "$ZED_CUSTOM_RUST_PACKAGE",
+      "--doc",
+      "--no-fail-fast"
+    ],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  }
+]

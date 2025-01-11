@@ -1,0 +1,126 @@
+# Format Layout
+## Defines
+# - user related: username, hostname, localip
+# - directory related: directory, git, package, language
+# - current shell status: jobs, conda
+# - last command information: status
+# - time information: time, cmd_duration
+## Layout with sequence: 1st line left, 1st line right, 2nd line left, 2nd line right
+# - user, directory
+# - shell status
+# - last command information
+# - time
+format = """ \
+$username$hostname$localip\
+$directory\
+$git_branch$git_commit\
+$git_state$git_status\
+$fill \
+$jobs\
+$line_break $status$character\
+"""
+right_format = """\
+$cmd_duration$time\
+"""
+add_newline = true
+
+command_timeout = 100
+
+# Modules
+# General {{{
+# hostname and localip always show together, only on ssh
+[hostname]
+format = "on [$hostname]($style) "
+
+[localip]
+disabled = false
+format = "[\\($localipv4\\)]($style) "
+
+[username]
+format = "[$user]($style) "
+show_always = true
+
+# always show user before sudo
+# thus this looks like: user with sudo
+# disabled because it's a bit costly and not that useful
+# [sudo]
+# disabled = false
+# format = "with [$symbol]($style) "
+# symbol = "sudo"
+
+[directory]
+format = "at [$path]($style)[$read_only]($read_only_style) "
+read_only = " 󰌾 "
+
+[fill]
+symbol = "─"
+
+[jobs]
+format = "with [$number background job$symbol]($style) " # this is a trick to make it plural
+symbol = "s"
+number_threshold = 1
+symbol_threshold = 2
+style = "bold yellow"
+
+[shell]
+disabled = true
+
+[status]
+disabled = false
+pipestatus = true
+format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style)"
+pipestatus_segment_format = "$int"
+pipestatus_format = "[\\[$common_meaning$signal_name$maybe_int:$pipestatus\\]]($style) "
+
+[cmd_duration]
+format = "took [$duration]($style) "
+min_time = 10_000
+
+[character]
+# use nf-fa-chevron for arrow
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+vimcmd_symbol = "[](bold green)"
+vimcmd_visual_symbol = "[](bold green)"
+vimcmd_replace_symbol = "[](bold purple)"
+vimcmd_replace_one_symbol = "[](bold yellow)"
+
+[time]
+disabled = false
+time_format = "%a %r"
+
+# General }}}
+
+# Git {{{
+[git_branch]
+symbol = "󰘬 " # nf-md-source_branch
+
+[git_commit]
+format = "on [\\($hash$tag\\)]($style) "
+tag_disabled = false
+tag_symbol = " 󰓼 "                       # nf-md-tag_outline
+
+# This module is a bit costly
+[git_status]
+format = "$ahead_behind$conflicted$stashed$renamed$modified$deleted$untracked$staged"
+# all with trailing space is needed
+ahead = "󰳢 $count "                        # nf-md-arrow_up_circle_outline
+behind = "󰳜 $count "                       # nf-md-arrow_down_circle_outline
+diverged = "󰿤 $ahead_count $behind_count " # nf-md-swap_vertical_circle_outline
+conflicted = "󰅚 "                          # nf-md-close_circle_outline
+stashed = "󰻃 $count "                      # nf-md-record_circle_outline
+staged = "󰗡 $count "                       # nf-md-check_circle_outline
+renamed = "󰳠 $count "                      # nf-md-arrow_right_circle_outline
+deleted = "󰍷 $count "                      # nf-md-minus_circle_outline
+untracked = "󰐙 $count "                    # nf-md-plus_circle_outline
+modified = "󰝶 $count "                     # nf-md-pencil_circle_outline
+# }}}
+
+# Language or environment {{{
+
+# [env_var]
+
+# [custom]
+# }}}
+
+# vim:ts=2:sw=2:et:fdm=marker

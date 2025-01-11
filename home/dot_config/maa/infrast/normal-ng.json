@@ -1,0 +1,361 @@
+{
+  "author": "wangl-cc",
+  "description": "342，生产钱和经验",
+  "plans": [
+    {
+      "Fiammetta": {
+        "enable": true,
+        "order": "pre",
+        "target": "但书"
+      },
+      "drones": {
+        "enable": true,
+        "index": 3,
+        "order": "pre",
+        "room": "manufacture"
+      },
+      "name": "早班 (8h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["琴柳", "令", "夕", "薇薇安娜", "焰尾"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["塑心"]
+          },
+          {
+            "autofill": true,
+            "operators": ["爱丽丝"]
+          },
+          {
+            "autofill": true,
+            "operators": ["车尔尼"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["絮雨"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["温蒂", "清流", "森蚺"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["砾", "槐琥", "苍苔"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["野鬃", "灰毫", "远牙"],
+            "product": "Battle Record"
+          },
+          {
+            "operators": ["迷迭香", "断罪者", "至简"],
+            "product": "Battle Record"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["陈", "伊内丝"],
+            "sort": true
+          }
+        ],
+        "power": [
+          {
+            "operators": ["承曦格雷伊"]
+          },
+          {
+            "operators": ["澄闪"]
+          },
+          {
+            "operators": ["雷蛇"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "明椒"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "空弦", "黑键"],
+            "product": "LMD"
+          }
+        ]
+      }
+    },
+    {
+      "Fiammetta": {
+        "enable": true,
+        "order": "pre",
+        "target": "巫恋"
+      },
+      "drones": {
+        "enable": true,
+        "index": 1,
+        "order": "pre",
+        "room": "trading"
+      },
+      "name": "上午班 (4h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["阿斯卡纶", "薇薇安娜", "焰尾", "歌蕾蒂娅", "戴菲恩"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": []
+          },
+          {
+            "autofill": true,
+            "operators": []
+          },
+          {
+            "autofill": true,
+            "operators": []
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["斥罪"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["温蒂", "清流", "森蚺"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["夜烟", "砾", "乌尔比安"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["野鬃", "远牙", "安哲拉"],
+            "product": "Battle Record"
+          },
+          {
+            "operators": ["幽灵鲨", "斯卡蒂", "灰毫"],
+            "product": "Battle Record"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["伺夜", "红"]
+          }
+        ],
+        "power": [
+          {
+            "operators": ["承曦格雷伊"]
+          },
+          {
+            "operators": ["澄闪"]
+          },
+          {
+            "operators": ["炎狱炎熔"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "明椒"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "推进之王", "摩根"],
+            "product": "LMD"
+          }
+        ]
+      }
+    },
+    {
+      "drones": {
+        "enable": true,
+        "index": 3,
+        "order": "pre",
+        "room": "manufacture"
+      },
+      "name": "下午班 (4h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["诗怀雅", "琴柳", "令", "夕", "歌蕾蒂娅"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["塑心"]
+          },
+          {
+            "autofill": true,
+            "operators": ["爱丽丝"]
+          },
+          {
+            "autofill": true,
+            "operators": ["车尔尼"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["絮雨"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["槐琥", "苍苔", "迷迭香"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["夜烟", "斑点", "乌尔比安"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["断罪者", "食铁兽", "安哲拉"],
+            "product": "Battle Record"
+          },
+          {
+            "operators": ["幽灵鲨", "斯卡蒂", "至简"],
+            "product": "Battle Record"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["陈", "伊内丝"],
+            "sort": true
+          }
+        ],
+        "power": [
+          {
+            "operators": ["格雷伊"]
+          },
+          {
+            "operators": ["炎狱炎熔"]
+          },
+          {
+            "operators": ["雷蛇"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "柏喙"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "空弦", "黑键"],
+            "product": "LMD"
+          }
+        ]
+      }
+    },
+    {
+      "Fiammetta": {
+        "enable": true,
+        "order": "pre",
+        "target": "龙舌兰"
+      },
+      "drones": {
+        "enable": true,
+        "index": 3,
+        "order": "pre",
+        "room": "manufacture"
+      },
+      "name": "晚班 (8h)",
+      "rooms": {
+        "control": [
+          {
+            "operators": ["阿斯卡纶", "琴柳", "令", "夕", "焰尾"]
+          }
+        ],
+        "dormitory": [
+          {
+            "autofill": true,
+            "operators": ["塑心"]
+          },
+          {
+            "autofill": true,
+            "operators": ["爱丽丝"]
+          },
+          {
+            "autofill": true,
+            "operators": ["车尔尼"]
+          },
+          {
+            "autofill": true,
+            "operators": []
+          }
+        ],
+        "hire": [
+          {
+            "operators": ["絮雨"]
+          }
+        ],
+        "manufacture": [
+          {
+            "operators": ["温蒂", "清流", "森蚺"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["砾", "槐琥", "苍苔"],
+            "product": "Pure Gold"
+          },
+          {
+            "operators": ["野鬃", "灰毫", "远牙"],
+            "product": "Battle Record"
+          },
+          {
+            "operators": ["迷迭香", "断罪者", "至简"],
+            "product": "Battle Record"
+          }
+        ],
+        "meeting": [
+          {
+            "operators": ["陈", "伊内丝"],
+            "sort": true
+          }
+        ],
+        "power": [
+          {
+            "operators": ["承曦格雷伊"]
+          },
+          {
+            "operators": ["澄闪"]
+          },
+          {
+            "operators": ["雷蛇"]
+          }
+        ],
+        "trading": [
+          {
+            "operators": ["巫恋", "龙舌兰", "明椒"],
+            "product": "LMD",
+            "sort": true
+          },
+          {
+            "operators": ["但书", "空弦", "黑键"],
+            "product": "LMD"
+          }
+        ]
+      }
+    }
+  ],
+  "title": "正常模式排班"
+}

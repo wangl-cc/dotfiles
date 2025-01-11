@@ -1,0 +1,10 @@
+; nv is a wrapper around nvim that use nvr inside neovim
+; to avoid run a new nested instance of neovim inside neovim
+[diff]
+	tool = nv
+[difftool "nv"]
+	cmd = nv -s -d $LOCAL $REMOTE
+[merge]
+	tool = nv
+[mergetool "nv"]
+	cmd = nv -s -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='

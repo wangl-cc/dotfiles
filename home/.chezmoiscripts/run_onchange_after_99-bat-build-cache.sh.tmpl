@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Catppuccino theme: {{ output "git" "-C" (joinPath .chezmoi.homeDir ".config/bat/themes/catppuccin") "rev-parse" "HEAD" }}
+{{- if lookPath "bat" }}
+bat cache --build
+{{- end }}

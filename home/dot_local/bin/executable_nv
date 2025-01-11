@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# A wrapper script to start neovim
+
+# Check if nvim is available
+command -v nvim >/dev/null 2>&1 || exit 127
+
+# If this is executed inside neovim, open it in a vertical split
+if [[ -n "$NVIM" ]] && command -v nvr >/dev/null 2>&1; then
+  nvr -O "$@"
+  exit $?
+fi
+
+# Otherwise, just start neovim
+nvim "$@"

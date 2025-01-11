@@ -1,0 +1,133 @@
+title: 正常模式排班
+description: 342，生产钱和经验
+author: wangl-cc
+
+plans:
+  - name: 仅收菜
+    description: 仅收菜
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms: {}
+
+  - name: 上午班 (6h)
+    description: 喀兰组 + 莱茵组 + 自动化组 + 红云组 + 最大经验
+    Fiammetta: { enable: true, target: 巫恋, order: pre }
+    drones: { enable: true, room: trading, index: 1, order: pre }
+    rooms:
+      control:
+        - operators: [诗怀雅, 凯尔希, 灵知, 森蚺, 玛恩纳]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 柏喙]
+          sort: true
+        - product: LMD
+          operators: [孑, 银灰, 崖心]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 异客]
+        - product: Pure Gold
+          operators: [多萝西, 淬羽赫默, 白面鸮]
+        - product: Battle Record
+          operators: [红云, 帕拉斯, 刻俄柏]
+          sort: true
+        - product: Battle Record
+          operators: [霜叶, 白雪, Castle-3]
+      power:
+        - operators: [Lancet-2]
+        - operators: [雷蛇]
+        - operators: [炎狱炎熔]
+      hire:
+        - operators: [斥罪]
+      meeting:
+        - operators: [跃跃, 红]
+      dormitory:
+        - operators: [流明]
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 下午班 (6h)
+    description: 迷迭香组(1+1) + 莱茵组 + 水月组 + 次优经验
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [诗怀雅, 凯尔希, 琴柳, 令, 夕]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 柏喙]
+          sort: true
+        - product: LMD
+          operators: [但书, 伺夜, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [多萝西, 淬羽赫默, 白面鸮]
+        - product: Pure Gold
+          operators: [砾, 至简, 迷迭香]
+        - product: Battle Record
+          operators: [水月, 香草, 杰西卡]
+        - product: Battle Record
+          operators: [断罪者, 食铁兽, 槐琥]
+      power:
+        - operators: [格雷伊]
+        - operators: [澄闪]
+        - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 夜班 (12h)
+    description: 迷迭香组(1+1) + 自动化组 + 红云组 + 最大经验
+    Fiammetta: { enable: true, target: 龙舌兰, order: pre }
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [阿米娅, 森蚺, 琴柳, 令, 夕]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 卡夫卡]
+          sort: true
+        - product: LMD
+          operators: [但书, 伺夜, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 异客]
+        - product: Pure Gold
+          operators: [砾, 至简, 迷迭香]
+        - product: Battle Record
+          operators: [红云, 帕拉斯, 刻俄柏]
+          sort: true
+        - product: Battle Record
+          operators: [断罪者, 食铁兽, 槐琥]
+      power:
+        - operators: [Lancet-2]
+        - operators: [澄闪]
+        - operators: [炎狱炎熔]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+# yaml-language-server: $schema=./.schema.json

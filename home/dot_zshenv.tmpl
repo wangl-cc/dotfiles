@@ -1,0 +1,29 @@
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+export ZDOTDIR=$XDG_CONFIG_HOME/zsh
+export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
+export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
+
+{{- if eq .chezmoi.os "darwin" }}
+{{-   $homebrew_prefix := "/opt/homebrew" }}
+{{-   if eq .chezmoi.arch "arm64" }}
+{{-     $homebrew_prefix := "/opt/homebrew" }}
+{{-   else }}
+{{-     $homebrew_prefix := "/usr/local" }}
+{{-   end }}
+{{-   if stat $homebrew_prefix }}
+export HOMEBREW_PREFIX="{{ $homebrew_prefix }}"
+export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+path+=("$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin")
+{{-   end }}
+{{- end }}
+
+{{- if joinPath .chezmoi.homeDir ".local/bin" | stat }}
+path+=("{{ .chezmoi.homeDir }}/local/bin")
+{{- end }}
+
+{{- if joinPath .chezmoi.homeDir ".cargo/bin" | stat }}
+path+=("{{ .chezmoi.homeDir }}/cargo/bin")
+{{- end }}
+
+export PATH

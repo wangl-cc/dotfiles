@@ -1,0 +1,33 @@
+[user]
+	name = {{ .git.name }}
+	email = {{ .git.email }}
+[commit]
+	verbose = true
+[pull]
+	rebase = false
+[push]
+	autoSetupRemote = true
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	st = status
+[log]
+	mailmap = true
+[mailmap]
+	file = ./mailmap
+{{- if lookPath "nvim" }}
+[include]
+	path = ./editor/nvim.gitconfig
+{{- else if lookPath "vim" }}
+	path = ./editor/vim.gitconfig
+{{- end }}
+{{- if and (lookPath "gpg") (.git.signingkey) }}
+[include]
+	path = ./gpg.gitconfig
+{{- end }}
+{{- if lookPath "delta" }}
+[include]
+	path = ./delta.gitconfig
+{{- end }}

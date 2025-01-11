@@ -1,0 +1,164 @@
+title: 正常模式排班
+description: 342，生产钱和经验
+author: wangl-cc
+
+# 抽到阿罗玛精二之后换掉夜烟, 阿罗玛，苍苔交换位置
+plans:
+  - name: 早班 (8h)
+    Fiammetta: { enable: true, target: 但书, order: pre }
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [琴柳, 令, 夕, 薇薇安娜, 焰尾]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 明椒]
+          sort: true
+        - product: LMD
+          operators: [但书, 空弦, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 森蚺]
+        - product: Pure Gold
+          operators: [砾, 槐琥, 苍苔]
+        - product: Battle Record
+          operators: [野鬃, 灰毫, 远牙]
+        - product: Battle Record
+          operators: [迷迭香, 断罪者, 至简]
+      power:
+        - operators: [承曦格雷伊]
+        - operators: [澄闪]
+        - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 上午班 (4h)
+    Fiammetta: { enable: true, target: 巫恋, order: pre }
+    drones: { enable: true, room: trading, index: 1, order: pre }
+    rooms:
+      control:
+        - operators: [阿斯卡纶, 薇薇安娜, 焰尾, 歌蕾蒂娅, 戴菲恩]
+      meeting:
+        - operators: [伺夜, 红]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 明椒]
+          sort: true
+        - product: LMD
+          operators: [但书, 推进之王, 摩根]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 森蚺]
+        - product: Pure Gold
+          operators: [夜烟, 砾, 乌尔比安]
+        - product: Battle Record
+          operators: [野鬃, 远牙, 安哲拉]
+        - product: Battle Record
+          operators: [幽灵鲨, 斯卡蒂, 灰毫]
+      power:
+        - operators: [承曦格雷伊]
+        - operators: [澄闪]
+        - operators: [炎狱炎熔]
+      hire:
+        - operators: [斥罪]
+      dormitory:
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 下午班 (4h)
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [诗怀雅, 琴柳, 令, 夕, 歌蕾蒂娅]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 柏喙]
+          sort: true
+        - product: LMD
+          operators: [但书, 空弦, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [槐琥, 苍苔, 迷迭香]
+        - product: Pure Gold
+          operators: [夜烟, 斑点, 乌尔比安]
+        - product: Battle Record
+          operators: [断罪者, 食铁兽, 安哲拉]
+        - product: Battle Record
+          operators: [幽灵鲨, 斯卡蒂, 至简]
+      power:
+        - operators: [格雷伊]
+        - operators: [炎狱炎熔]
+        - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+
+  - name: 晚班 (8h)
+    Fiammetta: { enable: true, target: 龙舌兰, order: pre }
+    drones: { enable: true, room: manufacture, index: 3, order: pre }
+    rooms:
+      control:
+        - operators: [阿斯卡纶, 琴柳, 令, 夕, 焰尾]
+      trading:
+        - product: LMD
+          operators: [巫恋, 龙舌兰, 明椒]
+          sort: true
+        - product: LMD
+          operators: [但书, 空弦, 黑键]
+      manufacture:
+        - product: Pure Gold
+          operators: [温蒂, 清流, 森蚺]
+        - product: Pure Gold
+          operators: [砾, 槐琥, 苍苔]
+        - product: Battle Record
+          operators: [野鬃, 灰毫, 远牙]
+        - product: Battle Record
+          operators: [迷迭香, 断罪者, 至简]
+      power:
+        - operators: [承曦格雷伊]
+        - operators: [澄闪]
+        - operators: [雷蛇]
+      hire:
+        - operators: [絮雨]
+      meeting:
+        - operators: [陈, 伊内丝]
+          sort: true
+      dormitory:
+        - operators: [塑心]
+          autofill: true
+        - operators: [爱丽丝]
+          autofill: true
+        - operators: [车尔尼]
+          autofill: true
+        - operators: []
+          autofill: true
+# yaml-language-server: $schema=./.schema.json

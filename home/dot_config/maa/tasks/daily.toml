@@ -1,0 +1,124 @@
+#----------------------------- StartUp ----------------------------#
+[[tasks]]
+type = "StartUp"
+params = { client_type = "Official", start_game_enabled = true }
+
+#----------------------------- Infrast ----------------------------#
+[[tasks]]
+type = "Infrast"
+
+[tasks.params]
+mode = 10000
+facility = [
+  "Trade",
+  "Reception",
+  "Mfg",
+  "Control",
+  "Power",
+  "Office",
+  "Training",
+  "Dorm",
+]
+dorm_trust_enabled = true
+filename = "normal-ng.json"
+replenish = true
+continue_training = true
+
+[[tasks.variants]]
+condition = { type = "Time", start = "08:00:00", end = "11:59:59" }
+params = { plan_index = { default = 1, description = "index of plan" } }
+
+[[tasks.variants]]
+condition = { type = "Time", start = "12:00:00", end = "15:59:59" }
+params = { plan_index = { default = 2, description = "index of plan" } }
+
+[[tasks.variants]]
+condition = { type = "Time", start = "16:00:00", end = "23:59:59" }
+params = { plan_index = { default = 3, description = "index of plan" } }
+
+[[tasks.variants]]
+params = { plan_index = { default = 0, description = "index of plan" } }
+
+#------------------------------ Fight -----------------------------#
+
+[[tasks]]
+type = "Fight"
+
+[tasks.params]
+report_to_penguin = true
+penguin_id = "084310065"
+expiring_medicine = 1000
+
+# On any side story open, fight given side story stage
+[[tasks.variants]]
+condition = { type = "OnSideStory", client = "Official" }
+params = { stage = "RS-7", series = 3 }
+
+# Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
+# PR-C-1 on Thursday, 1-7 for the rest of the week
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Mon"], timezone = "Official" }
+params = { stage = "PR-A-2", series = 2 }
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Tue"], timezone = "Official" }
+params = { stage = "PR-B-2", series = 2 }
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Wed"], timezone = "Official" }
+params = { stage = "PR-D-2", series = 2 }
+[[tasks.variants]]
+condition = { type = "Weekday", weekdays = ["Thu"], timezone = "Official" }
+params = { stage = "PR-C-2", series = 2 }
+[[tasks.variants]]
+params = { stage = "1-7", series = 6 }
+
+#------------------------------ Mall ------------------------------#
+# Mall before 7:00
+[[tasks]]
+type = "Mall"
+
+[tasks.params]
+shopping = true
+buy_first = ["招聘许可", "龙门币"]
+blacklist = ["碳", "家具", "加急许可"]
+
+[[tasks.variants]]
+condition = { type = "Time", end = "07:00:00" }
+params = { credit_fight = true, select_formation = 4 }
+
+[[tasks.variants]]
+params = { shopping = true }
+
+#----------------------------- Recruit ----------------------------#
+[[tasks]]
+type = "Recruit"
+
+[tasks.params]
+refresh = true
+select = [4, 5]
+confirm = [3, 4, 5]
+skip_robot = false
+recruitment_time = { '3' = 460 }
+report_to_penguin = true
+penguin_id = "084310065"
+
+[[tasks.variants]]
+condition = { type = "Time", start = "17:00:00" }
+params = { times = 4 }
+
+# consume refresh times
+[[tasks.variants]]
+params = { times = 1 }
+
+#------------------------------ Award -----------------------------#
+[[tasks]]
+type = "Award"
+
+[tasks.params]
+award = true
+mail = true
+orundum = true
+specialaccess = true
+
+#--------------------------- Close Game ---------------------------#
+[[tasks]]
+type = "CloseDown"
