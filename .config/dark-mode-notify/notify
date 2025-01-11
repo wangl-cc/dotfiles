@@ -39,9 +39,6 @@ if type -q kitty
 end
 
 # Setup some environment variables read by some cli tools by set fish Universal Variables
-if type -q bat
-    set -Ux BAT_THEME $theme
-end
 if type -q delta
     set -Ux DELTA_FEATURES $theme
 end
