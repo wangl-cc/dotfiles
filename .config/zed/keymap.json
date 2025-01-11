@@ -16,7 +16,7 @@
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-g": [
+      "alt-g": [
         "task::Spawn",
         { "task_name": "lazygit", "reveal_target": "center" }
       ]
