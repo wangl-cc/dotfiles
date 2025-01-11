@@ -81,11 +81,9 @@
   "terminal": {
     "working_directory": "current_project_directory",
     // Use zed itself as editor for CLI tools that require an editor.
-    // The `--add` flag makes zed open the file in current workspace.
-    // The `--wait` flag makes command (git) wait for the file to be closed.
+    // The `--wait` flag makes command wait for the file to be closed.
     "env": {
-      "VISUAL": "zed --add",
-      "GIT_EDITOR": "zed --wait"
+      "VISUAL": "zed --wait"
     },
     // To use ALT+<key> shortcuts in terminal on macOS
     "option_as_meta": true,
