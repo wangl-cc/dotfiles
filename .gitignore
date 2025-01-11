@@ -24,6 +24,9 @@
 
 # Configuration under home directory {{{
 
+# Zsh
+!/.zshenv
+
 # Cargo
 !/.cargo
 /.cargo/*
