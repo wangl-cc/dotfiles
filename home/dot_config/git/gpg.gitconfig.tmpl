@@ -1,6 +1,6 @@
 [user]
-  signingkey = "{{ .git.signingkey }}!"
+	signingkey = {{ include (joinPath .chezmoi.homeDir ".ssh/id_ed25519.pub") }}
 [commit]
-  gpgsign = true
+	gpgsign = true
 [gpg]
-  program = gpg
+	format = ssh
