@@ -25,5 +25,5 @@ end
 
 # Setup some environment variables read by some cli tools by set fish Universal Variables
 if type -q delta
-    set -Ux DELTA_FEATURES $theme
+    set -Ux DELTA_FEATURES "catppuccin-$theme"
 end
