@@ -138,6 +138,7 @@ local plugins = {
     cmd = { "ConformInfo" },
     config = function()
       local util = require "putil.formatter"
+      util.auto_install()
       require("conform").setup {
         formatters_by_ft = util.get_all_formatters(),
         format_on_save = {
@@ -150,8 +151,10 @@ local plugins = {
   -- Lint
   {
     "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       local util = require "putil.linter"
+      util.auto_install()
       vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
         callback = function(args)
           local bo = vim.bo[args.buf]
@@ -197,11 +200,6 @@ local plugins = {
         icons = Util.icons.package,
       },
     },
-  },
-  -- Mason: used to install lsp, formatters, and linters
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
   },
 }
 

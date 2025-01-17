@@ -125,8 +125,8 @@ ls.register("bashls", {
   },
 })
 fmt.register("fish", { "fish_indent" })
-lt.registerf_for_ft("bash", "shellcheck")
-lt.registerf_for_ft("fish", "fish")
+lt.register_for_ft("bash", "shellcheck")
+lt.register_for_ft("fish", "fish")
 ts.add_langs { "bash", "fish" }
 opt.indent_size("bash", 4)
 
@@ -138,7 +138,7 @@ ts.add_langs { "json", "jsonc", "yaml", "toml" }
 for _, lang in ipairs { "json", "jsonc", "yaml" } do
   fmt.register(lang, { "prettierd" })
 end
-lt.registerf_for_pattern("%.github/workflows/.+%.ya?ml", "actionlint")
+lt.register_for_pattern("%.github/workflows/.+%.ya?ml", "actionlint")
 
 -- LaTeX
 ts.add_langs { "latex" }
@@ -181,7 +181,7 @@ opt.line_width("typst", 0)
 ls.register("marksman", { mason = true })
 ts.add_langs { "markdown", "markdown_inline" }
 fmt.register("markdown", { "prettierd" })
-lt.registerf_for_ft("markdown", "markdownlint-cli2")
+lt.register_for_ft("markdown", "markdownlint-cli2")
 opt.line_width("markdown", 0)
 plugin.register {
   "MeanderingProgrammer/render-markdown.nvim",
