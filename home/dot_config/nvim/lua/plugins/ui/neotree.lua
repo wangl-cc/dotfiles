@@ -84,7 +84,7 @@ return {
   end,
   opts = {
     hide_root_node = true,
-    close_if_last_window = true,
+    close_if_last_window = false,
     popup_border_style = "rounded",
     sort_case_insensitive = true,
     use_popups_for_input = true,

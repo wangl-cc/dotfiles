@@ -183,6 +183,11 @@ ts.add_langs { "markdown", "markdown_inline" }
 fmt.register("markdown", { "prettierd" })
 lt.registerf_for_ft("markdown", "markdownlint-cli2")
 opt.line_width("markdown", 0)
+plugin.register {
+  "MeanderingProgrammer/render-markdown.nvim",
+  ft = { "markdown", "codecompanion" },
+  opts = {},
+}
 
 -- Git
 ts.add_langs { "gitcommit", "git_config", "diff" }
