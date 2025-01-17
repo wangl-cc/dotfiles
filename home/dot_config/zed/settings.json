@@ -119,8 +119,8 @@
           "latexindent": {
             "modifyLineBreaks": true
           },
-          "onSave": true,
           "build": {
+            "onSave": true,
             "executable": "tectonic",
             "args": [
               "-X",
@@ -188,3 +188,4 @@
     }
   }
 }
+// vim: ft=jsonc
