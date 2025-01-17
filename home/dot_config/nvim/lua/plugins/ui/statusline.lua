@@ -1,3 +1,9 @@
+-- FIXME: sometimes, when open cmdline or a floating window,
+-- the status line will blink.
+-- To reproduce: open a not so small file, then open cmdline with `:`
+-- If winbar is disabled, everything is fine, I'm not sure why.
+-- Maybe we can use winbar provided by lualine instead of dropbar.nvim.
+
 local putil = require "putil.lualine"
 
 return {

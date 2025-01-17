@@ -201,6 +201,7 @@ local plugins = {
       },
     },
   },
+  -- TODO: Test and debugger support
 }
 
 local extra_plugins = require("putil.ft-plugins").get_plugins()
