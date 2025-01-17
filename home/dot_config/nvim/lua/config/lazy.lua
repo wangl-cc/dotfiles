@@ -48,8 +48,4 @@ local opts = {
   },
 }
 
-require("lazy").setup({
-  { import = "plugins" },
-  { import = "plugins.ui" },
-  { import = "plugins.ai" },
-}, opts)
+require("lazy").setup({ { import = "plugins" } }, opts)
