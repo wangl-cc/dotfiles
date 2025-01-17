@@ -99,8 +99,8 @@ if vim.g.neovide then
   end
   local control_key = vim.fn.has "mac" == 1 and "<D-" or "<C-"
   Util.register({
-    ["="] = scale(1.25),
-    ["-"] = scale(0.8),
-    ["0"] = function() vim.g.neovide_scale_factor = 1.0 end,
+    ["="] = { scale(1.25), desc = "Zoom in" },
+    ["-"] = { scale(0.8), desc = "Zoom out" },
+    ["0"] = { function() vim.g.neovide_scale_factor = 1.0 end, desc = "Reset zoom" },
   }, { silent = true, mode = { "n" }, prefix = control_key, suffix = ">" })
 end
