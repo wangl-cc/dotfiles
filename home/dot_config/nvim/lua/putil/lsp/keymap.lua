@@ -24,7 +24,12 @@ return function(buffer)
     ---@type KeymapTree
     ["<leader>"] = {
       ---@type KeymapOption
-      ["."] = { callback = vim.lsp.buf.code_action, desc = "Show code actions" },
+      ["."] = {
+        callback = function()
+          require("fzf-lua").lsp_code_actions()
+        end,
+        desc = "Show code actions",
+      },
       ---@type KeymapOption
       --@type KeymapOption
       ["th"] = {

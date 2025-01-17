@@ -83,6 +83,11 @@ return {
         ["<C-b>"] = "preview-page-up",
       },
     },
+    lsp = {
+      code_actions = {
+        previewer = "codeaction_native",
+      },
+    },
   },
   config = function(_, opts)
     local config = require "fzf-lua.config"
