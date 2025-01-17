@@ -17,7 +17,24 @@ require("putil.catppuccin").add_integrations { snacks = true }
 Util.register({
   ["<leader>gg"] = { lazygit:closure(), desc = "Open lazygit" },
   ["<C-j>"] = {
-    terminal:closure(),
+    terminal:closure(nil, {
+      win = {
+        height = 0.4,
+        width = 0.8,
+        row = 0.0,
+        position = "float",
+        border = {
+          "", -- top left corner
+          "", -- top border
+          "", -- top right corner
+          "│", -- right border
+          "╯", -- bottom right corner
+          "─", -- bottom border
+          "╰", -- bottom left corner
+          "│", -- left border
+        },
+      },
+    }),
     desc = "Toggle terminal",
     mode = { "n", "i", "t" },
   },
