@@ -19,20 +19,8 @@ Util.register({
   ["<C-j>"] = {
     terminal:closure(nil, {
       win = {
-        height = 0.4,
-        width = 0.8,
-        row = 0.0,
         position = "float",
-        border = {
-          "", -- top left corner
-          "", -- top border
-          "", -- top right corner
-          "│", -- right border
-          "╯", -- bottom right corner
-          "─", -- bottom border
-          "╰", -- bottom left corner
-          "│", -- left border
-        },
+        border = "rounded",
       },
     }),
     desc = "Toggle terminal",
@@ -46,9 +34,13 @@ Util.register({
 return {
   "folke/snacks.nvim",
   lazy = false,
+  version = "*",
   priority = 999,
   opts = {
     bigfile = {
+      enabled = true,
+    },
+    dashboard = {
       enabled = true,
     },
     indent = {
