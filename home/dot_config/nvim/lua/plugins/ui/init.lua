@@ -8,6 +8,7 @@ local trouble = Util.import "trouble"
 local toggle = trouble:get "toggle"
 
 Util.register({
+  [""] = { "", desc = "toggle trouble" },
   x = {
     callback = toggle:closure "last",
     desc = "Toggle last trouble",
@@ -41,7 +42,12 @@ return {
     "folke/which-key.nvim",
     version = "*",
     event = "UIEnter",
-    opts = {},
+    opts = {
+      icons = {
+        rules = false,
+        mappings = false,
+      },
+    },
   },
   {
     "folke/trouble.nvim",

@@ -20,10 +20,12 @@ Util.register({
 }, { prefix = "<leader>", silent = true })
 
 -- A collection of QoL plugins by folke
+---@module 'lazy'
+---@type LazyPluginSpec
 return {
   "folke/snacks.nvim",
   lazy = false,
-  version = "*",
+  priority = 999,
   opts = {
     bigfile = {
       enabled = true,

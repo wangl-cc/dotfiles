@@ -66,7 +66,7 @@ Util.register({
   },
 }, { silent = true })
 
--- BUG: move to left will not trigger redraw
+-- NOTE: move to left will not trigger redraw
 Util.register({
   ["<C-a>"] = "<Home>",
   ["<C-e>"] = "<End>",

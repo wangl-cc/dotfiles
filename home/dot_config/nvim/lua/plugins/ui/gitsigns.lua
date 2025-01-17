@@ -38,7 +38,7 @@ return {
       -- Actions
       Util.register({
         h = {
-          [""] = { group = "hunk" },
+          [""] = { "", desc = "git hunk" },
           s = {
             [[<Cmd>Gitsigns stage_hunk<CR>]],
             mode = { "n", "v" },

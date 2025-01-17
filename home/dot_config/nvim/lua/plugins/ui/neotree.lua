@@ -1,5 +1,3 @@
--- FIXME: input of the neotree is not working properly
-
 local lualine = require "putil.lualine"
 
 lualine.registry_extension(
@@ -85,11 +83,13 @@ return {
     })
   end,
   opts = {
+    hide_root_node = true,
     close_if_last_window = true,
     popup_border_style = "rounded",
     sort_case_insensitive = true,
-    use_popups_for_input = false,
+    use_popups_for_input = true,
     filesystem = {
+      use_libuv_file_watcher = true,
       filtered_items = {
         hide_dotfiles = false,
       },

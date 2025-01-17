@@ -6,7 +6,10 @@ Util.register({
     },
     desc = "Format current buffer",
   },
-  tc = { [[<Cmd>TSContextToggle<CR>]], desc = "Toggle treesitter context" },
+  t = {
+    [""] = { "", desc = "toggle" },
+    c = { [[<Cmd>TSContextToggle<CR>]], desc = "Toggle treesitter context" },
+  },
 }, { prefix = "<leader>" })
 
 local lualine = require "putil.lualine"

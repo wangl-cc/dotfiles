@@ -1,1 +1,2 @@
-default.extend-ignore-words-re = ["iterm"]
+[default]
+extend-ignore-words-re = ["iterm", "[Nn]oice", "charcol"]

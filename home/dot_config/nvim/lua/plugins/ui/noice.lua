@@ -27,12 +27,10 @@ return {
     presets = {
       bottom_search = true,
       long_message_to_split = true,
-      -- BUG: inc_rename does not work
       inc_rename = true,
       lsp_doc_border = false,
     },
     lsp = {
-      -- TODO: check out how to work with blink.cmp
       override = {
         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
         ["vim.lsp.util.stylize_markdown"] = true,
