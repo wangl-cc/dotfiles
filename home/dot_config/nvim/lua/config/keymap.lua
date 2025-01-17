@@ -1,34 +1,6 @@
 local function git_notify(msg) vim.notify(msg, vim.log.levels.INFO, { title = "Git" }) end
 
---- Create a closure that will execute a git command asynchronously
----@param args string[]
----@return function()
-local function git_cmd(args)
-  return function()
-    local Job = require "plenary.job"
-    ---@diagnostic disable-next-line: missing-fields
-    Job:new({
-      command = "git",
-      args = args,
-      cwd = vim.fn.getcwd(),
-      env = {
-        HOME = vim.env.HOME,
-        PATH = vim.env.PATH,
-        GIT_EDITOR = "nvr -cc split --remote-wait",
-        NVIM = vim.v.servername,
-      },
-      on_stdout = function(_, data) git_notify(data) end,
-      on_stderr = function(_, data) git_notify(data) end,
-    }):start()
-  end
-end
-
 local leader_mappings = {
-  g = {
-    c = { callback = git_cmd { "commit" }, desc = "Git commit" },
-    p = { callback = git_cmd { "pull" }, desc = "Git pull" },
-    P = { callback = git_cmd { "push" }, desc = "Git push" },
-  },
   c = {
     [""] = { "", desc = "rename" },
     w = {

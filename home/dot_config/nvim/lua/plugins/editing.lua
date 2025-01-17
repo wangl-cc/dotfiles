@@ -1,24 +1,5 @@
 return {
   {
-    "echasnovski/mini.align",
-    name = "mini.align",
-    keys = {
-      { "ga", desc = "Align code", mode = { "v", "n" } },
-      { "gA", desc = "Align code with preview", mode = { "v", "n" } },
-    },
-    opts = { silent = true },
-  },
-  {
-    "echasnovski/mini.jump",
-    name = "mini.jump",
-    event = "VeryLazy",
-  },
-  {
-    "echasnovski/mini.ai",
-    name = "mini.ai",
-    event = "VeryLazy",
-  },
-  {
     "kylechui/nvim-surround",
     keys = {
       { "ys", desc = "Add a surrounding pair" },

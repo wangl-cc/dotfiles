@@ -48,7 +48,6 @@ local find_keymaps = {
 }
 
 local git_keymaps = {
-  [""] = { "", desc = "git" },
   l = { fzf:get("git_commits"):closure(), desc = "Search git commits" },
   f = {
     fzf:get("git_bcommits"):closure(),
