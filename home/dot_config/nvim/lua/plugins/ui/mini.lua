@@ -20,11 +20,13 @@ return {
     ai = {},
     diff = {},
     git = {},
+    icons = {},
     jump = {},
   },
   config = function(_, opts)
     for module, options in pairs(opts) do
       require("mini." .. module).setup(options)
     end
+    require("mini.icons").mock_nvim_web_devicons()
   end,
 }
