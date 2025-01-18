@@ -128,6 +128,7 @@ ls.register("bashls", {
   },
 })
 fmt.register("fish", "fish_indent")
+lt.register_for_ft("sh", "shellcheck")
 lt.register_for_ft("bash", "shellcheck")
 lt.register_for_ft("fish", "fish")
 ts.add_langs { "bash", "fish" }
