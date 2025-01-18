@@ -132,7 +132,7 @@ lt.register_for_ft("sh", "shellcheck")
 lt.register_for_ft("bash", "shellcheck")
 lt.register_for_ft("fish", "fish")
 ts.add_langs { "bash", "fish" }
-opt.indent_size("bash", 4)
+opt.indent_size("fish", 4)
 
 -- JSON / JSONC / YAML / TOML
 ls.register "jsonls" -- `jsonls` don't support JSON5
