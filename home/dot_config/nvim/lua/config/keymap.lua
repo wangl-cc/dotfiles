@@ -1,5 +1,3 @@
-local function git_notify(msg) vim.notify(msg, vim.log.levels.INFO, { title = "Git" }) end
-
 local leader_mappings = {
   c = {
     [""] = { "", desc = "rename" },
