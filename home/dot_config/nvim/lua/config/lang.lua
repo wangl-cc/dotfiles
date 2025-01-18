@@ -64,13 +64,16 @@ ls.register("lua_ls", {
         runtime = {
           version = "LuaJIT",
         },
+        format = {
+          enable = false,
+        },
       },
     },
   },
   ---@diagnostic enable: missing-fields
 })
 ts.add_langs { "lua" }
-fmt.register("lua", { "stylua" })
+fmt.register("lua", "stylua")
 plugin.register {
   "folke/lazydev.nvim",
   ft = "lua",
@@ -124,7 +127,7 @@ ls.register("bashls", {
     filetypes = { "sh", "bash" },
   },
 })
-fmt.register("fish", { "fish_indent" })
+fmt.register("fish", "fish_indent")
 lt.register_for_ft("bash", "shellcheck")
 lt.register_for_ft("fish", "fish")
 ts.add_langs { "bash", "fish" }
@@ -136,7 +139,7 @@ ls.register "yamlls"
 ls.register "taplo"
 ts.add_langs { "json", "jsonc", "yaml", "toml" }
 for _, lang in ipairs { "json", "jsonc", "yaml" } do
-  fmt.register(lang, { "prettierd" })
+  fmt.register(lang, "prettierd")
 end
 lt.register_for_pattern("%.github/workflows/.+%.ya?ml", "actionlint")
 
@@ -180,7 +183,7 @@ opt.line_width("typst", 0)
 -- Use mason to install self-contained executable to avoid .NET runtime.
 ls.register("marksman", { mason = true })
 ts.add_langs { "markdown", "markdown_inline" }
-fmt.register("markdown", { "prettierd" })
+fmt.register("markdown", "prettierd")
 lt.register_for_ft("markdown", "markdownlint-cli2")
 opt.line_width("markdown", 0)
 plugin.register {

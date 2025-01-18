@@ -22,7 +22,7 @@ local formatter_to_pkg = setmetatable({}, {
 
 ---Register formatter(s) for given file type
 ---@param ft string File type
----@param formatter PkgSpec
+---@param formatter Pkg
 function M.register(ft, formatter)
   formatter = install.parse(formatter, M.options)
   install.ensure_installed(formatter, M.formatters_tobe_installed, formatter_to_pkg)
