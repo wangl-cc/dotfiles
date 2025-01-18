@@ -38,7 +38,7 @@ return {
       enabled = true,
       auto_trigger = true,
       keymap = {
-        accept = "<tab>",
+        accept = false, -- handled by completion plugin
         accept_word = "<c-right>",
         dismiss = "<C-]>",
       },

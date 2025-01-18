@@ -20,7 +20,18 @@ return {
     keymap = {
       preset = "default",
       ["<Enter>"] = { "accept", "fallback" },
-      ["<Tab>"] = { "snippet_forward", "fallback" },
+      ["<Tab>"] = {
+        function()
+          local copilot = require "copilot.suggestion"
+          if copilot.is_visible() then
+            copilot.accept()
+            return true
+          end
+          return false
+        end,
+        "snippet_forward",
+        "fallback",
+      },
       ["<S-Tab>"] = { "snippet_backward", "fallback" },
 
       cmdline = {
