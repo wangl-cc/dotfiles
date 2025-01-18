@@ -10,5 +10,12 @@ if [[ -n "$NVIM" ]] && command -v nvr >/dev/null 2>&1; then
   exit $?
 fi
 
+# If neovide is available, start it instead of TUI neovim
+if command -v neovide >/dev/null 2>&1; then
+  # all arguments after -- are passed to neovim instead of neovide
+  neovide -- "$@"
+  exit $?
+fi
+
 # Otherwise, just start neovim
 nvim "$@"
