@@ -73,6 +73,9 @@ if vim.g.neovide then
   Util.register({
     ["="] = { scale(1.25), desc = "Zoom in" },
     ["-"] = { scale(0.8), desc = "Zoom out" },
-    ["0"] = { function() vim.g.neovide_scale_factor = 1.0 end, desc = "Reset zoom" },
+    ["0"] = {
+      function() vim.g.neovide_scale_factor = 1.0 end,
+      desc = "Reset zoom",
+    },
   }, { silent = true, mode = { "n" }, prefix = control_key, suffix = ">" })
 end

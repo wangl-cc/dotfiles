@@ -25,9 +25,7 @@ return function(buffer)
     ["<leader>"] = {
       ---@type KeymapOption
       ["."] = {
-        callback = function()
-          require("fzf-lua").lsp_code_actions()
-        end,
+        callback = function() require("fzf-lua").lsp_code_actions() end,
         desc = "Show code actions",
       },
       ---@type KeymapOption
