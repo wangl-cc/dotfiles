@@ -1,5 +1,3 @@
--- TODO: add more ai related plugins, not just copilot
-
 local status_hl = {
   [""] = "LualineGrey", -- Not yet started
   InProgress = "LualineBlue", -- In progress
