@@ -17,6 +17,10 @@ Util.register({
     callback = toggle:closure "diagnostics",
     desc = "Toggle diagnostics",
   },
+  t = {
+    callback = toggle:closure "todo",
+    desc = "Toggle todos",
+  },
 }, { prefix = "<leader>x" })
 
 return {
