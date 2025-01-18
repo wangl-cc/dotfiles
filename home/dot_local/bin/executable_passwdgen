@@ -1,0 +1,180 @@
+#!/bin/bash
+
+readonly UPPERCASE_CHARS="QWERTYUIOPASDFGHJKLZXCVBNM"
+readonly LOWERCASE_CHARS="qwertyuiopasdfghjklzxcvbnm"
+readonly ALPHABET_CHARS="$UPPERCASE_CHARS$LOWERCASE_CHARS"
+readonly DIGIT_CHARS="1234567890"
+readonly NORMAL_CHARS="$ALPHABET_CHARS$DIGIT_CHARS"
+readonly SPECIAL_CHARS="${PWGEN_SPECIAL_CHARS-"_-"}"
+readonly SPECIAL_CHARS_NUMBER=${#SPECIAL_CHARS}
+readonly ALL_CHARS="$NORMAL_CHARS$SPECIAL_CHARS"
+readonly ALL_CHARS_NUMBER=${#ALL_CHARS}
+
+charset2char(){
+    case $1 in
+        u)
+            echo "${UPPERCASE_CHARS:$((RANDOM % 26)):1}"
+            ;;
+        l)
+            echo "${LOWERCASE_CHARS:$((RANDOM % 26)):1}"
+            ;;
+        W)
+            echo "${ALPHABET_CHARS:$((RANDOM % 52)):1}"
+            ;;
+        d)
+            echo "${DIGIT_CHARS:$((RANDOM % 10)):1}"
+            ;;
+        w)
+            echo "${NORMAL_CHARS:$((RANDOM % 62)):1}"
+            ;;
+        s)
+            echo "${NORMAL_CHARS:$((RANDOM % SPECIAL_CHARS_NUMBER)):1}"
+            ;;
+        a)
+            echo "${ALL_CHARS:$((RANDOM % ALL_CHARS_NUMBER)):1}"
+            ;;
+        *)
+            echo "$1"
+            ;;
+    esac
+}
+
+genpw_repeat(){
+    pw=""
+    for (( i=0; i<${1}; i++ )); do
+        pw="$pw$(charset2char "$2")"
+    done
+    echo "$pw"
+}
+
+genpw_pattern(){
+    pattern="$1"
+    pw=""
+    for (( i=0; i<${#pattern}; i++ )); do
+        pattern_char="${pattern:$i:1}"
+        if [[ "$pattern_char" == "%" ]]; then
+            (( i++ ))
+            pw="$pw${pattern:$i:1}"
+        else
+            pw="$pw$(charset2char "${pattern_char}")"
+        fi
+    done
+    echo "$pw"
+}
+
+help() {
+cat << EOM
+Usage: $(basename "$0") [-h | --help]
+       $(basename "$0") [-p | --pattern <pattern>]
+       $(basename "$0") [-l | --length <length>] [-c | --charset <charset>]
+
+Options:
+    -h, --help              Show this help message.
+    -e, --example           Show examples.
+    -p, --pattern <pattern> Generate passwrod with given pattern;
+                            characters in pattern is considered as 'charset's,
+                            which will be convert to random characters
+                            in charsets; details about pattern see below.
+    -l, --length <length>   Generate password with given length,
+                            conflict with pattern. '12' by default.
+    -c, --charset <charset> Generate password with given charset;
+                            characters in generated passwd should in the
+                            charset; if the charset is not specified,
+                            use 'a' by default, more about charset see below.
+
+Charsets:
+    Charsets is used in pattern string, or as a charset:
+    'u': uppercase characters;
+    'l': lowercase characters;
+    'W': an union of 'l' and 'u';
+    'd': digital characters;
+    'w': an union of 'l', 'u' and 'd';
+    's': special characters, which only incloud '_' and '-' by default,
+         and can be override by set enviroment variable 'PWGEN_SPECIAL_CHARS';
+    'a': an union of 'w' and special characters.
+
+    If other charsets occurs in pattern, which will be return as is.
+    If you want to use characters like 'u' in pattern, you should use '%' to
+    escape it, like '%u', which will be return as 'u'. '%' can also be escaped
+    by '%%', which will be return as '%'.
+EOM
+}
+
+example() {
+cat << EOM
+Examples:
+
+\$ $(basename "$0") -p wwww-wwww-wwww
+AGm4-iODv-wUAx
+
+\$ $(basename "$0") -p %w%l-wwww-wwww
+wl-xnNr-IDv1
+
+\$ $(basename "$0") -l 16
+ufzm7QUDZMyln6-D
+
+\$ $(basename "$0") -l 16 -c u
+ZALOKIHUGTDSWAQO
+
+\$ PWGEN_SPECIAL_CHARS='_-/@' $(basename "$0") -l 16
+rYG5/hbMoA0Rz2U@
+EOM
+}
+
+main(){
+    OPTIND=1
+    while getopts "hep:l:c:-:" OPT; do
+        # process long options
+        if [[ "$OPT" == "-" ]]; then
+            OPT="${OPTARG%%=*}"
+            case "$OPT" in
+                pattern|length|charset) # options requiring an argument
+                    if [[ "$OPT" == "$OPTARG" ]]; then # argument is given after space
+                        OPTARG="${!OPTIND}" # get next argument as OPTARG
+                        (( OPTIND++ )) # skip next argument
+                    else # argument is given after '='
+                        OPTARG="${OPTARG#*=}"
+                    fi
+                    ;;
+                example|help) # options without an argument
+                    ;;
+                *)
+                    echo "Unknown option: $OPTARG" >&2
+                    exit 1
+                    ;;
+            esac
+        fi
+        case $OPT in
+            p|pattern)
+                pattern="$OPTARG"
+                ;;
+            l|length)
+                length="$OPTARG"
+                ;;
+            c|charset)
+                charset="$OPTARG"
+                ;;
+            h|help)
+                help
+                exit 0
+                ;;
+            e|example)
+                example
+                exit 0
+                ;;
+            *)
+                echo "Unknown option $OPT" >&2
+                exit 1
+                ;;
+        esac
+    done
+    if [ -z ${pattern+x} ]; then
+        genpw_repeat "${length-12}" "${charset-a}"
+    else
+        genpw_pattern "${pattern}"
+    fi
+}
+
+main "$@"
+
+# vim:tw=80:ts=4:sw=4:et:ft=bash
