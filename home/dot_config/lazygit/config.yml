@@ -1,5 +1,5 @@
 gui:
   authorColors:
-    loong: magenta
+    Loong: magenta
     # use blue for other authors
-    "*": "blue"
+    "*": blue

@@ -1,9 +1,7 @@
 mode = "symlink"
 
-{{- $username := "loong" }}
+{{- $username := "Loong" }}
 {{- $email := "wangl.cc@outlook.com" }}
-{{- $signingkey := "DC0450E0" }}
 [data.git]
 name = {{ $username | quote }}
 email = {{ $email | quote }}
-signingkey = {{ $signingkey | quote }}
