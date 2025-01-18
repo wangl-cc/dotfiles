@@ -72,7 +72,7 @@ Util.register({
 
 return {
   "ibhagwan/fzf-lua",
-  cmd = "FzfLua",
+  -- cmd = "FzfLua",
   opts = {
     file_icon_padding = " ",
     fzf_colors = true,
@@ -96,6 +96,15 @@ return {
 
     require("fzf-lua").setup(opts)
 
-    require("fzf-lua.providers.ui_select").register()
+    require("fzf-lua.providers.ui_select").register(function(_, items)
+      local min_h, max_h = 0.15, 0.6
+      local h = (#items + 4) / vim.o.lines
+      if h < min_h then
+        h = min_h
+      elseif h > max_h then
+        h = max_h
+      end
+      return { winopts = { height = h, width = 0.6, row = 0.4 } }
+    end)
   end,
 }
