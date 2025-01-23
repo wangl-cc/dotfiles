@@ -1,5 +1,10 @@
 #!/bin/bash
 
+OS=$(uname -s)
+if [[ "$OS" != "Darwin" ]]; then
+  exit 0
+fi
+
 colorize() {
   # shellcheck disable=SC2028
   echo "\033[1;${1}m${2}\033[0m"
