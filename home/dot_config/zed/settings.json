@@ -9,8 +9,8 @@
 {
   "assistant": {
     "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-3-5-sonnet-latest"
+      "provider": "copilot_chat",
+      "model": "claude-3-5-sonnet"
     },
     "default_width": 400,
     "version": "2"
@@ -83,7 +83,8 @@
     // Use zed itself as editor for CLI tools that require an editor.
     // The `--wait` flag makes command wait for the file to be closed.
     "env": {
-      "VISUAL": "zed --wait"
+      "VISUAL": "zed --wait",
+      "GIT_EDITOR": "zed --wait"
     },
     // To use ALT+<key> shortcuts in terminal on macOS
     "option_as_meta": true,
