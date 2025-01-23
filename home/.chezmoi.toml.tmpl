@@ -2,6 +2,8 @@ mode = "symlink"
 
 {{- $username := "Loong" }}
 {{- $email := "wangl.cc@outlook.com" }}
+{{- $signingkey := "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGaaxi/ianjCt37sKsaWDkRW+XMV0qlM3HHTyqvDnQ/W wangl.cc@outlook.com" }}
 [data.git]
 name = {{ $username | quote }}
 email = {{ $email | quote }}
+signingkey = {{ $signingkey | quote }}
