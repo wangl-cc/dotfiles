@@ -14,15 +14,6 @@
     }
   },
   {
-    "context": "Workspace",
-    "bindings": {
-      "alt-g": [
-        "task::Spawn",
-        { "task_name": "lazygit", "reveal_target": "center" }
-      ]
-    }
-  },
-  {
     "context": "Dock",
     "bindings": {
       "ctrl-w h": ["workspace::ActivatePaneInDirection", "Left"],
@@ -48,14 +39,22 @@
       "d": ["project_panel::Trash", { "skip_prompt": false }],
       "y": "project_panel::Copy",
       "p": "project_panel::Paste",
-      "m": "project_panel::CollapseAllEntries"
+      "m": "project_panel::CollapseAllEntries",
+      "space": null,
+      "space e": "workspace::ToggleLeftDock"
     }
   },
   {
     "context": "Editor && VimControl && !VimWaiting && !menu",
     "bindings": {
       "j": ["vim::Down", { "displayLines": true }],
-      "k": ["vim::Up", { "displayLines": true }]
+      "k": ["vim::Up", { "displayLines": true }],
+      "space .": "editor::ToggleCodeActions",
+      "space g g": [
+        "task::Spawn",
+        { "task_name": "lazygit", "reveal_target": "center" }
+      ],
+      "space e": "project_panel::ToggleFocus"
     }
   }
 ]
