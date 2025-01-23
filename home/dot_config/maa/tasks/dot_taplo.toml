@@ -1,7 +1,0 @@
-exclude = [".taplo.toml"]
-
-[formatting]
-inline_table_expand = false
-
-[schema]
-path = "https://github.com/MaaAssistantArknights/maa-cli/raw/main/maa-cli/schemas/task.schema.json"
