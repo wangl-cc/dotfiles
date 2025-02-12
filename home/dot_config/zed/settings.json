@@ -180,6 +180,10 @@
       "soft_wrap": "editor_width",
       "hard_tabs": true // latexindent use tab to indent by default
     },
+    "LOG": {
+      "preferred_line_length": 9999,
+      "wrap_guides": []
+    },
     "Git Config": {
       "hard_tabs": true
     }
