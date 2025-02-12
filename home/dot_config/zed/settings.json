@@ -26,7 +26,7 @@
     "wakatime": true
   },
   "telemetry": {
-    "diagnostics": false,
+    "diagnostics": true,
     "metrics": false
   },
   "vim_mode": true,
@@ -91,11 +91,7 @@
     "shell": {
       "program": "fish"
     },
-    "detect_venv": {
-      "on": {
-        "activate_script": "fish"
-      }
-    },
+    "detect_venv": "off",
     "toolbar": {
       "breadcrumbs": false
     }
