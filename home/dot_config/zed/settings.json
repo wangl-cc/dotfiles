@@ -120,21 +120,11 @@
     "texlab": {
       "settings": {
         "texlab": {
-          "latexindent": {
-            "modifyLineBreaks": true
-          },
+          // "latexindent": {
+          //   "modifyLineBreaks": true
+          // },
           "build": {
-            "onSave": true,
-            "executable": "tectonic",
-            "args": [
-              "-X",
-              "compile",
-              "%f",
-              "--untrusted",
-              "--synctex",
-              "--keep-logs",
-              "--keep-intermediates"
-            ]
+            "onSave": true
           }
         }
       }
