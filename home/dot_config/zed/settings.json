@@ -63,12 +63,6 @@
     "close_position": "left",
     "show_diagnostics": "errors"
   },
-  "collaboration_panel": {
-    "button": false
-  },
-  "chat_panel": {
-    "button": "never"
-  },
   "git": {
     "inline_blame": {
       "enabled": false
