@@ -101,6 +101,12 @@
     "enabled": true
   },
   "lsp": {
+    "pyright": {
+      "binary": {
+        "path": "pyright-langserver",
+        "arguments": ["--stdio"]
+      }
+    },
     "rust-analyzer": {
       "initialization_options": {
         "checkOnSave": {
