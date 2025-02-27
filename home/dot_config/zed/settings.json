@@ -13,7 +13,7 @@
   "assistant": {
     "default_model": {
       "provider": "copilot_chat",
-      "model": "o1"
+      "model": "claude-3-7-sonnet"
     },
     "default_width": 400,
     "version": "2"
