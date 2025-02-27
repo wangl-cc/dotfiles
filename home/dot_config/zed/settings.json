@@ -20,6 +20,7 @@
   },
   "auto_install_extensions": {
     "catppuccin": true,
+    "catppuccin-icons": true,
     "git-firefly": true,
     "julia": true,
     "latex": true,
@@ -41,6 +42,11 @@
   "pane_split_direction_horizontal": "down",
   "pane_split_direction_vertical": "right",
   "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Macchiato"
+  },
+  "icon_theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
     "dark": "Catppuccin Macchiato"
