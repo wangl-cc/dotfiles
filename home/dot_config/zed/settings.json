@@ -184,7 +184,8 @@
       "remove_trailing_whitespace_on_save": false
     },
     "Typst": {
-      "language_servers": ["tinymist", "..."]
+      "language_servers": ["tinymist", "..."],
+      "soft_wrap": "editor_width"
     },
     "LaTeX": {
       "preferred_line_length": 1000,
