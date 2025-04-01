@@ -17,6 +17,8 @@
 	mailmap = true
 [mailmap]
 	file = {{ .chezmoi.homeDir }}/.config/git/mailmap
+[include]
+  path = ./local.gitconfig
 {{- if lookPath "nvim" }}
 [include]
 	path = ./editor/nvim.gitconfig
