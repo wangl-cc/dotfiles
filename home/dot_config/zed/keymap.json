@@ -16,10 +16,10 @@
   {
     "context": "Dock || Terminal",
     "bindings": {
-      "ctrl-w h": ["workspace::ActivatePaneInDirection", "Left"],
-      "ctrl-w l": ["workspace::ActivatePaneInDirection", "Right"],
-      "ctrl-w k": ["workspace::ActivatePaneInDirection", "Up"],
-      "ctrl-w j": ["workspace::ActivatePaneInDirection", "Down"]
+      "ctrl-w h": "workspace::ActivatePaneLeft",
+      "ctrl-w l": "workspace::ActivatePaneRight",
+      "ctrl-w k": "workspace::ActivatePaneUp",
+      "ctrl-w j": "workspace::ActivatePaneDown"
     }
   },
   {
@@ -30,25 +30,33 @@
       "d": ["project_panel::Trash", { "skip_prompt": false }],
       "y": "project_panel::Copy",
       "p": "project_panel::Paste",
-      "m": "project_panel::CollapseAllEntries",
-      "space": null,
-      "space e": "workspace::ToggleLeftDock"
+      "m": "project_panel::CollapseAllEntries"
     }
   },
   {
     "context": "Editor && VimControl && !VimWaiting && !menu",
     "bindings": {
-      "j": ["vim::Down", { "displayLines": true }],
-      "k": ["vim::Up", { "displayLines": true }],
+      "j": ["vim::Down", { "display_lines": true }],
+      "k": ["vim::Up", { "display_lines": true }],
       "space .": "editor::ToggleCodeActions",
       "space g g": [
         "task::Spawn",
         { "task_name": "lazygit", "reveal_target": "center" }
       ],
-      "space e": "project_panel::ToggleFocus",
-      "space x": "diagnostics::Deploy",
       "] b": "pane::ActivateNextItem",
-      "[ b": "pane::ActivatePrevItem"
+      "[ b": "pane::ActivatePreviousItem"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-shift-g": "git_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "cmd-shift-g": "git_panel::ToggleFocus"
     }
   }
 ]

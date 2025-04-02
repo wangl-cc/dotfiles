@@ -7,18 +7,17 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
-  "edit_predictions": {
-    "mode": "eager_preview"
-  },
   "features": {
     "edit_prediction_provider": "zed"
+  },
+  "edit_predictions": {
+    "mode": "subtle"
   },
   "assistant": {
     "default_model": {
       "provider": "copilot_chat",
       "model": "claude-3-7-sonnet"
     },
-    "default_width": 400,
     "version": "2"
   },
   "auto_install_extensions": {
@@ -77,6 +76,9 @@
       "enabled": false
     }
   },
+  "git_panel": {
+    "dock": "right"
+  },
   "indent_guides": {
     "coloring": "indent_aware"
   },
@@ -87,10 +89,8 @@
   "terminal": {
     "working_directory": "current_project_directory",
     // Use zed itself as editor for CLI tools that require an editor.
-    // The `--wait` flag makes command wait for the file to be closed.
     "env": {
-      "VISUAL": "zed --wait",
-      "GIT_EDITOR": "zed --wait"
+      "VISUAL": "zed --wait"
     },
     // To use ALT+<key> shortcuts in terminal on macOS
     "option_as_meta": true,
@@ -119,7 +119,8 @@
     "rust-analyzer": {
       "initialization_options": {
         "checkOnSave": {
-          "command": "clippy"
+          "command": "clippy",
+          "args": ["--all-targets"]
         },
         "rustfmt": {
           "extraArgs": ["+nightly"]
@@ -129,11 +130,12 @@
     "texlab": {
       "settings": {
         "texlab": {
-          // "latexindent": {
-          //   "modifyLineBreaks": true
-          // },
           "build": {
             "onSave": true
+          },
+          "forwardSearch": {
+            "executable": "/Applications/Skim.app/Contents/SharedSupport/displayline",
+            "args": ["-g", "-r", "%l", "%p", "%f"]
           }
         }
       }
@@ -192,8 +194,7 @@
     },
     "LaTeX": {
       "preferred_line_length": 1000,
-      "soft_wrap": "editor_width",
-      "hard_tabs": true // latexindent use tab to indent by default
+      "soft_wrap": "editor_width"
     },
     "LOG": {
       "preferred_line_length": 9999,
@@ -204,4 +205,3 @@
     }
   }
 }
-// vim: ft=jsonc
