@@ -1,0 +1,19 @@
+{{- $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
+{{- if eq $timezone "Asia/Shanghai" }}
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[registries.ustc]
+index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+{{ end -}}
+[profile.release]
+codegen-units = 1
+lto = "fat"
+
+[profile.bench]
+codegen-units = 1
+lto = "fat"

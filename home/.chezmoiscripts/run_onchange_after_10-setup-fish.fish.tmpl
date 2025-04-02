@@ -37,6 +37,16 @@ function set_Ux --description "Verbose version of set -Ux"
     set -Ux $var $val
 end
 
+function set_e --description "Verbose version of set -e"
+    set -l var $argv[1]
+
+    set -Uq $var; or return
+
+    indent
+    echo (set_color -o blue)Erase (set_color cyan)$var
+    set -e $var
+end
+
 function prepend_path
     set -l path $argv[1]
 
@@ -70,9 +80,16 @@ if test (uname -s) = Darwin
         prepend_path $HOMEBREW_PREFIX/sbin
         prepend_path $HOMEBREW_PREFIX/bin
 
-        if test -n "$HOMEBREW_MIRROR_DOMAIN"
+        # Setup homebrew mirror persistently
+        if string match -q ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
+            set HOMEBREW_MIRROR_DOMAIN "https://mirrors.ustc.edu.cn"
+            set_Ux HOMEBREW_BREW_GIT_REMOTE="$HOMEBREW_MIRROR_DOMAIN/brew.git"
             set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
             set_Ux HOMEBREW_BOTTLE_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
+        else
+            set_e HOMEBREW_BREW_GIT_REMOTE
+            set_e HOMEBREW_API_DOMAIN
+            set_e HOMEBREW_BOTTLE_DOMAIN
         end
         end_section
     end

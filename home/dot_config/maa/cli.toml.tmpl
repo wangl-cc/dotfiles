@@ -1,0 +1,19 @@
+"$schema" = "https://github.com/MaaAssistantArknights/maa-cli/raw/main/crates/maa-cli/schemas/cli.schema.json"
+
+[cli]
+channel = "Alpha"
+
+[core]
+channel = "Beta"
+{{- $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" -}}
+{{ if not (eq $timezone "Asia/Shanghai") }}
+api_url = "https://github.com/MaaAssistantArknights/MaaRelease/raw/main/MaaAssistantArknights/api/version/"
+test_time = 0
+{{- end }}
+
+[resource]
+backend = "libgit2"
+
+[resource.remote]
+url = "git@github.com:MaaAssistantArknights/MaaResource.git"
+use_ssh_agent = true

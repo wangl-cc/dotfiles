@@ -3,14 +3,31 @@
 set -eufo pipefail
 
 {{ if eq .chezmoi.os "darwin" }}
+
+{{ $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
+{{ if eq $timezone "Asia/Shanghai" }}
+# Use mirror to speed up installation if in China
+HOMEBREW_MIRROR_DOMAIN="https://mirrors.ustc.edu.cn"
+HOMEBREW_INSTALL_SCRIPT="$HOMEBREW_MIRROR_DOMAIN/misc/brew-install.sh"
+export HOMEBREW_BREW_GIT_REMOTE="$HOMEBREW_MIRROR_DOMAIN/brew.git"
+export HOMEBREW_BOTTLE_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
+export HOMEBREW_API_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
+{{ end }}
+
+{{ $homebrew_prefix := "/opt/homebrew" }}
+{{ if eq .chezmoi.arch "arm64" }}
 {{   $homebrew_prefix := "/opt/homebrew" }}
-{{   if eq .chezmoi.arch "arm64" }}
-{{     $homebrew_prefix := "/opt/homebrew" }}
-{{   else }}
-{{     $homebrew_prefix := "/usr/local" }}
-{{   end }}
-{{   $brew := joinPath $homebrew_prefix "bin/brew" }}
-{{   if isExecutable $brew }}
+{{ else }}
+{{   $homebrew_prefix := "/usr/local" }}
+{{ end }}
+{{ $brew := joinPath $homebrew_prefix "bin/brew" }}
+
+{{ if not (isExecutable $brew) }}
+echo "Homebrew is not installed. Installing..."
+install_script=${HOMEBREW_INSTALL_SCRIPT:"https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"}
+/bin/bash -c "$(curl -fsSL $install_script)"
+{{ end }}
+
 brew="{{ $brew }}"
 
 {{ $brews := list
@@ -43,9 +60,4 @@ brew "{{ . }}"
 cask "{{ . }}"
 {{ end -}}
 EOF
-
-{{   else }}
-echo "Homebrew is not installed, please run the following command to install it and retry"
-echo '/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"'
-{{   end }}
 {{ end }}
