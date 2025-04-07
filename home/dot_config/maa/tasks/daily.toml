@@ -50,26 +50,25 @@ penguin_id = "084310065"
 expiring_medicine = 1000
 
 # On any side story open, fight given side story stage
-[[tasks.variants]]
-condition = { type = "OnSideStory", client = "Official" }
-params = { stage = "HS-7", series = 3 }
-
+# [[tasks.variants]]
+# condition = { type = "OnSideStory", client = "Official" }
+# params = { stage = "HS-7", series = 3 }
 # Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
 # PR-C-1 on Thursday, 1-7 for the rest of the week
+# [[tasks.variants]]
+# condition = { type = "Weekday", weekdays = ["Mon"], timezone = "Official" }
+# params = { stage = "PR-A-2", series = 2 }
+# [[tasks.variants]]
+# condition = { type = "Weekday", weekdays = ["Tue"], timezone = "Official" }
+# params = { stage = "PR-B-2", series = 2 }
+# [[tasks.variants]]
+# condition = { type = "Weekday", weekdays = ["Wed"], timezone = "Official" }
+# params = { stage = "PR-D-2", series = 2 }
+# [[tasks.variants]]
+# condition = { type = "Weekday", weekdays = ["Thu"], timezone = "Official" }
+# params = { stage = "PR-C-2", series = 2 }
 [[tasks.variants]]
-condition = { type = "Weekday", weekdays = ["Mon"], timezone = "Official" }
-params = { stage = "PR-A-2", series = 2 }
-[[tasks.variants]]
-condition = { type = "Weekday", weekdays = ["Tue"], timezone = "Official" }
-params = { stage = "PR-B-2", series = 2 }
-[[tasks.variants]]
-condition = { type = "Weekday", weekdays = ["Wed"], timezone = "Official" }
-params = { stage = "PR-D-2", series = 2 }
-[[tasks.variants]]
-condition = { type = "Weekday", weekdays = ["Thu"], timezone = "Official" }
-params = { stage = "PR-C-2", series = 2 }
-[[tasks.variants]]
-params = { stage = "1-7", series = 6 }
+params = { stage = "", series = 3 }
 
 #------------------------------ Mall ------------------------------#
 # Mall before 7:00
@@ -81,9 +80,9 @@ shopping = true
 buy_first = ["招聘许可", "龙门币"]
 blacklist = ["碳", "家具", "加急许可"]
 
-[[tasks.variants]]
-condition = { type = "Time", end = "07:00:00" }
-params = { credit_fight = true, select_formation = 4 }
+# [[tasks.variants]]
+# condition = { type = "Time", end = "07:00:00" }
+# params = { credit_fight = true, select_formation = 4 }
 
 [[tasks.variants]]
 params = { shopping = true }
