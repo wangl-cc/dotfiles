@@ -50,7 +50,7 @@ penguin_id = "084310065"
 expiring_medicine = 1000
 
 # On any side story open, fight given side story stage
-# [[tasks.variants]]
+[[tasks.variants]]
 condition = { type = "OnSideStory", client = "Official" }
 params = { stage = "BB-8", series = 3 }
 
