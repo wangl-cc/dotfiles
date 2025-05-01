@@ -1,0 +1,342 @@
+#!/usr/bin/env fish
+
+# Constants
+set -g DEFAULT_REMOTE_HOST localhost
+set -g DEFAULT_LOCAL_PORT "+0"
+set -g STATE_DIR "$HOME/.local/state/ssh-tunnel"
+set -g LOG_DIR "$STATE_DIR/logs"
+set -g INFO_DIR "$STATE_DIR/info"
+
+mkdir -p $INFO_DIR
+mkdir -p $LOG_DIR
+
+# Global variables
+set -g REMOTE_HOST
+set -g REMOTE_PORT
+set -g SSH_ARGS
+set -g LOCAL_PORT
+set -g LISTEN_PID
+set -g LISTEN_CMD
+
+# A info file is a simple file that contains information about the SSH tunnel
+# used to restart a tunnel
+#
+# remote_host = localhost # remote host to connect to
+# remote_port = 443  # remote port to connect to
+# ssh_args = -i ~/.ssh/id_rsa user@host # additional arguments for ssh
+
+function get_info_file
+    echo "$INFO_DIR/$LOCAL_PORT.conf"
+end
+
+function read_tunnel_info
+    # clear variables
+    set REMOTE_HOST
+    set REMOTE_PORT
+    set SSH_ARGS
+
+    set info_file (get_info_file)
+    test -f $info_file; or return 1
+    while read -l line
+        set ret (string match -r '^(\w+)=(.*)' $line)
+        set key (string trim -- $ret[2])
+        set value (string trim -- $ret[3])
+        switch $key
+            case remote_host
+                set REMOTE_HOST $value
+            case remote_port
+                set REMOTE_PORT $value
+            case ssh_args
+                set SSH_ARGS $value
+        end
+    end <$info_file
+
+    return 0
+end
+
+function write_tunnel_info
+    set info_file (get_info_file); or return $status
+    begin
+        echo "remote_host=$REMOTE_HOST"
+        echo "remote_port=$REMOTE_PORT"
+        echo "ssh_args=$SSH_ARGS"
+    end >$info_file
+end
+
+# Check if a port is available and set pid and command that is listening on it
+function check_port
+    set LISTEN_PID
+    set LISTEN_CMD
+    if set info (lsof -nP -iTCP:$LOCAL_PORT -sTCP:LISTEN -Fpc)
+        for line in $info
+            switch $line
+                case 'p*'
+                    set LISTEN_PID (string replace -r '^p' '' $line)
+                case 'c*'
+                    set LISTEN_CMD (string replace -r '^c' '' $line)
+            end
+        end
+    end
+end
+
+function port_status
+    # Check if the port is already in use by another SSH tunnel or other process
+    check_port
+    if test -n "$LISTEN_PID"
+        if test "$LISTEN_CMD" = ssh
+            echo RUNNING
+        else
+            echo OCCUPIED
+        end
+    else
+        echo STOPPED
+    end
+end
+
+function start_ssh_tunnel
+    set -l log_path "$LOG_DIR/$LOCAL_PORT.log"
+    nohup ssh -N -L $LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT $SSH_ARGS 2>&1 >$log_path &
+    echo "SSH tunnel started on local port $LOCAL_PORT to $REMOTE_HOST:$REMOTE_PORT"
+end
+
+# Command: start a new SSH tunnel
+function cmd_start
+    # Define arguments using fish_opt
+    set -l options
+    set -a options (fish_opt --short=H --long=remote-host --required-val)
+    set -a options (fish_opt --short=r --long=remote-port --required-val)
+    set -a options (fish_opt --short=l --long=local-port --required-val)
+
+    argparse -i $options -- $argv
+
+    # Set default remote host to localhost if not specified
+    if set -q _flag_remote_host
+        set REMOTE_HOST $_flag_remote_host
+    else
+        set REMOTE_HOST $DEFAULT_REMOTE_HOST
+    end
+
+    # Check required parameters
+    if set -q _flag_remote_port
+        set REMOTE_PORT $_flag_remote_port
+    else
+        echo "Error: Remote port not specified. Use -r or --remote-port."
+        exit 1
+    end
+
+    # Set default local port if not specified
+    if set -q _flag_local_port
+        set LOCAL_PORT $_flag_local_port
+    else
+        set LOCAL_PORT $DEFAULT_LOCAL_PORT
+    end
+
+    # Handle relative local port (starting with +)
+    if string match -q "+*" $LOCAL_PORT
+        set offset (string replace "+" "" $LOCAL_PORT)
+        set LOCAL_PORT (math $REMOTE_PORT + $offset)
+    end
+
+    # Pass rest of the arguments to ssh
+    set SSH_ARGS $argv
+
+    check_port
+    switch (port_status)
+        case RUNNING
+            echo "Port $LOCAL_PORT is already in use by another SSH tunnel"
+            echo "Use 'ssh-tunnel stop $LOCAL_PORT' to stop it"
+            exit 1
+        case OCCUPIED
+            echo "Port $LOCAL_PORT is already in use by another process"
+            echo "Use 'lsof -i :$LOCAL_PORT' to check which process is using it"
+            exit 1
+    end
+
+    start_ssh_tunnel
+
+    write_tunnel_info
+end
+
+# Command: stop an existing SSH tunnel
+function cmd_stop
+    # Check for port
+    if test (count $argv) -lt 1
+        echo "Error: Local port not specified"
+        usage
+        exit 1
+    end
+
+    set LOCAL_PORT $argv[1]
+
+    # Check if the port is already in use by another SSH tunnel or other process
+    check_port
+
+    switch (port_status)
+        case RUNNING
+            kill $LISTEN_PID
+            echo "SSH tunnel stopped on local port $LOCAL_PORT"
+        case OCCUPIED
+            echo "Port $LOCAL_PORT is used but not an SSH tunnel"
+            exit 1
+        case STOPPED
+            echo "Port $LOCAL_PORT is not in use"
+            exit 1
+    end
+end
+
+# Command: restart an existing tunnel
+function cmd_restart
+    # Check for port
+    if test (count $argv) -lt 1
+        echo "Error: Local port not specified" >&2
+        usage
+        return 1
+    end
+    set LOCAL_PORT $argv[1]
+
+    if not read_tunnel_info
+        echo "$REMOTE_HOST"
+        echo "$LOCAL_PORT is not used by any SSH tunnel"
+        exit 1
+    end
+
+    switch (port_status)
+        case RUNNING
+            kill $LISTEN_PID
+            echo "Killed existing tunnel on port $LOCAL_PORT"
+            start_ssh_tunnel
+        case STOPPED
+            start_ssh_tunnel
+        case OCCUPIED
+            echo "Port $LOCAL_PORT is already in use"
+            exit 1
+    end
+end
+
+function cmd_status --description "Subcommand to show status of a SSH tunnel listening on given port"
+    # Check for port
+    if test (count $argv) -lt 1
+        echo "Error: Local port not specified" >&2
+        return 1
+    end
+    set LOCAL_PORT $argv[1]
+
+    if not read_tunnel_info
+        echo "$LOCAL_PORT is not used by any SSH tunnel"
+        exit 1
+    end
+
+    set log_path $LOG_DIR/$LOCAL_PORT.log
+
+    switch (port_status)
+        case RUNNING
+            echo "SSH tunnel using local port $LOCAL_PORT is running (PID: $LISTEN_PID)"
+            echo "Remote: $REMOTE_HOST:$REMOTE_PORT"
+            echo "SSH arguments: $SSH_ARGS"
+            if test -f $log_path; and test -s $log_path
+                echo ---------------------- Log ----------------------
+                cat $log_path
+                echo -------------------------------------------------
+            end
+        case STOPPED
+            echo "SSH tunnel on port $LOCAL_PORT is not running"
+            echo "Last connection was to: $REMOTE_HOST:$REMOTE_PORT"
+            echo "SSH arguments: $SSH_ARGS"
+            echo "Use 'ssh-tunnel restart $LOCAL_PORT' to restart this tunnel."
+        case OCCUPIED
+            echo "SSH tunnel on port $LOCAL_PORT is already in use"
+    end
+end
+
+# Command: list all tunnels
+function cmd_list
+    # List all info files
+    set info_files (ls $STATE_DIR/info)
+
+    if test -z "$info_files"
+        echo "No tunnels found."
+        exit 0
+    end
+
+    set FMT "%-5s %-8s %-5s %-20s %s\n"
+
+    printf $FMT PORT STATUS PID REMOTE SSH_ARGS
+    echo -----------------------------------------------------------------------
+
+    for info_file in $info_files
+        # info file should be in the format "<port>.conf"
+        set LOCAL_PORT (string replace ".conf" "" $info_file)
+        read_tunnel_info
+        printf $FMT $LOCAL_PORT (port_status) "$LISTEN_PID" $REMOTE_HOST:$REMOTE_PORT $SSH_ARGS
+    end
+end
+
+# Function to show usage information
+function usage
+    begin
+        echo "Usage: ssh-tunnel COMMAND [OPTIONS]"
+        echo
+        echo "Commands:"
+        echo "  start     Start a new SSH tunnel"
+        echo "  stop      Stop an existing SSH tunnel by local port"
+        echo "  restart   Restart an existing SSH tunnel by local port"
+        echo "  status    Show detailed status of a specific tunnel by local port"
+        echo "  list      List all SSH tunnels (both running and stopped)"
+        echo
+        echo "Options for 'start':"
+        echo "  -H, --remote-host HOST   Remote host to connect to (Default: $DEFAULT_REMOTE_HOST)"
+        echo "  -r, --remote-port PORT   Port on the remote host (Required)"
+        echo "  -l, --local-port  PORT   Local port to listen on, +N for relative (Default to remote port)"
+        echo "  ... other ssh options are passed directly to ssh"
+        echo
+        echo "Options for 'stop', 'status', 'restart':"
+        echo "  PORT      Local port of the tunnel"
+        echo
+        echo "Examples:"
+        echo "  ssh-tunnel start -r 1234 username@example.com"
+        echo "  ssh-tunnel start -H db.example.com -r 5432 -l 15432 user@example.com"
+        echo "  ssh-tunnel list           # List all tunnels"
+        echo "  ssh-tunnel status 8080    # Show details for the tunnel using local port 8080"
+        echo "  ssh-tunnel restart 8080   # Restart the tunnel using local port 8080"
+        echo "  ssh-tunnel stop 8080      # Stop the tunnel using local port 8080"
+    end >&2
+end
+
+# Main function to dispatch commands
+function main
+    # Check if a command was provided
+    if test (count $argv) -lt 1
+        usage
+        exit 1
+    end
+
+    # Get command and remove it from argv
+    set command $argv[1]
+    set -e argv[1]
+
+    switch $command
+        case start
+            cmd_start $argv
+        case stop
+            cmd_stop $argv
+        case list
+            cmd_list $argv
+        case status
+            cmd_status $argv
+        case restart
+            cmd_restart $argv
+        case help -h --help
+            usage
+            exit 0
+        case "*"
+            echo "Unknown command: $command" >&2
+            usage
+            exit 1
+    end
+
+    # Return the status of the command
+    return $status
+end
+
+# Run the main function with all arguments
+main $argv
