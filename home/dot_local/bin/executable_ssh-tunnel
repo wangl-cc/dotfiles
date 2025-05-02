@@ -166,21 +166,20 @@ function cmd_stop
         exit 1
     end
 
-    set LOCAL_PORT $argv[1]
+    for port in $argv
+        set LOCAL_PORT $port
 
-    # Check if the port is already in use by another SSH tunnel or other process
-    check_port
-
-    switch (port_status)
-        case RUNNING
-            kill $LISTEN_PID
-            echo "SSH tunnel stopped on local port $LOCAL_PORT"
-        case OCCUPIED
-            echo "Port $LOCAL_PORT is used but not an SSH tunnel"
-            exit 1
-        case STOPPED
-            echo "Port $LOCAL_PORT is not in use"
-            exit 1
+        switch (port_status)
+            case RUNNING
+                kill $LISTEN_PID
+                echo "SSH tunnel stopped on local port $LOCAL_PORT"
+            case OCCUPIED
+                echo "Port $LOCAL_PORT is used but not an SSH tunnel"
+                exit 1
+            case STOPPED
+                echo "Port $LOCAL_PORT is not in use"
+                exit 1
+        end
     end
 end
 
@@ -192,24 +191,26 @@ function cmd_restart
         usage
         return 1
     end
-    set LOCAL_PORT $argv[1]
+    for port in $argv
+        set LOCAL_PORT $port
 
-    if not read_tunnel_info
-        echo "$REMOTE_HOST"
-        echo "$LOCAL_PORT is not used by any SSH tunnel"
-        exit 1
-    end
-
-    switch (port_status)
-        case RUNNING
-            kill $LISTEN_PID
-            echo "Killed existing tunnel on port $LOCAL_PORT"
-            start_ssh_tunnel
-        case STOPPED
-            start_ssh_tunnel
-        case OCCUPIED
-            echo "Port $LOCAL_PORT is already in use"
+        if not read_tunnel_info
+            echo "$REMOTE_HOST"
+            echo "$LOCAL_PORT is not used by any SSH tunnel"
             exit 1
+        end
+
+        switch (port_status)
+            case RUNNING
+                kill $LISTEN_PID
+                echo "Killed existing tunnel on port $LOCAL_PORT"
+                start_ssh_tunnel
+            case STOPPED
+                start_ssh_tunnel
+            case OCCUPIED
+                echo "Port $LOCAL_PORT is already in use"
+                exit 1
+        end
     end
 end
 
