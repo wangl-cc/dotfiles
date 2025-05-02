@@ -81,13 +81,11 @@
     "close_position": "left",
     "show_diagnostics": "errors"
   },
+  "hide_mouse": "on_typing_and_movement",
   "git": {
     "inline_blame": {
       "enabled": false
     }
-  },
-  "git_panel": {
-    "dock": "right"
   },
   "indent_guides": {
     "coloring": "indent_aware"
@@ -120,15 +118,9 @@
     "enabled": true
   },
   "lsp": {
-    "pyright": {
-      "binary": {
-        "path": "pyright-langserver",
-        "arguments": ["--stdio"]
-      }
-    },
     "rust-analyzer": {
       "initialization_options": {
-        "checkOnSave": {
+        "check": {
           "command": "clippy",
           "args": ["--all-targets"]
         },
@@ -200,10 +192,16 @@
     },
     "Typst": {
       "language_servers": ["tinymist", "..."],
+      "preferred_line_length": 1000,
+      "wrap_guides": [],
       "soft_wrap": "editor_width"
     },
     "LaTeX": {
+      "inlay_hints": {
+        "enabled": false
+      },
       "preferred_line_length": 1000,
+      "wrap_guides": [],
       "soft_wrap": "editor_width"
     },
     "LOG": {
