@@ -103,7 +103,7 @@ function check_port
     end
 end
 
-function port_status
+function get_port_status
     # Check if the port is already in use by another SSH tunnel or other process
     check_port
     if test -n "$LISTEN_PID"
@@ -206,7 +206,7 @@ function cmd_start
             exit 1
     end
 
-    switch (port_status)
+    switch (get_port_status)
         case SSH
             echo "Port $LOCAL_PORT is already in use by another SSH tunnel"
             echo "Use 'tunnel stop $LOCAL_PORT' to stop it"
@@ -238,7 +238,7 @@ function cmd_stop
     for port in $argv
         set LOCAL_PORT $port
 
-        switch (port_status)
+        switch (get_port_status)
             case SSH CLOUDFLARE
                 kill $LISTEN_PID
                 echo "Stopped tunnel on port $LOCAL_PORT"
@@ -297,7 +297,7 @@ function cmd_status --description "Subcommand to show status of a SSH tunnel lis
 
     set log_path $LOG_DIR/$LOCAL_PORT.log
 
-    switch (port_status)
+    switch (get_port_status)
         case SSH
             echo "SSH tunnel using local port $LOCAL_PORT is running (PID: $LISTEN_PID)"
             echo "Remote: $HOSTNAME -> $SSH_REMOTE_PORT:$SSH_REMOTE_PORT"
@@ -331,27 +331,42 @@ function cmd_list
     set info_files (ls $STATE_DIR/info)
 
     if test -z "$info_files"
-        echo "No tunnels found."
+        echo "No tunnels found." >&2
         exit 0
     end
 
-    set FMT "%-5s %-10s %-5s %s\n"
-
-    printf $FMT PORT STATUS PID REMOTE_INFO
+    set FMT "%-5s %-10s %-8s %-5s %s\n"
+    printf $FMT PORT TYPE STATUS PID REMOTE_INFO
     echo -----------------------------------------------------------------------
 
-    for info_file in $info_files
-        # info file should be in the format " <port >.conf"
-        set LOCAL_PORT (string replace ".conf" "" $info_file)
+    # extract port number from info file name
+    set ports (string replace -r '\.conf$' '' $info_files | sort -n)
+
+    for port in $ports
+        set LOCAL_PORT $port
         read_tunnel_info
+
         set remote_info
         switch $TUNNEL_TYPE
             case ssh
                 set remote_info "$HOSTNAME->$SSH_REMOTE_HOST:$SSH_REMOTE_PORT"
             case '*'
-                set remote_info $HOSTNAME
+                set remote_info "$HOSTNAME"
         end
-        printf $FMT $LOCAL_PORT (port_status) "$LISTEN_PID" "$remote_info"
+
+        set port_status
+        switch (get_port_status)
+            case SSH CLOUDFLARE
+                set port_status Running
+            case OCCUPIED
+                set port_status Occupied
+            case IDLE
+                set port_status Stopped
+        end
+
+        test -n "$LISTEN_PID"; or set LISTEN_PID -
+
+        printf $FMT $LOCAL_PORT $TUNNEL_TYPE $port_status "$LISTEN_PID" $remote_info
     end
 end
 
