@@ -268,7 +268,7 @@ function cmd_restart
             exit 1
         end
 
-        switch (port_status)
+        switch (get_port_status)
             case SSH CLOUDFLARE
                 kill $LISTEN_PID
                 echo "Stopped existing tunnel on port $LOCAL_PORT"
