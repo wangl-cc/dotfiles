@@ -16,11 +16,11 @@ $directory\
 $git_branch$git_commit\
 $git_state$git_status\
 $fill \
-$jobs\
+$cmd_duration$time\
 $line_break $status$character\
 """
 right_format = """\
-$cmd_duration$time\
+$jobs\
 """
 add_newline = true
 
