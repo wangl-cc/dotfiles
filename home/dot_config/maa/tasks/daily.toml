@@ -40,7 +40,6 @@ params = { plan_index = { default = 3, description = "index of plan" } }
 params = { plan_index = { default = 0, description = "index of plan" } }
 
 #------------------------------ Fight -----------------------------#
-
 [[tasks]]
 type = "Fight"
 
@@ -49,13 +48,13 @@ report_to_penguin = true
 penguin_id = "084310065"
 expiring_medicine = 1000
 
-# On any side story open, fight given side story stage
+# On any side story open, fight last stage
 [[tasks.variants]]
 condition = { type = "OnSideStory", client = "Official" }
-params = { stage = "BB-8", series = 3 }
+params = { stage = "", series = 3 }
 
 # Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
-# PR-C-1 on Thursday, 1-7 for the rest of the week
+# PR-C-2 on Thursday, AP-5 on Weekend, 1-7 for the rest
 [[tasks.variants]]
 condition = { type = "Weekday", weekdays = ["Mon"], timezone = "Official" }
 params = { stage = "PR-A-2", series = 2 }
