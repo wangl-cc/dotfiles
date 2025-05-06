@@ -17,3 +17,9 @@ lto = "fat"
 [profile.bench]
 codegen-units = 1
 lto = "fat"
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-Ctarget-cpu=native"]
+
+[target.aarch64-apple-darwin]
+rustflags = ["-Ctarget-cpu=native"]
