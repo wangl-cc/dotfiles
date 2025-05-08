@@ -14,32 +14,6 @@
     "mode": "subtle"
   },
   "agent": {
-    "profiles": {
-      "write": {
-        "name": "Write",
-        "tools": {
-          "copy_path": true,
-          "create_directory": true,
-          "create_file": true,
-          "delete_path": true,
-          "diagnostics": true,
-          "edit_file": true,
-          "fetch": true,
-          "list_directory": true,
-          "move_path": true,
-          "now": true,
-          "find_path": true,
-          "read_file": true,
-          "grep": true,
-          "terminal": true,
-          "thinking": true,
-          "web_search": true,
-          "open": true
-        },
-        "enable_all_context_servers": true,
-        "context_servers": {}
-      }
-    },
     "default_model": {
       "provider": "google",
       "model": "gemini-2.5-pro-exp-03-25"
