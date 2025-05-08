@@ -37,11 +37,11 @@ plans:
       dormitory:
         - operators: []
           autofill: true
-        - operators: [塑心]
+        - operators: []
           autofill: true
-        - operators: [爱丽丝]
+        - operators: []
           autofill: true
-        - operators: [车尔尼]
+        - operators: [塑心, 爱丽丝, 车尔尼]
           autofill: true
 
   - name: 上午班 (4h)
@@ -76,11 +76,11 @@ plans:
       dormitory:
         - operators: []
           autofill: true
-        - operators: [塑心]
+        - operators: []
           autofill: true
-        - operators: [爱丽丝]
+        - operators: []
           autofill: true
-        - operators: [车尔尼]
+        - operators: [塑心, 爱丽丝, 车尔尼]
           autofill: true
 
   - name: 下午班 (4h)
@@ -115,11 +115,11 @@ plans:
       dormitory:
         - operators: []
           autofill: true
-        - operators: [塑心]
+        - operators: []
           autofill: true
-        - operators: [爱丽丝]
+        - operators: []
           autofill: true
-        - operators: [车尔尼]
+        - operators: [塑心, 爱丽丝, 车尔尼]
           autofill: true
 
   - name: 晚班 (8h)
@@ -155,10 +155,10 @@ plans:
       dormitory:
         - operators: []
           autofill: true
-        - operators: [塑心]
+        - operators: []
           autofill: true
-        - operators: [爱丽丝]
+        - operators: []
           autofill: true
-        - operators: [车尔尼]
+        - operators: [塑心, 爱丽丝, 车尔尼]
           autofill: true
 # yaml-language-server: $schema=./.schema.json

@@ -3,5 +3,4 @@
 all: $(patsubst %.yaml,%.json,$(wildcard *.yaml))
 
 %.json: %.yaml
-	maa convert $< $@
-	prettier --write $@
+	maa convert -fj $< | prettier --parser=json --log-level=warn > $@

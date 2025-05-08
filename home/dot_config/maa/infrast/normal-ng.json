@@ -28,15 +28,15 @@
           },
           {
             "autofill": true,
-            "operators": ["塑心"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["爱丽丝"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["车尔尼"]
+            "operators": ["塑心", "爱丽丝", "车尔尼"]
           }
         ],
         "hire": [
@@ -118,15 +118,15 @@
           },
           {
             "autofill": true,
-            "operators": ["塑心"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["爱丽丝"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["车尔尼"]
+            "operators": ["塑心", "爱丽丝", "车尔尼"]
           }
         ],
         "hire": [
@@ -202,15 +202,15 @@
           },
           {
             "autofill": true,
-            "operators": ["塑心"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["爱丽丝"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["车尔尼"]
+            "operators": ["塑心", "爱丽丝", "车尔尼"]
           }
         ],
         "hire": [
@@ -292,15 +292,15 @@
           },
           {
             "autofill": true,
-            "operators": ["塑心"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["爱丽丝"]
+            "operators": []
           },
           {
             "autofill": true,
-            "operators": ["车尔尼"]
+            "operators": ["塑心", "爱丽丝", "车尔尼"]
           }
         ],
         "hire": [

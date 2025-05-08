@@ -19,7 +19,6 @@ facility = [
   "Training",
   "Dorm",
 ]
-dorm_trust_enabled = true
 filename = "normal-ng.json"
 replenish = true
 continue_training = true
