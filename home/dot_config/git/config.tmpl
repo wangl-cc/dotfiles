@@ -18,14 +18,14 @@
 [mailmap]
 	file = {{ .chezmoi.homeDir }}/.config/git/mailmap
 [include]
-  path = ./local.gitconfig
+	path = ./local.gitconfig
 {{- if lookPath "nvim" }}
 [include]
 	path = ./editor/nvim.gitconfig
 {{- else if lookPath "vim" }}
 	path = ./editor/vim.gitconfig
 {{- end }}
-{{- if (lookPath "gpg") }}
+{{- if .git.signingkey }}
 [include]
 	path = ./gpg.gitconfig
 {{- end }}
