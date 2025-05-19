@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# A wrapper script to start zed inside zed terminal
+
+
+if [[ "$ZED_TERM" == "true" ]]; then
+  # If this is executed inside zed terminal, find parent zed process to get binary path
+  pid=$(ps -o ppid= -p $PPID)
+  while [[ $pid -ne 1 ]]; do
+    cmd=$(ps -o comm= -p $pid)
+    echo "$cmd"
+    if [[ "$cmd" == *"zed"* ]]; then
+      zed_dir=$(dirname "$cmd")
+      break
+    fi
+    pid=$(ps -o ppid= -p $pid)
+  done
+  if [[ -z "$zed_dir" ]]; then
+    echo "Zed binary not found"
+    exit 1
+  fi
+  # Start zed with the same arguments
+  "$zed_dir/cli" "$@"
+else
+  # If not in zed terminal, just start zed
+  zed "$@"
+fi
