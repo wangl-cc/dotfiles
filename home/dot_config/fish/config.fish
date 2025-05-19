@@ -124,6 +124,8 @@ if type -q fzf
     fzf --fish | source
 end
 
+type -q atuin; and atuin init fish --disable-up-arrow | source
+
 type -q fastfetch; and abbr --add -- ff fastfetch
 
 type -q starship; and starship init fish | source
