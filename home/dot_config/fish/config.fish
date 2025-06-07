@@ -15,11 +15,15 @@ if type -q eza
     abbr --add -- l eza
     abbr --add -- ll eza -l
     abbr --add -- la eza -Al
-    abbr --add -- lt eza --tree
+    abbr --add -- lt eza -snew -l
+    abbr --add -- lat eza -snew -Al
+    abbr --add -- tree eza --tree
 else
     abbr --add l -- ls --color
     abbr --add ll -- ls --color -lh
     abbr --add la -- ls --color -Alh
+    abbr --add lt -- ls --color -trl
+    abbr --add lat -- ls --color -Altr
 end
 
 function expand_dot
