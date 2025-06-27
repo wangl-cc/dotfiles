@@ -9,8 +9,8 @@ set -eufo pipefail
 {{ else }}
 {{   $homebrew_prefix := "/usr/local" }}
 {{ end }}
-{{ $brew := joinPath $homebrew_prefix "bin/brew" }}
 {{ end }}
+{{ $brew := joinPath $homebrew_prefix "bin/brew" }}
 
 {{ $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
 {{ if eq $timezone "Asia/Shanghai" }}
