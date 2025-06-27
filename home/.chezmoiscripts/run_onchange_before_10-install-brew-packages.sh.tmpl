@@ -2,7 +2,15 @@
 
 set -eufo pipefail
 
+{{ $homebrew_prefix := "/home/linuxbrew/.linuxbrew" }}
 {{ if eq .chezmoi.os "darwin" }}
+{{ if eq .chezmoi.arch "arm64" }}
+{{   $homebrew_prefix := "/opt/homebrew" }}
+{{ else }}
+{{   $homebrew_prefix := "/usr/local" }}
+{{ end }}
+{{ $brew := joinPath $homebrew_prefix "bin/brew" }}
+{{ end }}
 
 {{ $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
 {{ if eq $timezone "Asia/Shanghai" }}
@@ -13,14 +21,6 @@ export HOMEBREW_BREW_GIT_REMOTE="$HOMEBREW_MIRROR_DOMAIN/brew.git"
 export HOMEBREW_BOTTLE_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
 export HOMEBREW_API_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
 {{ end }}
-
-{{ $homebrew_prefix := "/opt/homebrew" }}
-{{ if eq .chezmoi.arch "arm64" }}
-{{   $homebrew_prefix := "/opt/homebrew" }}
-{{ else }}
-{{   $homebrew_prefix := "/usr/local" }}
-{{ end }}
-{{ $brew := joinPath $homebrew_prefix "bin/brew" }}
 
 {{ if not (isExecutable $brew) }}
 echo "Homebrew is not installed. Installing..."
@@ -47,7 +47,6 @@ brew="{{ $brew }}"
   "gh"
 }}
 {{ $casks := list
-  "iterm2"
   "font-fira-code"
   "font-fira-code-nerd-font"
 }}
@@ -60,4 +59,3 @@ brew "{{ . }}"
 cask "{{ . }}"
 {{ end -}}
 EOF
-{{ end }}

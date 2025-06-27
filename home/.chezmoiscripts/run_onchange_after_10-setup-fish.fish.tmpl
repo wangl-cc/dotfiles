@@ -81,9 +81,9 @@ if test (uname -s) = Darwin
         prepend_path $HOMEBREW_PREFIX/bin
 
         # Setup homebrew mirror persistently
-        if string match -q ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
+        if string match -qr ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
             set HOMEBREW_MIRROR_DOMAIN "https://mirrors.ustc.edu.cn"
-            set_Ux HOMEBREW_BREW_GIT_REMOTE="$HOMEBREW_MIRROR_DOMAIN/brew.git"
+            set_Ux HOMEBREW_BREW_GIT_REMOTE "$HOMEBREW_MIRROR_DOMAIN/brew.git"
             set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
             set_Ux HOMEBREW_BOTTLE_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
         else
