@@ -71,7 +71,7 @@ if test (uname -s) = Darwin
     end
 end
 
-set -l brew = "$homebrew_prefix/bin/brew"
+set -l brew "$homebrew_prefix/bin/brew"
 if test -d $homebrew_prefix; and test -x $brew
     begin_section "Setting up Homebrew"
     set_Ux HOMEBREW_PREFIX ($brew --prefix)
