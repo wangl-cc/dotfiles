@@ -62,37 +62,37 @@ end
 
 begin_section "Setting up fish shell environment variables"
 
+set -l homebrew_prefix /home/linuxbrew/.linuxbrew
 if test (uname -s) = Darwin
-    set -l homebrew_prefix
     if test (uname -m) = arm64
         set homebrew_prefix /opt/homebrew
     else
         set homebrew_prefix /usr/local
     end
+end
 
-    set -l brew = "$homebrew_prefix/bin/brew"
-    if test -d $homebrew_prefix; and test -x $brew
-        begin_section "Setting up Homebrew"
-        set_Ux HOMEBREW_PREFIX ($brew --prefix)
-        set_Ux HOMEBREW_CELLAR ($brew --cellar)
-        set_Ux HOMEBREW_REPOSITORY ($brew --repository)
+set -l brew = "$homebrew_prefix/bin/brew"
+if test -d $homebrew_prefix; and test -x $brew
+    begin_section "Setting up Homebrew"
+    set_Ux HOMEBREW_PREFIX ($brew --prefix)
+    set_Ux HOMEBREW_CELLAR ($brew --cellar)
+    set_Ux HOMEBREW_REPOSITORY ($brew --repository)
 
-        prepend_path $HOMEBREW_PREFIX/sbin
-        prepend_path $HOMEBREW_PREFIX/bin
+    prepend_path $HOMEBREW_PREFIX/sbin
+    prepend_path $HOMEBREW_PREFIX/bin
 
-        # Setup homebrew mirror persistently
-        if string match -qr ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
-            set HOMEBREW_MIRROR_DOMAIN "https://mirrors.ustc.edu.cn"
-            set_Ux HOMEBREW_BREW_GIT_REMOTE "$HOMEBREW_MIRROR_DOMAIN/brew.git"
-            set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
-            set_Ux HOMEBREW_BOTTLE_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
-        else
-            set_e HOMEBREW_BREW_GIT_REMOTE
-            set_e HOMEBREW_API_DOMAIN
-            set_e HOMEBREW_BOTTLE_DOMAIN
-        end
-        end_section
+    # Setup homebrew mirror persistently
+    if string match -qr ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
+        set HOMEBREW_MIRROR_DOMAIN "https://mirrors.ustc.edu.cn"
+        set_Ux HOMEBREW_BREW_GIT_REMOTE "$HOMEBREW_MIRROR_DOMAIN/brew.git"
+        set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
+        set_Ux HOMEBREW_BOTTLE_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
+    else
+        set_e HOMEBREW_BREW_GIT_REMOTE
+        set_e HOMEBREW_API_DOMAIN
+        set_e HOMEBREW_BOTTLE_DOMAIN
     end
+    end_section
 end
 
 prepend_path $HOME/.local/bin
