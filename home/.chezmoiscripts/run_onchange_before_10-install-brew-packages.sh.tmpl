@@ -5,9 +5,9 @@ set -eufo pipefail
 {{ $homebrew_prefix := "/home/linuxbrew/.linuxbrew" }}
 {{ if eq .chezmoi.os "darwin" }}
 {{ if eq .chezmoi.arch "arm64" }}
-{{   $homebrew_prefix := "/opt/homebrew" }}
+{{   $homebrew_prefix = "/opt/homebrew" }}
 {{ else }}
-{{   $homebrew_prefix := "/usr/local" }}
+{{   $homebrew_prefix = "/usr/local" }}
 {{ end }}
 {{ end }}
 {{ $brew := joinPath $homebrew_prefix "bin/brew" }}
@@ -23,7 +23,7 @@ export HOMEBREW_API_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
 {{ end }}
 
 {{ if not (isExecutable $brew) }}
-echo "Homebrew is not installed. Installing..."
+echo "Homebrew is not installed. Installing at $homebrew_prefix"
 install_script=${HOMEBREW_INSTALL_SCRIPT:"https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"}
 /bin/bash -c "$(curl -fsSL $install_script)"
 {{ end }}
