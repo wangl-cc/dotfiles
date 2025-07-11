@@ -15,24 +15,23 @@
   },
   "agent": {
     "default_model": {
-      "provider": "google",
-      "model": "gemini-2.5-pro-exp-03-25"
+      "provider": "deepseek",
+      "model": "deepseek-reasoner"
     },
     "inline_assistant_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "provider": "deepseek",
+      "model": "deepseek-chat"
     },
     "commit_message_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "provider": "deepseek",
+      "model": "deepseek-chat"
     },
     "thread_summary_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "provider": "deepseek",
+      "model": "deepseek-chat"
     },
     "always_allow_tool_actions": true,
-    "default_profile": "write",
-    "version": "2"
+    "default_profile": "write"
   },
   "auto_install_extensions": {
     "catppuccin": true,
