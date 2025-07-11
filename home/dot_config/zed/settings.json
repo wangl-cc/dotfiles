@@ -48,7 +48,6 @@
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always",
-    "use_multiline_find": true,
     "toggle_relative_line_numbers": true
   },
   "pane_split_direction_horizontal": "down",
