@@ -144,6 +144,11 @@
     "tinymist": {
       "initialization_options": {
         "compileStatus": "enable",
+        // "preview": {
+        //   "background": {
+        //     "enabled": true
+        //   }
+        // },
         "formatterMode": "typstyle"
       }
     }
@@ -193,6 +198,7 @@
       "remove_trailing_whitespace_on_save": false
     },
     "Typst": {
+      // Make sure tinymist is the primary language server
       "language_servers": ["tinymist", "..."],
       "preferred_line_length": 1000,
       "wrap_guides": [],
