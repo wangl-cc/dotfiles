@@ -113,9 +113,6 @@
       "breadcrumbs": false
     }
   },
-  "inlay_hints": {
-    "enabled": true
-  },
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
@@ -167,6 +164,9 @@
       ]
     },
     "Rust": {
+      "inlay_hints": {
+        "enabled": true
+      },
       "tab_size": 4,
       "preferred_line_length": 100,
       "wrap_guides": [100]
@@ -196,9 +196,6 @@
       "soft_wrap": "editor_width"
     },
     "LaTeX": {
-      "inlay_hints": {
-        "enabled": false
-      },
       "preferred_line_length": 1000,
       "wrap_guides": [],
       "soft_wrap": "editor_width"
