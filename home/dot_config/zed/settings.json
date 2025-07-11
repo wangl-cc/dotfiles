@@ -50,6 +50,9 @@
     "use_system_clipboard": "always",
     "toggle_relative_line_numbers": true
   },
+  "search": {
+    "button": false
+  },
   "pane_split_direction_horizontal": "down",
   "pane_split_direction_vertical": "right",
   "theme": {
