@@ -22,7 +22,7 @@ export HOMEBREW_BOTTLE_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles"
 export HOMEBREW_API_DOMAIN="$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"
 {{ end }}
 
-{{ if not (isExecutable $brew) }}
+{{ if and (eq .chezmoi.os "darwin") (not (isExecutable $brew)) }}
 echo "Homebrew is not installed. Installing at $homebrew_prefix"
 install_script=${HOMEBREW_INSTALL_SCRIPT:"https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"}
 /bin/bash -c "$(curl -fsSL $install_script)"
