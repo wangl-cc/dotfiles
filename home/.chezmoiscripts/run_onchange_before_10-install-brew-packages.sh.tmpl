@@ -28,6 +28,7 @@ install_script=${HOMEBREW_INSTALL_SCRIPT:"https://raw.githubusercontent.com/Home
 /bin/bash -c "$(curl -fsSL $install_script)"
 {{ end }}
 
+{{ if isExecutable $brew }}
 brew="{{ $brew }}"
 
 {{ $brews := list
@@ -60,3 +61,4 @@ brew "{{ . }}"
 cask "{{ . }}"
 {{ end -}}
 EOF
+{{ end }}
