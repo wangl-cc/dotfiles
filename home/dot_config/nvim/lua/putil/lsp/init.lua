@@ -39,14 +39,14 @@ function M.register(server, config)
   options.on_attach = function(client, bufnr)
     lsp_keymap(bufnr)
 
-    if client.supports_method "textDocument/documentSymbol" then
+    if client:supports_method "textDocument/documentSymbol" then
       local ok, navic = pcall(require, "nvim-navic")
       if ok then navic.attach(client, bufnr) end
     end
 
     if
       Util.default(config.inlay_hints, M.options.inlay_hint)
-      and client.supports_method "textDocument/inlayHint"
+      and client:supports_method "textDocument/inlayHint"
     then
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end

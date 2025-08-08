@@ -96,12 +96,6 @@ opt.guicursor = {
 -- clipboard provider (for ssh session use OSC52)
 if not vim.env.SSH_TTY then opt.clipboard:append { "unnamedplus" } end
 
--- tex flavor
-for name, icon in pairs(Util.icons.diagnostics) do
-  name = "DiagnosticSign" .. name:sub(1, 1):upper() .. name:sub(2)
-  vim.fn.sign_define(name, { text = icon, texthl = name, numhl = name })
-end
-
 -- Set WAKATIME_HOME here instead of shell rc file
 -- because nvim may be not started from shell
 vim.env.WAKATIME_HOME = vim.uv.os_homedir() .. "/.config/wakatime"
