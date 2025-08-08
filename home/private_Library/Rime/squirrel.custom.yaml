@@ -1,0 +1,14 @@
+# Squirrel IME configuration file, the default values can be found at
+# /Library/Input\ Methods/Squirrel.app/Contents/SharedSupport/squirrel.yaml
+patch:
+  style/+:
+    color_scheme: catppuccin_latte
+    color_scheme_dark: catppuccin_macchiato
+    candidate_list_layout: linear
+    corner_radius: 7
+    hilited_corner_radius: 0
+    border_height: -3
+    border_width: -3
+
+  preset_color_schemes:
+    __include: catppuccin:/

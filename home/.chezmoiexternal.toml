@@ -18,3 +18,10 @@ url = "https://github.com/catppuccin/kitty.git"
 refreshPeriod = "168h"
 clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
+
+["Library/Rime/rime-ice"]
+type = "git-repo"
+url = "https://github.com/iDvel/rime-ice.git"
+refreshPeriod = "168h"
+clone.args = ["--filter=blob:none"]
+pull.args = ["--ff-only"]

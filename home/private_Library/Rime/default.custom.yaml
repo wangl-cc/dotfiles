@@ -1,0 +1,23 @@
+# RIME configuration file, the default values can be found at
+# /Library/Input\ Methods/Squirrel.app/Contents/SharedSupport/default.yaml
+patch:
+  schema_list:
+    - schema: rime_ice
+
+  menu/page_size: 6
+
+  punctuator/half_shape/$: { commit: "$" }
+  punctuator/half_shape/_: { commit: "_" }
+
+  switcher/hotkeys: [Alt+grave]
+
+  # I never use the ASCII mode of RIME, as I prefer a system keyboard layout
+  ascii_composer:
+    good_old_caps_lock: false
+    switch_key:
+      Shift_L: noop
+      Shift_R: noop
+      Control_L: noop
+      Control_R: noop
+      Caps_Lock: noop
+      Eisu_toggle: clear

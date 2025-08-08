@@ -1,0 +1,8 @@
+patch:
+  translator/preedit_format:
+    - xform/([jqxy])v/$1u/ # 显示为 ju qu xu yu
+    - xform/([nl])v/$1ü/ # 显示为 nü lü
+
+  speller/algebra/+:
+    - derive/([ei])n$/$1ng/ # en => eng, in => ing
+    - derive/([ei])ng$/$1n/ # eng => en, ing => in

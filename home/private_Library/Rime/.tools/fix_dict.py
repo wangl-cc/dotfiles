@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+import argparse
+import re
+from collections.abc import Generator
+from typing import Iterable, Optional
+
+PATTERN = re.compile(r"^([^\t#:]+) +(\w+)?$")
+REPLACE = r"\1\t\2"
+
+
+def process_line(line: str) -> str:
+    return PATTERN.sub(REPLACE, line.rstrip("\n"))
+
+
+def fix_yaml_end(lines: Iterable[str]) -> Generator[str]:
+    yaml_start_num = 0
+    for line in lines:
+        if line == "---":
+            yaml_start_num += 1
+
+        if yaml_start_num > 1:
+            yaml_start_num = 0
+            yield "..."
+        elif yaml_start_num > 2:
+            raise ValueError("Too many YAML documents")
+        else:
+            yield line
+
+
+def process_file(input_path: str, output_path: Optional[str] = None):
+    with open(input_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    processed = fix_yaml_end(process_line(line) for line in lines)
+
+    if output_path:
+        with open(output_path, "w", encoding="utf-8") as f:
+            for line in processed:
+                f.write(line)
+                f.write("\n")
+    else:
+        for line in processed:
+            print(line)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Convert space to tab in lines matching specific pattern."
+    )
+    parser.add_argument("--input", "-i", required=True, help="Input file path")
+    parser.add_argument("--output", "-o", help="Output file path")
+    parser.add_argument(
+        "-I", "--inplace", action="store_true", help="Modify the file in-place"
+    )
+
+    args = parser.parse_args()
+
+    output_path = None
+    if args.output:
+        output_path = args.output
+    if args.inplace:
+        output_path = args.input
+
+    process_file(args.input, output_path)

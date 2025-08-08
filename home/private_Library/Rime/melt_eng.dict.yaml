@@ -1,0 +1,19 @@
+# Rime dictionary
+# encoding: utf-8
+#
+# 挂载英文输入方案的词库
+#
+# 使用 ./fix_tabs.py -I -i melt_eng.dict.yaml 确保使用 Tab 分割单词/词组和输入码
+
+---
+name: melt_eng
+version: "2023-0-09"
+import_tables:
+  - en_dicts/en_ext
+  - en_dicts/en
+...
+Gillespie	gillespie
+SSA	ssa
+Stochastic Simulation Algorithm	ssa
+podman	podman
+ecDNA	ecdna
