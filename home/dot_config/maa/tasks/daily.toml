@@ -8,7 +8,7 @@ params = { client_type = "Official", start_game_enabled = true }
 type = "Infrast"
 
 [tasks.params]
-mode = 10000
+mode = 20000
 facility = [
   "Trade",
   "Reception",
@@ -19,24 +19,8 @@ facility = [
   "Training",
   "Dorm",
 ]
-filename = "normal-ng.json"
 replenish = true
 continue_training = true
-
-[[tasks.variants]]
-condition = { type = "Time", start = "08:00:00", end = "11:59:59" }
-params = { plan_index = { default = 1, description = "index of plan" } }
-
-[[tasks.variants]]
-condition = { type = "Time", start = "12:00:00", end = "15:59:59" }
-params = { plan_index = { default = 2, description = "index of plan" } }
-
-[[tasks.variants]]
-condition = { type = "Time", start = "16:00:00", end = "23:59:59" }
-params = { plan_index = { default = 3, description = "index of plan" } }
-
-[[tasks.variants]]
-params = { plan_index = { default = 0, description = "index of plan" } }
 
 #------------------------------ Fight -----------------------------#
 [[tasks]]
