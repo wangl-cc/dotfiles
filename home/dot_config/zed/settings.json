@@ -52,6 +52,9 @@
   "search": {
     "button": false
   },
+  "collaboration_panel": {
+    "button": false
+  },
   "pane_split_direction_horizontal": "down",
   "pane_split_direction_vertical": "right",
   "theme": {
