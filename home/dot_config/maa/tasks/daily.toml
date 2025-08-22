@@ -19,6 +19,7 @@ facility = [
   "Training",
   "Dorm",
 ]
+drones = "Money"
 replenish = true
 continue_training = true
 
