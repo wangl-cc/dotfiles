@@ -19,7 +19,7 @@ refreshPeriod = "168h"
 clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
 
-["Library/Rime/rime-ice"]
+[".config/Rime/rime-ice"]
 type = "git-repo"
 url = "https://github.com/iDvel/rime-ice.git"
 refreshPeriod = "168h"
