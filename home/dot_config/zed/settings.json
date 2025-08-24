@@ -135,10 +135,6 @@
         "texlab": {
           "build": {
             "onSave": true
-          },
-          "forwardSearch": {
-            "executable": "/Applications/Skim.app/Contents/SharedSupport/displayline",
-            "args": ["-g", "-r", "%l", "%p", "%f"]
           }
         }
       }
