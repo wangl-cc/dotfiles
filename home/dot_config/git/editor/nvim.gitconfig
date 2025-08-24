@@ -1,5 +1,5 @@
-; nv is a wrapper around nvim that use nvr inside neovim
-; to avoid run a new nested instance of neovim inside neovim
+; nv is a wrapper around nvim that use nvr inside neovim and fallback to vim
+; if nvim is not available
 [diff]
 	tool = nv
 [difftool "nv"]
