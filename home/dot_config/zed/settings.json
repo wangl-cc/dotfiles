@@ -7,6 +7,12 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "ssh_connections": [
+    {
+      "host": "loongcc-desktop-lan",
+      "projects": []
+    }
+  ],
   "features": {
     "edit_prediction_provider": "zed"
   },
