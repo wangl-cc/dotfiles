@@ -102,7 +102,7 @@
     "working_directory": "current_project_directory",
     // Use zed itself as editor for CLI tools that require an editor.
     "env": {
-      "VISUAL": "zed-cli --wait"
+      "VISUAL": "zed --wait"
     },
     // To use ALT+<key> shortcuts in terminal on macOS
     "option_as_meta": true,
