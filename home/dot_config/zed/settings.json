@@ -144,13 +144,8 @@
       }
     },
     "tinymist": {
-      "initialization_options": {
+      "settings": {
         "compileStatus": "enable",
-        // "preview": {
-        //   "background": {
-        //     "enabled": true
-        //   }
-        // },
         "formatterMode": "typstyle"
       }
     }
