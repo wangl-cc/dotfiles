@@ -210,6 +210,9 @@
       "wrap_guides": [],
       "soft_wrap": "editor_width"
     },
+    "Ruby": {
+      "language_servers": []
+    },
     "LOG": {
       "preferred_line_length": 9999,
       "wrap_guides": []
