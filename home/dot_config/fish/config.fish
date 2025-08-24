@@ -54,6 +54,7 @@ abbr --add -- gpl git pull --ff-only
 abbr --add -- gr git remote
 abbr --add -- grv git remote -v
 abbr --add -- gra git remote add
+abbr --add -- grpo git remote prune origin
 abbr --add -- gs git status
 abbr --add -- gsu git status -u
 abbr --add -- gt git tag
