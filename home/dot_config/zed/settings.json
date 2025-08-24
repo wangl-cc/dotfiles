@@ -14,6 +14,7 @@
     "mode": "subtle"
   },
   "agent": {
+    "use_modifier_to_send": true,
     "default_model": {
       "provider": "deepseek",
       "model": "deepseek-reasoner"
