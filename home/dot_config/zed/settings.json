@@ -24,12 +24,12 @@
       "model": "deepseek-chat"
     },
     "commit_message_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "openai",
+      "model": "gpt-5-mini"
     },
     "thread_summary_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "openai",
+      "model": "gpt-5-nano"
     },
     "always_allow_tool_actions": true,
     "default_profile": "write"
