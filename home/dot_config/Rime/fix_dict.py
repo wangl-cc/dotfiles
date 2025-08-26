@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import argparse
 import re
 from collections.abc import Generator
+from sys import argv
 from typing import Iterable, Optional
 
 PATTERN = re.compile(r"^([^\t#:]+) +(\w+)?$")
@@ -44,21 +44,8 @@ def process_file(input_path: str, output_path: Optional[str] = None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Convert space to tab in lines matching specific pattern."
-    )
-    parser.add_argument("--input", "-i", required=True, help="Input file path")
-    parser.add_argument("--output", "-o", help="Output file path")
-    parser.add_argument(
-        "-I", "--inplace", action="store_true", help="Modify the file in-place"
-    )
+    # all files specified in the command line arguments
+    files = argv[1:]
 
-    args = parser.parse_args()
-
-    output_path = None
-    if args.output:
-        output_path = args.output
-    if args.inplace:
-        output_path = args.input
-
-    process_file(args.input, output_path)
+    for file in files:
+        process_file(file, file)
