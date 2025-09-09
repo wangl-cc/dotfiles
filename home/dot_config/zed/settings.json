@@ -145,11 +145,7 @@
     "shell": {
       "program": "fish"
     },
-    "detect_venv": {
-      "on": {
-        "activate_script": "fish"
-      }
-    },
+    "detect_venv": "off",
     "toolbar": {
       "breadcrumbs": false
     }
