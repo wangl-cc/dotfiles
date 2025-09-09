@@ -1,4 +1,4 @@
-.PHONY: all fix_dict
+.PHONY: all fix-dict
 
 all: catppuccin.yaml
 
