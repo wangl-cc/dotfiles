@@ -73,16 +73,6 @@ end
 
 @lazy_startup @safe_using(Cthulhu) @descend() @descend_code_typed() @descend_code_warntyp()
 
-ENV["__JULIA_LSP_DISABLE"] = "true"
-
 dump1(arg) = dump(arg; maxdepth=1)
 dumpi(arg, i::Integer) = dump(arg; maxdepth=i)
 dumpi(i::Integer) = Base.Fix2(dumpi, i)
-
-using InteractiveUtils
-
-InteractiveUtils.define_editor("nvr"; wait=false) do cmd, path, line, column
-    cmd = line == 0 ? `$cmd $path` :
-          column == 0 ? `$cmd +$line $path` :
-          `$cmd "+normal $(line)G$(column)|" $path`
-end
