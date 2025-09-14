@@ -41,9 +41,6 @@
     "default_profile": "write"
   },
   "language_models": {
-    "openai": {
-      "api_url": "https://aihubmix.com/v1"
-    },
     "ollama": {
       "api_url": "http://100.67.177.127:11434",
       "available_models": [
