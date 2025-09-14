@@ -57,8 +57,14 @@ brew bundle --file=/dev/stdin <<EOF
 {{ range ($brews | sortAlpha | uniq) -}}
 brew "{{ . }}"
 {{ end -}}
+EOF
+
+{{ if eq .chezmoi.os "darwin" }}
+brew bundle --file=/dev/stdin <<EOF
 {{ range ($casks | sortAlpha | uniq) -}}
 cask "{{ . }}"
 {{ end -}}
 EOF
+{{ end }}
+
 {{ end }}
