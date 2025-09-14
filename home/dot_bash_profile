@@ -1,0 +1,6 @@
+# .bash_profile
+
+# Load bashrc
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi

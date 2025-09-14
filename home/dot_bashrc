@@ -1,0 +1,29 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+[ "$DOT_BASH_RC_LOADED" = "1" ] && return
+
+export DOT_BASH_RC_LOADED=1
+
+# Add homebrew path
+if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
+    PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+fi
+
+# Add user local bin path
+if [ -d "$HOME/.local/bin" ]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+export PATH
+
+# If interactive, use fish if available
+if [[ "$-" = *i* ]] || [ -t 0 ]; then
+    if command -v fish >/dev/null 2>&1; then
+        exec fish
+    fi
+fi
