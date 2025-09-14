@@ -1,0 +1,13 @@
+mode = "symlink"
+
+[data]
+{{ if eq .chezmoi.os "linux" }}
+timezone = "{{- output "timedatectl show -p Timezone --value" | trim -}}"
+{{ else if eq .chezmoi.os "darwin" }}
+timezone = "{{- readlink "/etc/timezone" | trim -}}"
+{{ end }}
+
+[data.git]
+name = "Loong"
+email = "git@loongw.cc"
+signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGaaxi/ianjCt37sKsaWDkRW+XMV0qlM3HHTyqvDnQ/W"
