@@ -26,8 +26,8 @@
       "model": "claude-sonnet-4"
     },
     "inline_assistant_model": {
-      "provider": "openai",
-      "model": "gpt-5"
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
     },
     "commit_message_model": {
       "provider": "openai",
