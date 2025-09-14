@@ -26,8 +26,8 @@
       "model": "claude-sonnet-4"
     },
     "inline_assistant_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "openai",
+      "model": "gpt-5"
     },
     "commit_message_model": {
       "provider": "openai",
