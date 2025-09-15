@@ -1,14 +1,22 @@
-# Force some programs to use XDG_CONFIG_HOME
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+[ "$DOT_BASH_RC_LOADED" = "1" ] && return
+
+export DOT_BASH_RC_LOADED=1
+
+# Force programs use XDG_CONFIG_HOME
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
 export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
 
-# Make zsh itself use XDG_CONFIG_HOME
-export ZDOTDIR=$XDG_CONFIG_HOME/zsh
-
 {{- $brew := joinPath .mirrors.homebrew.prefix "bin/brew" }}
 {{- if isExecutable $brew }}
-  {{ output $brew "shellenv" "zsh" }}
+  {{- output $brew "shellenv" "bash" }}
   {{- if .mirrors.enabled }}
 export HOMEBREW_BREW_GIT_REMOTE="{{ .mirrors.homebrew.git_remote }}"
 export HOMEBREW_API_DOMAIN="{{ .mirrors.homebrew.api_domain }}"
@@ -18,10 +26,15 @@ export HOMEBREW_BOTTLE_DOMAIN="{{ .mirrors.homebrew.bottle_domain }}"
 
 {{- $local_bin := joinPath .chezmoi.homeDir ".local/bin" }}
 {{- if stat $local_bin }}
-path+=("{{ $local_bin }}")
+PATH="{{ $local_bin }}:$PATH"
 {{- end }}
 {{- $cargo_bin := joinPath .chezmoi.homeDir ".cargo/bin" }}
 {{- if stat $cargo_bin }}
-path+=("{{ $cargo_bin }}")
+PATH="{{ $cargo_bin }}:$PATH"
 {{- end }}
 export PATH
+
+# If interactive, not called in fish, then exec fish
+if ([[ "$-" = *i* ]] || [ -t 0 ]) && [[ "$SHELL" = *fish ]] && command -v fish >/dev/null 2>&1; then
+    exec fish
+fi

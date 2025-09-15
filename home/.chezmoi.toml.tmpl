@@ -1,8 +1,28 @@
 mode = "symlink"
 
-[data]
-# Check if in China by comparing hash of tzdata
-in_china = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}
+[data.mirrors]
+{{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
+enabled = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}
+
+[data.mirrors.crates_io]
+name = "ustc"
+url = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[data.mirrors.homebrew]
+{{- /* Determine homebrew prefix based on OS and arch */}}
+prefix = {{ if eq .chezmoi.os "darwin" -}}
+  {{- if eq .chezmoi.arch "arm64" -}}
+    "/opt/homebrew"
+  {{- else -}}
+    "/usr/local"
+  {{- end -}}
+{{- else -}}
+  "/home/linuxbrew/.linuxbrew"
+{{- end }}
+git_remote = "https://mirrors.ustc.edu.cn/brew.git"
+api_domain = "https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+bottle_domain = "https://mirrors.ustc.edu.cn/homebrew-bottles"
+install_script_url = "https://mirrors.ustc.edu.cn/misc/brew-install.sh"
 
 [data.git]
 name = "Loong"

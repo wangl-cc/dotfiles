@@ -1,0 +1,18 @@
+{{ $brew := joinPath .mirrors.homebrew.prefix "bin/brew" }}
+{{ if isExecutable $brew -}}
+  {{ output $brew "shellenv" "fish" }}
+  {{- if .mirrors.enabled }}
+set -gx HOMEBREW_BREW_GIT_REMOTE "{{ .mirrors.homebrew.git_remote }}"
+set -gx HOMEBREW_API_DOMAIN "{{ .mirrors.homebrew.api_domain }}"
+set -gx HOMEBREW_BOTTLE_DOMAIN "{{ .mirrors.homebrew.bottle_domain }}"
+  {{- end }}
+{{- end }}
+
+{{- $local_bin := joinPath .chezmoi.homeDir ".local/bin" }}
+{{- if stat $local_bin }}
+fish_add_path -g "{{ $local_bin }}"
+{{- end }}
+{{- $cargo_bin := joinPath .chezmoi.homeDir ".cargo/bin" }}
+{{- if stat $cargo_bin }}
+fish_add_path -g "{{ $cargo_bin }}"
+{{- end }}

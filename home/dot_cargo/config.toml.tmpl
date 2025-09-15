@@ -1,12 +1,12 @@
-{{- if .in_china }}
+{{- if .mirrors.enabled }}
 [source.crates-io]
-replace-with = 'ustc'
+replace-with = "{{ .mirrors.crates_io.name }}"
 
-[source.ustc]
-registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+[source.{{ .mirrors.crates_io.name }}]
+registry = "{{ .mirrors.crates_io.url }}"
 
-[registries.ustc]
-index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+[registries.{{ .mirrors.crates_io.name }}]
+index = "{{ .mirrors.crates_io.url }}"
 
 {{ end -}}
 [profile.release]
