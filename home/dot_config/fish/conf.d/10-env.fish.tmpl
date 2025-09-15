@@ -1,6 +1,20 @@
-{{ $brew := joinPath .mirrors.homebrew.prefix "bin/brew" }}
+{{ $brew_prefix := .mirrors.homebrew.prefix }}
+{{ $brew := joinPath $brew_prefix "bin/brew" }}
 {{ if isExecutable $brew -}}
   {{ output $brew "shellenv" "fish" }}
+  {{- /* Setup fish function and completion paths on linux, as we prefer using system fish */ -}}
+  {{- if ne .chezmoi.os "darwin" }}
+set --path -p fish_function_path $HOME/.config/fish/functions \
+  {{ $brew_prefix }}/etc/fish/functions \
+  $HOME/.local/share/fish/vendor_completions.d \
+  {{ $brew_prefix }}/share/fish/vendor_functions.d \
+  {{ $brew_prefix }}/share/fish/functions
+set --path -p fish_complete_path $HOME/.config/fish/completions \
+  {{ $brew_prefix }}/etc/fish/completions \
+  $HOME/.local/share/fish/vendor_completions.d \
+  {{ $brew_prefix }}/share/fish/vendor_completions.d \
+  {{ $brew_prefix }}/share/fish/vendor_completions.d
+  {{- end }}
   {{- if .mirrors.enabled }}
 set -gx HOMEBREW_BREW_GIT_REMOTE "{{ .mirrors.homebrew.git_remote }}"
 set -gx HOMEBREW_API_DOMAIN "{{ .mirrors.homebrew.api_domain }}"
