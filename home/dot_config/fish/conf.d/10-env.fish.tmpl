@@ -5,14 +5,10 @@
   {{- /* Setup fish function and completion paths on linux, as we prefer using system fish */ -}}
   {{- if ne .chezmoi.os "darwin" }}
 set --path -p fish_function_path $HOME/.config/fish/functions \
-  {{ $brew_prefix }}/etc/fish/functions \
   $HOME/.local/share/fish/vendor_completions.d \
-  {{ $brew_prefix }}/share/fish/vendor_functions.d \
-  {{ $brew_prefix }}/share/fish/functions
+  {{ $brew_prefix }}/share/fish/vendor_functions.d
 set --path -p fish_complete_path $HOME/.config/fish/completions \
-  {{ $brew_prefix }}/etc/fish/completions \
   $HOME/.local/share/fish/vendor_completions.d \
-  {{ $brew_prefix }}/share/fish/vendor_completions.d \
   {{ $brew_prefix }}/share/fish/vendor_completions.d
   {{- end }}
   {{- if .mirrors.enabled }}
