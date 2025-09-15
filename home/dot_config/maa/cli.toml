@@ -5,10 +5,8 @@ channel = "Alpha"
 
 [core]
 channel = "Beta"
-{{ if .in_china }}
 api_url = "https://github.com/MaaAssistantArknights/MaaRelease/raw/main/MaaAssistantArknights/api/version/"
 test_time = 0
-{{- end }}
 
 [resource]
 backend = "git"
