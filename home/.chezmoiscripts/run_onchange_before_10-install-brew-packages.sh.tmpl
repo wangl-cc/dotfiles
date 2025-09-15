@@ -12,8 +12,7 @@ set -eufo pipefail
 {{ end }}
 {{ $brew := joinPath $homebrew_prefix "bin/brew" }}
 
-{{ $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
-{{ if eq $timezone "Asia/Shanghai" }}
+{{ if .in_china }}
 # Use mirror to speed up installation if in China
 HOMEBREW_MIRROR_DOMAIN="https://mirrors.ustc.edu.cn"
 HOMEBREW_INSTALL_SCRIPT="$HOMEBREW_MIRROR_DOMAIN/misc/brew-install.sh"

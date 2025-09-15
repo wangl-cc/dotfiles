@@ -5,8 +5,7 @@ channel = "Alpha"
 
 [core]
 channel = "Beta"
-{{- $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" -}}
-{{ if not (eq $timezone "Asia/Shanghai") }}
+{{ if .in_china }}
 api_url = "https://github.com/MaaAssistantArknights/MaaRelease/raw/main/MaaAssistantArknights/api/version/"
 test_time = 0
 {{- end }}

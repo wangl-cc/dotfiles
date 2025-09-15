@@ -1,5 +1,9 @@
 mode = "symlink"
 
+[data]
+# Check if in China by comparing hash of tzdata
+in_china = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}
+
 [data.git]
 name = "Loong"
 email = "git@loongw.cc"

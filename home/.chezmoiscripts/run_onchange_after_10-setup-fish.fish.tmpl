@@ -82,7 +82,7 @@ if test -d $homebrew_prefix; and test -x $brew
     prepend_path $HOMEBREW_PREFIX/bin
 
     # Setup homebrew mirror persistently
-    if string match -qr ".*/Asia/Shanghai" '{{ output "readlink" "/etc/localtime" | trim}}'
+    if {{ .in_china }}
         set HOMEBREW_MIRROR_DOMAIN "https://mirrors.ustc.edu.cn"
         set_Ux HOMEBREW_BREW_GIT_REMOTE "$HOMEBREW_MIRROR_DOMAIN/brew.git"
         set_Ux HOMEBREW_API_DOMAIN "$HOMEBREW_MIRROR_DOMAIN/homebrew-bottles/api"

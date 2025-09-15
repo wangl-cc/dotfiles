@@ -1,5 +1,4 @@
-{{- $timezone := output "readlink" "/etc/localtime" | trim | replaceAllRegex "^.*zoneinfo/(.*)$" "${1}" }}
-{{- if eq $timezone "Asia/Shanghai" }}
+{{- if .in_china }}
 [source.crates-io]
 replace-with = 'ustc'
 
