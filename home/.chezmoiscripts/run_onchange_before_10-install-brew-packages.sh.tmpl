@@ -18,8 +18,7 @@ echo "Homebrew is not installed. Installing at {{ .mirrors.homebrew.prefix }}"
 {{ if isExecutable $brew }}
 brew="{{ $brew }}"
 
-{{ $brews := list
-  "fish"
+{{ $common_formulae := list
   "starship"
   "eza"
   "zoxide"
@@ -35,23 +34,19 @@ brew="{{ $brew }}"
   "fastfetch"
   "gh"
 }}
-{{ $casks := list
-  "font-fira-code"
-  "font-fira-code-nerd-font"
-}}
+
+{{ $linux_formulae := list }}
+{{ $darwin_formulae := list "fish" }}
 
 brew bundle --file=/dev/stdin <<EOF
-{{ range ($brews | sortAlpha | uniq) -}}
+{{- range ($common_formulae | sortAlpha | uniq) }}
 brew "{{ . }}"
-{{ end -}}
+{{- end }}
+{{- if eq .chezmoi.os "darwin" }}
+{{- range ($darwin_formulae | sortAlpha | uniq) }}
+brew "{{ . }}"
+{{- end }}
+{{- end }}
 EOF
-
-{{ if eq .chezmoi.os "darwin" }}
-brew bundle --file=/dev/stdin <<EOF
-{{ range ($casks | sortAlpha | uniq) -}}
-cask "{{ . }}"
-{{ end -}}
-EOF
-{{ end }}
 
 {{ end }}
