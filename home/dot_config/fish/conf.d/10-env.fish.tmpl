@@ -4,12 +4,7 @@
   {{ output $brew "shellenv" "fish" }}
   {{- /* Setup fish function and completion paths on linux, as we prefer using system fish */ -}}
   {{- if ne .chezmoi.os "darwin" }}
-set --path -p fish_function_path $HOME/.config/fish/functions \
-  $HOME/.local/share/fish/vendor_completions.d \
-  {{ $brew_prefix }}/share/fish/vendor_functions.d
-set --path -p fish_complete_path $HOME/.config/fish/completions \
-  $HOME/.local/share/fish/vendor_completions.d \
-  {{ $brew_prefix }}/share/fish/vendor_completions.d
+  brew_paths
   {{- end }}
   {{- if .mirrors.enabled }}
 set -gx HOMEBREW_BREW_GIT_REMOTE "{{ .mirrors.homebrew.git_remote }}"
