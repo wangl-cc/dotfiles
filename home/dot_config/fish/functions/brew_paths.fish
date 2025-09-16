@@ -31,7 +31,7 @@ function brew_paths
         /usr/share/fish/vendor_functions.d \
         /usr/share/fish/functions
 
-    set --path fish_completions_path \
+    set --path fish_complete_path \
         $HOME/.config/fish/completions \
         /etc/fish/completions \
         $HOME/.local/share/fish/vendor_completions.d \

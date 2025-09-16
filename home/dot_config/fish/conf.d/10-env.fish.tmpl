@@ -4,7 +4,7 @@
   {{ output $brew "shellenv" "fish" }}
   {{- /* Setup fish function and completion paths on linux, as we prefer using system fish */ -}}
   {{- if ne .chezmoi.os "darwin" }}
-  brew_paths
+brew_paths
   {{- end }}
   {{- if .mirrors.enabled }}
 set -gx HOMEBREW_BREW_GIT_REMOTE "{{ .mirrors.homebrew.git_remote }}"
