@@ -1,0 +1,23 @@
+[Unit]
+Description=Ollama ROCm Service
+
+[Container]
+Image=docker.io/ollama/ollama:rocm
+
+AddDevice=/dev/kfd
+AddDevice=/dev/dri
+SeccompProfile=unconfined
+PodmanArgs=--ipc host
+
+# Volume mapping for Ollama data
+Volume=%h/.ollama:/root/.ollama:Z
+
+# Publish Ollama service port
+PublishPort=11434:11434
+
+# Environment variables for Ollama
+Environment=OLLAMA_FLASH_ATTENTION=1
+Environment=OLLAMA_KV_CACHE_TYPE=q8_0
+
+[Install]
+WantedBy=default.target
