@@ -9,7 +9,7 @@
 {
   "ssh_connections": [
     {
-      "host": "loongcc-desktop-lan",
+      "host": "loongcc-workstation-tailscale",
       "projects": []
     }
   ],
@@ -42,7 +42,7 @@
   },
   "language_models": {
     "ollama": {
-      "api_url": "http://100.67.177.127:11434",
+      "api_url": "http://loongcc-workstation.tail6e3cda.ts.net:11434",
       "available_models": [
         {
           "name": "qwen3:14b",
