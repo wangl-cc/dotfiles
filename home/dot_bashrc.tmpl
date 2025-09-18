@@ -33,8 +33,3 @@ PATH="{{ $local_bin }}:$PATH"
 PATH="{{ $cargo_bin }}:$PATH"
 {{- end }}
 export PATH
-
-# If interactive, not called in fish, then exec fish
-if ([[ "$-" = *i* ]] || [ -t 0 ]) && [[ "$SHELL" = *fish ]] && command -v fish >/dev/null 2>&1; then
-    exec fish
-fi
