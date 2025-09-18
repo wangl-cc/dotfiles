@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+data=$(cat)
+b64=$(printf %s "$data" | base64 | tr -d '\n')
+printf '\033]52;c;%s\a' "$b64"
