@@ -1,9 +1,13 @@
 config-file = font.conf
 
-theme = dark:catppuccin-macchiato,light:catppuccin-latte
+theme = dark:Catppuccin Macchiato,light:Catppuccin Latte
+
+clipboard-read = ask
+clipboard-write = allow
 
 quick-terminal-autohide = true
 quick-terminal-position = top
 quick-terminal-screen = mouse
+quick-terminal-size = 50%,1000px
 
 keybind = global:shift+cmd+space=toggle_quick_terminal
