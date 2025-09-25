@@ -5,10 +5,14 @@ Description=My General Purpose Development Container
 Image=dev-box.build
 ContainerName=my-dev-box
 
+# Works with host more smoothly
 Network=host
 SecurityLabelDisable=true
 UserNS=keep-id
 Volume=%h:%h
+
+# Persist the container's ssh host keys
+Volume=dev-box-ssh-keys:/etc/ssh
 
 [Install]
 WantedBy=default.target

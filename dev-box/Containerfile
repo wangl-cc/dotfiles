@@ -25,7 +25,12 @@ RUN groupadd -g $USER_GID $USERNAME && \
   useradd -u $USER_UID -g $USER_GID -s /bin/fish $USERNAME && \
   echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd
 
-# Setup sshd
-RUN ssh-keygen -A
+# Check if /etc/ssh directory exists and generate new keys if not
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["sudo", "/usr/bin/sshd", "-D", "-e", "-p", "2222"]
+USER root
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["/usr/bin/sshd", "-D", "-e", "-p", "2222"]
