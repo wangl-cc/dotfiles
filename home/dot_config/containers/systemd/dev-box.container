@@ -10,6 +10,7 @@ Network=host
 SecurityLabelDisable=true
 UserNS=keep-id
 Volume=%h:%h
+Tmpfs=/tmp
 
 # Persist the container's ssh host keys
 Volume=dev-box-ssh-keys:/etc/ssh
