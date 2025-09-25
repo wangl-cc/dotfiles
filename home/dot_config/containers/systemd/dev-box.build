@@ -1,0 +1,7 @@
+[Build]
+ImageTag=localhost/arch-dev-box
+
+SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
+PodmanArgs=--build-arg=USERNAME=%u
+PodmanArgs=--build-arg=USER_UID=%U
+PodmanArgs=--build-arg=USER_GID=%G

@@ -1,0 +1,31 @@
+FROM docker.io/library/archlinux:base-devel
+
+ARG USERNAME=dev
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+COPY mirrorlist /etc/pacman.d/mirrorlist
+
+COPY extra-packages /
+# Install extra packages
+RUN pacman -Syyu --needed --noconfirm - < extra-packages
+RUN rm /extra-packages
+
+# Use my own pacman.conf
+COPY pacman.conf /etc/pacman.conf
+
+# Force reinstall of packages which have man pages (shouldn't redownload any that were just upgraded)
+RUN mkdir -p /usr/share/man && pacman -Qo /usr/share/man | awk '{print $5}' | xargs pacman -S --noconfirm man-db
+
+# Clean up cache
+RUN yes | pacman -Scc
+
+# Enable sudo permission for wheel users
+RUN groupadd -g $USER_GID $USERNAME && \
+  useradd -u $USER_UID -g $USER_GID -s /bin/fish $USERNAME && \
+  echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd
+
+# Setup sshd
+RUN ssh-keygen -A
+
+CMD ["sudo", "/usr/bin/sshd", "-D", "-e", "-p", "2222"]

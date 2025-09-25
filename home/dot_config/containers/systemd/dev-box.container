@@ -1,0 +1,14 @@
+[Unit]
+Description=My General Purpose Development Container
+
+[Container]
+Image=dev-box.build
+ContainerName=my-dev-box
+
+Network=host
+SecurityLabelDisable=true
+UserNS=keep-id
+Volume=%h:%h
+
+[Install]
+WantedBy=default.target
