@@ -40,6 +40,12 @@
     }
   },
   {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "q": null // I don't use vim's macro
+    }
+  },
+  {
     "context": "Editor && VimControl && !VimWaiting && !menu",
     "bindings": {
       "j": ["vim::Down", { "display_lines": true }],
