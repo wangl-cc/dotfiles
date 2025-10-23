@@ -173,13 +173,9 @@
   "languages": {
     "Python": {
       "tab_size": 4,
-      "language_servers": ["!pylsp", "..."],
+      "language_servers": ["..."],
       "formatter": [
-        {
-          "code_actions": {
-            "source.organizeImports.ruff": true
-          }
-        },
+        { "code_action": "source.organizeImports.ruff" },
         {
           "language_server": {
             "name": "ruff"
