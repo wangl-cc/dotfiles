@@ -165,7 +165,6 @@
     },
     "tinymist": {
       "settings": {
-        "compileStatus": "enable",
         "formatterMode": "typstyle"
       }
     }
