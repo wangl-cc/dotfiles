@@ -21,15 +21,15 @@
     },
     "inline_assistant_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat"
+      "model": "deepseek-reasoner"
     },
     "commit_message_model": {
-      "provider": "openai",
-      "model": "gpt-5-mini"
+      "provider": "openrouter",
+      "model": "openai/gpt-5-mini"
     },
     "thread_summary_model": {
-      "provider": "openai",
-      "model": "gpt-5-nano"
+      "provider": "openrouter",
+      "model": "openai/gpt-5-nano"
     },
     "always_allow_tool_actions": true,
     "default_profile": "write"
