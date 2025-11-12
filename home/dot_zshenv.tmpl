@@ -6,13 +6,13 @@ export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
 # Make zsh itself use XDG_CONFIG_HOME
 export ZDOTDIR=$XDG_CONFIG_HOME/zsh
 
-{{- $brew := joinPath .mirrors.homebrew.prefix "bin/brew" }}
+{{- $brew := joinPath .homebrew.prefix "bin/brew" }}
 {{- if isExecutable $brew }}
   {{ output $brew "shellenv" "zsh" }}
   {{- if .mirrors.enabled }}
-export HOMEBREW_BREW_GIT_REMOTE="{{ .mirrors.homebrew.git_remote }}"
-export HOMEBREW_API_DOMAIN="{{ .mirrors.homebrew.api_domain }}"
-export HOMEBREW_BOTTLE_DOMAIN="{{ .mirrors.homebrew.bottle_domain }}"
+export HOMEBREW_BREW_GIT_REMOTE="{{ .homebrew.git_remote }}"
+export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
+export HOMEBREW_BOTTLE_DOMAIN="{{ .homebrew.bottle_domain }}"
   {{- end }}
 {{- end }}
 

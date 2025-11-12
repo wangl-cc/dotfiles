@@ -2,17 +2,17 @@
 
 set -eufo pipefail
 
-{{ $brew := joinPath .mirrors.homebrew.prefix "bin/brew" }}
+{{ $brew := joinPath .homebrew.prefix "bin/brew" }}
 
 {{ if .mirrors.enabled }}
-export HOMEBREW_BREW_GIT_REMOTE="{{ .mirrors.homebrew.git_remote }}"
-export HOMEBREW_API_DOMAIN="{{ .mirrors.homebrew.api_domain }}"
-export HOMEBREW_BOTTLE_DOMAIN="{{ .mirrors.homebrew.bottle_domain }}"
+export HOMEBREW_BREW_GIT_REMOTE="{{ .homebrew.git_remote }}"
+export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
+export HOMEBREW_BOTTLE_DOMAIN="{{ .homebrew.bottle_domain }}"
 {{ end }}
 
 {{ if and (eq .chezmoi.os "darwin") (not (isExecutable $brew)) }}
-echo "Homebrew is not installed. Installing at {{ .mirrors.homebrew.prefix }}"
-/bin/bash -c "$(curl -fsSL {{ .mirrors.homebrew.install_script_url }})"
+echo "Homebrew is not installed. Installing at {{ .homebrew.prefix }}"
+/bin/bash -c "$(curl -fsSL {{ .homebrew.install_script_url }})"
 {{ end }}
 
 {{ if isExecutable $brew }}

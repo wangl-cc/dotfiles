@@ -4,11 +4,11 @@ mode = "symlink"
 {{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
 enabled = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}
 
-[data.mirrors.crates_io]
+[data.crates_io]
 name = "ustc"
 url = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 
-[data.mirrors.homebrew]
+[data.homebrew]
 {{- /* Determine homebrew prefix based on OS and arch */}}
 prefix = {{ if eq .chezmoi.os "darwin" -}}
   {{- if eq .chezmoi.arch "arm64" -}}

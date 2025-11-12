@@ -1,12 +1,12 @@
 {{- if .mirrors.enabled }}
 [source.crates-io]
-replace-with = "{{ .mirrors.crates_io.name }}"
+replace-with = "{{ .crates_io.name }}"
 
-[source.{{ .mirrors.crates_io.name }}]
-registry = "{{ .mirrors.crates_io.url }}"
+[source.{{ .crates_io.name }}]
+registry = "{{ .crates_io.url }}"
 
-[registries.{{ .mirrors.crates_io.name }}]
-index = "{{ .mirrors.crates_io.url }}"
+[registries.{{ .crates_io.name }}]
+index = "{{ .crates_io.url }}"
 
 {{ end -}}
 [profile.release]
