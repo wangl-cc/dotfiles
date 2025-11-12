@@ -16,3 +16,6 @@ podman	podman
 ecDNA	ecdna
 OpenSSL	openssl
 Markov	markov
+Tailscale	tailscale
+AirPlay	airplay
+histogram	histogram
