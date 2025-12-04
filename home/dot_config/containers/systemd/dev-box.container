@@ -14,6 +14,12 @@ UserNS=keep-id
 Volume=%h:%h
 Tmpfs=/tmp
 
+AddDevice=/dev/kfd
+AddDevice=/dev/dri
+Ulimit=memlock=-1:-1
+SeccompPofile=unconfined
+PodmanArgs=--ipc host
+
 # Persist the container's ssh host keys
 Volume=dev-box-ssh-keys:/etc/ssh
 
