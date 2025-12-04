@@ -5,6 +5,8 @@ Description=My General Purpose Development Container
 Image=dev-box.build
 ContainerName=my-dev-box
 
+RunInit=true
+
 # Works with host more smoothly
 Network=host
 SecurityLabelDisable=true
