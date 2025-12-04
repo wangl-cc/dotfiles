@@ -17,7 +17,7 @@ Tmpfs=/tmp
 AddDevice=/dev/kfd
 AddDevice=/dev/dri
 Ulimit=memlock=-1:-1
-SeccompPofile=unconfined
+SeccompProfile=unconfined
 PodmanArgs=--ipc host
 
 # Persist the container's ssh host keys
