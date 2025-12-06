@@ -7,6 +7,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "colorize_brackets": true,
   "restore_on_startup": "last_workspace",
   "features": {
     "edit_prediction_provider": "zed"
