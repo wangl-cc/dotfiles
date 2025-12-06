@@ -3,6 +3,8 @@ FROM registry.fedoraproject.org/fedora:latest
 ARG USERNAME=dev
 ARG USER_UID=1000
 ARG USER_GID=1000
+ARG COPR
+ARG EXTRA_PACKAGES
 
 # Copy configuration file for dnf
 COPY dnf.conf /etc/dnf/dnf.conf
@@ -20,22 +22,17 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 # Enable base packages
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf install -y --setopt=keepcache=1 \
-      fish openssh-server man-db \
-      gcc gcc-c++ make cmake pkgconfig
+    fish openssh-server man-db \
+    gcc gcc-c++ make cmake pkgconfig
 
 # Enable some COPR repositories
-COPY copr /tmp
-RUN for repo in $(cat /tmp/copr); do \
-      dnf copr enable -y $repo;  \
-    done && \
-    rm -rf /tmp/copr
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    IFS=","; for repo in $COPR; do dnf copr enable -y $repo; done
 
 # Install extra packages
-COPY extra-packages /tmp
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
-    dnf install -y --setopt=keepcache=1 \
-    $(cat /tmp/extra-packages) &&  \
-    rm /tmp/extra-packages
+    pkgs="$EXTRA_PACKAGES"; \
+    dnf install -y --setopt=keepcache=1 $${pkgs//,/ }
 
 # Cleanup (don't run dnf clean all, just remove logs)
 RUN rm -rf /var/log/dnf*

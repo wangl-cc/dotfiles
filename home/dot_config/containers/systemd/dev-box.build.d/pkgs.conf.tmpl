@@ -1,0 +1,7 @@
+[Build]
+BuildArg=COPR={{ range $pkg, $spec := .packages -}}
+{{ if hasKey $spec "copr" }}{{ $spec.copr }},{{ end }}
+{{- end }}
+BuildArg=EXTRA_PACKAGES={{ range $pkg, $spec := .packages -}}
+{{ if hasKey $spec "dnf" }}{{ $spec.dnf }},{{ else }}{{ $pkg }},{{ end }}
+{{- end }}

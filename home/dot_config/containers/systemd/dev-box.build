@@ -4,6 +4,6 @@ ImageTag=localhost/fedora-dev-box
 Pull=newer
 
 SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
-PodmanArgs=--build-arg=USERNAME=%u
-PodmanArgs=--build-arg=USER_UID=%U
-PodmanArgs=--build-arg=USER_GID=%G
+BuildArg=USERNAME=%u
+BuildArg=USER_UID=%U
+BuildArg=USER_GID=%G

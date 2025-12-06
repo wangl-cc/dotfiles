@@ -1,0 +1,19 @@
+[packages]
+atuin = {  }
+bat = {  }
+bat-extras = { dnf = "" }
+chezmoi = {  }
+dust = { dnf = "du-dust" }
+eza = { copr = "alternateved/eza" }
+fastfetch = {  }
+fd = { dnf = "fd-find" }
+fish = { dnf = "" }
+fzf = {  }
+gh = {  }
+git = { brew = "" }
+git-delta = { brew = "" }
+lazygit = { copr = "dejan/lazygit" }
+ripgrep = {  }
+uv = {  }
+yq = {  }
+zoxide = {  }
