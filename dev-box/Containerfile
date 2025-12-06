@@ -31,8 +31,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 
 # Install extra packages
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
-    pkgs="$EXTRA_PACKAGES"; \
-    dnf install -y --setopt=keepcache=1 $${pkgs//,/ }
+    dnf install -y --setopt=keepcache=1 $(echo "$EXTRA_PACKAGES" | tr ',' ' ')
 
 # Cleanup (don't run dnf clean all, just remove logs)
 RUN rm -rf /var/log/dnf*
