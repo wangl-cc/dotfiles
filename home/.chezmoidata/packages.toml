@@ -11,7 +11,7 @@ fish = { dnf = "" }
 fzf = {  }
 gh = {  }
 git = { brew = "" }
-git-delta = { brew = "" }
+git-delta = {  }
 lazygit = { copr = "dejan/lazygit" }
 ripgrep = {  }
 uv = {  }

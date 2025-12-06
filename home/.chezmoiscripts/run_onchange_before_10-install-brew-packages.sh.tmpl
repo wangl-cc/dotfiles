@@ -18,34 +18,15 @@ echo "Homebrew is not installed. Installing at {{ .homebrew.prefix }}"
 {{ if isExecutable $brew }}
 brew="{{ $brew }}"
 
-{{ $common_formulae := list
-  "starship"
-  "eza"
-  "zoxide"
-  "ripgrep"
-  "fd"
-  "atuin"
-  "bat"
-  "bat-extras"
-  "git-delta"
-  "dust"
-  "fzf"
-  "lazygit"
-  "fastfetch"
-  "gh"
-}}
-
-{{ $linux_formulae := list }}
-{{ $darwin_formulae := list "fish" }}
-
 brew bundle --file=/dev/stdin <<EOF
-{{- range ($common_formulae | sortAlpha | uniq) }}
-brew "{{ . }}"
-{{- end }}
-{{- if eq .chezmoi.os "darwin" }}
-{{- range ($darwin_formulae | sortAlpha | uniq) }}
-brew "{{ . }}"
-{{- end }}
+{{- range $pkg, $spec := .packages }}
+{{ if hasKey $spec "brew" -}}
+{{- if ne $spec.brew "" -}}
+brew {{ $spec.brew | quote }}
+{{- end -}}
+{{- else -}}
+brew {{ $pkg | quote }}
+{{- end -}}
 {{- end }}
 EOF
 
