@@ -1,5 +1,7 @@
 [Build]
-ImageTag=localhost/arch-dev-box
+ImageTag=localhost/fedora-dev-box
+
+Pull=newer
 
 SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
 PodmanArgs=--build-arg=USERNAME=%u

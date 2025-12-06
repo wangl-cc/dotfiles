@@ -1,29 +1,49 @@
-FROM docker.io/library/archlinux:base-devel
+FROM registry.fedoraproject.org/fedora:latest
 
 ARG USERNAME=dev
 ARG USER_UID=1000
 ARG USER_GID=1000
 
-COPY mirrorlist /etc/pacman.d/mirrorlist
+# Copy configuration file for dnf
+COPY dnf.conf /etc/dnf/dnf.conf
 
-COPY extra-packages /
+# Disable cisco-openh264.repo
+RUN sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/fedora-cisco-openh264.repo
+
+
+# Upgrade packages and reinstall all packages for docs
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    dnf upgrade -y && \
+    dnf reinstall -y --setopt=keepcache=1 \
+    $(rpm -qa --queryformat '%{NAME}\n' | grep -v gpg-pubkey)
+
+# Enable base packages
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    dnf install -y --setopt=keepcache=1 \
+      fish openssh-server man-db \
+      gcc gcc-c++ make cmake pkgconfig
+
+# Enable some COPR repositories
+COPY copr /tmp
+RUN for repo in $(cat /tmp/copr); do \
+      dnf copr enable -y $repo;  \
+    done && \
+    rm -rf /tmp/copr
+
 # Install extra packages
-RUN pacman -Syyu --needed --noconfirm - < extra-packages
-RUN rm /extra-packages
+COPY extra-packages /tmp
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    dnf install -y --setopt=keepcache=1 \
+    $(cat /tmp/extra-packages) &&  \
+    rm /tmp/extra-packages
 
-# Use my own pacman.conf
-COPY pacman.conf /etc/pacman.conf
+# Cleanup (don't run dnf clean all, just remove logs)
+RUN rm -rf /var/log/dnf*
 
-# Force reinstall of packages which have man pages (shouldn't redownload any that were just upgraded)
-RUN mkdir -p /usr/share/man && pacman -Qo /usr/share/man | awk '{print $5}' | xargs pacman -S --noconfirm man-db
-
-# Clean up cache
-RUN yes | pacman -Scc
-
-# Enable sudo permission for wheel users
+# Enable sudo permission for $USERNAME
 RUN groupadd -g $USER_GID $USERNAME && \
-  useradd -u $USER_UID -g $USER_GID -s /bin/fish $USERNAME && \
-  echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd
+    useradd -u $USER_UID -g $USER_GID -s /usr/bin/fish $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd
 
 # Check if /etc/ssh directory exists and generate new keys if not
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -33,4 +53,4 @@ USER root
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD ["/usr/bin/sshd", "-D", "-e", "-p", "2222"]
+CMD ["/usr/sbin/sshd", "-D", "-e", "-p", "2222"]

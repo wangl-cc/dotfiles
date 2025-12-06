@@ -12,6 +12,7 @@ Network=host
 SecurityLabelDisable=true
 UserNS=keep-id
 Volume=%h:%h
+Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
 
 AddDevice=/dev/kfd
