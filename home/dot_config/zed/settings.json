@@ -204,6 +204,9 @@
         }
       }
     },
+    "Dockerfile": {
+      "tab_size": 4
+    },
     "Markdown": {
       "preferred_line_length": 1000,
       "soft_wrap": "editor_width",
