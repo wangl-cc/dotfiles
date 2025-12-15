@@ -17,3 +17,4 @@ ripgrep = {  }
 uv = {  }
 yq = {  }
 zoxide = {  }
+which = { brew = "" }
