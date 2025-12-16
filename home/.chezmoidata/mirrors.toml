@@ -1,0 +1,9 @@
+[crates_io]
+name = "ustc"
+url = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[homebrew]
+git_remote = "https://mirrors.ustc.edu.cn/brew.git"
+api_domain = "https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+bottle_domain = "https://mirrors.ustc.edu.cn/homebrew-bottles"
+install_script_url = "https://mirrors.ustc.edu.cn/misc/brew-install.sh"
