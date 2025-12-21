@@ -1,6 +1,6 @@
 [crates_io]
-name = "ustc"
-url = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+name = "tuna"
+url = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
 
 [homebrew]
 git_remote = "https://mirrors.ustc.edu.cn/brew.git"
