@@ -19,7 +19,7 @@ refreshPeriod = "168h"
 clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
 
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if eq .chezmoi.hostname "Loongs-Macbook-Pro" -}}
 ["Library/Rime/rime-ice"]
 type = "git-repo"
 url = "https://github.com/iDvel/rime-ice.git"
