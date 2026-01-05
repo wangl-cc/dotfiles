@@ -47,6 +47,8 @@ abbr --add -- gr git remote
 abbr --add -- grv git remote -v
 abbr --add -- gra git remote add
 abbr --add -- grpo git remote prune origin
+abbr --add -- grb git rebase
+abbr --add -- grbm git rebase origin/main
 abbr --add -- gs git status
 abbr --add -- gsu git status -u
 abbr --add -- gt git tag
