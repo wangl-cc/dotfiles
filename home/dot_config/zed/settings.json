@@ -10,31 +10,31 @@
   "colorize_brackets": true,
   "restore_on_startup": "last_workspace",
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "zed",
   },
   "edit_predictions": {
-    "mode": "subtle"
+    "mode": "subtle",
   },
   "agent": {
     "use_modifier_to_send": true,
     "default_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat"
+      "model": "deepseek-chat",
     },
     "inline_assistant_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat"
+      "model": "deepseek-chat",
     },
     "commit_message_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat"
+      "model": "deepseek-chat",
     },
     "thread_summary_model": {
       "provider": "openrouter",
-      "model": "openai/gpt-5-nano"
+      "model": "openai/gpt-5-nano",
     },
     "always_allow_tool_actions": true,
-    "default_profile": "write"
+    "default_profile": "write",
   },
   "language_models": {
     "ollama": {
@@ -45,56 +45,56 @@
           "display_name": "Qwen 3 14B",
           "supports_thinking": true,
           "supports_tools": true,
-          "max_tokens": 20480 // 20K, Pure GPU
+          "max_tokens": 20480, // 20K, Pure GPU
         },
         {
           "name": "qwen3-coder:30b",
           "display_name": "Qwen 3 Coder Flash",
           // "supports_tools": true,
-          "max_tokens": 262144 // 256k, Pure CPU
+          "max_tokens": 262144, // 256k, Pure CPU
         },
         {
           "name": "qwen3:30b-a3b",
           "display_name": "Qwen 3 30B A3B",
           "supports_thinking": true,
           "supports_tools": true,
-          "max_tokens": 262144 // 256k, Pure CPU
-        }
-      ]
-    }
+          "max_tokens": 262144, // 256k, Pure CPU
+        },
+      ],
+    },
   },
   "auto_install_extensions": {
     "catppuccin": true,
     "catppuccin-icons": true,
     "git-firefly": true,
-    "wakatime": true
+    "wakatime": true,
   },
   "telemetry": {
     "diagnostics": true,
-    "metrics": false
+    "metrics": false,
   },
   "vim_mode": true,
   "vim": {
     "use_system_clipboard": "always",
-    "toggle_relative_line_numbers": true
+    "toggle_relative_line_numbers": true,
   },
   "search": {
-    "button": false
+    "button": false,
   },
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "pane_split_direction_horizontal": "down",
   "pane_split_direction_vertical": "right",
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
-    "dark": "Catppuccin Macchiato"
+    "dark": "Catppuccin Macchiato",
   },
   "icon_theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
-    "dark": "Catppuccin Macchiato"
+    "dark": "Catppuccin Macchiato",
   },
   "buffer_font_size": 13,
   "buffer_font_family": "FiraCode Nerd Font",
@@ -104,24 +104,24 @@
   "scrollbar": {
     "show": "system",
     "axes": {
-      "horizontal": false
-    }
+      "horizontal": false,
+    },
   },
   "tab_bar": {
-    "show_nav_history_buttons": false
+    "show_nav_history_buttons": false,
   },
   "tabs": {
     "close_position": "left",
-    "show_diagnostics": "errors"
+    "show_diagnostics": "errors",
   },
   "hide_mouse": "on_typing_and_movement",
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
   "indent_guides": {
-    "coloring": "indent_aware"
+    "coloring": "indent_aware",
   },
   "preferred_line_length": 80,
   "wrap_guides": [80],
@@ -131,45 +131,45 @@
     "working_directory": "current_project_directory",
     // Use zed itself as editor for CLI tools that require an editor.
     "env": {
-      "VISUAL": "zed --wait -r"
+      "VISUAL": "zed --wait -r",
     },
     // To use ALT+<key> shortcuts in terminal on macOS
     "option_as_meta": true,
     "shell": {
-      "program": "fish"
+      "program": "fish",
     },
     "detect_venv": "off",
     "toolbar": {
-      "breadcrumbs": false
-    }
+      "breadcrumbs": false,
+    },
   },
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
         "check": {
           "command": "clippy",
-          "args": ["--all-targets"]
+          "args": ["--all-targets"],
         },
         "rustfmt": {
-          "extraArgs": ["+nightly"]
-        }
-      }
+          "extraArgs": ["+nightly"],
+        },
+      },
     },
     "texlab": {
       "settings": {
         "texlab": {
           "build": {
             "forwardSearchAfter": false,
-            "onSave": true
-          }
-        }
-      }
+            "onSave": true,
+          },
+        },
+      },
     },
     "tinymist": {
       "settings": {
-        "formatterMode": "typstyle"
-      }
-    }
+        "formatterMode": "typstyle",
+      },
+    },
   },
   "languages": {
     "Python": {
@@ -179,61 +179,61 @@
         { "code_action": "source.organizeImports.ruff" },
         {
           "language_server": {
-            "name": "ruff"
-          }
-        }
-      ]
+            "name": "ruff",
+          },
+        },
+      ],
     },
     "Rust": {
       "inlay_hints": {
-        "enabled": true
+        "enabled": true,
       },
       "tab_size": 4,
       "preferred_line_length": 100,
-      "wrap_guides": [100]
+      "wrap_guides": [100],
     },
     "Julia": {
       "tab_size": 4,
       "preferred_line_length": 92,
-      "wrap_guides": [92]
+      "wrap_guides": [92],
     },
     "Fish": {
       "tab_size": 4,
       "formatter": {
         "external": {
-          "command": "fish_indent"
-        }
-      }
+          "command": "fish_indent",
+        },
+      },
     },
     "Dockerfile": {
-      "tab_size": 4
+      "tab_size": 4,
     },
     "Markdown": {
       "preferred_line_length": 1000,
       "soft_wrap": "editor_width",
-      "remove_trailing_whitespace_on_save": false
+      "remove_trailing_whitespace_on_save": false,
     },
     "Typst": {
       // Make sure tinymist is the primary language server
       "language_servers": ["tinymist", "..."],
       "preferred_line_length": 1000,
       "wrap_guides": [],
-      "soft_wrap": "editor_width"
+      "soft_wrap": "editor_width",
     },
     "LaTeX": {
       "preferred_line_length": 1000,
       "wrap_guides": [],
-      "soft_wrap": "editor_width"
+      "soft_wrap": "editor_width",
     },
     "Ruby": {
-      "language_servers": []
+      "language_servers": [],
     },
     "LOG": {
       "preferred_line_length": 9999,
-      "wrap_guides": []
+      "wrap_guides": [],
     },
     "Git Config": {
-      "hard_tabs": true
-    }
-  }
+      "hard_tabs": true,
+    },
+  },
 }
