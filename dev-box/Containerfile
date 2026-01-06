@@ -23,7 +23,8 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf install -y --setopt=keepcache=1 \
     fish openssh-server man-db \
-    gcc gcc-c++ make cmake pkgconfig
+    gcc gcc-c++ make cmake pkgconfig \
+    procps-ng psmisc perf
 
 # Enable some COPR repositories
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
