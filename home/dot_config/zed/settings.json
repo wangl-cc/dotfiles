@@ -120,6 +120,9 @@
       "enabled": false,
     },
   },
+  "git_panel": {
+    "tree_view": true,
+  },
   "indent_guides": {
     "coloring": "indent_aware",
   },
