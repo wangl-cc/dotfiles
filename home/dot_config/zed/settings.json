@@ -9,10 +9,8 @@
 {
   "colorize_brackets": true,
   "restore_on_startup": "last_workspace",
-  "features": {
-    "edit_prediction_provider": "zed",
-  },
   "edit_predictions": {
+    "provider": "zed",
     "mode": "subtle",
   },
   "agent": {
