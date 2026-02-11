@@ -9,15 +9,15 @@
   {
     "context": "Pane",
     "bindings": {
-      "cmd-shift-g": "git_panel::ToggleFocus"
-    }
+      "cmd-shift-g": "git_panel::ToggleFocus",
+    },
   },
   {
     "context": "Editor",
     "bindings": {
       // Ctrl+Space is used to switch input method on macOS
-      "ctrl-space": null
-    }
+      "ctrl-space": null,
+    },
   },
   {
     "context": "Dock || Terminal",
@@ -25,8 +25,8 @@
       "ctrl-w h": "workspace::ActivatePaneLeft",
       "ctrl-w l": "workspace::ActivatePaneRight",
       "ctrl-w k": "workspace::ActivatePaneUp",
-      "ctrl-w j": "workspace::ActivatePaneDown"
-    }
+      "ctrl-w j": "workspace::ActivatePaneDown",
+    },
   },
   {
     "context": "ProjectPanel && not_editing",
@@ -36,14 +36,14 @@
       "d": ["project_panel::Trash", { "skip_prompt": false }],
       "y": "project_panel::Copy",
       "p": "project_panel::Paste",
-      "m": "project_panel::CollapseAllEntries"
-    }
+      "m": "project_panel::CollapseAllEntries",
+    },
   },
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "q": null // I don't use vim's macro
-    }
+      "q": null, // I don't use vim's macro
+    },
   },
   {
     "context": "Editor && VimControl && !VimWaiting && !menu",
@@ -54,19 +54,19 @@
       "t": ["vim::PushFindForward", { "before": true, "multiline": true }],
       "shift-f": [
         "vim::PushFindBackward",
-        { "after": false, "multiline": true }
+        { "after": false, "multiline": true },
       ],
       "shift-t": [
         "vim::PushFindBackward",
-        { "after": true, "multiline": true }
+        { "after": true, "multiline": true },
       ],
       "space .": "editor::ToggleCodeActions",
       "space g g": [
         "task::Spawn",
-        { "task_name": "lazygit", "reveal_target": "center" }
+        { "task_name": "lazygit", "reveal_target": "center" },
       ],
       "] b": "pane::ActivateNextItem",
-      "[ b": "pane::ActivatePreviousItem"
-    }
-  }
+      "[ b": "pane::ActivatePreviousItem",
+    },
+  },
 ]
