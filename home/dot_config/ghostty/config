@@ -9,4 +9,6 @@ quick-terminal-autohide = true
 quick-terminal-position = top
 quick-terminal-screen = mouse
 
+shell-integration-features = ssh-env,ssh-terminfo
+
 keybind = global:shift+cmd+space=toggle_quick_terminal
