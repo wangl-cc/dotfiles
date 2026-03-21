@@ -19,7 +19,7 @@
     },
   },
   "colorize_brackets": true,
-  "restore_on_startup": "last_workspace",
+  "restore_on_startup": "last_session",
   "edit_predictions": {
     "provider": "zed",
     "mode": "subtle",
