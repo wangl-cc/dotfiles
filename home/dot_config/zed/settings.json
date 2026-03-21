@@ -265,4 +265,7 @@
       "hard_tabs": true,
     },
   },
+  "file_types": {
+    "YAML": ["bu"],
+  },
 }
