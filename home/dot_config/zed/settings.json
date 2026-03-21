@@ -25,10 +25,25 @@
     "mode": "subtle",
   },
   "agent": {
+    "favorite_models": [
+      {
+        "provider": "zed.dev",
+        "model": "claude-sonnet-4-6",
+        "enable_thinking": false
+      },
+      {
+        "provider": "zed.dev",
+        "model": "gpt-5.4",
+        "enable_thinking": false
+      }
+    ],
+    "show_turn_stats": true,
     "use_modifier_to_send": true,
     "default_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat",
+      "effort": "medium",
+      "enable_thinking": true,
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-6",
     },
     "inline_assistant_model": {
       "provider": "deepseek",
