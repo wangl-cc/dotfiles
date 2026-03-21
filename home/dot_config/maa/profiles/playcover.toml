@@ -2,6 +2,7 @@
 
 [connection]
 preset = "PlayCover"
+config = "MacBGR"
 
 [instance_options]
 deployment_with_pause = false
