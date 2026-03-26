@@ -17,5 +17,8 @@ lto = "fat"
 codegen-units = 1
 lto = "fat"
 
+[profile.dev]
+debug = 0
+
 [build]
 rustflags = ["-Ctarget-cpu=native"]
