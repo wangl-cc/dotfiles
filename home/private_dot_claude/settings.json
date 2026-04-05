@@ -1,11 +1,16 @@
 {
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "model": "opus",
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "codex@openai-codex": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "glm-plan-usage@zai-coding-plugins": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -13,10 +18,12 @@
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       }
+    },
+    "zai-coding-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "zai-org/zai-coding-plugins"
+      }
     }
-  },
-  "model": "opus",
-  "env": {
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": 1
   }
 }
