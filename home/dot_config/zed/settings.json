@@ -8,6 +8,9 @@
 // command palette
 {
   "agent_servers": {
+    "gemini": {
+      "type": "registry",
+    },
     "claude-acp": {
       "type": "registry",
     },
@@ -29,13 +32,13 @@
       {
         "provider": "zed.dev",
         "model": "claude-sonnet-4-6",
-        "enable_thinking": false
+        "enable_thinking": false,
       },
       {
         "provider": "zed.dev",
         "model": "gpt-5.4",
-        "enable_thinking": false
-      }
+        "enable_thinking": false,
+      },
     ],
     "show_turn_stats": true,
     "use_modifier_to_send": true,
@@ -196,7 +199,7 @@
   "languages": {
     "Python": {
       "tab_size": 4,
-      "language_servers": ["..."],
+      "language_servers": ["...", "!pylsp", "!pyright"],
       "formatter": [
         { "code_action": "source.organizeImports.ruff" },
         {
