@@ -8,6 +8,15 @@ patch:
 
   punctuator/half_shape/$: { commit: "$" }
   punctuator/half_shape/_: { commit: "_" }
+  punctuator/half_shape/(: { commit: "(" }
+  punctuator/half_shape/): { commit: ")" }
+  punctuator/half_shape/[: { commit: "[" }
+  punctuator/half_shape/]: { commit: "]" }
+  punctuator/half_shape/{: { commit: "{" }
+  punctuator/half_shape/}: { commit: "}" }
+  punctuator/half_shape/<: { commit: "<" }
+  punctuator/half_shape/>: { commit: ">" }
+  punctuator/half_shape/?: { commit: "?" }
 
   switcher/hotkeys: [Alt+grave]
 
