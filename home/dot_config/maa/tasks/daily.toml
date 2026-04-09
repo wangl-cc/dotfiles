@@ -35,7 +35,7 @@ expiring_medicine = 1000
 # On any side story open, fight last stage
 [[tasks.variants]]
 condition = { type = "OnSideStory", client = "Official" }
-params = { stage = "", series = 3 }
+params = { stage = "", series = 0 }
 
 # Otherwise, fight PR-A-2 on Monday, PR-B-2 on Tuesday, PR-D-2 on Wednesday,
 # PR-C-2 on Thursday, AP-5 on Weekend, 1-7 for the rest
