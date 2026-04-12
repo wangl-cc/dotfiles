@@ -56,4 +56,4 @@ lcov.info
 # Claude code local settings
 **/.claude/settings.local.json
 # Worktree
-**/.worktree
+**/.worktrees
