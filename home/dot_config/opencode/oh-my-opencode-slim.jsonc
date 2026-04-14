@@ -1,0 +1,92 @@
+{
+  "$schema": "./oh-my-opencode-slim.schema.json",
+  "preset": "daily",
+  "presets": {
+    "daily": {
+      "orchestrator": {
+        "model": "openai/gpt-5.4",
+        "skills": ["*"],
+        "mcps": ["*"],
+      },
+      "oracle": {
+        "model": "github-copilot/gpt-5.4",
+        "variant": "xhigh",
+        "skills": [],
+        "mcps": [],
+      },
+      "librarian": {
+        "model": "minimax-cn-coding-plan/MiniMax-M2.7",
+        "variant": "low",
+        "skills": [],
+        "mcps": ["websearch", "context7", "grep_app"],
+      },
+      "explorer": {
+        "model": "minimax-cn-coding-plan/MiniMax-M2.7",
+        "variant": "low",
+        "skills": [],
+        "mcps": [],
+      },
+      "designer": {
+        "model": "github-copilot/gemini-3.1-pro-preview",
+        "skills": ["agent-browser"],
+        "mcps": [],
+      },
+      "fixer": {
+        "model": "opencode-go/glm-5.1",
+        "variant": "medium",
+        "skills": [],
+        "mcps": [],
+      },
+    },
+  },
+  "fallback": {
+    "enabled": true,
+    "chains": {
+      "orchestrator": [
+        "github-copilot/gpt-5.4",
+        "opencode-go/kimi-k2.5",
+        "opencode-go/glm-5.1",
+      ],
+      "oracle": ["openai/gpt-5.4", "opencode-go/glm-5.1"],
+      "librarian": ["openai/gpt-5.4-mini"],
+      "explorer": ["openai/gpt-5.4-mini"],
+      "designer": ["opencode-go/kimi-k2.5", "openai/gpt-5.4-mini"],
+      "fixer": ["openai/gpt-5.4-mini"],
+    },
+    "timeoutMs": 15000,
+    "retryDelayMs": 500,
+    "retry_on_empty": true,
+  },
+  "council": {
+    "master": {
+      "model": "openai/gpt-5.4",
+      "variant": "high",
+    },
+    "master_fallback": ["github-copilot/gpt-5.4", "opencode-go/glm-5.1"],
+    "default_preset": "default",
+    "presets": {
+      "default": {
+        "alpha": {
+          "model": "opencode-go/glm-5.1",
+        },
+        "beta": {
+          "model": "github-copilot/gemini-3.1-pro-preview",
+        },
+      },
+      "deep": {
+        "alpha": {
+          "model": "opencode-go/glm-5.1",
+        },
+        "beta": {
+          "model": "github-copilot/gemini-3.1-pro-preview",
+        },
+        "gamma": {
+          "model": "opencode-go/kimi-k2.5",
+        },
+      },
+    },
+    "master_timeout": 300000,
+    "councillors_timeout": 180000,
+    "councillor_retries": 3,
+  },
+}
