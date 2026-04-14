@@ -1,11 +1,10 @@
 {{ $brew_prefix := .homebrew.prefix -}}
 {{ $brew := joinPath $brew_prefix "bin/brew" -}}
 {{ if isExecutable $brew -}}
-  {{ output $brew "shellenv" "fish" }}
-  {{- /* Setup fish function and completion paths on linux, as we prefer using system fish */ -}}
-  {{- if ne .chezmoi.os "darwin" }}
-brew_paths
-  {{- end }}
+set -gx HOMEBREW_PREFIX "{{ $brew_prefix }}"
+set -gx HOMEBREW_CELLAR "{{ $brew_prefix }}/Cellar"
+set -gx HOMEBREW_REPOSITORY "{{ $brew_prefix }}"
+fish_add_path -g "{{ $brew_prefix }}/bin" "{{ $brew_prefix }}/sbin"
   {{- if .mirrors.enabled }}
 set -gx HOMEBREW_BREW_GIT_REMOTE "{{ .homebrew.git_remote }}"
 set -gx HOMEBREW_API_DOMAIN "{{ .homebrew.api_domain }}"

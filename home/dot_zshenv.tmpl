@@ -8,7 +8,10 @@ export ZDOTDIR=$XDG_CONFIG_HOME/zsh
 
 {{- $brew := joinPath .homebrew.prefix "bin/brew" }}
 {{- if isExecutable $brew }}
-  {{ output $brew "shellenv" "zsh" }}
+export HOMEBREW_PREFIX="{{ .homebrew.prefix }}"
+export HOMEBREW_CELLAR="{{ .homebrew.prefix }}/Cellar"
+export HOMEBREW_REPOSITORY="{{ .homebrew.prefix }}"
+path+=("${{ .homebrew.prefix }}/bin" "${{ .homebrew.prefix }}/sbin")
   {{- if .mirrors.enabled }}
 export HOMEBREW_BREW_GIT_REMOTE="{{ .homebrew.git_remote }}"
 export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
