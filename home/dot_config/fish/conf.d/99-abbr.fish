@@ -52,6 +52,11 @@ abbr --add -- grbm git rebase origin/main
 abbr --add -- gs git status
 abbr --add -- gsu git status -u
 abbr --add -- gt git tag
+abbr --add -- gw git worktree
+abbr --add -- gwa git worktree add
+abbr --add -- gwl git worktree list
+abbr --add -- gwr git worktree remove
+abbr --add -- gwp git worktree prune
 type -q lazygit; and abbr --add -- gg lazygit
 
 if type -q brew
