@@ -57,3 +57,5 @@ lcov.info
 **/.claude/settings.local.json
 # Worktree
 **/.worktrees
+# Scratch
+**/.scratch
