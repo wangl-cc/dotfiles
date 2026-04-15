@@ -1,0 +1,38 @@
+# markdownlint config for AI-first, human-readable skill docs.
+#
+# Principles:
+#
+# - Keep rules that improve document structure or reduce real ambiguity.
+# - Keep a small set of spacing rules that noticeably improve human readability.
+# - Disable rules that are mostly cosmetic or create too much lint noise.
+
+default: true
+
+# MD013/no-line-length
+# Long lines are common in commands, URLs, tables, and examples.
+MD013: false
+
+# MD024/no-duplicate-heading
+# Repeated headings are usually fine across different sections; only disallow duplicates among siblings.
+MD024:
+  siblings_only: true
+
+# MD026/no-trailing-punctuation
+# Heading punctuation like '?' can be meaningful and should not be lint noise.
+MD026: false
+
+# MD043/required-headings
+# Required heading templates are too rigid for lightweight skill docs.
+MD043: false
+
+# MD044/proper-names
+# Proper-name casing lists are expensive to maintain and low value here.
+MD044: false
+
+# MD054/link-image-style
+# Inline/reference link style is a preference, not a meaningful quality signal.
+MD054: false
+
+# MD060/table-column-style
+# Table alignment style is cosmetic.
+MD060: false

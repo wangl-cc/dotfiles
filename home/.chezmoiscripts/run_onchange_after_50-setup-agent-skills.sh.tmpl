@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SKILLS_DIR="${HOME}/.agents/skills"
+CHEZMOI_SKILLS_DIR="${HOME}/.local/share/chezmoi-skills"
+
+echo "Setting up agent skills..."
+
+mkdir -p "${SKILLS_DIR}"
+
+# Flatten skill mappings: name path name path ...
+SKILLS=(
+{{- range $repo, $skillMap := .skills }}
+{{- range $skillName, $skillPath := $skillMap }}
+    "{{ $skillName }}" "{{ $repo }}/{{ $skillPath }}"
+{{- end -}}
+{{- end }}
+)
+
+# Process in pairs
+while ((${#SKILLS[@]} > 0)); do
+    skill_name="${SKILLS[0]}"
+    source_path="${SKILLS[1]}"
+    source_full="${CHEZMOI_SKILLS_DIR}/${source_path}"
+    target_link="${SKILLS_DIR}/${skill_name}"
+
+    # Remove first two elements
+    SKILLS=("${SKILLS[@]:2}")
+
+    # Remove existing symlink if broken or outdated
+    if [[ -L "${target_link}" ]]; then
+        if [[ ! -e "${target_link}" ]] || [[ "$(readlink "${target_link}")" != "${source_full}" ]]; then
+            rm "${target_link}"
+        fi
+    fi
+
+    # Create symlink if source exists
+    if [[ -d "${source_full}" ]]; then
+        if [[ ! -e "${target_link}" ]]; then
+            ln -s "${source_full}" "${target_link}"
+            echo "  Linked: ${skill_name} -> ${source_path}"
+        fi
+    else
+        echo "  Warning: Source not found: ${source_full}"
+    fi
+done
+
+echo "Skills setup complete!"

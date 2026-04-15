@@ -1,0 +1,6 @@
+skills:
+  github/awesome-copilot:
+    documentation-writer: skills/documentation-writer
+  openai/skills:
+    gh-address-comments: skills/.curated/gh-address-comments
+    gh-fix-ci: skills/.curated/gh-fix-ci

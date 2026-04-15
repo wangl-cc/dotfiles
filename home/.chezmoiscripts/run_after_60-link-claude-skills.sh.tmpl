@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -euo pipefail
+
+AGENTS_SKILLS_DIR="${HOME}/.agents/skills"
+CLAUDE_SKILLS_DIR="${HOME}/.claude/skills"
+
+# Skip if Claude directory does not exist
+if [[ ! -d "${HOME}/.claude" ]]; then
+    exit 0
+fi
+
+mkdir -p "${CLAUDE_SKILLS_DIR}"
+
+echo "Linking Claude skills from ${AGENTS_SKILLS_DIR} ..."
+
+# Create/update per-skill symlinks
+for source in "${AGENTS_SKILLS_DIR}"/*; do
+    [[ -d "${source}" ]] || continue
+
+    skill_name="${source##*/}"
+    target_link="${CLAUDE_SKILLS_DIR}/${skill_name}"
+
+    if [[ -L "${target_link}" ]]; then
+        if [[ "$(readlink "${target_link}")" != "${source}" ]]; then
+            rm "${target_link}"
+            ln -s "${source}" "${target_link}"
+            echo "  Relinked: ${skill_name}"
+        fi
+    elif [[ -e "${target_link}" ]]; then
+        # Keep user-managed directories/files untouched
+        echo "  Skipped existing non-link: ${skill_name}"
+    else
+        ln -s "${source}" "${target_link}"
+        echo "  Linked: ${skill_name}"
+    fi
+done
+
+# Remove stale symlinks that point to missing skills
+for link in "${CLAUDE_SKILLS_DIR}"/*; do
+    [[ -L "${link}" ]] || continue
+    [[ -e "${link}" ]] && continue
+    rm "${link}"
+    echo "  Removed stale link: ${link##*/}"
+done
+
+echo "Claude skills linking complete."

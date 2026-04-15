@@ -20,3 +20,12 @@ refreshPeriod = "168h"
 clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
 {{ end -}}
+
+{{- range $repo, $skills := .skills -}}
+[".local/share/chezmoi-skills/{{ $repo }}"]
+type = "git-repo"
+url = "https://github.com/{{ $repo }}.git"
+refreshPeriod = "168h"
+clone.args = ["--filter=blob:none"]
+pull.args = ["--ff-only"]
+{{ end -}}
