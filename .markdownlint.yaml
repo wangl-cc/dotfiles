@@ -21,6 +21,8 @@ MD024:
 # Heading punctuation like '?' can be meaningful and should not be lint noise.
 MD026: false
 
+MD041: false
+
 # MD043/required-headings
 # Required heading templates are too rigid for lightweight skill docs.
 MD043: false
