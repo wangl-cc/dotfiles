@@ -35,6 +35,8 @@
     "mode": "subtle",
   },
   "agent": {
+    "dock": "right",
+    "sidebar_side": "right",
     "favorite_models": [
       {
         "provider": "zed.dev",
@@ -161,6 +163,13 @@
   },
   "git_panel": {
     "tree_view": true,
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "project_panel": {
+    "dock": "left",
   },
   "indent_guides": {
     "coloring": "indent_aware",
