@@ -7,6 +7,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "cli_default_open_behavior": "existing_window",
   "diff_view_style": "unified",
   "agent_servers": {
     "gemini": {
@@ -135,7 +136,7 @@
     "dark": "Catppuccin Macchiato",
   },
   "buffer_font_size": 13,
-  "buffer_font_family": "FiraCode Nerd Font",
+  "buffer_font_family": "Maple Mono NF CN",
   "ui_font_family": ".SystemUIFont",
   "ui_font_size": 14,
   "use_system_path_prompts": false,
@@ -152,7 +153,7 @@
     "close_position": "left",
     "show_diagnostics": "errors",
   },
-  "hide_mouse": "on_typing_and_movement",
+  "hide_mouse": "on_typing_and_action",
   "git": {
     "inline_blame": {
       "enabled": false,
