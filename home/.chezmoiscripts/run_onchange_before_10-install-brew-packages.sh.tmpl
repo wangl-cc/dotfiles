@@ -10,7 +10,7 @@ export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
 export HOMEBREW_BOTTLE_DOMAIN="{{ .homebrew.bottle_domain }}"
 {{ end }}
 
-{{ if and (eq .chezmoi.os "darwin") (not (isExecutable $brew)) }}
+{{ if and (eq (env "CHEZMOI_AUTO_INSTALL_HOMEBREW") "1") (not (isExecutable $brew)) }}
 echo "Homebrew is not installed. Installing at {{ .homebrew.prefix }}"
 /bin/bash -c "$(curl -fsSL {{ .homebrew.install_script_url }})"
 {{ end }}
