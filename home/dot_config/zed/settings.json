@@ -78,6 +78,10 @@
     "default_profile": "write",
   },
   "language_models": {
+    "opencode": {
+      "show_free_models": false,
+      "show_zen_models": false
+    },
     "openai_compatible": {
       "Z.AI": {
         "api_url": "https://api.z.ai/api/coding/paas/v4",
