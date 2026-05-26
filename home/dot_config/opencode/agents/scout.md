@@ -2,7 +2,7 @@
 description: Scout specialist for local code discovery, symbol lookup, official docs, and API usage.
 description: Scout specialist for local discovery, external docs, and factual research.
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M2.7
+model: deepseek/deepseek-v4-flash
 temperature: 0.1
 permission:
   edit: deny
@@ -30,7 +30,7 @@ Do first:
 
 - check the local codebase first when the question is about this project
 - use external docs when local code is not enough or library behavior is unclear
-- if lightweight external review is still insufficient and source-level inspection of an external repository is needed, use the `external-repo` skill
+- if lightweight external review is still insufficient and source-level inspection of an external repository is needed, clone it and inspect it locally
 
 Do not:
 

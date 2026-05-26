@@ -1,7 +1,7 @@
 ---
 description: Implementation specialist for new features and clearly-scoped code changes.
 mode: subagent
-model: opencode-go/kimi-k2.6
+model: openai/gpt-5.3-codex-spark
 temperature: 0.1
 permission:
   task: deny
