@@ -19,12 +19,6 @@
     "codex-acp": {
       "type": "registry",
     },
-    "opencode": {
-      "favorite_config_option_values": {
-        "model": ["opencode-go/kimi-k2.6", "openai/gpt-5.5"],
-      },
-      "type": "registry",
-    },
   },
   "colorize_brackets": true,
   "restore_on_startup": "last_session",
@@ -51,26 +45,38 @@
         "model": "glm-5.1",
         "enable_thinking": false,
       },
+      {
+        "provider": "openai-subscribed",
+        "model": "gpt-5.5",
+        "enable_thinking": true,
+        "effort": "medium",
+      },
+      {
+        "provider": "zed.dev",
+        "model": "gpt-5.5",
+        "enable_thinking": true,
+        "effort": "medium",
+      },
     ],
     "show_turn_stats": true,
     "use_modifier_to_send": true,
     "default_model": {
-      "effort": "medium",
+      "effort": "high",
       "enable_thinking": true,
-      "provider": "zed.dev",
+      "provider": "openai-subscribed",
       "model": "gpt-5.5",
     },
     "inline_assistant_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat",
+      "provider": "openai-subscribed",
+      "model": "gpt-5.3-codex-spark",
     },
     "commit_message_model": {
       "provider": "deepseek",
-      "model": "deepseek-chat",
+      "model": "deepseek-v4-flash",
     },
     "thread_summary_model": {
-      "provider": "openrouter",
-      "model": "openai/gpt-5-nano",
+      "provider": "openai-subscribed",
+      "model": "gpt-5-nano",
     },
     "tool_permissions": {
       "default": "allow",
@@ -80,27 +86,7 @@
   "language_models": {
     "opencode": {
       "show_free_models": false,
-      "show_zen_models": false
-    },
-    "openai_compatible": {
-      "Z.AI": {
-        "api_url": "https://api.z.ai/api/coding/paas/v4",
-        "available_models": [
-          {
-            "name": "glm-5.1",
-            "max_tokens": 204800,
-            "max_output_tokens": 131072,
-            "max_completion_tokens": 131072,
-            "capabilities": {
-              "tools": true,
-              "images": false,
-              "parallel_tool_calls": true,
-              "prompt_cache_key": true,
-              "chat_completions": true,
-            },
-          },
-        ],
-      },
+      "show_zen_models": false,
     },
     "ollama": {
       "api_url": "http://loongcc-workstation.tail6e3cda.ts.net:11434",
