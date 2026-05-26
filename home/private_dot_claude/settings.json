@@ -9,20 +9,13 @@
     "commit-commands@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "codex@openai-codex": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "glm-plan-usage@zai-coding-plugins": true
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
-      }
-    },
-    "zai-coding-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "zai-org/zai-coding-plugins"
       }
     }
   }
