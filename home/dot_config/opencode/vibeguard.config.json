@@ -2,13 +2,13 @@
   "enabled": true,
   "patterns": [
     {
-      "name": "OpenAI API Key",
-      "pattern": "sk-[a-zA-Z0-9]{48}",
+      "name": "OpenAI like API Key",
+      "pattern": "sk-(?:[a-zA-Z]+-)?[a-zA-Z0-9]+",
       "category": "API_KEY"
     },
     {
       "name": "Generic Secret",
-      "pattern": "(?:password|secret|token|key)\\s*[=:]\\s*['\"\\S]+",
+      "pattern": "(?:password|secret|token|key|access\"?)\\s*[=:]\\s*['\"\\S]+",
       "category": "SECRET"
     }
   ],
