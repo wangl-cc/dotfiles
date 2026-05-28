@@ -10,10 +10,7 @@
   "cli_default_open_behavior": "existing_window",
   "diff_view_style": "unified",
   "agent_servers": {
-    "gemini": {
-      "type": "registry",
-    },
-    "claude-acp": {
+    "opencode": {
       "type": "registry",
     },
     "codex-acp": {
