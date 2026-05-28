@@ -20,10 +20,14 @@
   "colorize_brackets": true,
   "restore_on_startup": "last_session",
   "edit_predictions": {
+    "allow_data_collection": "no",
     "provider": "zed",
     "mode": "subtle",
   },
   "agent": {
+    "expand_edit_card": false,
+    "expand_terminal_card": false,
+    "single_file_review": true,
     "dock": "right",
     "sidebar_side": "right",
     "favorite_models": [
