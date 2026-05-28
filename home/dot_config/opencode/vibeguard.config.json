@@ -1,16 +1,84 @@
 {
   "enabled": true,
-  "patterns": [
-    {
-      "name": "OpenAI like API Key",
-      "pattern": "sk-(?:[a-zA-Z]+-)?[a-zA-Z0-9]+",
-      "category": "API_KEY"
-    },
-    {
-      "name": "Generic Secret",
-      "pattern": "(?:password|secret|token|key|access\"?)\\s*[=:]\\s*['\"\\S]+",
-      "category": "SECRET"
-    }
-  ],
-  "debug": false
+  "debug": false,
+  "patterns": {
+    "keywords": [],
+    "regex": [
+      {
+        "pattern": "sk-[a-zA-Z0-9]{20,}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "-----BEGIN\\s+(?:RSA\\s+|EC\\s+|DSA\\s+|OPENSSH\\s+)?PRIVATE\\s+KEY-----",
+        "category": "SECRET"
+      },
+      {
+        "pattern": "(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "glpat-[A-Za-z0-9_\\-]{20,}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "(AKIA|ASIA|ABIA|ACCA)[A-Z0-9]{16}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "AIza[\\w-]{35}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+",
+        "category": "SECRET"
+      },
+      {
+        "pattern": "xox[baprs]-[0-9A-Za-z-]+",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "(sk_live_|rk_live_|sk_test_|rk_test_)[0-9a-zA-Z]{10,}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "npm_[a-z0-9]{36}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "SG\\.[A-Za-z0-9\\-_]{10,}\\.[A-Za-z0-9\\-_]{30,}",
+        "category": "API_KEY"
+      },
+      {
+        "pattern": "(postgres(?:ql)?|mysql|mongodb(?:\\+srv)?|redis)://[^\\s]*:[^\\s@]+@[^\\s]+",
+        "category": "SECRET"
+      },
+      {
+        "pattern": "authorization\\s*:\\s*bearer\\s+[A-Za-z0-9._\\-]{20,}",
+        "category": "SECRET",
+        "flags": "i"
+      },
+      {
+        "pattern": "['\"]?\\b(?:password|passwd|secret|token|bearer)\\b['\"]?\\s*[=:]\\s*(?:\"[^\"]*\"|'[^']*'|`[^`]*`|[^\\s,;)}\\]>=]+)",
+        "category": "SECRET",
+        "flags": "i"
+      },
+      {
+        "pattern": "['\"]?\\b(?:api[_-]?key|apikey|access[_-]?(?:key|token|secret)|auth[_-]?token|refresh[_-]?token)\\b['\"]?\\s*[=:]\\s*(?:\"[^\"]*\"|'[^']*'|`[^`]*`|[^\\s,;)}\\]>=]+)",
+        "category": "API_KEY",
+        "flags": "i"
+      },
+      {
+        "pattern": "['\"]?\\b(?:client[_-]?(?:id|secret)|session[_-]?(?:id|key|secret))\\b['\"]?\\s*[=:]\\s*(?:\"[^\"]*\"|'[^']*'|`[^`]*`|[^\\s,;)}\\]>=]+)",
+        "category": "SECRET",
+        "flags": "i"
+      },
+      {
+        "pattern": "['\"]?\\b(?:private[_-]?key|secret[_-]?key)\\b['\"]?\\s*[=:]\\s*(?:\"[^\"]*\"|'[^']*'|`[^`]*`|[^\\s,;)}\\]>=]+)",
+        "category": "SECRET",
+        "flags": "i"
+      }
+    ],
+    "builtin": ["email", "china_phone", "china_id"],
+    "exclude": []
+  }
 }
