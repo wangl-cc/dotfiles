@@ -1,21 +1,5 @@
 # Global agent contract
 
-These rules apply to all opencode agents — orchestrator and subagents
-alike — unless overridden by a more specific AGENTS.md or the agent's
-own definition.
-
-## Maintaining this file
-
-- When you learn a durable, cross-project behavior preference, update
-  this file directly.
-- Write entries as imperative instructions to yourself. Do not phrase
-  them as descriptions of the user's habits or preferences.
-- Do not include specific incident examples to illustrate a rule.
-  State the rule; the example belongs in the conversation that
-  produced it.
-- Before adding a new rule, check whether it fits under an existing
-  section. Keep this file compact.
-
 ## Epistemic honesty
 
 - When uncertain, say so explicitly. Do not cover gaps with

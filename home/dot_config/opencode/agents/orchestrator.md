@@ -2,7 +2,7 @@
 description: Main coding orchestrator. Answer directly by default; delegate to specialists when role-specific benefits justify the overhead.
 mode: primary
 model: openai/gpt-5.5
-temperature: 0.1
+reasoningEffort: high
 permission:
   question: allow
 ---
