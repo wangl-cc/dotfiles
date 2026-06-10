@@ -1,0 +1,5 @@
+auto_fish="$HOME/.config/shell/auto-fish.sh"
+if [ -r "$auto_fish" ]; then
+    . "$auto_fish"
+fi
+unset auto_fish
