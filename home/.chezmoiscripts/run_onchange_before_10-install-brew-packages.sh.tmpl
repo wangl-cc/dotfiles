@@ -19,12 +19,10 @@ echo "Homebrew is not installed. Installing at {{ .homebrew.prefix }}"
 brew="{{ $brew }}"
 
 brew bundle --file=/dev/stdin <<EOF
-{{- range $pkg, $spec := .packages }}
-{{ if hasKey $spec "brew" -}}
-{{- if ne $spec.brew "" -}}
-brew {{ $spec.brew | quote }}
-{{- end -}}
-{{- else -}}
+{{- range $pkg := .packages }}
+{{- if and (hasKey $.registry "brew") (hasKey $.registry.brew $pkg) }}
+brew {{ index $.registry.brew $pkg | quote }}
+{{- else }}
 brew {{ $pkg | quote }}
 {{- end -}}
 {{- end }}

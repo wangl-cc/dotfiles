@@ -1,0 +1,15 @@
+[tools]
+{{- range $tool, $version := .toolchains }}
+{{ $tool | quote }} = {{ $version | quote }}
+{{- end }}
+
+{{- $brew := joinPath .homebrew.prefix "bin/brew" }}
+{{- if not (isExecutable $brew) }}
+{{- range $pkg := .packages }}
+{{- if and (hasKey $.registry "mise") (hasKey $.registry.mise $pkg) }}
+{{ index $.registry.mise $pkg | quote }} = "latest"
+{{- else }}
+{{ $pkg | quote }} = "latest"
+{{- end }}
+{{- end }}
+{{- end }}

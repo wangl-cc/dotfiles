@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# CHEZMOI_BOOTSTRAP_TOOLCHAINS={{ env "CHEZMOI_BOOTSTRAP_TOOLCHAINS" | quote }}
+# Mise tools:
+{{- range $tool, $version := .toolchains }}
+# - {{ $tool }}@{{ $version }}
+{{- end }}
+{{- $brew := joinPath .homebrew.prefix "bin/brew" }}
+{{- if not (isExecutable $brew) }}
+{{- range $pkg := .packages }}
+{{- if and (hasKey $.registry "mise") (hasKey $.registry.mise $pkg) }}
+# - {{ index $.registry.mise $pkg }}@latest
+{{- else }}
+# - {{ $pkg }}@latest
+{{- end }}
+{{- end }}
+{{- end }}
+
+set -euo pipefail
+
+{{ $mise := joinPath .chezmoi.homeDir ".local/bin/mise" -}}
+if command -v mise >/dev/null 2>&1; then
+    mise_bin=$(command -v mise)
+elif [ -x "{{ $mise }}" ]; then
+    mise_bin="{{ $mise }}"
+else
+    exit 0
+fi
+
+"$mise_bin" --yes install

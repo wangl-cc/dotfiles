@@ -1,20 +1,26 @@
-[packages]
-atuin = {  }
-bat = {  }
-bat-extras = { dnf = "" }
-chezmoi = {  }
-dust = { dnf = "du-dust" }
-eza = { copr = "alternateved/eza" }
-fastfetch = {  }
-fd = { dnf = "fd-find" }
-fish = { dnf = "" }
-fzf = {  }
-gh = {  }
-git = { brew = "" }
-git-delta = {  }
-lazygit = { copr = "dejan/lazygit" }
-ripgrep = {  }
-uv = {  }
-yq = {  }
-zoxide = {  }
-which = { brew = "" }
+packages = [
+  "atuin",
+  "bat",
+  "chezmoi",
+  "dust",
+  "eza",
+  "fastfetch",
+  "fd",
+  "fish",
+  "fzf",
+  "gh",
+  "git-delta",
+  "lazygit",
+  "ripgrep",
+  "yq",
+  "zoxide",
+]
+
+[registry.mise]
+fish = "aqua:fish-shell/fish-shell"
+gh = "github-cli"
+git-delta = "delta"
+
+[toolchains]
+node = "lts"
+bun = "latest"
