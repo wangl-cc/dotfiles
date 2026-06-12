@@ -1,5 +1,10 @@
 mode = "symlink"
 
+{{- $packageProvider := promptChoiceOnce . "packages.provider" "packages.provider" (list "none" "brew" "aqua") "none" }}
+{{- $uv := promptBoolOnce . "toolchains.uv" "toolchains.uv" false }}
+{{- $rustup := promptBoolOnce . "toolchains.rustup" "toolchains.rustup" false }}
+{{- $bun := promptBoolOnce . "toolchains.bun" "toolchains.bun" false }}
+
 [data.mirrors]
 {{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
 enabled = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}
@@ -15,6 +20,14 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
 {{- else -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
+
+[data.packages]
+provider = {{ $packageProvider | quote }}
+
+[data.toolchains]
+uv = {{ $uv }}
+rustup = {{ $rustup }}
+bun = {{ $bun }}
 
 [data.git]
 name = "Loong"

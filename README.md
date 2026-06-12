@@ -10,15 +10,18 @@ repo:
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
-CHEZMOI_BOOTSTRAP_TOOLCHAINS=1 chezmoi init --apply https://github.com/wangl-cc/dotfiles.git
+chezmoi init --apply --promptDefaults --promptChoice packages.provider=aqua https://github.com/wangl-cc/dotfiles.git
 ```
 
-`CHEZMOI_BOOTSTRAP_TOOLCHAINS=1` allows the first apply to install rootless
-toolchain managers with their official installers:
+`packages.provider` is stored in `~/.config/chezmoi/chezmoi.toml` and controls
+how portable CLI packages are installed on this machine:
 
-- `uv`
-- `rustup`
-- `mise`
+- `aqua`: install `aqua` rootlessly and use it for portable CLI packages.
+- `brew`: use Homebrew for portable CLI packages.
+- `none`: do not install portable CLI packages automatically.
+
+Without `--promptChoice`, `chezmoi init` prompts for the provider. Use
+`--promptDefaults` to choose `none` non-interactively.
 
 After the first bootstrap, normal updates usually only need:
 
@@ -26,26 +29,43 @@ After the first bootstrap, normal updates usually only need:
 chezmoi update
 ```
 
-## Package Strategy
-
-- If Homebrew is already installed, chezmoi uses it for common CLI packages.
-- If Homebrew is not installed, chezmoi skips Homebrew and uses `mise` for the
-  portable CLI tools.
-- `node` and `bun` are managed by `mise`.
-- Python is managed with `uv`.
-- Rust is managed with `rustup`.
-
-Homebrew itself is not installed by default. To allow chezmoi to install it on
-machines where that is appropriate:
+To change the provider later, run:
 
 ```sh
-CHEZMOI_AUTO_INSTALL_HOMEBREW=1 chezmoi apply
+chezmoi edit-config
+chezmoi apply
 ```
 
-To combine Homebrew installation with first-time toolchain bootstrap:
+## Package Strategy
+
+- `packages.provider = "brew"` uses Homebrew for common CLI packages.
+- `packages.provider = "aqua"` uses `aqua` for common CLI packages.
+- `packages.provider = "none"` skips automatic CLI package installation.
+- `bun`, `uv`, and `rustup` are language toolchains installed with their
+  official installers when requested.
+
+To opt in to language toolchains during the first init:
 
 ```sh
-CHEZMOI_BOOTSTRAP_TOOLCHAINS=1 CHEZMOI_AUTO_INSTALL_HOMEBREW=1 chezmoi apply
+chezmoi init --apply \
+  --promptChoice packages.provider=aqua \
+  --promptBool toolchains.uv=true \
+  --promptBool toolchains.rustup=true \
+  --promptBool toolchains.bun=false \
+  https://github.com/wangl-cc/dotfiles.git
+```
+
+Aqua packages are declared in `~/.config/aquaproj-aqua/aqua.yaml`. Renovate
+updates that file in GitHub. When `chezmoi update` or `chezmoi apply` sees that
+`aqua.yaml` changed, it runs `aqua install --all --only-link` automatically.
+Set `CHEZMOI_AQUA_EAGER_INSTALL=1` to download all declared aqua packages
+instead of relying on lazy install.
+
+Homebrew itself is not installed by default. To allow chezmoi to install it on
+machines where that is appropriate, choose the `brew` provider and set:
+
+```sh
+CHEZMOI_AUTO_INSTALL_HOMEBREW=1 chezmoi init --apply --promptChoice packages.provider=brew https://github.com/wangl-cc/dotfiles.git
 ```
 
 ## Fish

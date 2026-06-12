@@ -26,8 +26,8 @@ _dot_auto_fish_find() {
 
     for fish_path in \
         "${HOMEBREW_PREFIX:-}/bin/fish" \
-        "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims/fish" \
-        "$HOME/.local/share/mise/shims/fish" \
+        "${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/fish" \
+        "$HOME/.local/share/aquaproj-aqua/bin/fish" \
         "$HOME/.local/bin/fish" \
         "$HOME/.nix-profile/bin/fish" \
         "/opt/homebrew/bin/fish" \
@@ -48,8 +48,6 @@ _dot_auto_fish_find() {
 _dot_auto_fish_data_dir() {
     for data_dir in \
         "${DOT_FISH_DATA_DIR:-}" \
-        "${MISE_DATA_DIR:-$HOME/.local/share/mise}/installs/aqua-fish-shell-fish-shell/latest/fish.pkg/Payload/usr/local/share/fish" \
-        "$HOME/.local/share/mise/installs/aqua-fish-shell-fish-shell/latest/fish.pkg/Payload/usr/local/share/fish" \
         "$(dirname "$_dot_auto_fish")/../share/fish" \
         "${HOMEBREW_PREFIX:-}/share/fish" \
         "/opt/homebrew/share/fish" \

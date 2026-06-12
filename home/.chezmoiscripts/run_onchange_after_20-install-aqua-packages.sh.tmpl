@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+{{- $provider := get .packages "provider" | default "none" }}
+{{- $aquaConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/aqua.yaml" }}
+# packages.provider={{ $provider | quote }}
+# aqua.yaml.sha256={{ include $aquaConfigSource | sha256sum }}
+# CHEZMOI_AQUA_EAGER_INSTALL={{ env "CHEZMOI_AQUA_EAGER_INSTALL" | quote }}
+
+set -euo pipefail
+
+provider={{ $provider | quote }}
+
+case "$provider" in
+    none|brew)
+        exit 0
+        ;;
+    aqua)
+        ;;
+    *)
+        echo "Unsupported package provider: $provider" >&2
+        exit 1
+        ;;
+esac
+
+aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
+aqua_global_config="${AQUA_GLOBAL_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml}"
+
+if command -v aqua >/dev/null 2>&1; then
+    aqua_bin=$(command -v aqua)
+elif [ -x "$aqua_root/bin/aqua" ]; then
+    aqua_bin="$aqua_root/bin/aqua"
+else
+    echo "Package provider is aqua, but aqua was not found." >&2
+    exit 1
+fi
+
+if [ ! -r "$aqua_global_config" ]; then
+    echo "Aqua global config was not found at $aqua_global_config." >&2
+    exit 1
+fi
+
+export AQUA_ROOT_DIR="$aqua_root"
+export AQUA_GLOBAL_CONFIG="$aqua_global_config"
+
+if [ "${CHEZMOI_AQUA_EAGER_INSTALL:-}" = "1" ]; then
+    "$aqua_bin" install --all
+else
+    "$aqua_bin" install --all --only-link
+fi

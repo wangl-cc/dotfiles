@@ -2,6 +2,7 @@
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx WAKATIME_HOME $XDG_CONFIG_HOME/wakatime
 set -gx GNUPGHOME $XDG_CONFIG_HOME/gnupg
+set -gx AQUA_GLOBAL_CONFIG $XDG_CONFIG_HOME/aquaproj-aqua/aqua.yaml
 
 # Some rootless fish packages are launched from a non-standard prefix while
 # their bundled functions and completions live next to the extracted package.
