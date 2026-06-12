@@ -11,6 +11,14 @@ if type -q eza
     abbr --add -- lt eza -snew -l
     abbr --add -- lat eza -snew -Al
     abbr --add -- tree eza --tree
+else if type -q lsd
+    alias lsd 'lsd --icon auto --group-directories-first'
+    abbr --add -- l lsd
+    abbr --add -- ll lsd -l
+    abbr --add -- la lsd -Al
+    abbr --add -- lt lsd -t -l
+    abbr --add -- lat lsd -t -Al
+    abbr --add -- tree lsd --tree
 else
     abbr --add l -- ls --color
     abbr --add ll -- ls --color -lh

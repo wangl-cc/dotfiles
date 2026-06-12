@@ -36,6 +36,11 @@ chezmoi edit-config
 chezmoi apply
 ```
 
+Older local configs from the experimental `mise` provider are not migrated
+automatically. If `~/.config/chezmoi/chezmoi.toml` contains
+`packages.provider = "mise"`, change it to `aqua`, `brew`, or `none` with
+`chezmoi edit-config`, then run `chezmoi apply`.
+
 ## Package Strategy
 
 - `packages.provider = "brew"` uses Homebrew for common CLI packages.
@@ -60,6 +65,10 @@ updates that file in GitHub. When `chezmoi update` or `chezmoi apply` sees that
 `aqua.yaml` changed, it runs `aqua install --all --only-link` automatically.
 Set `CHEZMOI_AQUA_EAGER_INSTALL=1` to download all declared aqua packages
 instead of relying on lazy install.
+
+The aqua package set uses `lsd` as the rootless `ls` replacement because it
+publishes macOS and Linux release binaries. Homebrew machines still install
+`eza`, which Homebrew packages reliably on macOS.
 
 Homebrew itself is not installed by default. To allow chezmoi to install it on
 machines where that is appropriate, choose the `brew` provider and set:
