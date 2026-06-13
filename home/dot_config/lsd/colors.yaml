@@ -1,38 +1,38 @@
-user: dark_magenta
-group: dark_cyan
+user: [135, 0, 135]
+group: [0, 95, 135]
 permission:
-  read: dark_blue
-  write: dark_cyan
-  exec: dark_magenta
-  exec-sticky: dark_magenta
-  no-access: dark_grey
-  octal: dark_cyan
-  acl: dark_cyan
-  context: dark_cyan
+  read: [0, 95, 0]
+  write: [175, 95, 0]
+  exec: [175, 0, 0]
+  exec-sticky: [135, 0, 135]
+  no-access: [95, 95, 95]
+  octal: [0, 95, 135]
+  acl: [0, 95, 135]
+  context: [0, 95, 135]
 date:
-  hour-old: dark_magenta
-  day-old: dark_cyan
-  older: dark_blue
+  hour-old: [0, 95, 0]
+  day-old: [0, 135, 95]
+  older: [0, 95, 135]
 size:
-  none: dark_grey
-  small: dark_blue
-  medium: dark_cyan
-  large: dark_magenta
+  none: [95, 95, 95]
+  small: [0, 95, 135]
+  medium: [175, 95, 0]
+  large: [175, 0, 0]
 inode:
-  valid: dark_green
-  invalid: dark_red
+  valid: [0, 95, 0]
+  invalid: [175, 0, 0]
 links:
-  valid: dark_green
-  invalid: dark_red
-tree-edge: dark_grey
+  valid: [0, 95, 0]
+  invalid: [175, 0, 0]
+tree-edge: [95, 95, 95]
 git-status:
-  default: white
-  unmodified: white
-  ignored: dark_grey
-  new-in-index: dark_green
-  new-in-workdir: dark_green
-  typechange: dark_yellow
-  deleted: dark_red
-  renamed: dark_green
-  modified: dark_yellow
-  conflicted: dark_red
+  default: [95, 95, 95]
+  unmodified: [95, 95, 95]
+  ignored: [95, 95, 95]
+  new-in-index: [0, 95, 0]
+  new-in-workdir: [0, 95, 0]
+  typechange: [175, 95, 0]
+  deleted: [175, 0, 0]
+  renamed: [0, 95, 0]
+  modified: [175, 95, 0]
+  conflicted: [175, 0, 0]
