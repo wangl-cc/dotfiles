@@ -3,15 +3,7 @@ status is-interactive; or return
 abbr --add -- tx tar -xf
 abbr --add -- tc tar -cf
 
-if type -q eza
-    alias eza 'eza --icons auto --group-directories-first'
-    abbr --add -- l eza
-    abbr --add -- ll eza -l
-    abbr --add -- la eza -Al
-    abbr --add -- lt eza -snew -l
-    abbr --add -- lat eza -snew -Al
-    abbr --add -- tree eza --tree
-else if type -q lsd
+if type -q lsd
     alias lsd 'lsd --icon auto --group-directories-first'
     abbr --add -- l lsd
     abbr --add -- ll lsd -l
@@ -19,6 +11,14 @@ else if type -q lsd
     abbr --add -- lt lsd -t -l
     abbr --add -- lat lsd -t -Al
     abbr --add -- tree lsd --tree
+else if type -q eza
+    alias eza 'eza --icons auto --group-directories-first'
+    abbr --add -- l eza
+    abbr --add -- ll eza -l
+    abbr --add -- la eza -Al
+    abbr --add -- lt eza -snew -l
+    abbr --add -- lat eza -snew -Al
+    abbr --add -- tree eza --tree
 else
     abbr --add l -- ls --color
     abbr --add ll -- ls --color -lh

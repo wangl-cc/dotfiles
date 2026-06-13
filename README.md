@@ -66,9 +66,9 @@ updates that file in GitHub. When `chezmoi update` or `chezmoi apply` sees that
 Set `CHEZMOI_AQUA_EAGER_INSTALL=1` to download all declared aqua packages
 instead of relying on lazy install.
 
-The aqua package set uses `lsd` as the rootless `ls` replacement because it
-publishes macOS and Linux release binaries. Homebrew machines still install
-`eza`, which Homebrew packages reliably on macOS.
+The package set uses `lsd` as the `ls` replacement for both Homebrew and aqua.
+It publishes macOS and Linux release binaries, which keeps rootless aqua
+installs independent of Rust or Cargo.
 
 Homebrew itself is not installed by default. To allow chezmoi to install it on
 machines where that is appropriate, choose the `brew` provider and set:
