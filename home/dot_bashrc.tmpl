@@ -13,7 +13,6 @@ export DOT_BASH_RC_LOADED=1
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
 export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
-export AQUA_GLOBAL_CONFIG=${AQUA_GLOBAL_CONFIG:-$XDG_CONFIG_HOME/aquaproj-aqua/aqua.yaml}
 
 {{- $brew := joinPath .homebrew.prefix "bin/brew" }}
 {{- if isExecutable $brew }}
@@ -32,23 +31,10 @@ export HOMEBREW_BOTTLE_DOMAIN="{{ .homebrew.bottle_domain }}"
 {{- if stat $local_bin }}
 PATH="{{ $local_bin }}:$PATH"
 {{- end }}
-if [ -z "${AQUA_ROOT_DIR:-}" ]; then
-    aqua_root="${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua"
-else
-    aqua_root="$AQUA_ROOT_DIR"
-fi
-if [ -d "$aqua_root/bin" ]; then
-    PATH="$aqua_root/bin:$PATH"
-fi
-unset aqua_root
 {{- $cargo_bin := joinPath .chezmoi.homeDir ".cargo/bin" }}
 {{- if stat $cargo_bin }}
 PATH="{{ $cargo_bin }}:$PATH"
 {{- end }}
 export PATH
 
-auto_fish="$HOME/.config/shell/auto-fish.sh"
-if [ -r "$auto_fish" ]; then
-    . "$auto_fish"
-fi
-unset auto_fish
+. "$HOME/.config/shell/env.sh"
