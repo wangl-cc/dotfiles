@@ -19,7 +19,7 @@ export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
 export HOMEBREW_PREFIX="{{ .homebrew.prefix }}"
 export HOMEBREW_CELLAR="{{ .homebrew.prefix }}/Cellar"
 export HOMEBREW_REPOSITORY="{{ .homebrew.prefix }}"
-PATH="${{ .homebrew.prefix }}/bin:${{ .homebrew.prefix }}/sbin:$PATH"
+PATH="{{ .homebrew.prefix }}/bin:{{ .homebrew.prefix }}/sbin:$PATH"
   {{- if .mirrors.enabled }}
 export HOMEBREW_BREW_GIT_REMOTE="{{ .homebrew.git_remote }}"
 export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
