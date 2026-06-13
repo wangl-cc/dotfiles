@@ -1,7 +1,15 @@
 color:
   theme: custom
 
-date: "+%Y-%m-%d %H:%M:%S"
+blocks:
+  - permission
+  - user
+  - group
+  - size
+  - date
+  - name
+
+date: "+%Y-%m-%d %H:%M"
 
 icons:
   when: auto
