@@ -3,5 +3,8 @@ color:
 
 date: "+%Y-%m-%d %H:%M:%S"
 
+icons:
+  when: auto
+
 sorting:
   dir-grouping: first

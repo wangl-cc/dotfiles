@@ -4,7 +4,6 @@ abbr --add -- tx tar -xf
 abbr --add -- tc tar -cf
 
 if type -q lsd
-    alias lsd 'lsd --icon auto'
     abbr --add -- l lsd
     abbr --add -- ll lsd -l
     abbr --add -- la lsd -Al
