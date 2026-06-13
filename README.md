@@ -41,6 +41,11 @@ automatically. If `~/.config/chezmoi/chezmoi.toml` contains
 `packages.provider = "mise"`, change it to `aqua`, `brew`, or `none` with
 `chezmoi edit-config`, then run `chezmoi apply`.
 
+Existing configs created before `packages.provider` was introduced will default
+to `none` until a provider is set explicitly. To keep the previous Homebrew
+behavior, set `packages.provider = "brew"` with `chezmoi edit-config`, then run
+`chezmoi apply`.
+
 ## Package Strategy
 
 - `packages.provider = "brew"` uses Homebrew for common CLI packages.
