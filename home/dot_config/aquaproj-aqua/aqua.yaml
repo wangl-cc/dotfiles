@@ -21,3 +21,4 @@ packages:
 - name: BurntSushi/ripgrep@15.1.0
 - name: mikefarah/yq@v4.53.3
 - name: ajeetdsouza/zoxide@v0.9.9
+- name: starship/starship@v1.25.1
