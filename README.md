@@ -9,7 +9,7 @@ On a new machine, install `chezmoi` into the user directory, then apply this rep
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
-chezmoi init --apply --promptDefaults --promptChoice packages.provider=aqua https://github.com/wangl-cc/dotfiles.git
+chezmoi init --apply https://github.com/wangl-cc/dotfiles.git
 ```
 
 `packages.provider` is stored in `~/.config/chezmoi/chezmoi.toml` and controls how portable CLI packages are installed on this machine:
@@ -18,7 +18,18 @@ chezmoi init --apply --promptDefaults --promptChoice packages.provider=aqua http
 - `brew`: use Homebrew for portable CLI packages.
 - `none`: do not install portable CLI packages automatically.
 
-Without `--promptChoice`, `chezmoi init` prompts for the provider. Use `--promptDefaults` to choose `none` non-interactively.
+Git SSH commit signing can be configured during bootstrap. Set `git.signingkeyFile` to this machine's public signing key path, for example `$HOME/.ssh/id_ed25519.pub` or `~/.ssh/id_ed25519.pub`. Leave it empty to disable SSH commit signing.
+
+For a non-interactive bootstrap, pass the public key file path:
+
+```sh
+chezmoi init --apply \
+  --promptChoice packages.provider=aqua \
+  --promptString git.signingkeyFile='$HOME/.ssh/id_ed25519.pub' \
+  https://github.com/wangl-cc/dotfiles.git
+```
+
+Without `--promptChoice`, `chezmoi init` prompts for the provider. Use `--promptDefaults` to choose defaults non-interactively, including leaving Git SSH commit signing disabled.
 
 After the first bootstrap, normal updates usually only need:
 

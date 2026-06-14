@@ -19,7 +19,7 @@
 	file = {{ .chezmoi.homeDir }}/.config/git/mailmap
 [include]
 	path = ./local.gitconfig
-{{- if .git.signingkey }}
+{{- if .git.signingkeyFile }}
 [include]
 	path = ./gpg.gitconfig
 {{- end }}

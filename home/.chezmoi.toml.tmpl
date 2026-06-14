@@ -4,6 +4,7 @@ mode = "symlink"
 {{- $uv := promptBoolOnce . "toolchains.uv" "toolchains.uv" false }}
 {{- $rustup := promptBoolOnce . "toolchains.rustup" "toolchains.rustup" false }}
 {{- $bun := promptBoolOnce . "toolchains.bun" "toolchains.bun" false }}
+{{- $gitSigningKeyFile := promptStringOnce . "git.signingkeyFile" "git.signingkeyFile" "" }}
 
 [data.mirrors]
 {{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
@@ -32,4 +33,4 @@ bun = {{ $bun }}
 [data.git]
 name = "Loong"
 email = "git@loongw.cc"
-signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGaaxi/ianjCt37sKsaWDkRW+XMV0qlM3HHTyqvDnQ/W"
+signingkeyFile = {{ $gitSigningKeyFile | quote }}
