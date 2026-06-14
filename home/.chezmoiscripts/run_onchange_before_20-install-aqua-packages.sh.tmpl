@@ -1,0 +1,69 @@
+{{- $aquaConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/aqua.yaml" -}}
+{{- $aquaFishConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" -}}
+{{- $portableFish := get . "portable_fish" | default false -}}
+#!/usr/bin/env bash
+#
+# portable_fish={{ $portableFish }}
+# aqua.yaml.sha256={{ include $aquaConfigSource | sha256sum }}
+# fish.yaml.sha256={{ include $aquaFishConfigSource | sha256sum }}
+# CHEZMOI_AQUA_EAGER_INSTALL={{ env "CHEZMOI_AQUA_EAGER_INSTALL" | quote }}
+
+set -euo pipefail
+
+aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
+aqua_global_config={{ $aquaConfigSource | quote }}
+aqua_fish_config={{ $aquaFishConfigSource | quote }}
+portable_fish={{ if $portableFish }}1{{ else }}0{{ end }}
+
+if [ -x "$aqua_root/bin/aqua" ]; then
+    aqua_bin="$aqua_root/bin/aqua"
+elif command -v aqua >/dev/null 2>&1; then
+    aqua_bin=$(command -v aqua)
+else
+    echo "aqua was not found. Run chezmoi apply again after the bootstrap script installs it." >&2
+    exit 1
+fi
+
+if [ ! -r "$aqua_global_config" ]; then
+    echo "Aqua global config was not found at $aqua_global_config." >&2
+    exit 1
+fi
+
+if [ "$portable_fish" = "1" ] && [ ! -r "$aqua_fish_config" ]; then
+    echo "Aqua fish config was not found at $aqua_fish_config." >&2
+    exit 1
+fi
+
+remove_portable_fish_links() {
+    local command link target
+
+    for command in fish fish_indent fish_key_reader; do
+        link="$aqua_root/bin/$command"
+        if [ -L "$link" ]; then
+            target=$(readlink "$link" || true)
+            case "$target" in
+                *aqua-proxy*) rm -f "$link" ;;
+            esac
+        fi
+    done
+}
+
+export AQUA_ROOT_DIR="$aqua_root"
+
+if [ "$portable_fish" = "1" ] && [ "${CHEZMOI_AQUA_EAGER_INSTALL:-}" = "1" ]; then
+    export AQUA_GLOBAL_CONFIG="$aqua_global_config:$aqua_fish_config"
+    "$aqua_bin" install --all
+elif [ "$portable_fish" = "1" ]; then
+    export AQUA_GLOBAL_CONFIG="$aqua_fish_config"
+    "$aqua_bin" install --all
+    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
+    "$aqua_bin" install --all --only-link
+elif [ "${CHEZMOI_AQUA_EAGER_INSTALL:-}" = "1" ]; then
+    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
+    "$aqua_bin" install --all
+    remove_portable_fish_links
+else
+    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
+    "$aqua_bin" install --all --only-link
+    remove_portable_fish_links
+fi

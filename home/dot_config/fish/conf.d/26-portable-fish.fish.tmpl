@@ -1,0 +1,5 @@
+{{- $portableFish := get . "portable_fish" | default false -}}
+{{- if $portableFish -}}
+# Include the optional aqua-managed fish manifest in fish sessions.
+set -gx --append --path AQUA_GLOBAL_CONFIG $XDG_CONFIG_HOME/aquaproj-aqua/fish.yaml
+{{- end }}

@@ -1,5 +1,6 @@
-{{- if .git.signingkeyFile -}}
-{{- $gitSigningKeyPath := expandenv .git.signingkeyFile -}}
+{{- $gitSigningKeyFile := get .git "signingkeyFile" | default "" -}}
+{{- if $gitSigningKeyFile -}}
+{{- $gitSigningKeyPath := expandenv $gitSigningKeyFile -}}
 {{- if hasPrefix "~/" $gitSigningKeyPath -}}
 {{-   $gitSigningKeyPath = joinPath .chezmoi.homeDir (trimPrefix "~/" $gitSigningKeyPath) -}}
 {{- end -}}

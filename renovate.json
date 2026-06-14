@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>aquaproj/aqua-renovate-config:file#2.12.1(home/dot_config/aquaproj-aqua/aqua\\.ya?ml)",
+    "github>aquaproj/aqua-renovate-config:file#2.12.1(home/dot_config/aquaproj-aqua/.*\\.ya?ml)",
     "github>aquaproj/aqua-renovate-config:aqua-renovate-config#2.12.1(renovate\\.json)"
   ]
 }

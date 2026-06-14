@@ -1,10 +1,28 @@
 mode = "symlink"
 
-{{- $packageProvider := promptChoiceOnce . "packages.provider" "packages.provider" (list "none" "brew" "aqua") "none" }}
-{{- $uv := promptBoolOnce . "toolchains.uv" "toolchains.uv" false }}
-{{- $rustup := promptBoolOnce . "toolchains.rustup" "toolchains.rustup" false }}
-{{- $bun := promptBoolOnce . "toolchains.bun" "toolchains.bun" false }}
-{{- $gitSigningKeyFile := promptStringOnce . "git.signingkeyFile" "git.signingkeyFile" "" }}
+{{- $portableFish := promptBoolOnce . "portable_fish" "Use aqua to install a portable fish shell on this machine?" false }}
+{{- $uv := promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine?" false }}
+{{- $rustup := promptBoolOnce . "toolchains.rustup" "Install the Rust toolchain with rustup on this machine?" false }}
+{{- $bun := promptBoolOnce . "toolchains.bun" "Install Bun with Bun's official installer on this machine?" false }}
+{{- $gitSigningKeyFiles := glob (joinPath .chezmoi.homeDir ".ssh/*.pub") }}
+{{- $gitSigningDisabled := "none" }}
+{{- $gitSigningKeyChoices := list $gitSigningDisabled }}
+{{- range $gitSigningKeyPath := $gitSigningKeyFiles }}
+{{-   $gitSigningKeyChoices = append $gitSigningKeyChoices (trimSuffix ".pub" (base $gitSigningKeyPath)) }}
+{{- end }}
+{{- $gitSigningKeySelection := promptChoiceOnce . "git.signingkeyFile" "Git SSH commit signing public key" $gitSigningKeyChoices $gitSigningDisabled }}
+{{- $gitSigningKeyFile := "" }}
+{{- if or (eq $gitSigningKeySelection "") (eq $gitSigningKeySelection $gitSigningDisabled) }}
+{{- else if contains "/" $gitSigningKeySelection }}
+{{-   $gitSigningKeyFile = $gitSigningKeySelection }}
+{{- else if hasSuffix ".pub" $gitSigningKeySelection }}
+{{-   $gitSigningKeyFile = printf "~/.ssh/%s" $gitSigningKeySelection }}
+{{- else }}
+{{-   $gitSigningKeyFile = printf "~/.ssh/%s.pub" $gitSigningKeySelection }}
+{{- end }}
+
+[data]
+portable_fish = {{ $portableFish }}
 
 [data.mirrors]
 {{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
@@ -21,9 +39,6 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
 {{- else -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
-
-[data.packages]
-provider = {{ $packageProvider | quote }}
 
 [data.toolchains]
 uv = {{ $uv }}

@@ -1,3 +1,4 @@
+{{- $gitSigningKeyFile := get .git "signingkeyFile" | default "" -}}
 [user]
 	name = {{ .git.name }}
 	email = {{ .git.email }}
@@ -19,7 +20,7 @@
 	file = {{ .chezmoi.homeDir }}/.config/git/mailmap
 [include]
 	path = ./local.gitconfig
-{{- if .git.signingkeyFile }}
+{{- if $gitSigningKeyFile }}
 [include]
 	path = ./gpg.gitconfig
 {{- end }}

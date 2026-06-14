@@ -13,7 +13,6 @@ packages:
 - name: lsd-rs/lsd@v1.2.0
 - name: fastfetch-cli/fastfetch@2.64.2
 - name: sharkdp/fd@v10.4.2
-- name: fish-shell/fish-shell@4.7.1
 - name: junegunn/fzf@v0.73.1
 - name: cli/cli@v2.94.0
 - name: dandavison/delta@0.19.2
