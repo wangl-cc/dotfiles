@@ -1,9 +1,9 @@
 mode = "symlink"
 
 {{- $portableFish := promptBoolOnce . "portable_fish" "Use aqua to install a portable fish shell on this machine?" false }}
-{{- $uv := promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine?" false }}
+{{- $uv := promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine?" true }}
 {{- $rustup := promptBoolOnce . "toolchains.rustup" "Install the Rust toolchain with rustup on this machine?" false }}
-{{- $bun := promptBoolOnce . "toolchains.bun" "Install Bun with Bun's official installer on this machine?" false }}
+{{- $bun := promptBoolOnce . "toolchains.bun" "Install Bun with Bun's official installer on this machine?" true }}
 {{- $gitSigningKeyFiles := glob (joinPath .chezmoi.homeDir ".ssh/*.pub") }}
 {{- $gitSigningDisabled := "none" }}
 {{- $gitSigningKeyChoices := list $gitSigningDisabled }}

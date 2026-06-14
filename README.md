@@ -14,19 +14,23 @@ chezmoi init --apply https://github.com/wangl-cc/dotfiles.git
 
 The bootstrap always installs `aqua` rootlessly and uses it for portable CLI packages on macOS and Linux. The normal package manifest is `~/.config/aquaproj-aqua/aqua.yaml`.
 
-Git SSH commit signing can be configured during bootstrap. The interactive prompt lists public keys found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`; choose `none` to leave signing off. For scripted or non-standard paths, set `git.signingkeyFile` to this machine's public signing key path, for example `$HOME/.ssh/id_ed25519.pub` or `~/.ssh/id_ed25519.pub`.
+During the first init, chezmoi prompts once for machine-local options and stores the answers in `~/.config/chezmoi/chezmoi.toml`:
 
-`fish` is not installed by default. Set `portable_fish=true` if this machine should use the aqua-managed fish binary and the bash/zsh automatic handoff should be allowed to enter it.
+- `portable_fish`: default `false`. Enable it if this machine should use the aqua-managed fish binary and the bash/zsh automatic handoff should be allowed to enter it.
+- `toolchains.uv`: default `true`.
+- `toolchains.bun`: default `true`.
+- `toolchains.rustup`: default `false`.
+- `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 
-For a non-interactive bootstrap, pass the public key file path:
+For scripted bootstrap only, pass machine-local answers with `--override-data`:
 
 ```sh
 chezmoi init --apply \
-  --override-data '{"portable_fish":false,"git":{"signingkeyFile":"$HOME/.ssh/id_ed25519.pub"}}' \
+  --override-data '{"portable_fish":false,"toolchains":{"uv":true,"rustup":false,"bun":true},"git":{"signingkeyFile":"$HOME/.ssh/id_ed25519.pub"}}' \
   https://github.com/wangl-cc/dotfiles.git
 ```
 
-Without overrides, `chezmoi init` prompts for machine-local options. Use `--promptDefaults` to choose defaults non-interactively, including leaving portable fish and Git SSH commit signing disabled. Prefer `--override-data` for scripted bootstraps; chezmoi's `--prompt...` flags match the human prompt text.
+Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers; chezmoi's `--prompt...` flags match the human prompt text and are more brittle.
 
 After the first bootstrap, normal updates usually only need:
 
@@ -47,15 +51,8 @@ Older local configs may still contain `packages.provider`; it is ignored and can
 
 - `aqua` is bootstrapped into the user directory and installs common CLI packages on macOS and Linux.
 - `portable_fish = true` opts this machine into installing fish through aqua.
-- `bun`, `uv`, and `rustup` are language toolchains installed with their official installers when requested.
-
-To opt in to language toolchains during the first init:
-
-```sh
-chezmoi init --apply \
-  --override-data '{"portable_fish":false,"toolchains":{"uv":true,"rustup":true,"bun":false},"git":{"signingkeyFile":""}}' \
-  https://github.com/wangl-cc/dotfiles.git
-```
+- `uv` and `bun` default to installed with their official installers and can be used to install ecosystem CLIs.
+- `rustup` defaults to off and installs the Rust toolchain with the official installer when enabled.
 
 Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `portable_fish = true`.
 
