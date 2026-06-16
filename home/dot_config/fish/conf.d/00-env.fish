@@ -11,5 +11,5 @@ set -gx LS_COLORS "di=1;34:ex=1;32:fi=39:pi=33:so=1;31:bd=1;33:cd=1;33:ln=36:or=
 
 set -gx VISUAL vi
 
-# Let fallback shells know they were launched from fish.
+# Tell fallback bash/zsh shells not to auto-enter fish again.
 set -gx DOT_IN_FISH 1

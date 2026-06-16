@@ -56,7 +56,7 @@ Older local configs may still contain `packages.provider`; it is ignored and can
 
 Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `portable_fish = true`.
 
-When `chezmoi update` or `chezmoi apply` sees that an aqua manifest changed, it runs `aqua install --all --only-link` before applying templates for the normal package set. When portable fish is enabled, fish is installed eagerly from `fish.yaml` so the automatic bash/zsh handoff does not depend on a lazy aqua shim. Set `CHEZMOI_AQUA_EAGER_INSTALL=1` to download all enabled aqua packages instead of relying on lazy install.
+When `chezmoi update` or `chezmoi apply` sees that an aqua manifest changed, it runs `aqua install --all` before applying templates for the enabled aqua manifests.
 
 The package set uses `lsd` as the `ls` replacement. It publishes macOS and Linux release binaries, which keeps rootless aqua installs independent of Rust or Cargo.
 
@@ -65,6 +65,8 @@ Homebrew can still be installed and used manually for macOS-specific software, G
 ## Fish
 
 `fish` is the primary interactive shell. On systems where changing the login shell is not allowed, keep the system login shell; interactive bash/zsh sessions will automatically enter fish when it is available.
+
+Auto-fish is only for fallback bash/zsh sessions. Fish sessions do not source it, and fish exports `DOT_IN_FISH=1` so child bash/zsh shells stay in the shell that was explicitly started.
 
 By default, auto-fish uses fish provided by the system, Homebrew, Nix, or another non-aqua install. Set `portable_fish = true` with `chezmoi edit-config` when this machine should use fish from aqua. This sets `DOT_AUTO_FISH_PORTABLE=1` for fallback bash/zsh sessions.
 

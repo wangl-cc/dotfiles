@@ -1,4 +1,4 @@
-# Enter fish for interactive fallback shells without requiring chsh.
+# Enter fish from interactive fallback bash/zsh shells without requiring chsh.
 
 case "$-" in
     *i*) ;;
@@ -49,7 +49,8 @@ _dot_auto_fish_find() {
 
     if command -v fish >/dev/null 2>&1; then
         fish_path=$(command -v fish)
-        if _dot_auto_fish_portable_enabled || ! _dot_auto_fish_is_aqua_path "$fish_path"; then
+        if [ -x "$fish_path" ] &&
+            { _dot_auto_fish_portable_enabled || ! _dot_auto_fish_is_aqua_path "$fish_path"; }; then
             printf '%s\n' "$fish_path"
             return 0
         fi

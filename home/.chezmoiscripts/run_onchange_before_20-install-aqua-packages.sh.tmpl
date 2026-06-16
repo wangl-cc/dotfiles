@@ -6,13 +6,13 @@
 # portable_fish={{ $portableFish }}
 # aqua.yaml.sha256={{ include $aquaConfigSource | sha256sum }}
 # fish.yaml.sha256={{ include $aquaFishConfigSource | sha256sum }}
-# CHEZMOI_AQUA_EAGER_INSTALL={{ env "CHEZMOI_AQUA_EAGER_INSTALL" | quote }}
 
 set -euo pipefail
 
 aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
 aqua_global_config={{ $aquaConfigSource | quote }}
 aqua_fish_config={{ $aquaFishConfigSource | quote }}
+aqua_enabled_config="$aqua_global_config"
 portable_fish={{ if $portableFish }}1{{ else }}0{{ end }}
 
 if [ -x "$aqua_root/bin/aqua" ]; then
@@ -34,6 +34,10 @@ if [ "$portable_fish" = "1" ] && [ ! -r "$aqua_fish_config" ]; then
     exit 1
 fi
 
+if [ "$portable_fish" = "1" ]; then
+    aqua_enabled_config="$aqua_enabled_config:$aqua_fish_config"
+fi
+
 remove_portable_fish_links() {
     local command link target
 
@@ -49,21 +53,9 @@ remove_portable_fish_links() {
 }
 
 export AQUA_ROOT_DIR="$aqua_root"
+export AQUA_GLOBAL_CONFIG="$aqua_enabled_config"
+"$aqua_bin" install --all
 
-if [ "$portable_fish" = "1" ] && [ "${CHEZMOI_AQUA_EAGER_INSTALL:-}" = "1" ]; then
-    export AQUA_GLOBAL_CONFIG="$aqua_global_config:$aqua_fish_config"
-    "$aqua_bin" install --all
-elif [ "$portable_fish" = "1" ]; then
-    export AQUA_GLOBAL_CONFIG="$aqua_fish_config"
-    "$aqua_bin" install --all
-    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
-    "$aqua_bin" install --all --only-link
-elif [ "${CHEZMOI_AQUA_EAGER_INSTALL:-}" = "1" ]; then
-    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
-    "$aqua_bin" install --all
-    remove_portable_fish_links
-else
-    export AQUA_GLOBAL_CONFIG="$aqua_global_config"
-    "$aqua_bin" install --all --only-link
+if [ "$portable_fish" != "1" ]; then
     remove_portable_fish_links
 fi
