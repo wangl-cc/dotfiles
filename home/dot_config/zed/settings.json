@@ -41,28 +41,7 @@
     "sidebar_side": "right",
     "favorite_models": [
       {
-        "provider": "zed.dev",
-        "model": "claude-sonnet-4-6",
-        "enable_thinking": false,
-      },
-      {
-        "provider": "zed.dev",
-        "model": "gpt-5.4",
-        "enable_thinking": false,
-      },
-      {
-        "provider": "Z.AI",
-        "model": "glm-5.1",
-        "enable_thinking": false,
-      },
-      {
         "provider": "openai-subscribed",
-        "model": "gpt-5.5",
-        "enable_thinking": true,
-        "effort": "medium",
-      },
-      {
-        "provider": "zed.dev",
         "model": "gpt-5.5",
         "enable_thinking": true,
         "effort": "medium",
@@ -77,8 +56,8 @@
       "model": "gpt-5.5",
     },
     "inline_assistant_model": {
-      "provider": "openai-subscribed",
-      "model": "gpt-5.3-codex-spark",
+      "provider": "deepseek",
+      "model": "deepseek-v4-pro",
     },
     "commit_message_model": {
       "provider": "deepseek",
