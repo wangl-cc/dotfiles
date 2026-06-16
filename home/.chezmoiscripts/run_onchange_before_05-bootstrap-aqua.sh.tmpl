@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# {{- if not (lookPath "aqua") }}
+aqua_installer_version="v4.0.4"
+aqua_installer_url="https://raw.githubusercontent.com/aquaproj/aqua-installer/$aqua_installer_version/aqua-installer"
+
+curl -fsSL "$aqua_installer_url" | bash
+# {{- end }}

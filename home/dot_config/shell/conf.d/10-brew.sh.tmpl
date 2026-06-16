@@ -1,0 +1,16 @@
+# {{- $brewPrefix := .homebrew.prefix -}}
+# {{- $brew := joinPath $brewPrefix "bin/brew" -}}
+# {{- if isExecutable $brew }}
+brew_prefix={{ $brewPrefix | quote }}
+export HOMEBREW_PREFIX="$brew_prefix"
+export HOMEBREW_CELLAR="$brew_prefix/Cellar"
+export HOMEBREW_REPOSITORY="$brew_prefix"
+PATH="$brew_prefix/bin:$brew_prefix/sbin:$PATH"
+# {{- if .mirrors.enabled }}
+export HOMEBREW_BREW_GIT_REMOTE={{ .homebrew.git_remote | quote }}
+export HOMEBREW_API_DOMAIN={{ .homebrew.api_domain | quote }}
+export HOMEBREW_BOTTLE_DOMAIN={{ .homebrew.bottle_domain | quote }}
+# {{- end }}
+unset brew_prefix
+export PATH
+# {{- end }}

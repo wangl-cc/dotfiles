@@ -1,0 +1,18 @@
+color:
+  theme: custom
+
+blocks:
+  - permission
+  - user
+  - group
+  - size
+  - date
+  - name
+
+date: "+%Y-%m-%d %H:%M"
+
+icons:
+  when: auto
+
+sorting:
+  dir-grouping: first

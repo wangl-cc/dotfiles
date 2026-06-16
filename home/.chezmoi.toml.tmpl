@@ -16,7 +16,32 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
 
+[data.shell.fish]
+auto = {{ promptBoolOnce . "shell.fish.auto" "Auto-enter fish from fallback bash/zsh sessions" true }}
+portable = {{ promptBoolOnce . "shell.fish.portable" "Install fish with aqua on this machine" false }}
+
+[data.toolchains]
+uv = {{ promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine" true }}
+rustup = {{ promptChoiceOnce . "toolchains.rustup" "Rustup profile to install on this machine" (list "none" "minimal" "default" "complete") "none" | quote }}
+bun = {{ promptBoolOnce . "toolchains.bun" "Install Bun with Bun's official installer on this machine" true }}
+
 [data.git]
 name = "Loong"
 email = "git@loongw.cc"
-signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGaaxi/ianjCt37sKsaWDkRW+XMV0qlM3HHTyqvDnQ/W"
+{{- $gitSigningKeyFiles := glob (joinPath .chezmoi.homeDir ".ssh/*.pub") }}
+{{- $gitSigningDisabled := "none" }}
+{{- $gitSigningKeyChoices := list $gitSigningDisabled }}
+{{- range $gitSigningKeyPath := $gitSigningKeyFiles }}
+{{-   $gitSigningKeyChoices = append $gitSigningKeyChoices (trimSuffix ".pub" (base $gitSigningKeyPath)) }}
+{{- end }}
+{{- $gitSigningKeySelection := promptChoiceOnce . "git.signingkeyFile" "Git SSH commit signing public key" $gitSigningKeyChoices $gitSigningDisabled }}
+{{- $gitSigningKeyFile := "" }}
+{{- if or (eq $gitSigningKeySelection "") (eq $gitSigningKeySelection $gitSigningDisabled) }}
+{{- else if contains "/" $gitSigningKeySelection }}
+{{-   $gitSigningKeyFile = $gitSigningKeySelection }}
+{{- else if hasSuffix ".pub" $gitSigningKeySelection }}
+{{-   $gitSigningKeyFile = printf "~/.ssh/%s" $gitSigningKeySelection }}
+{{- else }}
+{{-   $gitSigningKeyFile = printf "~/.ssh/%s.pub" $gitSigningKeySelection }}
+{{- end }}
+signingkeyFile = {{ $gitSigningKeyFile | quote }}

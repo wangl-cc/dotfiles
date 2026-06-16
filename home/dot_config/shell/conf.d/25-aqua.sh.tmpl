@@ -1,0 +1,22 @@
+# Aqua global config and PATH entry.
+
+aqua_global_config="$XDG_CONFIG_HOME/aquaproj-aqua/aqua.yaml"
+# {{ if dig "shell" "fish" "portable" false . }}
+aqua_global_config="$aqua_global_config:$XDG_CONFIG_HOME/aquaproj-aqua/fish.yaml"
+# {{ end }}
+export AQUA_GLOBAL_CONFIG="$aqua_global_config"
+unset aqua_global_config
+
+if [ -z "${AQUA_ROOT_DIR:-}" ]; then
+    aqua_root="$XDG_DATA_HOME/aquaproj-aqua"
+else
+    aqua_root="$AQUA_ROOT_DIR"
+fi
+
+case ":$PATH:" in
+    *":$aqua_root/bin:"*) ;;
+    *) [ -d "$aqua_root/bin" ] && PATH="$aqua_root/bin:$PATH" ;;
+esac
+
+unset aqua_root
+export PATH
