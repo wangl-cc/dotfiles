@@ -16,17 +16,18 @@ The bootstrap always installs `aqua` rootlessly and uses it for portable CLI pac
 
 During the first init, chezmoi prompts once for machine-local options and stores the answers in `~/.config/chezmoi/chezmoi.toml`:
 
-- `portable_fish`: default `false`. Enable it if this machine should use the aqua-managed fish binary and the bash/zsh automatic handoff should be allowed to enter it.
+- `shell.fish.auto`: default `true`. Enter fish automatically from fallback bash/zsh sessions.
+- `shell.fish.portable`: default `false`. Install fish with aqua and allow auto-fish to use it.
 - `toolchains.uv`: default `true`.
 - `toolchains.bun`: default `true`.
-- `toolchains.rustup`: default `false`.
+- `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 
 For scripted bootstrap only, pass machine-local answers with `--override-data`:
 
 ```sh
 chezmoi init --apply \
-  --override-data '{"portable_fish":false,"toolchains":{"uv":true,"rustup":false,"bun":true},"git":{"signingkeyFile":"$HOME/.ssh/id_ed25519.pub"}}' \
+  --override-data '{"shell":{"fish":{"auto":true,"portable":false}},"toolchains":{"uv":true,"rustup":"none","bun":true},"git":{"signingkeyFile":"$HOME/.ssh/id_ed25519.pub"}}' \
   https://github.com/wangl-cc/dotfiles.git
 ```
 
@@ -45,16 +46,20 @@ chezmoi edit-config
 chezmoi apply
 ```
 
-Older local configs may still contain `packages.provider`; it is ignored and can be removed with `chezmoi edit-config`.
+If the local config schema changes, regenerate the machine-local config:
+
+```sh
+chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
+```
 
 ## Package Strategy
 
 - `aqua` is bootstrapped into the user directory and installs common CLI packages on macOS and Linux.
-- `portable_fish = true` opts this machine into installing fish through aqua.
+- `shell.fish.portable = true` opts this machine into installing fish through aqua.
 - `uv` and `bun` default to installed with their official installers and can be used to install ecosystem CLIs.
-- `rustup` defaults to off and installs the Rust toolchain with the official installer when enabled.
+- `rustup` defaults to `none`. Choose `minimal`, `default`, or `complete` to install it with the official installer and that profile.
 
-Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `portable_fish = true`.
+Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `shell.fish.portable = true`.
 
 When `chezmoi update` or `chezmoi apply` sees that an aqua manifest changed, it runs `aqua install --all` before applying templates for the enabled aqua manifests.
 
@@ -64,14 +69,15 @@ Homebrew can still be installed and used manually for macOS-specific software, G
 
 ## Fish
 
-`fish` is the primary interactive shell. On systems where changing the login shell is not allowed, keep the system login shell; interactive bash/zsh sessions will automatically enter fish when it is available.
+`fish` is the primary interactive shell. On systems where changing the login shell is not allowed, keep the system login shell and leave `shell.fish.auto = true`; interactive bash/zsh sessions will automatically enter fish when it is available. On machines where the login shell is already fish, set `shell.fish.auto = false`.
 
-Auto-fish is only for fallback bash/zsh sessions. Fish sessions do not source it, and fish exports `DOT_IN_FISH=1` so child bash/zsh shells stay in the shell that was explicitly started.
+Auto-fish is only for fallback bash/zsh sessions. Fish sessions do not source it, and fish exports `_CHEZMOI_FISH_SESSION=1` so child bash/zsh shells stay in the shell that was explicitly started.
 
-By default, auto-fish uses fish provided by the system, Homebrew, Nix, or another non-aqua install. Set `portable_fish = true` with `chezmoi edit-config` when this machine should use fish from aqua. This sets `DOT_AUTO_FISH_PORTABLE=1` for fallback bash/zsh sessions.
+Auto-fish uses the first `fish` found in `PATH`. Set `shell.fish.portable = true` with `chezmoi edit-config` when this machine should install fish with aqua; aqua's bin directory is added to `PATH` before auto-fish runs.
 
 To start a shell without this automatic handoff:
 
 ```sh
-DOT_AUTO_FISH=0 bash
+bash --norc
+zsh -f
 ```

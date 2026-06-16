@@ -2,47 +2,9 @@
 
 set -euo pipefail
 
-fetch() {
-    local url=$1
+# {{- if not (lookPath "aqua") }}
+aqua_installer_version="v4.0.4"
+aqua_installer_url="https://raw.githubusercontent.com/aquaproj/aqua-installer/$aqua_installer_version/aqua-installer"
 
-    if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$url"
-    elif command -v wget >/dev/null 2>&1; then
-        wget -qO- "$url"
-    else
-        echo "Neither curl nor wget is available; cannot bootstrap aqua." >&2
-        return 1
-    fi
-}
-
-verify_sha256() {
-    local file=$1
-    local expected=$2
-
-    if command -v sha256sum >/dev/null 2>&1; then
-        printf '%s  %s\n' "$expected" "$file" | sha256sum -c -
-    elif command -v shasum >/dev/null 2>&1; then
-        printf '%s  %s\n' "$expected" "$file" | shasum -a 256 -c -
-    else
-        echo "Neither sha256sum nor shasum is available; cannot verify aqua installer." >&2
-        return 1
-    fi
-}
-
-aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
-aqua_bin="$aqua_root/bin/aqua"
-
-if [ -x "$aqua_bin" ]; then
-    exit 0
-fi
-
-echo "Installing aqua"
-tmp_dir=$(mktemp -d)
-trap 'rm -rf "$tmp_dir"' EXIT
-
-installer="$tmp_dir/aqua-installer"
-fetch https://raw.githubusercontent.com/aquaproj/aqua-installer/v4.0.2/aqua-installer >"$installer"
-verify_sha256 "$installer" "98b883756cdd0a6807a8c7623404bfc3bc169275ad9064dc23a6e24ad398f43d"
-chmod +x "$installer"
-
-AQUA_ROOT_DIR="$aqua_root" "$installer"
+curl -fsSL "$aqua_installer_url" | bash
+# {{- end }}

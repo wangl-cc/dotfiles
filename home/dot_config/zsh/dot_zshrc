@@ -1,1 +1,6 @@
-. "$HOME/.config/shell/env.sh"
+if [[ -d "$HOME/.config/shell/conf.d" ]]; then
+    for shell_config in "$HOME/.config/shell/conf.d/"*.sh(N); do
+        . "$shell_config"
+    done
+    unset shell_config
+fi

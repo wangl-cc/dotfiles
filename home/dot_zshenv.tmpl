@@ -1,30 +1,5 @@
 # Force some programs to use XDG_CONFIG_HOME
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
-export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
-export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
 
 # Make zsh itself use XDG_CONFIG_HOME
 export ZDOTDIR=$XDG_CONFIG_HOME/zsh
-
-{{- $brew := joinPath .homebrew.prefix "bin/brew" }}
-{{- if isExecutable $brew }}
-export HOMEBREW_PREFIX="{{ .homebrew.prefix }}"
-export HOMEBREW_CELLAR="{{ .homebrew.prefix }}/Cellar"
-export HOMEBREW_REPOSITORY="{{ .homebrew.prefix }}"
-path+=("{{ .homebrew.prefix }}/bin" "{{ .homebrew.prefix }}/sbin")
-  {{- if .mirrors.enabled }}
-export HOMEBREW_BREW_GIT_REMOTE="{{ .homebrew.git_remote }}"
-export HOMEBREW_API_DOMAIN="{{ .homebrew.api_domain }}"
-export HOMEBREW_BOTTLE_DOMAIN="{{ .homebrew.bottle_domain }}"
-  {{- end }}
-{{- end }}
-
-{{- $local_bin := joinPath .chezmoi.homeDir ".local/bin" }}
-{{- if stat $local_bin }}
-path+=("{{ $local_bin }}")
-{{- end }}
-{{- $cargo_bin := joinPath .chezmoi.homeDir ".cargo/bin" }}
-{{- if stat $cargo_bin }}
-path+=("{{ $cargo_bin }}")
-{{- end }}
-export PATH

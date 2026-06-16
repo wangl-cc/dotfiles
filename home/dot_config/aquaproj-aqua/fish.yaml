@@ -1,8 +1,8 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/aquaproj/aqua/main/json-schema/aqua-yaml.json
-# Optional portable fish manifest. Enabled per-machine by portable_fish.
+# Optional portable fish manifest
 registries:
-- type: standard
-  ref: v4.524.0 # renovate: depName=aquaproj/aqua-registry
+  - type: standard
+    ref: v4.524.0 # renovate: depName=aquaproj/aqua-registry
 packages:
-- name: fish-shell/fish-shell@4.7.1
+  - name: fish-shell/fish-shell@4.7.1

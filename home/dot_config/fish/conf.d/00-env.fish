@@ -10,6 +10,3 @@ set -gx COPYFILE_DISABLE 1
 set -gx LS_COLORS "di=1;34:ex=1;32:fi=39:pi=33:so=1;31:bd=1;33:cd=1;33:ln=36:or=31"
 
 set -gx VISUAL vi
-
-# Tell fallback bash/zsh shells not to auto-enter fish again.
-set -gx DOT_IN_FISH 1

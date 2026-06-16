@@ -1,19 +1,27 @@
-{{- $aquaConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/aqua.yaml" -}}
-{{- $aquaFishConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" -}}
-{{- $portableFish := get . "portable_fish" | default false -}}
 #!/usr/bin/env bash
+
+# {{- $aquaConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/aqua.yaml" -}}
+# {{- $aquaFishConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" -}}
 #
-# portable_fish={{ $portableFish }}
 # aqua.yaml.sha256={{ include $aquaConfigSource | sha256sum }}
 # fish.yaml.sha256={{ include $aquaFishConfigSource | sha256sum }}
+
+# {{- $shell := get . "shell" | default dict -}}
+# {{- $fish := get $shell "fish" | default dict -}}
+# {{- $fishPortable := get $fish "portable" | default false }}
+# shell.fish.portable={{ $fishPortable }}
 
 set -euo pipefail
 
 aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
-aqua_global_config={{ $aquaConfigSource | quote }}
-aqua_fish_config={{ $aquaFishConfigSource | quote }}
+aqua_global_config="{{ $aquaConfigSource }}"
+aqua_fish_config="{{ $aquaFishConfigSource }}"
 aqua_enabled_config="$aqua_global_config"
-portable_fish={{ if $portableFish }}1{{ else }}0{{ end }}
+# {{ if $fishPortable }}
+fish_portable=1
+# {{ else }}
+fish_portable=0
+# {{ end }}
 
 if [ -x "$aqua_root/bin/aqua" ]; then
     aqua_bin="$aqua_root/bin/aqua"
@@ -29,16 +37,16 @@ if [ ! -r "$aqua_global_config" ]; then
     exit 1
 fi
 
-if [ "$portable_fish" = "1" ] && [ ! -r "$aqua_fish_config" ]; then
+if [ "$fish_portable" = "1" ] && [ ! -r "$aqua_fish_config" ]; then
     echo "Aqua fish config was not found at $aqua_fish_config." >&2
     exit 1
 fi
 
-if [ "$portable_fish" = "1" ]; then
+if [ "$fish_portable" = "1" ]; then
     aqua_enabled_config="$aqua_enabled_config:$aqua_fish_config"
 fi
 
-remove_portable_fish_links() {
+remove_aqua_fish_links() {
     local command link target
 
     for command in fish fish_indent fish_key_reader; do
@@ -56,6 +64,6 @@ export AQUA_ROOT_DIR="$aqua_root"
 export AQUA_GLOBAL_CONFIG="$aqua_enabled_config"
 "$aqua_bin" install --all
 
-if [ "$portable_fish" != "1" ]; then
-    remove_portable_fish_links
+if [ "$fish_portable" != "1" ]; then
+    remove_aqua_fish_links
 fi

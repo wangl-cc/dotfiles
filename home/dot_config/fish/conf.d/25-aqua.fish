@@ -1,5 +1,4 @@
 # Aqua global config location and PATH entry.
-# Relies on try_add_path, defined in 20-path.fish (must run after it).
 set -gx --path AQUA_GLOBAL_CONFIG $XDG_CONFIG_HOME/aquaproj-aqua/aqua.yaml
 
 set -l aqua_root
@@ -12,3 +11,5 @@ else
 end
 
 try_add_path $aqua_root/bin
+
+set -e aqua_root

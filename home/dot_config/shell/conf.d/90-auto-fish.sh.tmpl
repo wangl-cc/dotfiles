@@ -1,0 +1,26 @@
+# Enter fish from interactive fallback bash/zsh shells without requiring chsh.
+
+# {{ if dig "shell" "fish" "auto" true . }}
+case "$-" in
+    *i*) ;;
+    *) return 0 ;;
+esac
+
+if [ "${_CHEZMOI_FISH_SESSION:-}" = "1" ] || [ -n "${FISH_VERSION:-}" ]; then
+    return 0
+fi
+
+case "${SHELL:-}" in
+    fish|*/fish) return 0 ;;
+esac
+
+fish_bin=$(command -v fish 2>/dev/null || true)
+
+if [ -z "$fish_bin" ] || [ ! -x "$fish_bin" ]; then
+    unset fish_bin
+    return 0
+fi
+
+export SHELL="$fish_bin"
+exec "$fish_bin" -l
+# {{ end }}
