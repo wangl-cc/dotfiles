@@ -23,14 +23,6 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 
-For scripted bootstrap only, pass machine-local answers with `--override-data`:
-
-```sh
-chezmoi init --apply \
-  --override-data '{"shell":{"fish":{"auto":true,"portable":false}},"toolchains":{"uv":true,"rustup":"none","bun":true},"git":{"signingkeyFile":"$HOME/.ssh/id_ed25519.pub"}}' \
-  https://github.com/wangl-cc/dotfiles.git
-```
-
 Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers; chezmoi's `--prompt...` flags match the human prompt text and are more brittle.
 
 After the first bootstrap, normal updates usually only need:
@@ -62,8 +54,6 @@ chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
 Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `shell.fish.portable = true`.
 
 When `chezmoi update` or `chezmoi apply` sees that an aqua manifest changed, it runs `aqua install --all` before applying templates for the enabled aqua manifests.
-
-The package set uses `lsd` as the `ls` replacement. It publishes macOS and Linux release binaries, which keeps rootless aqua installs independent of Rust or Cargo.
 
 Homebrew can still be installed and used manually for macOS-specific software, GUI applications, or system packages, but it is not used by this bootstrap to install portable CLI packages.
 
