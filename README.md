@@ -4,12 +4,12 @@ Personal dotfiles managed by [chezmoi](https://www.chezmoi.io/).
 
 ## Bootstrap
 
-On a new machine, install `chezmoi` into the user directory, then apply this repo:
+On a new machine, install `chezmoi` into the user directory and apply this repo:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-export PATH="$HOME/.local/share/aquaproj-aqua/bin:$HOME/.local/bin:$PATH"
-chezmoi init --apply https://github.com/wangl-cc/dotfiles.git
+curl -fsLS https://get.chezmoi.io | sh -s -- \
+  -b "$HOME/.local/bin" \
+  init --apply https://github.com/wangl-cc/dotfiles.git
 ```
 
 The bootstrap always installs `aqua` rootlessly and uses it for portable CLI packages on macOS and Linux. The normal package manifest is `~/.config/aquaproj-aqua/aqua.yaml`.
