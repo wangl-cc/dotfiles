@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/aquaproj/aqua/main/json-schema/aqua-yaml.json
-# aqua - Declarative CLI Version Manager
+# Shared aqua manifest managed by dotfiles.
 # https://aquaproj.github.io/
 registries:
   - type: standard

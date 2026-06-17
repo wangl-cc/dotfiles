@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# {{- $aquaConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/aqua.yaml" -}}
+# {{- $aquaSharedConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/shared.yaml" -}}
 # {{- $aquaFishConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" -}}
 #
-# aqua.yaml.sha256={{ include $aquaConfigSource | sha256sum }}
+# shared.yaml.sha256={{ include $aquaSharedConfigSource | sha256sum }}
 # fish.yaml.sha256={{ include $aquaFishConfigSource | sha256sum }}
 
 # {{- $fishPortable := dig "shell" "fish" "portable" false . }}
@@ -12,8 +12,8 @@
 set -euo pipefail
 
 aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
-aqua_global_config="{{ $aquaConfigSource }}"
-aqua_enabled_config="$aqua_global_config"
+aqua_shared_config="{{ $aquaSharedConfigSource }}"
+aqua_enabled_config="$aqua_shared_config"
 
 if [ -x "$aqua_root/bin/aqua" ]; then
     aqua_bin="$aqua_root/bin/aqua"
@@ -24,8 +24,8 @@ else
     exit 1
 fi
 
-if [ ! -r "$aqua_global_config" ]; then
-    echo "Aqua global config was not found at $aqua_global_config." >&2
+if [ ! -r "$aqua_shared_config" ]; then
+    echo "Aqua shared config was not found at $aqua_shared_config." >&2
     exit 1
 fi
 

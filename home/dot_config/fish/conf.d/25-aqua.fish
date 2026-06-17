@@ -1,5 +1,8 @@
 # Aqua global config location and PATH entry.
-set -gx --path AQUA_GLOBAL_CONFIG $XDG_CONFIG_HOME/aquaproj-aqua/aqua.yaml
+# Keep the machine-local manifest first so `aqua generate -g -i` writes there.
+set -gx --path AQUA_GLOBAL_CONFIG \
+    $XDG_CONFIG_HOME/aquaproj-aqua/local.yaml \
+    $XDG_CONFIG_HOME/aquaproj-aqua/shared.yaml
 
 set -l aqua_root
 if set -q AQUA_ROOT_DIR

@@ -12,7 +12,7 @@ curl -fsLS https://get.chezmoi.io | sh -s -- \
   init --apply https://github.com/wangl-cc/dotfiles.git
 ```
 
-The bootstrap always installs `aqua` rootlessly and uses it for portable CLI packages on macOS and Linux. The normal package manifest is `~/.config/aquaproj-aqua/aqua.yaml`.
+The bootstrap always installs `aqua` rootlessly and uses it for portable CLI packages on macOS and Linux. Shared packages live in `~/.config/aquaproj-aqua/shared.yaml`.
 
 During the first init, chezmoi prompts once for machine-local options and stores the answers in `~/.config/chezmoi/chezmoi.toml`:
 
@@ -51,9 +51,11 @@ chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
 - `uv` and `bun` default to installed with their official installers and can be used to install ecosystem CLIs.
 - `rustup` defaults to `none`. Choose `minimal`, `default`, or `complete` to install it with the official installer and that profile.
 
-Aqua packages are declared directly in `~/.config/aquaproj-aqua/aqua.yaml` so Renovate can update that file in GitHub. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `shell.fish.portable = true`.
+Aqua shared packages are declared in `~/.config/aquaproj-aqua/shared.yaml` so Renovate can update that file in GitHub. Machine-local packages live in `~/.config/aquaproj-aqua/local.yaml`, which chezmoi creates once and then leaves user-managed. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `shell.fish.portable = true`.
 
-When `chezmoi update` or `chezmoi apply` sees that an aqua manifest changed, it runs `aqua install --all` before applying templates for the enabled aqua manifests.
+`AQUA_GLOBAL_CONFIG` is ordered as `local.yaml:shared.yaml[:fish.yaml]`, so `aqua generate -g -i typst/typst` writes to the machine-local manifest by default. Install local packages manually with `aqua install --all`; `chezmoi update` and `chezmoi apply` only auto-install dotfiles-managed manifests.
+
+When `chezmoi update` or `chezmoi apply` sees that a dotfiles-managed aqua manifest changed, it runs `aqua install --all` before applying templates for `shared.yaml` and the optional portable fish manifest.
 
 Homebrew can still be installed and used manually for macOS-specific software, GUI applications, or system packages, but it is not used by this bootstrap to install portable CLI packages.
 

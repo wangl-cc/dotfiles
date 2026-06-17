@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aquaproj/aqua/main/json-schema/aqua-yaml.json
+# Machine-local aqua manifest.
+# chezmoi creates ~/.config/aquaproj-aqua/local.yaml once and then leaves it
+# user-managed. Put per-machine tools here with `aqua generate -g -i`.
+registries:
+  - type: standard
+    ref: v4.524.0
+packages: []
