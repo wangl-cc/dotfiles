@@ -44,7 +44,7 @@
         "provider": "openai-subscribed",
         "model": "gpt-5.5",
         "enable_thinking": true,
-        "effort": "medium",
+        "effort": "high",
       },
     ],
     "show_turn_stats": true,
