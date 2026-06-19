@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-# {{- $toolchains := get . "toolchains" | default dict }}
-
 set -euo pipefail
 
-# {{ $uv := get $toolchains "uv" | default false }}
-# {{- if and $uv (not (lookPath "uv")) }}
+# {{- if and .toolchains.uv (not (lookPath "uv")) }}
 echo "Installing uv"
 curl -fsSL https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
 # {{- end }}
 
-# {{- $rustup := get $toolchains "rustup" | default "none" }}
+# {{- $rustup := .toolchains.rustup }}
 # {{- if and (ne $rustup "none") (ne $rustup "minimal") (ne $rustup "default") (ne $rustup "complete") }}
 # {{-   fail "toolchains.rustup must be one of: none, minimal, default, complete" }}
 # {{- end }}
@@ -20,8 +17,7 @@ rustup_profile={{ $rustup | quote }}
 curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile "$rustup_profile"
 # {{- end }}
 
-# {{- $bun := get $toolchains "bun" | default false }}
-# {{- if and $bun (not (lookPath "bun")) }}
+# {{- if and .toolchains.bun (not (lookPath "bun")) }}
 echo "Installing bun"
 curl -fsSL https://bun.sh/install | BUN_INSTALL="$HOME/.bun" SHELL=/bin/sh bash
 # {{- end }}

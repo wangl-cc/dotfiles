@@ -16,9 +16,7 @@ esac
 
 # {{ $fishPortable := dig "shell" "fish" "portable" false . }}
 # {{ if $fishPortable }}
-# {{ $aquaFishConfig := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" }}
-# {{ $aquaBin := joinPath .chezmoi.homeDir ".local/share/aquaproj-aqua/bin/aqua" }}
-fish_bin={{ output $aquaBin "--config" $aquaFishConfig "which" "fish" | trim | quote }}
+fish_bin={{ output .aqua.bin "--config" .aqua.sourceFishConfig "which" "fish" | trim | quote }}
 # {{ else }}
 fish_bin=$(command -v fish 2>/dev/null || true)
 # {{ end }}

@@ -1,0 +1,9 @@
+# Aqua global config location and PATH entry.
+# Keep the machine-local manifest first so `aqua generate -g -i` writes there.
+set -gx --path AQUA_GLOBAL_CONFIG \
+    {{ .aqua.localConfig | quote }} \
+    {{ .aqua.sharedConfig | quote }}
+
+set -gx AQUA_ROOT_DIR {{ .aqua.rootDir | quote }}
+
+try_add_path {{ .aqua.binDir | quote }}

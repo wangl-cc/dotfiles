@@ -3,13 +3,11 @@
 
 status is-interactive; or return
 
-{{ $aquaConfig := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/shared.yaml" -}}
-{{ $aquaBin := joinPath .chezmoi.homeDir ".local/share/aquaproj-aqua/bin/aqua" -}}
 {{
   output
     "env"
     "PATH=/usr/bin:/bin:/usr/sbin:/sbin"
-    (output $aquaBin "--config" $aquaConfig "which" "starship" | trim)
+    (output .aqua.bin "--config" .aqua.sourceSharedConfig "which" "starship" | trim)
     "init"
     "fish"
     "--print-full-init"

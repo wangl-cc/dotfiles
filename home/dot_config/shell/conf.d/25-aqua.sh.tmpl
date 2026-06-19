@@ -1,23 +1,17 @@
 # Aqua global config and PATH entry.
 
 # Keep the machine-local manifest first so `aqua generate -g -i` writes there.
-aqua_global_config="$XDG_CONFIG_HOME/aquaproj-aqua/local.yaml:$XDG_CONFIG_HOME/aquaproj-aqua/shared.yaml"
+# {{ $aquaGlobalConfig := list .aqua.localConfig .aqua.sharedConfig }}
 # {{ if dig "shell" "fish" "portable" false . }}
-aqua_global_config="$aqua_global_config:$XDG_CONFIG_HOME/aquaproj-aqua/fish.yaml"
+# {{ $aquaGlobalConfig = append $aquaGlobalConfig .aqua.fishConfig }}
 # {{ end }}
-export AQUA_GLOBAL_CONFIG="$aqua_global_config"
-unset aqua_global_config
+export AQUA_GLOBAL_CONFIG={{ $aquaGlobalConfig | join ":" | quote }}
 
-if [ -z "${AQUA_ROOT_DIR:-}" ]; then
-    aqua_root="$XDG_DATA_HOME/aquaproj-aqua"
-else
-    aqua_root="$AQUA_ROOT_DIR"
-fi
+export AQUA_ROOT_DIR="{{ .aqua.rootDir }}"
 
 case ":$PATH:" in
-    *":$aqua_root/bin:"*) ;;
-    *) [ -d "$aqua_root/bin" ] && PATH="$aqua_root/bin:$PATH" ;;
+    *":{{ .aqua.binDir }}:"*) ;;
+    *) [ -d "{{ .aqua.binDir }}" ] && PATH="{{ .aqua.binDir }}:$PATH" ;;
 esac
 
-unset aqua_root
 export PATH

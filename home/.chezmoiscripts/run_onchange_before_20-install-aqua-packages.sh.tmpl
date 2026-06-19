@@ -1,45 +1,26 @@
 #!/usr/bin/env bash
 
-# {{- $aquaSharedConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/shared.yaml" -}}
-# {{- $aquaFishConfigSource := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua/fish.yaml" -}}
+# {{- $fishPortable := dig "shell" "fish" "portable" false . -}}
 #
-# shared.yaml.sha256={{ include $aquaSharedConfigSource | sha256sum }}
-# fish.yaml.sha256={{ include $aquaFishConfigSource | sha256sum }}
-
-# {{- $fishPortable := dig "shell" "fish" "portable" false . }}
-# shell.fish.portable={{ $fishPortable }}
+# shared.yaml.sha256={{ include .aqua.sourceSharedConfig | sha256sum }}
+# {{ if $fishPortable }}
+# fish.yaml.sha256={{ include .aqua.sourceFishConfig | sha256sum }}
+# {{ end }}
 
 set -euo pipefail
 
-aqua_root="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}"
-aqua_shared_config="{{ $aquaSharedConfigSource }}"
-aqua_enabled_config="$aqua_shared_config"
+# {{ if (isExecutable .aqua.bin) }}
 
-if [ -x "$aqua_root/bin/aqua" ]; then
-    aqua_bin="$aqua_root/bin/aqua"
-elif command -v aqua >/dev/null 2>&1; then
-    aqua_bin=$(command -v aqua)
-else
-    echo "aqua was not found. Run chezmoi apply again after the bootstrap script installs it." >&2
-    exit 1
-fi
-
-if [ ! -r "$aqua_shared_config" ]; then
-    echo "Aqua shared config was not found at $aqua_shared_config." >&2
-    exit 1
-fi
-
+# {{ $aquaEnabledConfig := list .aqua.sourceSharedConfig }}
 # {{ if $fishPortable }}
-aqua_fish_config="{{ $aquaFishConfigSource }}"
-
-if [ ! -r "$aqua_fish_config" ]; then
-    echo "Aqua fish config was not found at $aqua_fish_config." >&2
-    exit 1
-fi
-
-aqua_enabled_config="$aqua_enabled_config:$aqua_fish_config"
+# {{ $aquaEnabledConfig = append $aquaEnabledConfig .aqua.sourceFishConfig }}
 # {{ end }}
 
+export AQUA_ROOT_DIR="{{ .aqua.rootDir }}"
+export AQUA_GLOBAL_CONFIG="{{ $aquaEnabledConfig | join ":" }}"
+"{{ .aqua.bin }}" install --all
+
+# {{ if not $fishPortable }}
 remove_stale_aqua_fish_links() {
     local command link target
 
@@ -48,7 +29,7 @@ remove_stale_aqua_fish_links() {
     # from bin/. Remove only aqua-proxy symlinks so shell.fish.portable=false
     # does not keep resolving fish from aqua ahead of system/Homebrew fish.
     for command in fish fish_indent fish_key_reader; do
-        link="$aqua_root/bin/$command"
+        link="{{ .aqua.binDir }}/$command"
         if [ -L "$link" ]; then
             target=$(readlink "$link" || true)
             case "$target" in
@@ -58,10 +39,10 @@ remove_stale_aqua_fish_links() {
     done
 }
 
-export AQUA_ROOT_DIR="$aqua_root"
-export AQUA_GLOBAL_CONFIG="$aqua_enabled_config"
-"$aqua_bin" install --all
-
-# {{ if not $fishPortable }}
 remove_stale_aqua_fish_links
+# {{ end }}
+
+# {{ else }}
+echo "aqua was not found at {{ .aqua.bin }}. Run chezmoi apply again after the bootstrap script installs it." >&2
+exit 1
 # {{ end }}

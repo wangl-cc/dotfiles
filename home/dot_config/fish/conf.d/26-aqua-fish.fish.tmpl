@@ -1,4 +1,4 @@
 # {{- if dig "shell" "fish" "portable" false . }}
 # Include the optional aqua-managed fish manifest in fish sessions.
-set -gx --append --path AQUA_GLOBAL_CONFIG $XDG_CONFIG_HOME/aquaproj-aqua/fish.yaml
+set -gx --append --path AQUA_GLOBAL_CONFIG {{ .aqua.fishConfig | quote }}
 # {{- end }}

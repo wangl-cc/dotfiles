@@ -53,6 +53,8 @@ chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
 
 Aqua shared packages are declared in `~/.config/aquaproj-aqua/shared.yaml` so Renovate can update that file in GitHub. Machine-local packages live in `~/.config/aquaproj-aqua/local.yaml`, which chezmoi creates once and then leaves user-managed. Optional portable fish lives in `~/.config/aquaproj-aqua/fish.yaml` and is only enabled when `shell.fish.portable = true`.
 
+Default aqua paths are centralized under `[data.aqua]` in the chezmoi config template.
+
 `AQUA_GLOBAL_CONFIG` is ordered as `local.yaml:shared.yaml[:fish.yaml]`, so `aqua generate -g -i typst/typst` writes to the machine-local manifest by default. Install local packages manually with `aqua install --all`; `chezmoi update` and `chezmoi apply` only auto-install dotfiles-managed manifests.
 
 When `chezmoi update` or `chezmoi apply` sees that a dotfiles-managed aqua manifest changed, it runs `aqua install --all` before applying templates for `shared.yaml` and the optional portable fish manifest.
@@ -65,7 +67,7 @@ Homebrew can still be installed and used manually for macOS-specific software, G
 
 Auto-fish is only for fallback bash/zsh sessions. Fish sessions do not source it, and fish exports `_CHEZMOI_FISH_SESSION=1` so child bash/zsh shells stay in the shell that was explicitly started.
 
-Auto-fish uses the first `fish` found in `PATH`. Set `shell.fish.portable = true` with `chezmoi edit-config` when this machine should install fish with aqua; aqua's bin directory is added to `PATH` before auto-fish runs.
+Set `shell.fish.portable = true` with `chezmoi edit-config` when this machine should install fish with aqua. Auto-fish then resolves the aqua-managed fish binary directly instead of depending on `PATH`.
 
 To start a shell without this automatic handoff:
 

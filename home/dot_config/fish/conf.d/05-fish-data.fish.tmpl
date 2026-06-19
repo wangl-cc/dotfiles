@@ -13,14 +13,7 @@ if not set -q __fish_data_dir; or not test -d "$__fish_data_dir"
     end
 
     if test -z "$fish_data_dir"
-        set -l aqua_root
-        if set -q AQUA_ROOT_DIR
-            set aqua_root $AQUA_ROOT_DIR
-        else if set -q XDG_DATA_HOME
-            set aqua_root $XDG_DATA_HOME/aquaproj-aqua
-        else
-            set aqua_root $HOME/.local/share/aquaproj-aqua
-        end
+        set -l aqua_root {{ .aqua.rootDir | quote }}
 
         if test -d "$aqua_root/pkgs/github_release/github.com/fish-shell/fish-shell"
             for candidate_dir in "$aqua_root"/pkgs/github_release/github.com/fish-shell/fish-shell/*/*/fish.pkg/Payload/usr/local/share/fish
