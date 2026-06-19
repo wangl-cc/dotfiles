@@ -21,6 +21,9 @@ Ulimit=memlock=-1:-1
 SeccompProfile=unconfined
 PodmanArgs=--ipc host
 
+# Persist cache of dnf5
+Volume=dev-box-dnf5-cache:/var/cache/libdnf5
+
 # Persist the container's ssh host keys
 Volume=dev-box-ssh-keys:/etc/ssh
 
