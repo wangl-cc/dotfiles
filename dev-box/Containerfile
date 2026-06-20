@@ -28,6 +28,10 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 # Cleanup (don't run dnf clean all, just remove logs)
 RUN rm -rf /var/log/dnf*
 
+# Fedora atomic hosts expose home directories under /var/home, while the
+# container keeps the conventional /home path. Support both spellings.
+RUN ln -s /home /var/home
+
 # Enable sudo permission for $USERNAME
 RUN groupadd -g $USER_GID $USERNAME && \
     useradd -u $USER_UID -g $USER_GID -s /usr/bin/fish $USERNAME && \
