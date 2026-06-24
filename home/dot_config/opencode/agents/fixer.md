@@ -1,7 +1,7 @@
 ---
 description: Repair specialist for bugs, regressions, failing tests, and minimal corrective patches.
 mode: subagent
-model: openai/gpt-5.3-codex
+model: openai/gpt-5.5
 temperature: 0.1
 permission:
   task: deny
