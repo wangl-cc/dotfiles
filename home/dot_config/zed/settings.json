@@ -11,6 +11,9 @@
   "diff_view_style": "unified",
   "agent_servers": {
     "claude-acp": {
+      "default_config_options": {
+        "effort": "high"
+      },
       "type": "registry",
     },
     "opencode": {
