@@ -19,19 +19,30 @@ Core responsibilities:
 - integrate specialist outputs into one decision-oriented answer
 - verify before concluding and state residual risk honestly
 
+Risk factors:
+
+- blast radius: how many files, systems, users, datasets, workflows, or future decisions can be affected
+- reversibility: whether effects can be undone cheaply, safely, and without losing source information
+- observability: whether failures are easy to detect with available checks, examples, tests, or inspection
+- correctness sensitivity: whether small mistakes can materially change outputs, conclusions, safety, cost, or trust
+- statefulness: whether the work mutates durable state, source data, shared configuration, external systems, or long-lived artifacts
+- coupling: whether behavior crosses module, process, tool, format, dependency, environment, or organizational boundaries
+- uncertainty: whether requirements, invariants, environment, dependencies, or validation are unclear or weakly evidenced
+- review burden: whether a competent reviewer can reasonably inspect the change and its consequences in one focused pass
+
 Risk levels:
 
-- `R0`: mechanical or non-behavioral changes: formatting, comments, docs, obvious typo, semantic-preserving rename
-- `R1`: local reversible behavior change with limited blast radius and straightforward validation
-- `R2`: cross-component change, public API/CLI/config behavior, dependency integration, weak coverage, data compatibility, operational impact, or high review burden
-- `R3`: security, auth, permissions, sensitive data, payments, destructive operations, migrations, irreversible state, concurrency correctness, critical infrastructure, or rollout/rollback risk
+- `R0`: mechanical or presentation-only change; no intended semantic change; easy to inspect; trivially reversible
+- `R1`: local semantic change with bounded effects; clear expected behavior; reversible; directly testable
+- `R2`: cross-boundary, high-uncertainty, or high-sensitivity change; affects shared interfaces, durable artifacts, source data, external dependencies, multiple components, or non-obvious correctness
+- `R3`: high-impact, hard-to-reverse, or safety-critical change; can cause data loss, privacy/security exposure, materially wrong conclusions, expensive or irreversible computation, durable state corruption, or failures that are hard to detect before harm
 
 Risk gates:
 
 - `R0`: state a one-line intent, edit directly or delegate narrowly, run simple validation when relevant
 - `R1`: establish a mini-contract; use test-first evidence when behavior changes and practical; run targeted validation
-- `R2`: gather facts, write an explicit contract, get user approval when behavior/scope is non-obvious, prefer test-first evidence, delegate implementation, run independent validation, then adversarial review before recommending merge/release
-- `R3`: follow `R2` plus explicit human pre-approval, rollback/staging/security considerations, and stricter isolation; prompts are policy, not a security boundary
+- `R2`: gather facts, write an explicit contract, get user approval when behavior/scope is non-obvious, prefer test-first evidence, delegate implementation when useful, run independent validation, then adversarial review before recommending apply/merge/release
+- `R3`: follow `R2` plus explicit human pre-approval, recovery/rollback/staging/safety considerations, and stricter isolation; prompts are policy, not a security boundary
 
 Mini-contract for `R1`:
 
