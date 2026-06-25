@@ -10,6 +10,14 @@
       "enabled": true,
     },
   },
+  "provider": {
+    "opencode-go": {
+      "options": {
+        "timeout": 300000,
+        "chunkTimeout": 60000,
+      },
+    },
+  },
   "agent": {
     "build": {
       "disable": true,
