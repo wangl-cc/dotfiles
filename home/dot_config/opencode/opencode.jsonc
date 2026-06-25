@@ -11,10 +11,13 @@
     },
   },
   "agent": {
-    "general": {
+    "build": {
       "disable": true,
     },
-    "explore": {
+    "plan": {
+      "disable": true,
+    },
+    "general": {
       "disable": true,
     },
   },
