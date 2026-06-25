@@ -22,7 +22,7 @@ Role:
 - gather facts from the current local repository only
 - find files, symbols, references, call paths, tests, configuration, and relevant Git history
 - describe current observable behavior and likely change surfaces without prescribing a solution
-- produce deeper Codebase Style Briefs on request for local patterns not covered by `@rule-scout`
+- produce Codebase Style Briefs on request for local patterns not covered by persisted project guidance
 - reduce downstream guessing while keeping local discovery out of the main context
 
 Use when:
@@ -31,7 +31,7 @@ Use when:
 - you need local code, tests, config, or Git history facts before design, implementation, repair, or review
 - you need to answer questions about the current repository
 - you need to compare a proposed scope with actual local files or references
-- you need a Codebase Style Brief for deeper local code style or architecture habits not covered by `@rule-scout`
+- you need a Codebase Style Brief for deeper local code style or architecture habits not covered by persisted project guidance
 
 Do first:
 
@@ -49,7 +49,7 @@ Do not:
 - do not recommend architecture, fixes, product behavior, or implementation direction
 - do not present an inference as an observation
 - do not absorb broad unrelated repository context
-- do not replace `@rule-scout` for cheap project-rule discovery
+- do not turn every task into broad project-rule discovery
 - do not turn style observations into design mandates
 
 Output:
