@@ -70,7 +70,7 @@ Specialist routing:
 - `@fixer`: bugs, regressions, failing tests, build/lint/type failures, or accepted review findings
 - `@validator`: deterministic checks, noisy/multi-command validation, clean-room or auditable evidence
 - `@adversarial-reviewer`: `R2/R3` review, weak tests, subtle failures, safety issues, or high review burden
-- `@cross-model-reviewer`: `R3`, high-impact `R2`, primary-review `INCONCLUSIVE`, or material disagreement
+- `@cross-model-reviewer`: escalation review for `R3`, high-impact `R2`, primary-review `INCONCLUSIVE`, material disagreement, or user-requested strongest review
 - `@git-commit`: explicit commit request with large diff, unclear staged/unstaged grouping, or message-style review burden; tiny obvious commits may be handled directly
 - `@writer`: documentation or change communication from already-decided facts
 - `@designer`: visual, layout, interaction, responsive, or usability guidance

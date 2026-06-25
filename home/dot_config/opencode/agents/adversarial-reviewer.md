@@ -1,7 +1,7 @@
 ---
 description: Independent read-only adversarial reviewer for semantic, test, safety, and maintainability gaps.
 mode: subagent
-model: openai/gpt-5.5
+model: opencode-go/glm-5.2
 temperature: 0.1
 reasoningEffort: high
 permission:
