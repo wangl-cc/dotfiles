@@ -1,7 +1,7 @@
 ---
 description: Read-only local repository explorer for files, symbols, code paths, tests, configuration, Git history, and deep codebase style briefs.
 mode: subagent
-model: deepseek/deepseek-v4-pro
+model: opencode-go/deepseek-v4-flash
 reasoningEffort: max
 temperature: 0.1
 permission:
