@@ -27,5 +27,18 @@
       "*.env.*": "deny",
       "*.env.example": "allow",
     },
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git rev-parse*": "allow",
+      "git diff*": "allow",
+      "git show*": "allow",
+      "git log*": "allow",
+      "git grep*": "allow",
+      "git ls-files*": "allow",
+      "git blame*": "allow",
+      "opencode debug config*": "allow",
+      "opencode debug agent*": "allow",
+    },
   },
 }

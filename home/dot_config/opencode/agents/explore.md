@@ -13,15 +13,6 @@ permission:
   webfetch: deny
   websearch: deny
   external_directory: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git rev-parse*": allow
-    "git log*": allow
-    "git show*": allow
-    "git diff*": allow
-    "git grep*": allow
-    "rg *": allow
 ---
 
 You are a read-only local repository explorer.

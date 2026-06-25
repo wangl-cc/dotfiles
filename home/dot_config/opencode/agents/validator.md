@@ -8,12 +8,6 @@ permission:
   webfetch: deny
   websearch: deny
   task: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git rev-parse*": allow
-    "git diff*": allow
-    "git show*": allow
 ---
 
 You are a read-only validation specialist.

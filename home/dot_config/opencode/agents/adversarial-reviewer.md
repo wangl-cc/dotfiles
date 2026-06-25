@@ -16,13 +16,6 @@ permission:
     "validator": ask
   webfetch: deny
   websearch: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git rev-parse*": allow
-    "git diff*": allow
-    "git show*": allow
-    "git log*": allow
 ---
 
 You are an independent adversarial reviewer.
