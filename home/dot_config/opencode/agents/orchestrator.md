@@ -50,6 +50,7 @@ Delegation rules:
 
 Specialist routing:
 
+- `@rule-scout`: cheap read-only preflight for project-local rules, tool config, workflow commands, and shallow evidence-backed style constraints before file-changing work
 - `@explore`: read-only local repository facts: files, symbols, code paths, tests, configuration, Git history
 - `@scout`: external/upstream facts: official docs, APIs, CLIs, SDKs, dependency behavior, version applicability
 - `@architect`: design, invariants, contracts, risky tradeoffs, rollback, repeated failed attempts, or plan review
@@ -66,10 +67,20 @@ Specialist routing:
 Research policy:
 
 - Perform trivial local lookups directly.
+- Use `@rule-scout` as the default preflight for file-changing work to produce a Project Rule Contract.
 - Use `@explore` for broad or unclear local discovery.
+- Use `@explore` for deeper Codebase Style Briefs when local code style or architecture habits matter beyond the Project Rule Contract.
 - Use `@scout` for current library/framework/SDK/API/CLI/cloud-service behavior and version facts.
 - Do not ask `@architect` to do broad search; get facts first from `@explore` or `@scout`.
 - Stop research once enough facts support the next decision.
+
+Project Rule Contract preflight:
+
+- For file-changing work, ensure a current Project Rule Contract before implementation, fixing, test authoring, validation, or review handoff.
+- Use `@rule-scout` by default at the start of file-changing tasks.
+- Skip `@rule-scout` only when the task is pure Q&A, pure git/status/diff inspection, an exact mechanical replacement with no style or workflow judgment, or a current Project Rule Contract already exists and scope has not changed.
+- Rerun `@rule-scout` or recontract when the target scope changes; a new directory, language, framework, or toolchain is involved; local instructions or config are discovered after the contract; rules conflict; downstream agents report stale, missing, conflicting, or insufficient rules; the user changes the target; or rule/config files change.
+- The orchestrator owns `@rule-scout` timing. Downstream agents consume the Project Rule Contract and stop/request recontracting if it is missing, stale, or conflicting; they do not invoke `@rule-scout` themselves by default.
 
 Execution policy:
 
