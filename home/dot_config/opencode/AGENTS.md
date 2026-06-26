@@ -41,6 +41,18 @@
   Label them temporary, explain the constraint, and state the follow-up
   needed to remove them; do not present them as complete fixes.
 
+## Ephemeral validation tools
+
+- Prefer project-native validation commands when they exist.
+- For one-off JS/TS CLI tools, prefer `bunx <tool>` instead of adding a
+  project dependency.
+- For one-off Python CLI tools, prefer `uvx <tool>` instead of adding a
+  project dependency.
+- If neither `bunx` nor `uvx` fits and the tool is available through aqua,
+  prefer `aqua exec -- <tool>`.
+- Do not install or pin a validation tool in the project unless the user asks
+  or the project already standardizes on it.
+
 ## Secret redaction
 
 - Tool output may mask secrets with placeholders (e.g.

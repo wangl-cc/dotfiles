@@ -1,6 +1,6 @@
 ---
 name: project-conventions
-description: Capture or refresh persisted project conventions. Use when the user wants to initialize AGENTS.md, project style, validation commands, tool preferences, or permission guidance so agents stop rediscovering rules each session.
+description: Capture or refresh persisted project conventions. Use when the user wants to initialize AGENTS.md, project style, validation commands, or tool preferences so agents stop rediscovering rules each session.
 ---
 
 # Project Conventions
@@ -13,7 +13,7 @@ future agents can read directly.
 - The user asks to initialize, capture, refresh, or persist project rules.
 - The user says agents keep rediscovering project style or validation commands.
 - The user wants an `AGENTS.md`, conventions file, or project profile.
-- The user wants common validation commands and permission recommendations for a project.
+- The user wants common validation commands and tool preferences for a project.
 
 Do not use this skill for ordinary implementation work, one-off lint failures,
 or broad codebase exploration unless the goal is to write durable project
@@ -45,8 +45,8 @@ file. Keep project-specific conventions in the project.
    - formatting, linting, type-checking, testing, and documentation commands
    - common validation commands for JS/TS, Python, Rust, Markdown, JSONC, and
      spelling when applicable
-   - project-local commands the user trusts enough to allow without repeated
-     prompts, including tests or build commands that execute project code
+   - project-local validation commands agents should prefer for checks, tests,
+     builds, documentation, and spelling
    - commit message style and review expectations
 4. Prefer project-native commands over ephemeral runners. Use ephemeral runners
    only when the project has no pinned tool:
@@ -59,18 +59,19 @@ file. Keep project-specific conventions in the project.
    focused local inspection only when the persisted guidance is missing, stale,
    conflicting, or insufficient.
 
-## Trusted Project Permissions
+## Validation Commands
 
-The global allow list should cover broadly safe commands. This skill is for the
-project-specific layer: when the user says the project is trusted, write durable
-project-local permission rules that allow the commands they expect agents to run
-without asking every time.
+This skill records which validation commands are correct for the project. It
+does not treat project-local permission as a security boundary. Global opencode
+permission controls the user's baseline trust policy; project guidance should
+explain what to run, not silently expand what may run.
 
-Do not add these trust rules globally by default. Put them in the project's
-opencode config, such as `opencode.jsonc`, `.opencode/opencode.jsonc`, or the
-location already used by that project.
+For unfamiliar or third-party repositories, document commands but do not infer
+that they are safe. If the user wants different permission behavior, surface it
+as an explicit configuration choice rather than burying it in project
+conventions.
 
-### Common trusted-project allow rules
+### Common commands to record
 
 Use the package manager and commands that the project actually uses.
 
@@ -85,36 +86,14 @@ Use the package manager and commands that the project actually uses.
 - Documentation and spelling: project-native docs build commands and `typos*`
   when accepted by the project.
 
-### Still ask or deny by default
+### Commands to label with risk
 
 - Long-running, networked, deployment, migration, publish, install, or external
-  service commands unless the user explicitly includes them in the trust profile.
+  service commands.
 - Destructive filesystem commands.
 - VCS history destruction or force push.
 - In-place fix modes unless the user explicitly asks: `--fix`, `--write`,
   `--write-changes`, `-w`, `cargo clippy --fix*`.
-
-### Example project permission block
-
-```jsonc
-{
-  "permission": {
-    "bash": {
-      "*": "ask",
-      "cargo test*": "allow",
-      "cargo +nightly test*": "allow",
-      "cargo check*": "allow",
-      "cargo +nightly check*": "allow",
-      "cargo clippy*": "allow",
-      "cargo +nightly clippy*": "allow",
-      "cargo doc*": "allow",
-      "cargo +nightly doc*": "allow",
-      "cargo clippy *--fix*": "ask",
-      "cargo +nightly clippy *--fix*": "ask"
-    }
-  }
-}
-```
 
 ## JSONC Validation
 
@@ -150,11 +129,11 @@ When drafting persisted guidance, keep it compact:
 - Test: ...
 - Docs: ...
 
-## Permissions and Command Risk
+## Command Risk
 
-- Safe to run without asking: ...
-- Ask first: ...
-- Never run: ...
+- Preferred validation commands: ...
+- Risky or long-running commands: ...
+- Commands not to run without explicit user intent: ...
 
 ## Style and Review
 
