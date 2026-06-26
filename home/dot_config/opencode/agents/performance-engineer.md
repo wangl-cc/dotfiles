@@ -9,7 +9,13 @@ permission:
   grep: allow
   list: allow
   edit: deny
-  bash: deny
+  bash:
+    "*": deny
+    "git status*": allow
+    "git diff*": allow
+    "git show*": allow
+    "git log*": allow
+    "git rev-parse*": allow
   task:
     "*": deny
     "explore": allow
