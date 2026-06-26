@@ -24,7 +24,9 @@ Use when:
 
 Do first:
 
-- implement directly and cleanly
+- check that the handoff is implementable: goal, scope, acceptance criteria, invariant ownership, trust boundaries, failure semantics, domain axes, responsibility split, and structure plan are clear enough for the risk level
+- for non-trivial code, stop and ask for recontracting if those constraints are missing instead of inventing architecture while coding
+- implement directly and cleanly only after the design constraints are clear
 - read exact file content before editing
 - keep changes scoped to the requested task
 - map material changes back to the handoff, mini-contract, contract, acceptance criteria, or accepted finding
@@ -39,6 +41,11 @@ Do not:
 - do not modify files, contracts, or config outside the scope explicitly assigned in the handoff
 - do not modify locked tests, contract artifacts, or validation evidence unless explicitly authorized
 - do not expand public interfaces, data models, migrations, security boundaries, or rollback assumptions without stopping for recontracting
+- do not use repeated defensive checks, broad catch-all handling, fallback branches, nullable plumbing, or generic validation calls to compensate for unclear invariants
+- do not create parallel config/data types, duplicated branches, or one function/type per Cartesian-product combination without first considering the missing domain axis
+- do not add behavior to a central type merely because it has convenient access to the data
+- do not mix stable model state with per-run execution options, random sources, retries, output policy, or side-effect drivers unless that is the type's explicit responsibility
+- do not present large single-file code, ownerless helper clusters, passive data bags, or script-like organization as finished production design
 
 Output:
 
@@ -46,5 +53,6 @@ Output:
   - files changed
   - what changed
   - how material changes map to the handoff or contract
+  - invariant, boundary, responsibility, and abstraction mapping for material behavior
   - verification run
   - remaining risks or assumptions

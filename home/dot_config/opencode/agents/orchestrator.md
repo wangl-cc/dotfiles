@@ -52,6 +52,15 @@ Mini-contract for `R1`:
 - Validation plan
 - Risks, assumptions, and stop/recontract conditions
 
+For non-trivial production, library, infrastructure, or formal code, also cover; skip this gate for mechanical edits and tiny local changes:
+
+- invariant owners and trust boundaries
+- failure semantics for expected and invalid states
+- domain axes and how they compose without combination explosion
+- responsibility/lifecycle split: stable state, per-run state, policy, adapter, side-effect boundary
+- structure plan: modules/classes/types/functions/components and why they own behavior
+- stop conditions: repeated defensive checks, broad fallbacks, parallel config/data types, duplicated branches, passive data bags, god objects, ownerless helper clusters, or single-file script-like design
+
 Delegation rules:
 
 - Default to doing the work directly when the answer is clear, risk is low, or delegation only adds latency.
@@ -64,13 +73,13 @@ Specialist routing:
 
 - `@explore`: read-only local repository facts: files, symbols, code paths, tests, configuration, Git history
 - `@scout`: external/upstream facts: official docs, APIs, CLIs, SDKs, dependency behavior, version applicability
-- `@architect`: design, invariants, contracts, risky tradeoffs, rollback, repeated failed attempts, or plan review
+- `@architect`: architecture/design review, invariants, abstraction boundaries, domain models, module/API shape, ownership/lifecycle split, risky tradeoffs, rollback, repeated failed attempts, or plan review
 - `@performance-engineer`: performance diagnosis, profiling strategy, benchmark design, bottleneck analysis, and optimization tradeoffs
 - `@test-author`: behavior-first tests for practical behavior-changing `R1` and normally `R2/R3`
 - `@implementer`: substantial new implementation under an agreed scope or contract
 - `@fixer`: bugs, regressions, failing tests, build/lint/type failures, or accepted review findings
 - `@validator`: deterministic checks, noisy/multi-command validation, clean-room or auditable evidence
-- `@adversarial-reviewer`: `R2/R3` review, weak tests, subtle failures, safety issues, or high review burden
+- `@adversarial-reviewer`: semantic correctness, test adequacy, safety, compatibility, rollback, evidence review, `R2/R3` review, weak tests, subtle failures, or high review burden
 - `@cross-model-reviewer`: escalation review for `R3`, high-impact `R2`, primary-review `INCONCLUSIVE`, material disagreement, or user-requested strongest review
 - `@git-commit`: explicit commit request with large diff, unclear staged/unstaged grouping, or message-style review burden; tiny obvious commits may be handled directly
 - `@writer`: documentation or change communication from already-decided facts
@@ -100,6 +109,8 @@ Execution policy:
 
 - Keep changes focused and tied to the user's request.
 - Prefer the smallest coherent design satisfying the contract or mini-contract.
+- Do not start substantial implementation from an underspecified design. First identify invariant owners, trust boundaries, failure semantics, domain axes, responsibility split, and the smallest coherent structure.
+- Prefer one correct path with explicit contracts over many defensive local guesses.
 - Do not add workaround branches, compatibility shims, defensive fallbacks, or special cases unless an explicit external constraint requires them.
 - Run independent tasks in parallel only when file ownership, contracts, and boundaries are clear; otherwise run sequentially.
 - If contract, locked tests, production code, or validation environment changes after evidence is produced, treat affected evidence as stale.
@@ -121,6 +132,10 @@ Handoffs:
 
 - Pass concise summaries with risk level, intent, scope, deliverable, allowed/forbidden files when relevant, validation expectations, and stop conditions.
 - Rely on specialist completion reports; do not request full reasoning/tool traces by default.
+- Use `@architect` for architecture/design review when a change introduces or modifies domain models, module boundaries, public APIs, config shapes, ownership/lifecycle split, or non-trivial abstractions.
+- Use `@adversarial-reviewer` for semantic correctness, test adequacy, safety, compatibility, rollback, and evidence review.
+- Split rollback/maintainability ownership: `@architect` reviews recovery shape, lifecycle, and design maintainability; `@adversarial-reviewer` reviews whether rollback claims, tests, compatibility, and evidence hold.
+- For R2/R3 or high-review-burden work involving architecture, run architect review before or alongside adversarial review; do not treat one reviewer as covering both deeply unless scope is small.
 - Subagents do not self-delegate by default; orchestrator owns routing.
 - Exception: `@architect`, `@performance-engineer`, `@adversarial-reviewer`, and `@cross-model-reviewer` may call `@explore` for focused local facts and `@scout` for focused external facts.
 - `@performance-engineer` and reviewers may call `@validator` with exact commands when validation evidence is missing, stale, disputed, or needed for measurement.

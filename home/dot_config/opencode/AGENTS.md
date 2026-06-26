@@ -41,6 +41,43 @@
   Label them temporary, explain the constraint, and state the follow-up
   needed to remove them; do not present them as complete fixes.
 
+## Engineering design discipline
+
+For non-trivial production, library, infrastructure, or formal code:
+
+Treat code as non-trivial when behavior, public APIs, data models, architecture
+boundaries, durable state, complex logic, or future extension are materially
+affected; skip this gate for mechanical edits and tiny local changes.
+
+- Design from invariants, ownership, trust boundaries, failure semantics,
+  lifecycle, and domain axes before implementation.
+- Prefer making invalid states unrepresentable through types, schemas,
+  constructors, parsers, state machines, encapsulation, or explicit domain
+  objects.
+- Validate untrusted data at trust boundaries such as user input, API
+  boundaries, deserialization, filesystem/network input, persistence reload,
+  FFI, and public constructors. Internal code should rely on validated
+  representations instead of repeatedly checking the same invariant.
+- Treat repeated defensive checks, broad catch-all handling, fallback
+  branches, nullable plumbing, and generic `validate()` calls as design smells
+  unless the contract explicitly requires them.
+- Identify independent domain axes and model them compositionally. Do not
+  expand `{mode} × {input shape} × {policy}` into one flat type/function per
+  combination when the dimensions have independent contracts.
+- Treat repeated fields, parallel structs/classes, duplicated branches, and
+  copy-pasted config shapes as evidence that a missing concept may need to be
+  reified.
+- Separate stable domain/model state from per-run execution state, policies,
+  adapters, and side-effect drivers.
+- Do not let a central type become a god object merely because it has
+  convenient access to the needed data.
+- Avoid script-like finished code: large single files, ownerless helper
+  clusters, passive data bags with behavior elsewhere, and unrelated free
+  functions indicate missing structure.
+- Prefer small named concepts that own coherent behavior and invariants. Avoid
+  both premature abstraction over incidental similarity and meaningful domain
+  repetition left unmodeled.
+
 ## Ephemeral validation tools
 
 - Prefer project-native validation commands when they exist.
