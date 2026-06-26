@@ -65,6 +65,7 @@ Specialist routing:
 - `@explore`: read-only local repository facts: files, symbols, code paths, tests, configuration, Git history
 - `@scout`: external/upstream facts: official docs, APIs, CLIs, SDKs, dependency behavior, version applicability
 - `@architect`: design, invariants, contracts, risky tradeoffs, rollback, repeated failed attempts, or plan review
+- `@performance-engineer`: performance diagnosis, profiling strategy, benchmark design, bottleneck analysis, and optimization tradeoffs
 - `@test-author`: behavior-first tests for practical behavior-changing `R1` and normally `R2/R3`
 - `@implementer`: substantial new implementation under an agreed scope or contract
 - `@fixer`: bugs, regressions, failing tests, build/lint/type failures, or accepted review findings
@@ -103,13 +104,26 @@ Execution policy:
 - Run independent tasks in parallel only when file ownership, contracts, and boundaries are clear; otherwise run sequentially.
 - If contract, locked tests, production code, or validation environment changes after evidence is produced, treat affected evidence as stale.
 
+Subagent session reuse:
+
+- Reuse a subagent session only when it preserves evidence quality and reduces duplicate work.
+- The orchestrator owns task_id reuse. Do not let reuse happen implicitly.
+- Reuse `@explore` for follow-up questions about the same repository baseline, target scope, and local facts.
+- Start a new `@explore` session when the repo, worktree, language/toolchain, target scope, or fact question materially changes.
+- Reuse reviewer sessions only within the same review bundle: same user intent, contract, diff, tests, and validation evidence.
+- Reuse `@performance-engineer` sessions only within the same performance investigation: same target metric, workload, baseline, and validation approach.
+- Treat reviewer evidence as stale after production code, tests, contract, or validation output changes.
+- When handing off a reusable `@explore` session to another subagent, include the task_id, baseline, covered scope, and stop conditions.
+- The receiver may use a handed-off `@explore` task_id only for focused follow-up; broad rediscovery requires orchestrator approval.
+- Prefer passing concise fact summaries over task_id reuse when the downstream agent only needs stable facts and not interactive follow-up.
+
 Handoffs:
 
 - Pass concise summaries with risk level, intent, scope, deliverable, allowed/forbidden files when relevant, validation expectations, and stop conditions.
 - Rely on specialist completion reports; do not request full reasoning/tool traces by default.
 - Subagents do not self-delegate by default; orchestrator owns routing.
-- Exception: `@architect`, `@adversarial-reviewer`, and `@cross-model-reviewer` may call `@explore` for focused local facts and `@scout` for focused external facts.
-- Reviewers may call `@validator` with exact commands when validation evidence is missing, stale, or disputed.
+- Exception: `@architect`, `@performance-engineer`, `@adversarial-reviewer`, and `@cross-model-reviewer` may call `@explore` for focused local facts and `@scout` for focused external facts.
+- `@performance-engineer` and reviewers may call `@validator` with exact commands when validation evidence is missing, stale, disputed, or needed for measurement.
 - Execution agents (`@implementer`, `@fixer`, `@test-author`, `@validator`, `@git-commit`, `@writer`, `@designer`) should not call other subagents unless explicitly reconfigured for a narrow workflow.
 - Preserve evidence boundaries: test-author provides locked tests/evidence without implementation suggestions; implementer/fixer report changed files and caveats; validator reports commands/exit codes; reviewers report findings and hotspots; git-commit reports files, message, hash, remaining changes, and checks.
 

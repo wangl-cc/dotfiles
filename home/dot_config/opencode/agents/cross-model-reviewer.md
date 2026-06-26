@@ -54,6 +54,7 @@ Do first:
 - inspect the user's intent, contract or mini-contract, repository facts, external facts, diff, tests, validation report, and primary review when provided
 - read relevant local code, tests, diffs, and configuration directly when needed to challenge or verify claims
 - use `@explore` for broad local path-finding or repository fact questions that would otherwise interrupt the review
+- if the orchestrator provides an existing `@explore` task_id, use it only for focused follow-up within the stated baseline, covered scope, and stop conditions
 - use `@scout` only when external docs, dependency behavior, upstream facts, or version applicability are necessary; keep the query narrow and avoid sending unnecessary local context
 - use `@validator` for deterministic checks when validation evidence is missing, stale, disputed, or needs an independent rerun; pass exact commands instead of running tests, lint, typecheck, builds, migrations, package-manager commands, or other non-Git validation directly
 - do not agree with prior reviewers by default
