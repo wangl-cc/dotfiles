@@ -50,6 +50,21 @@
 - Allow temporary mitigations only when an explicit external constraint exists and no cleaner complete fix is practical within the requested scope.
 - Label them temporary, explain the constraint, state the follow-up required to remove them, and do not present them as complete fixes.
 
+### Engineering Design Discipline
+
+For non-trivial production, library, infrastructure, or formal code, treat the design itself as part of the work. This gate does not apply to mechanical edits or tiny local changes.
+
+- Design from invariants, ownership, trust boundaries, failure semantics, lifecycle, and domain axes before implementation.
+- Prefer making invalid states unrepresentable through types, schemas, constructors, parsers, state machines, encapsulation, or explicit domain objects.
+- Validate untrusted data at trust boundaries such as user input, API boundaries, deserialization, filesystem or network input, persistence reload, FFI, and public constructors. Internal code should rely on validated representations instead of repeatedly checking the same invariant.
+- Treat repeated defensive checks, broad catch-all handling, fallback branches, nullable plumbing, and generic `validate()` calls as design smells unless the contract explicitly requires them.
+- Identify independent domain axes and model them compositionally. Do not expand `{mode} x {input shape} x {policy}` into one flat type or function per combination when the dimensions have independent contracts.
+- Treat repeated fields, parallel structs or classes, duplicated branches, and copy-pasted config shapes as evidence that a missing concept may need to be reified.
+- Separate stable domain or model state from per-run execution state, policies, adapters, and side-effect drivers.
+- Do not let a central type become a god object merely because it has convenient access to the needed data.
+- Avoid script-like finished code: large single files, ownerless helper clusters, passive data bags with behavior elsewhere, and unrelated free functions indicate missing structure.
+- Prefer small named concepts that own coherent behavior and invariants. Avoid both premature abstraction over incidental similarity and meaningful domain repetition left unmodeled.
+
 ## Sub-Agent Use
 
 ### When to Delegate
@@ -73,6 +88,8 @@
 ### Accountability
 
 - The main agent remains accountable for the final answer. Review sub-agent outputs, reconcile disagreements, verify important claims, integrate or revise delegated work, and make the final implementation or recommendation decisions.
+- Deterministic tool results determine mechanical pass or fail; an LLM summary cannot override an exit code.
+- Before concluding after material code or configuration changes, state the useful subset of intended behavior, changed files, invariant or contract coverage, validation status, unresolved scenarios, and rollback path when warranted.
 
 ## Documentation
 
