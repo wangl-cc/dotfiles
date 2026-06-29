@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# ///
 """Prepare a temporary read-only checkout for external repository research."""
 
 from __future__ import annotations
@@ -11,39 +14,59 @@ import shlex
 import shutil
 import subprocess
 import sys
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 
 DEFAULT_BASE_DIR = "/tmp/external-repo-research"
+ALLOWED_REMOTE_SCHEMES = frozenset({"git", "http", "https", "ssh"})
+LOCAL_PREFIXES = ("/", "./", "../", "~")
+SAFE_SEGMENT_RE = re.compile(r"[^A-Za-z0-9._-]+")
+SCP_LIKE_URL_RE = re.compile(r"^(?:[^@/:]+@)?([^/:]+):(.+)$")
 
 
 class CheckoutError(RuntimeError):
     """Raised when the checkout cannot be prepared safely."""
 
 
-def run_git(args: list[str], cwd: Path | None = None) -> str:
-    result = subprocess.run(
-        ["git", *args],
-        cwd=str(cwd) if cwd else None,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    if result.returncode != 0:
-        command = shlex.join(["git", *args])
-        stderr = result.stderr.strip()
-        detail = f": {stderr}" if stderr else ""
-        raise CheckoutError(f"{command} failed{detail}")
-    return result.stdout.strip()
+@dataclass(frozen=True)
+class CheckoutResult:
+    url: str
+    origin_url: str
+    path: str
+    commit: str
+    ref: str | None
+    cloned: bool
+    reused: bool
+
+
+class Git:
+    def __init__(self, executable: str = "git") -> None:
+        self.executable = executable
+
+    def run(self, args: list[str], cwd: Path | None = None) -> str:
+        command = [self.executable, *args]
+        result = subprocess.run(
+            command,
+            cwd=cwd,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        if result.returncode != 0:
+            stderr = result.stderr.strip()
+            detail = f": {stderr}" if stderr else ""
+            raise CheckoutError(f"{shlex.join(command)} failed{detail}")
+        return result.stdout.strip()
 
 
 def sanitize_segment(value: str) -> str:
     value = value.strip()
     if value.endswith(".git"):
         value = value[:-4]
-    value = re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip(".-")
+    value = SAFE_SEGMENT_RE.sub("-", value).strip(".-")
     if not value or value in {".", ".."}:
         raise CheckoutError("repository URL does not contain a safe path segment")
     return value
@@ -62,28 +85,39 @@ def local_destination(
     return base_dir / "local" / f"{name}-{digest}"
 
 
+def is_local_path(repo_url: str) -> bool:
+    parsed = urlparse(repo_url)
+    path = Path(repo_url).expanduser()
+    return parsed.scheme == "" and (
+        repo_url.startswith(LOCAL_PREFIXES) or path.exists()
+    )
+
+
+def scp_like_segments(repo_url: str) -> list[str] | None:
+    match = SCP_LIKE_URL_RE.match(repo_url)
+    if not match or "://" in repo_url or repo_url.startswith(LOCAL_PREFIXES):
+        return None
+    return [match.group(1), *match.group(2).split("/")]
+
+
+def url_segments(repo_url: str, base_dir: Path) -> list[str] | Path:
+    parsed = urlparse(repo_url)
+    if parsed.scheme == "file":
+        return local_destination(repo_url, base_dir, parsed.path)
+    if parsed.scheme not in ALLOWED_REMOTE_SCHEMES:
+        raise CheckoutError(
+            "repository URL must be a git/http/https/ssh/file URL, "
+            "an scp-like git URL, or a local path"
+        )
+    if not parsed.hostname:
+        raise CheckoutError("repository URL is missing a host")
+    return [parsed.hostname, *unquote(parsed.path).split("/")]
+
+
 def remote_destination(repo_url: str, base_dir: Path) -> Path:
-    scp_like = re.match(r"^(?:[^@/:]+@)?([^/:]+):(.+)$", repo_url)
-    if (
-        scp_like
-        and "://" not in repo_url
-        and not repo_url.startswith(("/", "./", "../", "~"))
-    ):
-        host = scp_like.group(1)
-        path = scp_like.group(2)
-        segments = [host, *path.split("/")]
-    else:
-        parsed = urlparse(repo_url)
-        if parsed.scheme == "file":
-            return local_destination(repo_url, base_dir, parsed.path)
-        if parsed.scheme not in {"git", "http", "https", "ssh"}:
-            raise CheckoutError(
-                "repository URL must be a git/http/https/ssh/file URL, "
-                "an scp-like git URL, or a local path"
-            )
-        if not parsed.hostname:
-            raise CheckoutError("repository URL is missing a host")
-        segments = [parsed.hostname, *unquote(parsed.path).split("/")]
+    segments = scp_like_segments(repo_url) or url_segments(repo_url, base_dir)
+    if isinstance(segments, Path):
+        return segments
 
     safe_segments = [sanitize_segment(segment) for segment in segments if segment]
     if len(safe_segments) < 2:
@@ -92,61 +126,61 @@ def remote_destination(repo_url: str, base_dir: Path) -> Path:
 
 
 def destination_for(repo_url: str, base_dir: Path) -> Path:
-    parsed = urlparse(repo_url)
-    path_candidate = Path(repo_url).expanduser()
-    looks_local = (
-        parsed.scheme == ""
-        and (repo_url.startswith(("/", "./", "../", "~")) or path_candidate.exists())
-    )
-    if looks_local:
+    if is_local_path(repo_url):
         return local_destination(repo_url, base_dir)
     return remote_destination(repo_url, base_dir)
 
 
-def is_git_checkout(path: Path) -> bool:
+def is_git_checkout(path: Path, git: Git) -> bool:
     if not path.exists():
         return False
     try:
-        run_git(["rev-parse", "--is-inside-work-tree"], cwd=path)
+        git.run(["rev-parse", "--is-inside-work-tree"], cwd=path)
     except CheckoutError:
         return False
     return True
 
 
-def ensure_clean(path: Path) -> None:
-    status = run_git(["status", "--porcelain"], cwd=path)
+def ensure_clean(path: Path, git: Git) -> None:
+    status = git.run(["status", "--porcelain"], cwd=path)
     if status:
         raise CheckoutError(
             f"{path} has local changes; use a clean checkout or a different base dir"
         )
 
 
-def checkout_ref(path: Path, ref: str) -> None:
-    run_git(["fetch", "--depth", "1", "origin", ref], cwd=path)
-    run_git(["checkout", "--detach", "FETCH_HEAD"], cwd=path)
+def clone_checkout(repo_url: str, destination: Path, ref: str | None, git: Git) -> None:
+    clone_args = ["clone", "--depth", "1"]
+    if ref:
+        clone_args.append("--no-checkout")
+    git.run([*clone_args, "--", repo_url, str(destination)])
+
+
+def checkout_ref(path: Path, ref: str, git: Git) -> None:
+    git.run(["fetch", "--depth", "1", "origin", ref], cwd=path)
+    git.run(["checkout", "--detach", "FETCH_HEAD"], cwd=path)
 
 
 def prepare_checkout(
     repo_url: str,
     base_dir: Path,
     ref: str | None,
-) -> dict[str, object]:
+    git: Git | None = None,
+) -> CheckoutResult:
+    git = git or Git()
     destination = destination_for(repo_url, base_dir)
     cloned = False
     reused = False
 
     if destination.exists():
-        if not is_git_checkout(destination):
+        if not is_git_checkout(destination, git):
             raise CheckoutError(f"{destination} exists but is not a git checkout")
-        ensure_clean(destination)
+        ensure_clean(destination, git)
         reused = True
     else:
         destination.parent.mkdir(parents=True, exist_ok=True)
         try:
-            clone_args = ["clone", "--depth", "1"]
-            if ref:
-                clone_args.append("--no-checkout")
-            run_git([*clone_args, "--", repo_url, str(destination)])
+            clone_checkout(repo_url, destination, ref, git)
             cloned = True
         except CheckoutError:
             if destination.exists():
@@ -155,24 +189,21 @@ def prepare_checkout(
 
     try:
         if ref:
-            checkout_ref(destination, ref)
+            checkout_ref(destination, ref, git)
     except CheckoutError:
         if cloned and destination.exists():
             shutil.rmtree(destination)
         raise
 
-    commit = run_git(["rev-parse", "HEAD"], cwd=destination)
-    origin_url = run_git(["config", "--get", "remote.origin.url"], cwd=destination)
-
-    return {
-        "url": repo_url,
-        "origin_url": origin_url,
-        "path": str(destination),
-        "commit": commit,
-        "ref": ref,
-        "cloned": cloned,
-        "reused": reused,
-    }
+    return CheckoutResult(
+        url=repo_url,
+        origin_url=git.run(["config", "--get", "remote.origin.url"], cwd=destination),
+        path=str(destination),
+        commit=git.run(["rev-parse", "HEAD"], cwd=destination),
+        ref=ref,
+        cloned=cloned,
+        reused=reused,
+    )
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -200,7 +231,7 @@ def main(argv: list[str]) -> int:
     except CheckoutError as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
-    print(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps(asdict(result), indent=2, sort_keys=True))
     return 0
 
 

@@ -18,7 +18,7 @@ and answering the user requires inspecting a third-party repository.
    Resolve `scripts/` relative to this skill directory:
 
    ```bash
-   python3 scripts/checkout_external_repo.py <repo-url> [--ref <ref>]
+   uv run --script scripts/checkout_external_repo.py <repo-url> [--ref <ref>]
    ```
 
    The script reuses existing clean checkouts, shallow-clones new repositories
