@@ -1,0 +1,40 @@
+setupVersion: 1
+modelRoles:
+  default: openai-codex/gpt-5.5:medium
+  task: zai/glm-5.2:high
+  smol: opencode-go/deepseek-v4-flash:max
+  slow: openai-codex/gpt-5.5
+  designer: github-copilot/gemini-3.1-pro-preview:high
+  advisor: openai-codex/gpt-5.5:high
+  commit: opencode-go/deepseek-v4-flash:max
+disabledProviders:
+  - claude
+  - codex
+  - claude-plugins
+theme:
+  dark: dark-catppuccin
+  light: light-catppuccin
+symbolPreset: nerd
+providers:
+  tinyModel: lfm2-700m
+  tinyModelDevice: gpu
+  tinyModelDtype: q8
+  unexpectedStopModel: online
+checkpoint:
+  enabled: true
+github:
+  enabled: true
+lsp:
+  formatOnWrite: true
+memory:
+  backend: mnemopi
+mnemopi:
+  llmMode: smol
+autolearn:
+  enabled: true
+  autoContinue: true
+edit:
+  mode: hashline
+task:
+  isolation:
+    mode: auto
