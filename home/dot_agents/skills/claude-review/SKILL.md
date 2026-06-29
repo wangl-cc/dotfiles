@@ -1,6 +1,6 @@
 ---
 name: claude-review
-description: Independent read-only review through the bundled Bun/TypeScript Claude Agent SDK runner. Use when an important, high-impact, high-uncertainty, disputed, or final pre-merge decision benefits from an external Claude review and context exposure is acceptable.
+description: Independent read-only review through the bundled uv/Python Claude Agent SDK runner. Use when an important, high-impact, high-uncertainty, disputed, or final pre-merge decision benefits from an external Claude review and context exposure is acceptable.
 ---
 
 # Claude Review
@@ -34,17 +34,20 @@ install dependencies, run migrations, deploy, or modify durable state.
 
 ## Recommended Command
 
-Run commands from this skill directory so Bun uses the local `package.json` and
-`bun.lock`:
+Run the script from this skill directory. It uses uv inline script metadata to
+pin and install the Python Claude Agent SDK dependency:
 
 ```bash
-bun install --frozen-lockfile
-bun run review -- --cwd <repo> --prompt-file <prompt-file> --diff working-tree
+uv run --script scripts/claude_review.py --cwd <repo> --prompt-file <prompt-file> --diff working-tree
 ```
 
+The runner script is `scripts/claude_review.py`. In chezmoi-managed dotfiles,
+do not name it with a `run_` prefix, because chezmoi treats that prefix as an
+apply-time script marker.
+
 The script injects git status and the selected diff, uses the Claude Agent SDK
-bundled Claude Code binary when available, and restricts Claude to `Read`,
-`Glob`, and `Grep` tools with `permissionMode: "dontAsk"`. It also disables
+runner, and restricts Claude to `Read`, `Glob`, and `Grep` tools with
+`permissionMode: "dontAsk"`. It also disables
 filesystem setting sources so repository settings and guidance are review
 context, not controlling instructions.
 
