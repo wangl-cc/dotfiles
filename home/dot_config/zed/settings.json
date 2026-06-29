@@ -12,7 +12,7 @@
   "agent_servers": {
     "claude-acp": {
       "default_config_options": {
-        "effort": "high"
+        "effort": "high",
       },
       "type": "registry",
     },
@@ -51,7 +51,6 @@
       },
     ],
     "show_turn_stats": true,
-    "use_modifier_to_send": true,
     "default_model": {
       "effort": "high",
       "enable_thinking": true,
