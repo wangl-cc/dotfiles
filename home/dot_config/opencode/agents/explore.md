@@ -7,6 +7,23 @@ temperature: 0.1
 permission:
   glob: allow
   grep: allow
+  git_overview: allow
+  git_changes: allow
+  git_compare: allow
+  git_branch: allow
+  git_cat_file: allow
+  git_blame: allow
+  git_diff: allow
+  git_grep: allow
+  git_log: allow
+  git_ls_files: allow
+  git_ls_tree: allow
+  git_merge_base: allow
+  git_remote: allow
+  git_rev_list: allow
+  git_rev_parse: allow
+  git_show: allow
+  git_status: allow
   list: allow
   edit: deny
   task: deny
@@ -37,6 +54,7 @@ Do first:
 
 - bind material observations to the current repository state when relevant: branch, commit, and worktree status
 - search the local codebase first and stop when the requested factual questions are answered
+- for Git repository facts, use higher-level custom Git tools when they answer the question before falling back to narrower Git tools or bash
 - cite paths and line ranges for material observations
 - separate observed facts, inferences, and unknowns
 - identify existing tests and whether they appear to exercise the relevant path when asked or relevant

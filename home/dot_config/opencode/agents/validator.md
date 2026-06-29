@@ -5,6 +5,17 @@ model: opencode-go/deepseek-v4-flash
 temperature: 0.0
 permission:
   edit: deny
+  git_overview: allow
+  git_changes: allow
+  git_compare: allow
+  git_branch: allow
+  git_diff: allow
+  git_log: allow
+  git_merge_base: allow
+  git_remote: allow
+  git_rev_list: allow
+  git_rev_parse: allow
+  git_status: allow
   webfetch: deny
   websearch: deny
   task: deny
@@ -30,6 +41,7 @@ Do first:
 - record baseline identity: branch, commit, worktree status, and relevant diff summary
 - confirm the requested validation scope and commands
 - run the exact required test, lint, typecheck, build, security, migration, or integration checks
+- for cargo llvm-cov evidence, use the shared `rust-coverage` skill/script when available
 - record command, exit code, duration when available, retries, skipped checks, and environment assumptions
 - treat deterministic tool results as authoritative
 
