@@ -1,32 +1,32 @@
 ---
 name: claude-review
-description: Use Claude CLI review for important, high-impact, high-uncertainty, or final pre-merge review decisions where an independent Claude Code pass is worth the extra cost and external context exposure.
+description: Independent read-only review through the Claude CLI. Use when an important, high-impact, high-uncertainty, disputed, or final pre-merge decision benefits from an external Claude review and context exposure is acceptable.
 ---
 
 # Claude Review
 
-Use this skill when an important decision benefits from an independent Claude
-Code review through the `claude` CLI.
+Use this skill when an important decision benefits from an independent review
+through the `claude` CLI.
 
 ## When to Use
 
 Use for review, not routine implementation:
 
-- R3 work, and high-impact or high-uncertainty R2 work.
+- High-impact or high-uncertainty work.
 - Security, privacy, data-loss, migration, or irreversible-state concerns.
 - Large or subtle diffs where local review burden is high.
 - Before recommending merge, release, or apply for consequential changes.
 - When existing reviewers disagree or return `INCONCLUSIVE`.
-- When the user explicitly asks for Claude, Claude CLI, or an external Claude
-  review.
+- When the user explicitly asks for Claude, the Claude CLI, or an external
+  Claude review.
 
-Do not use for small R0/R1 edits, routine lint fixes, purely conversational
+Do not use for small routine edits, routine lint fixes, purely conversational
 answers, or when sending repository context to an external CLI is not acceptable.
 
 ## Safety Gate
 
 Before running `claude`, state that the review may send repository context and
-diff content to Claude Code, then get explicit user approval unless the user has
+diff content to Claude, then get explicit user approval unless the user has
 already asked for Claude review in the current task.
 
 Run Claude in review-only mode. Do not ask it to edit files, commit, push,
@@ -35,7 +35,7 @@ install dependencies, run migrations, deploy, or modify durable state.
 ## Recommended Command
 
 Prefer non-interactive print mode. Use `--permission-mode plan` when available
-so Claude Code stays read-only, and request plain text output for easier
+so the Claude CLI stays read-only, and request plain text output for easier
 integration:
 
 ```bash
@@ -57,7 +57,7 @@ Intent:
 - <user goal>
 
 Risk level:
-- <R2/R3/etc and why>
+- <risk level and why>
 
 Scope:
 - In scope: <files/components>

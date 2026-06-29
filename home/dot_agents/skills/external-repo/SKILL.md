@@ -1,12 +1,12 @@
 ---
 name: external-repo
-description: External repository research workflow. Use when web/docs are insufficient and a task requires cloning or inspecting a third-party repository as temporary read-only reference material.
+description: External repository research workflow. Use when local code, official docs, release notes, or web pages are insufficient and a task requires temporarily cloning or inspecting a third-party repository as read-only reference material.
 ---
 
 # External Repository Research
 
-Use this skill when local code plus web/docs are not enough, and answering the
-user requires inspecting a third-party repository.
+Use this skill when local code plus lightweight external sources are not enough,
+and answering the user requires inspecting a third-party repository.
 
 ## Workflow
 
@@ -14,9 +14,10 @@ user requires inspecting a third-party repository.
    and web pages.
 2. Clone an external repository only when those sources are insufficient, or
    when the exact implementation in that repository matters.
-3. Reuse an existing checkout under `/tmp/opencode/` when available; otherwise
-   clone into `/tmp/opencode/<repo-name>/`.
-4. Treat `/tmp/opencode/` as temporary read-only reference material:
+3. Reuse an existing checkout under `/tmp/external-repo-research/` when
+   available; otherwise clone into `/tmp/external-repo-research/<repo-name>/`.
+4. Treat `/tmp/external-repo-research/` as temporary read-only reference
+   material:
    - do not edit external repository files
    - do not mix external paths into project-local findings unless explicitly
      relevant
