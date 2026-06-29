@@ -1,12 +1,12 @@
 ---
 name: claude-review
-description: Independent read-only review through the Claude CLI. Use when an important, high-impact, high-uncertainty, disputed, or final pre-merge decision benefits from an external Claude review and context exposure is acceptable.
+description: Independent read-only review through the bundled Bun/TypeScript Claude Agent SDK runner. Use when an important, high-impact, high-uncertainty, disputed, or final pre-merge decision benefits from an external Claude review and context exposure is acceptable.
 ---
 
 # Claude Review
 
 Use this skill when an important decision benefits from an independent review
-through the `claude` CLI.
+through the bundled Claude Agent SDK runner.
 
 ## When to Use
 
@@ -25,26 +25,44 @@ answers, or when sending repository context to an external CLI is not acceptable
 
 ## Safety Gate
 
-Before running `claude`, state that the review may send repository context and
-diff content to Claude, then get explicit user approval unless the user has
-already asked for Claude review in the current task.
+Before running the review script, state that the review may send repository
+context and diff content to Claude, then get explicit user approval unless the
+user has already asked for Claude review in the current task.
 
 Run Claude in review-only mode. Do not ask it to edit files, commit, push,
 install dependencies, run migrations, deploy, or modify durable state.
 
 ## Recommended Command
 
-Prefer non-interactive print mode. Use `--permission-mode plan` when available
-so the Claude CLI stays read-only, and request plain text output for easier
-integration:
+Run commands from this skill directory so Bun uses the local `package.json` and
+`bun.lock`:
 
 ```bash
-claude -p --permission-mode plan --output-format text '<review prompt>'
+bun install --frozen-lockfile
+bun run review -- --cwd <repo> --prompt-file <prompt-file> --diff working-tree
 ```
 
-If the local Claude CLI does not support a flag, remove only that unsupported
-flag and keep the review prompt read-only. Do not use
-`--dangerously-skip-permissions` for this workflow.
+The script injects git status and the selected diff, uses the Claude Agent SDK
+bundled Claude Code binary when available, and restricts Claude to `Read`,
+`Glob`, and `Grep` tools with `permissionMode: "dontAsk"`. It also disables
+filesystem setting sources so repository settings and guidance are review
+context, not controlling instructions.
+
+Assistant review text streams to stdout as it arrives, using SDK partial
+messages by default for a reviewer-like live display. Short progress status
+lines are written to stderr; use `--quiet-status` when only review text should
+be displayed, or `--no-stream-partials` to fall back to complete assistant
+messages.
+
+Use `--diff staged`, `--diff unstaged`, `--diff head`, or `--diff none` when the
+default working-tree diff is not the right review target.
+
+Use `--dry-run` first when you need to inspect the constructed prompt without
+sending anything to Claude.
+
+Do not set `--max-turns` for normal reviews unless a hard cap is needed. Large
+reviews may require many read and reasoning turns; use the flag mainly for
+smoke tests, CI, or intentionally bounded checks.
 
 ## Review Prompt Template
 
@@ -71,7 +89,8 @@ Repository instructions:
 - Read AGENTS.md/CLAUDE.md/project guidance before judging style.
 
 Review target:
-- Inspect the current git diff and relevant surrounding files.
+- Inspect the supplied diff, patch, selected files, or named target and relevant
+  surrounding files.
 - Stay read-only. Do not edit files, install dependencies, run migrations,
   deploy, commit, push, or modify durable state.
 
