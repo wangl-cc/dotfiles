@@ -13,7 +13,6 @@ from typing import Any, TypeAlias
 import tomlkit
 from tomlkit.items import Array, Table
 
-
 CONFIG_PATH = Path.home() / ".codex" / "config.toml"
 UV_CACHE_DIR = Path.home() / ".cache" / "uv"
 TomlContainer: TypeAlias = tomlkit.TOMLDocument | Table
@@ -27,25 +26,16 @@ TOP_LEVEL_SETTINGS: dict[str, object] = {
 }
 
 FEATURE_SETTINGS: dict[str, object] = {
-    "js_repl": False,
+    "js_repl": True,
     "memories": True,
 }
 
 DESKTOP_SETTINGS: dict[str, object] = {
-    "sansFontSize": 14,
-    "codeFontSize": 13,
-    "usePointerCursors": False,
-    "dictationDictionary": [],
     "followUpQueueMode": "queue",
     "reviewDelivery": "detached",
     "preventSleepWhileRunning": True,
-    "keepRemoteControlAwakeWhilePluggedIn": True,
     "git-always-force-push": True,
     "git-pull-request-merge-method": "squash",
-    "notifications-turn-mode": "off",
-    "conversationDetailMode": "STEPS_COMMANDS",
-    "reduced-motion-preference": "system",
-    "git-show-sidebar-pr-icons": True,
 }
 
 
@@ -109,16 +99,9 @@ def roots_array(roots: list[str]) -> Array:
 
 def apply_portable_settings(document: tomlkit.TOMLDocument) -> None:
     set_values(document, TOP_LEVEL_SETTINGS)
-    set_values(ensure_table(document, "features"), FEATURE_SETTINGS)
+    features = ensure_table(document, "features")
+    set_values(features, FEATURE_SETTINGS)
     set_values(ensure_table(document, "desktop"), DESKTOP_SETTINGS)
-
-    open_in_targets = ensure_table_path(
-        document, ("desktop", "open-in-target-preferences")
-    )
-    open_in_targets["global"] = "zed"
-
-    openai_docs = ensure_table_path(document, ("mcp_servers", "openaiDeveloperDocs"))
-    openai_docs["url"] = "https://developers.openai.com/mcp"
 
 
 def apply_writable_roots(document: tomlkit.TOMLDocument) -> None:
