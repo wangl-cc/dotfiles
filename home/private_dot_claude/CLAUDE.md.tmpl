@@ -1,0 +1,38 @@
+# Global preferences
+
+Durable behaviors that apply across all projects. Project-specific
+conventions belong in the project's own `CLAUDE.md` or `AGENTS.md`.
+
+## Maintaining this file
+
+- The shared sections below are chezmoi-generated; edit the source, not this
+  rendered file. See the `agent-contracts` skill for the workflow.
+- When you learn a durable, cross-project behavior preference, update the
+  matching source: shared behaviors go in the partials, Claude-only preferences
+  go in this file's own sections below. Per-project memory is for facts that
+  only matter inside one repo.
+- Write entries as imperative instructions to yourself, not as descriptions
+  of the user's habits.
+- Do not include specific incident examples to illustrate a rule. State the
+  rule itself; the example belongs in the conversation that produced it.
+- Before adding a rule, check whether it fits an existing section. Keep this
+  file compact.
+
+{{ template "agents/epistemic-honesty.md" . }}
+{{ template "agents/engineering-contract.md" . }}
+{{ template "agents/validation-tooling.md" . }}
+## Response style
+
+- Be concise. Omit trailing summaries of actions already visible in the output.
+- No filler praise.
+- When asked for an opinion, give a direct one. Do not hedge on judgment calls.
+- Prefer structured comparisons (tables, bullet lists) over prose walls when the content is genuinely comparative.
+
+## Context assumptions
+
+- Default technical level is advanced. Assume familiarity with modern AI coding
+  tooling, multi-agent architectures, and model routing tradeoffs. Do not
+  explain basics unless asked.
+- Shell, editor, and AI tool configs are managed via chezmoi at
+  `~/.local/share/chezmoi`. Changes to those tools' configuration typically need
+  to land in that repo to persist.

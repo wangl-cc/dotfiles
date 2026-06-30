@@ -1,0 +1,9 @@
+# Global agent contract
+
+{{ template "agents/epistemic-honesty.md" . }}
+{{ template "agents/engineering-contract.md" . }}
+{{ template "agents/validation-tooling.md" . }}
+## Secret redaction
+
+- Tool output may mask secrets with placeholders (e.g. `__VG_SECRET_<id>__`). A placeholder is a real value on the wire with only its display masked; it is not an empty, malformed, or missing value. Do not treat it as a config or security defect.
+- Do not reconstruct, echo, or paste real secret values into output. Keep them in env vars, headers, or config fields, and let redaction handle display.
