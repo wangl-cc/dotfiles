@@ -2,9 +2,26 @@
 
 set -euo pipefail
 
-# {{- if and .toolchains.uv (not (lookPath "uv")) }}
+# {{- $uvMinimum := .toolchain_versions.uv_minimum }}
+# {{- if and .toolchains.uv (ne $uvMinimum "") (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $uvMinimum)) }}
+# {{-   fail (printf "toolchain_versions.uv_minimum must be empty or a numeric version, got %q" $uvMinimum) }}
+# {{- end }}
+# {{- if .toolchains.uv }}
+# {{-   $uvPath := lookPath "uv" }}
+# {{-   if not $uvPath }}
 echo "Installing uv"
 curl -fsSL https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
+# {{-   else if ne $uvMinimum "" }}
+# {{-     $uvVersionOutput := output $uvPath "--version" }}
+# {{-     $uvCurrent := regexFind "[0-9]+([.][0-9]+){0,2}" $uvVersionOutput }}
+# {{-     if eq $uvCurrent "" }}
+# {{-       fail (printf "could not parse uv version from %q" $uvVersionOutput) }}
+# {{-     end }}
+# {{-     if semverCompare (printf "<%s" $uvMinimum) $uvCurrent }}
+echo "Updating uv from {{ $uvCurrent }} to latest because it is below {{ $uvMinimum }}"
+UV_NO_MODIFY_PATH=1 uv self update
+# {{-     end }}
+# {{-   end }}
 # {{- end }}
 
 # {{- $rustup := .toolchains.rustup }}
@@ -17,7 +34,24 @@ rustup_profile={{ $rustup | quote }}
 curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile "$rustup_profile"
 # {{- end }}
 
-# {{- if and .toolchains.bun (not (lookPath "bun")) }}
+# {{- $bunMinimum := .toolchain_versions.bun_minimum }}
+# {{- if and .toolchains.bun (ne $bunMinimum "") (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $bunMinimum)) }}
+# {{-   fail (printf "toolchain_versions.bun_minimum must be empty or a numeric version, got %q" $bunMinimum) }}
+# {{- end }}
+# {{- if .toolchains.bun }}
+# {{-   $bunPath := lookPath "bun" }}
+# {{-   if not $bunPath }}
 echo "Installing bun"
 curl -fsSL https://bun.sh/install | BUN_INSTALL="$HOME/.bun" SHELL=/bin/sh bash
+# {{-   else if ne $bunMinimum "" }}
+# {{-     $bunVersionOutput := output $bunPath "--version" }}
+# {{-     $bunCurrent := regexFind "[0-9]+([.][0-9]+){0,2}" $bunVersionOutput }}
+# {{-     if eq $bunCurrent "" }}
+# {{-       fail (printf "could not parse bun version from %q" $bunVersionOutput) }}
+# {{-     end }}
+# {{-     if semverCompare (printf "<%s" $bunMinimum) $bunCurrent }}
+echo "Updating bun from {{ $bunCurrent }} to latest because it is below {{ $bunMinimum }}"
+bun upgrade
+# {{-     end }}
+# {{-   end }}
 # {{- end }}
