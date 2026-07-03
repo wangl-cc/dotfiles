@@ -1,0 +1,6 @@
+.config/aquaproj-aqua
+.config/fish/conf.d/25-aqua.fish
+.config/fish/conf.d/26-aqua-fish.fish
+.config/fish/conf.d/95-starship.fish
+.config/shell/conf.d/25-aqua.sh
+.local/share/aquaproj-aqua

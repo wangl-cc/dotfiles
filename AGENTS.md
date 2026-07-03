@@ -32,14 +32,14 @@ Examples:
 
 ```text
 fish: simplify prompt setup
-aqua: add shared typst package
+packages: add shared typst package
 chezmoi: refresh bootstrap prompts
 opencode: tighten agent response rules
 docs: clarify update workflow
 ```
 
 Choose the scope from the configuration area, tool, or directory most
-responsible for the change. Good scopes include `fish`, `aqua`,
+responsible for the change. Good scopes include `fish`, `packages`,
 `chezmoi`, `opencode`, `git`, `shell`, `dev-box`, and `docs`.
 
 Do not rewrite these into `feat:`, `fix:`, `chore:`, or other

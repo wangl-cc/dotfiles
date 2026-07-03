@@ -18,7 +18,7 @@ Source lives in the chezmoi repo (`~/.local/share/chezmoi`, source root `home/`)
   - `engineering-contract.md` — working posture, execution gate, engineering
     design, editing/docs.
   - `validation-tooling.md` — project-native validation, exit-code authority,
-    `bunx`/`uvx`/`aqua` runners, no unrequested installs.
+    `bunx`/`uvx` runners, no unrequested installers or package-manager paths.
 - **Per-tool templates** — each composes the three partials with
   `{{ template "agents/<partial>.md" . }}` and then adds its own residue.
 

@@ -52,7 +52,8 @@ file. Keep project-specific conventions in the project.
    only when the project has no pinned tool:
    - JS/TS CLI tools: `bunx <tool>`
    - Python CLI tools: `uvx <tool>`
-   - Tools pinned by aqua: `aqua exec -- <tool>`
+   - Other tools: use an existing command on `PATH` or ask before introducing a
+     new installer or package-manager path.
 5. Ask before writing when a rule is inferred, opinionated, or would change the
    user's workflow.
 6. After writing, tell the orchestrator to reuse the persisted guidance and use
