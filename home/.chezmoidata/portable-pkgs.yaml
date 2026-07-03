@@ -1,0 +1,278 @@
+portable_pkgs:
+  schema_version: 3
+  install_dir: .local/bin
+  tools:
+    atuin:
+      repo: atuinsh/atuin
+      tag: v18.16.1
+      bin: atuin
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^atuin-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: atuin-aarch64-apple-darwin.tar.gz
+            path: atuin-aarch64-apple-darwin/atuin
+            sha256: 0a3fdc4cfa18758d6a872950625f2042233df0412a0c10d0dadf30bfc3bc6d6b
+        linux-x86_64:
+          asset_pattern: ^atuin-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: atuin-x86_64-unknown-linux-musl.tar.gz
+            path: atuin-x86_64-unknown-linux-musl/atuin
+            sha256: aeee16faab126d2f11658ad4920c73fa8479b25fbd3e26570450af7310aac70a
+      path_pattern: '{assetStem}/atuin'
+    bat:
+      repo: sharkdp/bat
+      tag: v0.26.1
+      bin: bat
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^bat-v.*-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: bat-v0.26.1-aarch64-apple-darwin.tar.gz
+            path: bat-v0.26.1-aarch64-apple-darwin/bat
+            sha256: e30beff26779c9bf60bb541e1d79046250cb74378f2757f8eb250afddb19e114
+        linux-x86_64:
+          asset_pattern: ^bat-v.*-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: bat-v0.26.1-x86_64-unknown-linux-musl.tar.gz
+            path: bat-v0.26.1-x86_64-unknown-linux-musl/bat
+            sha256: 0dcd8ac79732c0d5b136f11f4ee00e581440e16a44eab5b3105b611bbf2cf191
+      path_pattern: '{assetStem}/bat'
+    chezmoi:
+      repo: twpayne/chezmoi
+      tag: v2.70.5
+      bin: chezmoi
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^chezmoi-darwin-arm64$
+          resolved:
+            type: file
+            asset: chezmoi-darwin-arm64
+            sha256: f6b1be4caf2edec0addfde57a391c1c77ddf32bc2f57c8b594eac483ba30d2a1
+        linux-x86_64:
+          asset_pattern: ^chezmoi-linux-amd64-musl$
+          resolved:
+            type: file
+            asset: chezmoi-linux-amd64-musl
+            sha256: 2e5ce8fad16c60a1767090ab3cfb2521742a55024384b45f3eadcdfdc3d7f5ff
+    delta:
+      repo: dandavison/delta
+      tag: 0.19.2
+      bin: delta
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^delta-.*-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: delta-0.19.2-aarch64-apple-darwin.tar.gz
+            path: delta-0.19.2-aarch64-apple-darwin/delta
+            sha256: 9be36612a5a13e9e386dc498fb8e50dc87c72ee42b63db0ea05b32f99a72a69a
+        linux-x86_64:
+          asset_pattern: ^delta-.*-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: delta-0.19.2-x86_64-unknown-linux-musl.tar.gz
+            path: delta-0.19.2-x86_64-unknown-linux-musl/delta
+            sha256: f1ea01ca7728ce3462debc359f39dfc7cbbc1a63224b71fefabf92042864aa1b
+      path_pattern: '{assetStem}/delta'
+    fastfetch:
+      repo: fastfetch-cli/fastfetch
+      tag: 2.64.2
+      bin: fastfetch
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^fastfetch-macos-aarch64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fastfetch-macos-aarch64.tar.gz
+            path: fastfetch-macos-aarch64/usr/bin/fastfetch
+            sha256: bd5e0283c5f55b2887e7476e65a875283afbf21c279e637ce0e8ed024c523760
+        linux-x86_64:
+          asset_pattern: ^fastfetch-musl-amd64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fastfetch-musl-amd64.tar.gz
+            path: fastfetch-musl-amd64/usr/bin/fastfetch
+            sha256: a7e2d2c28b4a92c8a3555a7fdf8443591c9f682079615ce258da65aee17aee22
+      path_pattern: '{assetStem}/usr/bin/fastfetch'
+    fd:
+      repo: sharkdp/fd
+      tag: v10.4.2
+      bin: fd
+      targets:
+        darwin-aarch64:
+          asset_pattern: aarch64-apple-darwin.*\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fd-v10.4.2-aarch64-apple-darwin.tar.gz
+            path: fd-v10.4.2-aarch64-apple-darwin/fd
+            sha256: 623dc0afc81b92e4d4606b380d7bc91916ba7b97814263e554d50923a39e480a
+        linux-x86_64:
+          asset_pattern: x86_64-unknown-linux-musl.*\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fd-v10.4.2-x86_64-unknown-linux-musl.tar.gz
+            path: fd-v10.4.2-x86_64-unknown-linux-musl/fd
+            sha256: e3257d48e29a6be965187dbd24ce9af564e0fe67b3e73c9bdcd180f4ec11bdde
+      path_pattern: '{assetStem}/fd'
+    fzf:
+      repo: junegunn/fzf
+      tag: v0.73.1
+      bin: fzf
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^fzf-.*-darwin_arm64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fzf-0.73.1-darwin_arm64.tar.gz
+            path: fzf
+            sha256: d27fd68c04fb9b42f7c73a3f7d38069a74d308e40174f64a072c747213e97286
+        linux-x86_64:
+          asset_pattern: ^fzf-.*-linux_amd64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: fzf-0.73.1-linux_amd64.tar.gz
+            path: fzf
+            sha256: f3252c2c366bc1700d3c85781ec8c9695998927ac127870eb049ceea2d540f8a
+      path_pattern: fzf
+    gh:
+      repo: cli/cli
+      tag: v2.94.0
+      bin: gh
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^gh_.*_macOS_arm64\.zip$
+          resolved:
+            type: archive-file
+            asset: gh_2.94.0_macOS_arm64.zip
+            path: gh_2.94.0_macOS_arm64/bin/gh
+            sha256: 4f9bc1a5e77500737290a307b40b4c396a4d23729f55340f2a83f414410165a1
+        linux-x86_64:
+          asset_pattern: ^gh_.*_linux_amd64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: gh_2.94.0_linux_amd64.tar.gz
+            path: gh_2.94.0_linux_amd64/bin/gh
+            sha256: a757f1ba6db18f4de8cbadb244843a5f89bc75b5e7c6fc127d2bd77fbd12ed62
+      path_pattern: '{assetStem}/bin/gh'
+    lazygit:
+      repo: jesseduffield/lazygit
+      tag: v0.62.2
+      bin: lazygit
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^lazygit_.*_darwin_arm64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: lazygit_0.62.2_darwin_arm64.tar.gz
+            path: lazygit
+            sha256: f311d96b666b4865760e39f3967edfd7bf30b5d09e52a1bc7ae511f6bdfdd02c
+        linux-x86_64:
+          asset_pattern: ^lazygit_.*_linux_x86_64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: lazygit_0.62.2_linux_x86_64.tar.gz
+            path: lazygit
+            sha256: 8b9a4c2d0969cbea92b45c956dd2a44e1ba76900c9df49f1c60984045ce77984
+      path_pattern: lazygit
+    lsd:
+      repo: lsd-rs/lsd
+      tag: v1.2.0
+      bin: lsd
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^lsd-v.*-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: lsd-v1.2.0-aarch64-apple-darwin.tar.gz
+            path: lsd-v1.2.0-aarch64-apple-darwin/lsd
+            sha256: 9e34a5d392ff913302098aad0543dafa1883c531eaf229b82f086c3fca675e3e
+        linux-x86_64:
+          asset_pattern: ^lsd-v.*-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: lsd-v1.2.0-x86_64-unknown-linux-musl.tar.gz
+            path: lsd-v1.2.0-x86_64-unknown-linux-musl/lsd
+            sha256: 77849da1210336534258551a581401ba19ae6b8d7b66a2a1feff148ad41e3814
+      path_pattern: '{assetStem}/lsd'
+    rg:
+      repo: BurntSushi/ripgrep
+      tag: 15.1.0
+      bin: rg
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^ripgrep-.*-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: ripgrep-15.1.0-aarch64-apple-darwin.tar.gz
+            path: ripgrep-15.1.0-aarch64-apple-darwin/rg
+            sha256: 378e973289176ca0c6054054ee7f631a065874a352bf43f0fa60ef079b6ba715
+        linux-x86_64:
+          asset_pattern: ^ripgrep-.*-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: ripgrep-15.1.0-x86_64-unknown-linux-musl.tar.gz
+            path: ripgrep-15.1.0-x86_64-unknown-linux-musl/rg
+            sha256: 1c9297be4a084eea7ecaedf93eb03d058d6faae29bbc57ecdaf5063921491599
+      path_pattern: '{assetStem}/rg'
+    starship:
+      repo: starship/starship
+      tag: v1.25.1
+      bin: starship
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^starship-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: starship-aarch64-apple-darwin.tar.gz
+            path: starship
+            sha256: 1062a2363489b9335529b83204472f02633c08fc3609f1b325be5eba36feb631
+        linux-x86_64:
+          asset_pattern: ^starship-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: starship-x86_64-unknown-linux-musl.tar.gz
+            path: starship
+            sha256: c6ddd3ecb9c0071a2ad38d98cee748160066b7c4f197421268058f4a5d6f8504
+      path_pattern: starship
+    yq:
+      repo: mikefarah/yq
+      tag: v4.53.3
+      bin: yq
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^yq_darwin_arm64$
+          resolved:
+            type: file
+            asset: yq_darwin_arm64
+            sha256: 877de31753a4dd2401aa048937aa9a7fc4d5f6ce858cf31508c5802954297213
+        linux-x86_64:
+          asset_pattern: ^yq_linux_amd64$
+          resolved:
+            type: file
+            asset: yq_linux_amd64
+            sha256: fa52a4e758c63d38299163fbdd1edfb4c4963247918bf9c1c5d31d84789eded4
+    zoxide:
+      repo: ajeetdsouza/zoxide
+      tag: v0.9.9
+      bin: zoxide
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^zoxide-.*-aarch64-apple-darwin\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: zoxide-0.9.9-aarch64-apple-darwin.tar.gz
+            path: zoxide
+            sha256: 57e733d0436309dae2ed97e46bba43937209395298e1d88812d4e893900cb40a
+        linux-x86_64:
+          asset_pattern: ^zoxide-.*-x86_64-unknown-linux-musl\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: zoxide-0.9.9-x86_64-unknown-linux-musl.tar.gz
+            path: zoxide
+            sha256: 4ff057d3c4d957946937274c2b8be7af2a9bbae7f90a1b5e9baaa7cb65a20caa
+      path_pattern: zoxide

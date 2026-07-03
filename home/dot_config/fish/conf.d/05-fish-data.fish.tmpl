@@ -12,19 +12,6 @@ if not set -q __fish_data_dir; or not test -d "$__fish_data_dir"
         end
     end
 
-    if test -z "$fish_data_dir"
-        set -l aqua_root {{ .aqua.rootDir | quote }}
-
-        if test -d "$aqua_root/pkgs/github_release/github.com/fish-shell/fish-shell"
-            for candidate_dir in "$aqua_root"/pkgs/github_release/github.com/fish-shell/fish-shell/*/*/fish.pkg/Payload/usr/local/share/fish
-                if test -d "$candidate_dir"
-                    set fish_data_dir "$candidate_dir"
-                    break
-                end
-            end
-        end
-    end
-
     if test -n "$fish_data_dir"; and test -d "$fish_data_dir"
         set -g __fish_data_dir "$fish_data_dir"
 

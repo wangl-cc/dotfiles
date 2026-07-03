@@ -1,0 +1,676 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "click>=8.1,<9",
+#   "pydantic>=2,<3",
+#   "pyyaml>=6,<7",
+# ]
+# ///
+
+import hashlib
+import json
+import os
+import re
+import sys
+import tarfile
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
+import zipfile
+from pathlib import Path
+from typing import Annotated, Any, Literal
+
+import click
+import yaml
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    field_validator,
+    model_validator,
+)
+
+DEFAULT_MANIFEST_PATH = (
+    Path.home() / ".local/share/chezmoi/home/.chezmoidata/portable-pkgs.yaml"
+)
+MANIFEST_PATH = Path(
+    os.environ.get("PORTABLE_PKGS_MANIFEST", DEFAULT_MANIFEST_PATH)
+).expanduser()
+SCHEMA_VERSION = 3
+GITHUB_API = "https://api.github.com"
+GITHUB_SHA256_PREFIX = "sha256:"
+ARCHIVE_RE = re.compile(r"\.(tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2|zip)$", re.I)
+TAR_RE = re.compile(r"\.(tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2)$", re.I)
+ZIP_RE = re.compile(r"\.zip$", re.I)
+
+
+def is_archive_name(name: str) -> bool:
+    return bool(ARCHIVE_RE.search(name))
+
+
+def require_regex(pattern: str) -> str:
+    try:
+        re.compile(pattern)
+    except re.error as error:
+        raise ValueError(f"invalid regex {pattern!r}: {error}") from error
+    return pattern
+
+
+def require_relative_path(path: str, label: str) -> str:
+    if not path:
+        raise ValueError(f"{label} cannot be empty")
+    candidate = Path(path)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        raise ValueError(f"{label} must be a relative path without '..': {path}")
+    return path
+
+
+def require_bin_name(name: str) -> str:
+    if not name:
+        raise ValueError("bin cannot be empty")
+    if "/" in name or "\\" in name or name in {".", ".."}:
+        raise ValueError(f"bin must be a single command name: {name}")
+    return name
+
+
+class TargetAssetRule(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    target: str
+    asset_pattern: str
+
+    @field_validator("asset_pattern")
+    @classmethod
+    def validate_asset_pattern(cls, value: str) -> str:
+        return require_regex(value)
+
+
+class DownloadedAsset(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    path: Path
+    sha256: str
+
+
+class FileResolvedAsset(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: Literal["file"]
+    asset: str
+    sha256: str
+
+    @model_validator(mode="after")
+    def validate_asset_type(self) -> "FileResolvedAsset":
+        if is_archive_name(self.asset):
+            raise ValueError(f"archive asset must use type archive-file: {self.asset}")
+        return self
+
+
+class ArchiveResolvedAsset(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: Literal["archive-file"]
+    asset: str
+    path: str
+    sha256: str
+
+    @field_validator("path")
+    @classmethod
+    def validate_path(cls, value: str) -> str:
+        return require_relative_path(value, "archive path")
+
+    @model_validator(mode="after")
+    def validate_asset_type(self) -> "ArchiveResolvedAsset":
+        if not is_archive_name(self.asset):
+            raise ValueError(f"non-archive asset must use type file: {self.asset}")
+        return self
+
+
+ResolvedAsset = Annotated[
+    FileResolvedAsset | ArchiveResolvedAsset,
+    Field(discriminator="type"),
+]
+
+
+class TargetSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    asset_pattern: str
+    path_pattern: str | None = None
+    resolved: ResolvedAsset | None = None
+
+    @field_validator("asset_pattern")
+    @classmethod
+    def validate_asset_pattern(cls, value: str) -> str:
+        return require_regex(value)
+
+
+class ToolSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    repo: str
+    tag: str | None = None
+    bin: str
+    targets: dict[str, TargetSpec] = Field(default_factory=dict)
+    path_pattern: str | None = None
+
+    def download_url(self, asset_name: str) -> str:
+        if not self.tag:
+            raise SystemExit(f"{self.repo} has no resolved tag")
+        return (
+            f"https://github.com/{self.repo}/releases/download/{self.tag}/{asset_name}"
+        )
+
+    @field_validator("bin")
+    @classmethod
+    def validate_bin(cls, value: str) -> str:
+        return require_bin_name(value)
+
+
+class PortableManifest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: int
+    install_dir: str = ".local/bin"
+    tools: dict[str, ToolSpec] = Field(default_factory=dict)
+
+    @field_validator("install_dir")
+    @classmethod
+    def validate_install_dir(cls, value: str) -> str:
+        return require_relative_path(value, "install_dir")
+
+    @model_validator(mode="after")
+    def validate_schema_version(self) -> "PortableManifest":
+        if self.schema_version != SCHEMA_VERSION:
+            raise ValueError(
+                f"schema_version {self.schema_version}; expected {SCHEMA_VERSION}"
+            )
+        return self
+
+    def selected_tools(self, name: str | None) -> list[tuple[str, ToolSpec]]:
+        if name is None:
+            return list(self.tools.items())
+        tool = self.tools.get(name)
+        if tool is None:
+            raise SystemExit(f"tool not found: {name}")
+        return [(name, tool)]
+
+    def target_names(self, tool: ToolSpec, target: str | None) -> list[str]:
+        return [target] if target else list(tool.targets)
+
+
+# Manifest
+
+
+class ManifestFile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    path: Path
+
+    def load(self) -> PortableManifest:
+        data = yaml.safe_load(self.path.read_text()) or {}
+        manifest = data.get("portable_pkgs")
+        try:
+            return PortableManifest.model_validate(manifest)
+        except ValidationError as error:
+            raise SystemExit(f"{self.path} has invalid portable_pkgs data:\n{error}")
+
+    def save(self, manifest: PortableManifest) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(
+            yaml.safe_dump(
+                {"portable_pkgs": manifest.model_dump(exclude_none=True)},
+                sort_keys=False,
+                width=1000,
+            ),
+        )
+
+
+def parse_target_assets(values: tuple[str, ...]) -> list[TargetAssetRule]:
+    rules: list[TargetAssetRule] = []
+    seen: set[str] = set()
+    for value in values:
+        target, separator, asset_pattern = value.partition("=")
+        if not separator or not target or not asset_pattern:
+            raise click.BadParameter("expected TARGET=ASSET_PATTERN")
+        if target in seen:
+            raise click.BadParameter(f"duplicate target: {target}")
+        seen.add(target)
+        rules.append(TargetAssetRule(target=target, asset_pattern=asset_pattern))
+    return rules
+
+
+# GitHub
+
+
+class GitHubClient:
+    def headers(self) -> dict[str, str]:
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "portable-pkgs",
+        }
+        token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
+
+    def json(self, path: str) -> dict[str, Any]:
+        request = urllib.request.Request(f"{GITHUB_API}{path}", headers=self.headers())
+        try:
+            with urllib.request.urlopen(request) as response:
+                return json.loads(response.read())
+        except urllib.error.HTTPError as error:
+            raise SystemExit(
+                f"GitHub API failed: {error.code} {error.reason}"
+            ) from error
+
+    def fetch_release(self, repo: str, tag: str) -> dict[str, Any]:
+        if tag == "latest":
+            return self.json(f"/repos/{repo}/releases/latest")
+        return self.json(f"/repos/{repo}/releases/tags/{urllib.parse.quote(tag)}")
+
+    def download_asset(self, url: str, directory: Path) -> DownloadedAsset:
+        filename = Path(urllib.parse.urlparse(url).path).name
+        output = directory / filename
+        request = urllib.request.Request(url, headers=self.headers())
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = response.read()
+        except urllib.error.HTTPError as error:
+            raise SystemExit(f"download failed: {error.code} {error.reason}") from error
+        output.write_bytes(data)
+        return DownloadedAsset(path=output, sha256=hashlib.sha256(data).hexdigest())
+
+
+def digest_sha256(digest: str | None) -> str | None:
+    if digest and digest.startswith(GITHUB_SHA256_PREFIX):
+        return digest[len(GITHUB_SHA256_PREFIX) :]
+    return None
+
+
+def choose_asset(release: dict[str, Any], pattern: str) -> dict[str, Any]:
+    regex = re.compile(pattern)
+    matches = [
+        asset for asset in release.get("assets", []) if regex.search(asset["name"])
+    ]
+    if len(matches) == 1:
+        return matches[0]
+    names = "\n".join(f"  - {asset['name']}" for asset in release.get("assets", []))
+    raise SystemExit(
+        f"asset_pattern {pattern!r} matched {len(matches)} assets:\n{names}"
+    )
+
+
+# Asset paths and archives
+
+
+class ArchiveAsset:
+    @staticmethod
+    def is_archive(name: str) -> bool:
+        return is_archive_name(name)
+
+    @staticmethod
+    def format(name: str) -> str | None:
+        if TAR_RE.search(name):
+            return "tar"
+        if ZIP_RE.search(name):
+            return "zip"
+        return None
+
+    @staticmethod
+    def stem(name: str) -> str:
+        return ARCHIVE_RE.sub("", name)
+
+    @staticmethod
+    def list(path: Path) -> list[str]:
+        match ArchiveAsset.format(path.name):
+            case "tar":
+                with tarfile.open(path) as archive:
+                    return archive.getnames()
+            case "zip":
+                with zipfile.ZipFile(path) as archive:
+                    return archive.namelist()
+            case _:
+                raise SystemExit(f"unsupported archive extension: {path.name}")
+
+    @staticmethod
+    def extract_member(archive_path: Path, member: str, destination: Path) -> Path:
+        ArchiveAsset.assert_safe_member(member)
+        match ArchiveAsset.format(archive_path.name):
+            case "tar":
+                with tarfile.open(archive_path) as archive:
+                    archive.extract(member, destination, filter="data")
+            case "zip":
+                with zipfile.ZipFile(archive_path) as archive:
+                    archive.extract(member, destination)
+            case _:
+                raise SystemExit(f"unsupported archive extension: {archive_path.name}")
+        return destination / member
+
+    @staticmethod
+    def assert_safe_member(path: str) -> None:
+        parts = Path(path).parts
+        if Path(path).is_absolute() or ".." in parts:
+            raise SystemExit(f"unsafe archive path: {path}")
+
+
+class ReleaseResolver:
+    def resolve_target(
+        self,
+        tool: ToolSpec,
+        target_name: str,
+        target: TargetSpec,
+        release: dict[str, Any],
+    ) -> None:
+        asset = choose_asset(release, target.asset_pattern)
+        asset_name = asset["name"]
+        sha256 = digest_sha256(asset.get("digest"))
+        if not sha256 and target.resolved:
+            sha256 = target.resolved.sha256
+        if not sha256:
+            raise SystemExit(
+                f"GitHub did not return a sha256 digest for {asset_name}; "
+                f"run inspect --save to download and compute it"
+            )
+
+        if ArchiveAsset.is_archive(asset_name):
+            path = self.render_path(tool, target_name, target, asset_name)
+            if not path:
+                raise SystemExit(
+                    f"{tool.repo}/{target_name} archive asset {asset_name} "
+                    "requires path_pattern or an existing resolved path"
+                )
+            target.resolved = ArchiveResolvedAsset(
+                type="archive-file",
+                asset=asset_name,
+                path=path,
+                sha256=sha256,
+            )
+            return
+        target.resolved = FileResolvedAsset(
+            type="file",
+            asset=asset_name,
+            sha256=sha256,
+        )
+
+    def render_path(
+        self, tool: ToolSpec, target_name: str, target: TargetSpec, asset_name: str
+    ) -> str | None:
+        pattern = target.path_pattern or tool.path_pattern
+        if pattern:
+            return self.render_path_pattern(pattern, tool, target_name, asset_name)
+        if isinstance(target.resolved, ArchiveResolvedAsset):
+            return target.resolved.path
+        return None
+
+    def render_path_pattern(
+        self, pattern: str, tool: ToolSpec, target_name: str, asset_name: str
+    ) -> str:
+        if not tool.tag:
+            raise SystemExit(f"{tool.repo} has no resolved tag")
+        values = {
+            "asset": asset_name,
+            "assetStem": ArchiveAsset.stem(asset_name),
+            "bin": tool.bin,
+            "repo": tool.repo,
+            "tag": tool.tag,
+            "target": target_name,
+            "version": tool.tag.removeprefix("v"),
+        }
+
+        def replace(match: re.Match[str]) -> str:
+            key = match.group(1)
+            if key not in values:
+                raise SystemExit(f"unknown path_pattern variable: {{{key}}}")
+            return values[key]
+
+        return re.sub(r"\{([A-Za-z][A-Za-z0-9_]*)\}", replace, pattern)
+
+
+class Verifier:
+    def __init__(self, github: GitHubClient) -> None:
+        self.github = github
+
+    def verify_target(self, tool_name: str, tool: ToolSpec, target_name: str) -> None:
+        target = tool.targets[target_name]
+        resolved = target.resolved
+        if not resolved:
+            raise SystemExit(f"{tool_name}/{target_name} is missing resolved metadata")
+
+        with tempfile.TemporaryDirectory(prefix="portable-pkgs-") as tmp:
+            downloaded = self.github.download_asset(
+                tool.download_url(resolved.asset), Path(tmp)
+            )
+            if downloaded.sha256 != resolved.sha256:
+                raise SystemExit(
+                    f"{tool_name}/{target_name} sha256 mismatch: "
+                    f"expected {resolved.sha256}, got {downloaded.sha256}"
+                )
+            if isinstance(resolved, FileResolvedAsset):
+                return
+            if not resolved.path:
+                raise SystemExit(f"{tool_name}/{target_name} is missing resolved path")
+            extracted = ArchiveAsset.extract_member(
+                downloaded.path, resolved.path, Path(tmp) / "extract"
+            )
+            if not extracted.is_file():
+                raise SystemExit(
+                    f"{tool_name}/{target_name} archive path is not a file: {resolved.path}"
+                )
+
+    def verify_many(self, items: list[tuple[str, ToolSpec, str]]) -> None:
+        failures = 0
+        for tool_name, tool, target_name in items:
+            try:
+                self.verify_target(tool_name, tool, target_name)
+                print(f"ok {tool_name}/{target_name}")
+            except SystemExit as error:
+                failures += 1
+                print(f"fail {tool_name}/{target_name}: {error}", file=sys.stderr)
+        if failures:
+            raise SystemExit(f"verify failed for {failures} target(s)")
+
+
+# Commands
+
+
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+def cli() -> None:
+    """Manage standalone GitHub release binaries for chezmoi."""
+
+
+@cli.command("list")
+def cmd_list() -> None:
+    manifest = ManifestFile(path=MANIFEST_PATH).load()
+    for name, tool in manifest.tools.items():
+        targets = ", ".join(tool.targets)
+        print(f"{name}\t{tool.repo}\t{tool.tag}\t{targets}")
+
+
+@cli.command("add")
+@click.argument("name")
+@click.argument("repo")
+@click.option(
+    "-T",
+    "--target-asset",
+    "target_assets",
+    required=True,
+    multiple=True,
+    metavar="TARGET=ASSET_PATTERN",
+)
+@click.option("--bin", "bin_name")
+@click.option("--tag")
+@click.option("--path-pattern")
+def cmd_add(
+    name: str,
+    repo: str,
+    target_assets: tuple[str, ...],
+    bin_name: str | None,
+    tag: str | None,
+    path_pattern: str | None,
+) -> None:
+    manifest_file = ManifestFile(path=MANIFEST_PATH)
+    github = GitHubClient()
+    resolver = ReleaseResolver()
+    manifest = manifest_file.load()
+    tool = manifest.tools.get(name)
+    if tool is None:
+        tool = ToolSpec(repo=repo, bin=bin_name or name)
+        manifest.tools[name] = tool
+    tool.repo = repo
+    tool.bin = bin_name or tool.bin or name
+    if path_pattern:
+        tool.path_pattern = path_pattern
+    requested_tag = tag or tool.tag or "latest"
+    release = github.fetch_release(tool.repo, requested_tag)
+    tool.tag = release["tag_name"]
+
+    parsed_targets = parse_target_assets(target_assets)
+    for rule in parsed_targets:
+        target_spec = tool.targets.get(rule.target)
+        if target_spec is None:
+            target_spec = TargetSpec(asset_pattern=rule.asset_pattern)
+            tool.targets[rule.target] = target_spec
+        else:
+            target_spec.asset_pattern = rule.asset_pattern
+    for target_name, target_spec in tool.targets.items():
+        resolver.resolve_target(tool, target_name, target_spec, release)
+    manifest_file.save(manifest)
+    print(f"added {name} for {', '.join(rule.target for rule in parsed_targets)}")
+
+
+@cli.command("update")
+@click.argument("name", required=False)
+@click.option("--tag")
+@click.option("--verify", is_flag=True)
+def cmd_update(
+    name: str | None,
+    tag: str | None,
+    verify: bool,
+) -> None:
+    manifest_file = ManifestFile(path=MANIFEST_PATH)
+    github = GitHubClient()
+    resolver = ReleaseResolver()
+    verifier = Verifier(github)
+    manifest = manifest_file.load()
+    updated: list[tuple[str, ToolSpec, str]] = []
+    for tool_name, tool in manifest.selected_tools(name):
+        release = github.fetch_release(tool.repo, tag or "latest")
+        tool.tag = release["tag_name"]
+        if not tool.targets:
+            raise SystemExit(f"{tool_name} has no targets")
+        for target_name, target_spec in tool.targets.items():
+            resolver.resolve_target(tool, target_name, target_spec, release)
+            updated.append((tool_name, tool, target_name))
+            print(f"updated {tool_name}/{target_name}")
+    if verify:
+        verifier.verify_many(updated)
+    manifest_file.save(manifest)
+
+
+@cli.command("inspect")
+@click.argument("name")
+@click.option("--target", required=True)
+@click.option("--path-regex")
+@click.option("--save", is_flag=True)
+def cmd_inspect(
+    name: str,
+    target: str,
+    path_regex: str | None,
+    save: bool,
+) -> None:
+    manifest_file = ManifestFile(path=MANIFEST_PATH)
+    github = GitHubClient()
+    manifest = manifest_file.load()
+    tool = manifest.tools.get(name)
+    if tool is None:
+        raise SystemExit(f"tool not found: {name}")
+    target_spec = tool.targets.get(target)
+    if target_spec is None:
+        raise SystemExit(f"{name} has no target {target}")
+
+    if not tool.tag:
+        raise SystemExit(f"{name} has no resolved tag")
+    release = github.fetch_release(tool.repo, tool.tag)
+    asset = choose_asset(release, target_spec.asset_pattern)
+    expected_sha256 = digest_sha256(asset.get("digest"))
+    with tempfile.TemporaryDirectory(prefix="portable-pkgs-") as tmp:
+        downloaded = github.download_asset(asset["browser_download_url"], Path(tmp))
+        print(f"asset: {asset['name']}")
+        print(f"url: {asset['browser_download_url']}")
+        print(f"sha256: {expected_sha256 or downloaded.sha256}")
+        if expected_sha256 and expected_sha256 != downloaded.sha256:
+            raise SystemExit(
+                f"downloaded sha256 {downloaded.sha256} does not match GitHub digest {expected_sha256}"
+            )
+        if not ArchiveAsset.is_archive(asset["name"]):
+            print("type: file")
+            if save:
+                target_spec.resolved = FileResolvedAsset(
+                    type="file",
+                    asset=asset["name"],
+                    sha256=expected_sha256 or downloaded.sha256,
+                )
+                manifest_file.save(manifest)
+                print(f"saved metadata for {name}/{target}")
+            return
+
+        regex = re.compile(path_regex or rf"(^|/){re.escape(tool.bin)}$")
+        matches = [
+            entry
+            for entry in ArchiveAsset.list(downloaded.path)
+            if not entry.endswith("/") and regex.search(entry)
+        ]
+        print(f"path matches ({len(matches)}):")
+        for match in matches:
+            print(f"  {match}")
+        if save:
+            if len(matches) != 1:
+                raise SystemExit("--save requires exactly one path match")
+            target_spec.resolved = ArchiveResolvedAsset(
+                type="archive-file",
+                asset=asset["name"],
+                path=matches[0],
+                sha256=expected_sha256 or downloaded.sha256,
+            )
+            manifest_file.save(manifest)
+            print(f"saved metadata and path for {name}/{target}")
+
+
+@cli.command("verify")
+@click.argument("name", required=False)
+@click.option("--target")
+def cmd_verify(name: str | None, target: str | None) -> None:
+    manifest = ManifestFile(path=MANIFEST_PATH).load()
+    verifier = Verifier(GitHubClient())
+    selected: list[tuple[str, ToolSpec, str]] = []
+    for tool_name, tool in manifest.selected_tools(name):
+        for target_name in manifest.target_names(tool, target):
+            if target_name not in tool.targets:
+                raise SystemExit(f"{tool_name} has no target {target_name}")
+            selected.append((tool_name, tool, target_name))
+    verifier.verify_many(selected)
+
+
+@cli.command("remove")
+@click.argument("name")
+def cmd_remove(name: str) -> None:
+    manifest_file = ManifestFile(path=MANIFEST_PATH)
+    manifest = manifest_file.load()
+    if name not in manifest.tools:
+        raise SystemExit(f"tool not found: {name}")
+    del manifest.tools[name]
+    manifest_file.save(manifest)
+    print(f"removed {name}")
+
+
+def main() -> None:
+    cli(prog_name="portable-pkgs")
+
+
+if __name__ == "__main__":
+    main()

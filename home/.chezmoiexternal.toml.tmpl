@@ -20,3 +20,23 @@ refreshPeriod = "168h"
 clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
 {{ end -}}
+
+{{- $portable_pkgs_arch_aliases := dict "arm64" "aarch64" "amd64" "x86_64" }}
+{{- $portable_pkgs_arch := default .chezmoi.arch (index $portable_pkgs_arch_aliases .chezmoi.arch) }}
+{{- $portable_pkgs_target := printf "%s-%s" .chezmoi.os $portable_pkgs_arch }}
+{{- $portable_pkgs := .portable_pkgs }}
+{{- $install_dir := $portable_pkgs.install_dir }}
+{{- range $name, $tool := $portable_pkgs.tools }}
+{{-   $target := index $tool.targets $portable_pkgs_target }}
+{{-   if and $target $target.resolved $target.resolved.type $target.resolved.asset $target.resolved.sha256 }}
+{{-     $asset := $target.resolved.asset }}
+[{{ printf "%s/%s" $install_dir $tool.bin | quote }}]
+type = {{ $target.resolved.type | quote }}
+url = {{ printf "https://github.com/%s/releases/download/%s/%s" $tool.repo $tool.tag $asset | quote }}
+{{-     if eq $target.resolved.type "archive-file" }}
+path = {{ $target.resolved.path | quote }}
+{{-     end }}
+executable = true
+checksum.sha256 = {{ $target.resolved.sha256 | quote }}
+{{-   end }}
+{{- end }}

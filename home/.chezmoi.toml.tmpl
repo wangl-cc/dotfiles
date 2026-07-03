@@ -16,24 +16,8 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
 
-{{- $aquaRootDir := joinPath .chezmoi.homeDir ".local/share/aquaproj-aqua" }}
-{{- $aquaConfigDir := joinPath .chezmoi.homeDir ".config/aquaproj-aqua" }}
-{{- $aquaSourceConfigDir := joinPath .chezmoi.sourceDir "dot_config/aquaproj-aqua" }}
-[data.aqua]
-rootDir = {{ $aquaRootDir | quote }}
-binDir = {{ joinPath $aquaRootDir "bin" | quote }}
-bin = {{ joinPath $aquaRootDir "bin" "aqua" | quote }}
-configDir = {{ $aquaConfigDir | quote }}
-localConfig = {{ joinPath $aquaConfigDir "local.yaml" | quote }}
-sharedConfig = {{ joinPath $aquaConfigDir "shared.yaml" | quote }}
-fishConfig = {{ joinPath $aquaConfigDir "fish.yaml" | quote }}
-sourceConfigDir = {{ $aquaSourceConfigDir | quote }}
-sourceSharedConfig = {{ joinPath $aquaSourceConfigDir "shared.yaml" | quote }}
-sourceFishConfig = {{ joinPath $aquaSourceConfigDir "fish.yaml" | quote }}
-
 [data.shell.fish]
 auto = {{ promptBoolOnce . "shell.fish.auto" "Auto-enter fish from fallback bash/zsh sessions" true }}
-portable = {{ promptBoolOnce . "shell.fish.portable" "Install fish with aqua on this machine" false }}
 
 [data.toolchains]
 uv = {{ promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine" true }}

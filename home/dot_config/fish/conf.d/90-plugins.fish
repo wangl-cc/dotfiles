@@ -1,5 +1,7 @@
 status is-interactive; or return
 
+type -q starship; and starship init fish | source
+
 type -q zoxide; and zoxide init fish | source
 
 if type -q fd
