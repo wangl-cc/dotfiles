@@ -1,10 +1,10 @@
-## RTK - Rust Token Killer
+## RTK — Token-optimized CLI wrapper for shell commands
 
-**Usage**: Token-optimized CLI proxy for shell commands.
+`rtk` works best when it directly wraps the real command being executed.
 
-### Rule
+### Core Rule
 
-Always prefix shell commands with `rtk`.
+Prefix shell commands with `rtk` unless the command is on the no-rtk allowlist.
 
 Use the direct form by default:
 
@@ -16,25 +16,75 @@ Examples:
 
 ```bash
 rtk git status
+rtk rg pattern path
 rtk cargo test
 rtk npm run build
 rtk pytest -q
 ```
 
-### Meta Commands
+Avoid this:
 
 ```bash
-rtk gain
-rtk gain --history
-rtk proxy <cmd>
+rtk bash -lc 'git diff'
+rtk bash -lc 'rg "pattern" src'
+rtk bash -lc 'cargo test'
 ```
 
-Do not use `rtk proxy <cmd>` for ordinary commands. Reserve it for cases where raw, unfiltered output is required, where RTK itself is being debugged, or where RTK filtering is a plausible confound. When using `rtk proxy`, state why.
+### No-RTK Allowlist
+
+The following commands may be run directly without the `rtk` prefix:
+
+```bash
+cat <file>
+sed -n '<range>p' <file>
+```
+
+Use plain `cat` and `sed` for direct file reads.  
+Do not extend this allowlist by judgment.
+
+Use `cat <file>` when reading the whole file is intentional.  
+Use `sed -n '<range>p' <file>` when only a specific range is needed.
+
+### Pipelines and Shell Syntax
+
+Avoid pipelines or compound shell expressions when a direct command can express the same intent.
+
+Prefer command-native options over shell wrappers:
+
+```bash
+rtk rg "pattern" src
+rtk git diff -- src/file.rs
+rtk cargo test -q
+```
+
+Avoid unnecessary shell forms:
+
+```bash
+rtk bash -lc 'rg "pattern" src | head'
+rtk bash -lc 'git diff -- src/file.rs | sed -n "1,160p"'
+```
+
+If shell syntax is genuinely required, use the underlying shell command directly or through `rtk` only when raw output is not important and the loss of command-specific optimization is acceptable. State why when choosing the direct underlying command.
+
+### Raw Output Exceptions
+
+Unless raw, unfiltered output is explicitly needed, always use `rtk` for commands outside the no-rtk allowlist.
+
+If the underlying command must be run directly for raw output, state why.
+
+Examples:
+
+```bash
+# Raw output needed because exact stdout formatting is being debugged.
+cargo test -- --nocapture
+
+# Raw output needed because rtk summarized away the relevant error.
+npm run build
+```
 
 ### Verification
 
 ```bash
 rtk --version
-rtk gain
 which rtk
 ```
