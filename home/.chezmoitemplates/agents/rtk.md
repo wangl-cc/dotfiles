@@ -6,6 +6,12 @@
 
 Always prefix shell commands with `rtk`.
 
+Use the direct form by default:
+
+```bash
+rtk <cmd>
+```
+
 Examples:
 
 ```bash
@@ -23,8 +29,7 @@ rtk gain --history
 rtk proxy <cmd>
 ```
 
-Use `rtk proxy <cmd>` to run a raw command without filtering while still
-tracking usage.
+Do not use `rtk proxy <cmd>` for ordinary commands. Reserve it for cases where raw, unfiltered output is required, where RTK itself is being debugged, or where RTK filtering is a plausible confound. When using `rtk proxy`, state why.
 
 ### Verification
 
