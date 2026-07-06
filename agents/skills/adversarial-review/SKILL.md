@@ -30,8 +30,10 @@ falsifiably. Clarify the target or gather facts first.
 3. Choose an independent review route before collecting the full packet:
    - Prefer a fresh-context, read-only reviewer for high-stakes, high-uncertainty,
      disputed, or large-scope claims.
-   - If an external Claude pass is appropriate, use the `claude-review` skill to
-     run the reviewer assignment.
+   - If using a read-only external reviewer, pass the Reviewer Assignment and
+     Review Packet below as the handoff brief.
+   - For a Claude-based route, use the `claude-subagent` skill with that handoff
+     brief as its delegation brief.
    - If no independent reviewer is available, stop after stating the claim,
      falsification criteria, and unavailable route; mark the adversarial review
      as not independently performed.
