@@ -69,6 +69,11 @@ default for a live subagent display. Short progress status lines are written to
 stderr; use `--quiet-status` when only assistant text should be displayed, or
 `--no-stream-partials` to fall back to complete assistant messages.
 
+Claude review tasks can spend several minutes reasoning without emitting
+assistant tokens. Treat a quiet but still-running SDK process as normal. Do not
+interrupt it just because there is no streamed output; stop it only on a real
+error, an explicit timeout requirement in the task, or user direction.
+
 Use `--diff staged`, `--diff unstaged`, `--diff head`, or `--diff none` when the
 default working-tree diff is not the right task target.
 
