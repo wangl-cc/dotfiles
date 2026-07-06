@@ -467,12 +467,177 @@ class Verifier:
         for tool_name, tool, target_name in items:
             try:
                 self.verify_target(tool_name, tool, target_name)
-                print(f"ok {tool_name}/{target_name}")
             except SystemExit as error:
                 failures += 1
-                print(f"fail {tool_name}/{target_name}: {error}", file=sys.stderr)
+                log(f"fail {tool_name}/{target_name}: {error}")
         if failures:
             raise SystemExit(f"verify failed for {failures} target(s)")
+
+
+# Reports
+
+
+def log(message: str) -> None:
+    print(message, file=sys.stderr)
+
+
+def markdown_cell(value: str | None) -> str:
+    text = "-" if value is None else value
+    return text.replace("|", "\\|").replace("\n", " ")
+
+
+def comparable_tool(tool: ToolSpec) -> dict[str, Any]:
+    return tool.model_dump(exclude_none=True)
+
+
+def changed_update_rows(
+    before_tools: dict[str, ToolSpec],
+    after_tools: dict[str, ToolSpec],
+) -> list[tuple[str, ToolSpec, ToolSpec, list[str]]]:
+    rows = []
+    for tool_name, after in after_tools.items():
+        before = before_tools[tool_name]
+        if comparable_tool(before) == comparable_tool(after):
+            continue
+        rows.append((tool_name, before, after, changed_target_names(before, after)))
+    return rows
+
+
+def changed_target_names(before: ToolSpec, after: ToolSpec) -> list[str]:
+    names = sorted(set(before.targets) | set(after.targets))
+    changed = []
+    for name in names:
+        before_target = before.targets.get(name)
+        after_target = after.targets.get(name)
+        before_data = (
+            before_target.model_dump(exclude_none=True) if before_target else None
+        )
+        after_data = (
+            after_target.model_dump(exclude_none=True) if after_target else None
+        )
+        if before_data != after_data:
+            changed.append(name)
+    return changed
+
+
+def render_update_report(
+    before_tools: dict[str, ToolSpec],
+    after_tools: dict[str, ToolSpec],
+    verified: bool,
+    output_format: Literal["text", "markdown"],
+) -> str:
+    changed_rows = changed_update_rows(before_tools, after_tools)
+    if output_format == "text":
+        return render_text_update_report(after_tools, changed_rows, verified)
+    return render_markdown_update_report(after_tools, changed_rows, verified)
+
+
+def render_text_update_report(
+    after_tools: dict[str, ToolSpec],
+    changed_rows: list[tuple[str, ToolSpec, ToolSpec, list[str]]],
+    verified: bool,
+) -> str:
+    target_count = sum(len(tool.targets) for tool in after_tools.values())
+    verification = "verified" if verified else "not verified"
+    if not changed_rows:
+        return (
+            f"no portable package changes "
+            f"(checked {count_label(len(after_tools), 'package')}, "
+            f"{count_label(target_count, 'target')}; {verification})"
+        )
+    return "\n".join(
+        f"{tool_name}: {markdown_cell(before.tag)} -> {markdown_cell(after.tag)}"
+        f"{format_text_targets(targets)}"
+        for tool_name, before, after, targets in changed_rows
+    )
+
+
+def format_text_targets(targets: list[str]) -> str:
+    if not targets:
+        return ""
+    return f" ({', '.join(targets)})"
+
+
+def count_label(count: int, singular: str) -> str:
+    suffix = "" if count == 1 else "s"
+    return f"{count} {singular}{suffix}"
+
+
+def render_markdown_update_report(
+    after_tools: dict[str, ToolSpec],
+    changed_rows: list[tuple[str, ToolSpec, ToolSpec, list[str]]],
+    verified: bool,
+) -> str:
+    target_count = sum(len(tool.targets) for tool in after_tools.values())
+    lines = [
+        "## Portable package updates",
+        "",
+        "Automated weekly update of portable GitHub release binaries.",
+        "",
+        "### Summary",
+        "",
+        f"- Packages checked: {len(after_tools)}",
+        f"- Targets resolved: {target_count}",
+        f"- Verification: {'passed' if verified else 'not requested'}",
+        "",
+        "### Changes",
+        "",
+    ]
+
+    if changed_rows:
+        lines.extend(
+            [
+                "| Package | Repository | Previous tag | Updated tag | Changed targets |",
+                "| --- | --- | --- | --- | --- |",
+            ]
+        )
+        for tool_name, before, after, targets in changed_rows:
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        markdown_cell(tool_name),
+                        markdown_cell(after.repo),
+                        markdown_cell(before.tag),
+                        markdown_cell(after.tag),
+                        markdown_cell(", ".join(targets) or "-"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- No portable package changes were found.")
+
+    command = "portable-pkgs update"
+    if verified:
+        command += " --verify"
+    command += " --format markdown"
+    lines.extend(
+        [
+            "",
+            "### Validation",
+            "",
+            f"- `{command}`",
+            "- `git diff --check`",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def print_update_report(
+    before_tools: dict[str, ToolSpec],
+    after_tools: dict[str, ToolSpec],
+    verified: bool,
+    output_format: Literal["text", "markdown"],
+) -> None:
+    report = render_update_report(
+        before_tools,
+        after_tools,
+        verified,
+        output_format,
+    )
+    print(report)
 
 
 # Commands
@@ -547,18 +712,31 @@ def cmd_add(
 @click.argument("name", required=False)
 @click.option("--tag")
 @click.option("--verify", is_flag=True)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "markdown"]),
+    default="text",
+    show_default=True,
+    help="Choose stdout output format.",
+)
 def cmd_update(
     name: str | None,
     tag: str | None,
     verify: bool,
+    output_format: Literal["text", "markdown"],
 ) -> None:
     manifest_file = ManifestFile(path=MANIFEST_PATH)
     github = GitHubClient()
     resolver = ReleaseResolver()
     verifier = Verifier(github)
     manifest = manifest_file.load()
+    selected = manifest.selected_tools(name)
+    before_tools = {
+        tool_name: tool.model_copy(deep=True) for tool_name, tool in selected
+    }
     updated: list[tuple[str, ToolSpec, str]] = []
-    for tool_name, tool in manifest.selected_tools(name):
+    for tool_name, tool in selected:
         release = github.fetch_release(tool.repo, tag or "latest")
         tool.tag = release["tag_name"]
         if not tool.targets:
@@ -566,10 +744,11 @@ def cmd_update(
         for target_name, target_spec in tool.targets.items():
             resolver.resolve_target(tool, target_name, target_spec, release)
             updated.append((tool_name, tool, target_name))
-            print(f"updated {tool_name}/{target_name}")
     if verify:
         verifier.verify_many(updated)
     manifest_file.save(manifest)
+    after_tools = {tool_name: manifest.tools[tool_name] for tool_name in before_tools}
+    print_update_report(before_tools, after_tools, verify, output_format)
 
 
 @cli.command("inspect")

@@ -1,0 +1,55 @@
+name: Bump portable packages
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: portable-pkgs-bump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    name: Update and verify portable packages
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PORTABLE_PKGS_MANIFEST: home/.chezmoidata/portable-pkgs.yaml
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8
+
+      - name: Add repo bin to PATH
+        run: echo "$GITHUB_WORKSPACE/home/dot_local/bin" >> "$GITHUB_PATH"
+
+      - name: Parse current manifest
+        run: portable-pkgs list
+
+      - name: Update and verify releases
+        run: >
+          portable-pkgs update --verify --format markdown
+          > .github/portable-pkgs-pr-body.md
+
+      - name: Check generated diff
+        run: |
+          git diff -- home/.chezmoidata/portable-pkgs.yaml
+          git diff --check
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          add-paths: home/.chezmoidata/portable-pkgs.yaml
+          branch: automation/portable-pkgs
+          commit-message: "packages: bump portable package versions"
+          delete-branch: true
+          title: "packages: bump portable package versions"
+          body-path: .github/portable-pkgs-pr-body.md
