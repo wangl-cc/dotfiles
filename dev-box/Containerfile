@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 # Install container infrastructure and build tools
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf install -y --setopt=keepcache=1 \
-    fish git man-db unzip \
+    fish git man-db unzip which \
     bubblewrap openssh-server \
     gcc gcc-c++ make cmake pkgconfig \
     procps-ng psmisc perf
