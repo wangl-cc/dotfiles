@@ -333,3 +333,20 @@ portable_pkgs:
             path: zoxide
             sha256: 2d93385b99f3e82cf2701609a1bffcad863fbeb75aa3fe7eb6be4d29be68b1ae
       path_pattern: zoxide
+    jq:
+      repo: jqlang/jq
+      tag: jq-1.8.2
+      bin: jq
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^jq\-macos\-arm64$
+          resolved:
+            type: file
+            asset: jq-macos-arm64
+            sha256: 2d75340ba57a4b4b4c8708a21c2dc8e958a48aaa8bba13b27f77f6e4c0eca07e
+        linux-x86_64:
+          asset_pattern: ^jq\-linux\-amd64$
+          resolved:
+            type: file
+            asset: jq-linux-amd64
+            sha256: b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f
