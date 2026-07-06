@@ -17,9 +17,11 @@ Source lives in the chezmoi repo (`~/.local/share/chezmoi`, source root `home/`)
   - `epistemic-honesty.md` — evidence, inference, re-examination, sub-agent output.
   - `engineering-contract.md` — working posture, execution gate, engineering
     design, editing/docs.
+  - `rtk.md` — RTK shell-command prefixing, raw-command proxying, and RTK
+    self-checks.
   - `validation-tooling.md` — project-native validation, exit-code authority,
     `bunx`/`uvx` runners, no unrequested installers or package-manager paths.
-- **Per-tool templates** — each composes the three partials with
+- **Per-tool templates** — each composes the shared partials with
   `{{ template "agents/<partial>.md" . }}` and then adds its own residue.
 
 ## Consumer map
