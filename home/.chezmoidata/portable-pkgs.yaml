@@ -1,6 +1,43 @@
 portable_pkgs:
-  schema_version: 3
+  schema_version: 4
   install_dir: .local/bin
+  default_targets:
+  - darwin-aarch64
+  - linux-x86_64
+  targets:
+    darwin-aarch64:
+      asset_terms:
+        os:
+        - darwin
+        - macos
+        - apple-darwin
+        - macOS
+        arch:
+        - aarch64
+        - arm64
+      prefer_terms: []
+      reject_terms:
+      - linux
+      - windows
+      - x86_64
+      - amd64
+    linux-x86_64:
+      asset_terms:
+        os:
+        - linux
+        - unknown-linux-musl
+        - unknown-linux-gnu
+        arch:
+        - x86_64
+        - amd64
+      prefer_terms:
+      - musl
+      reject_terms:
+      - darwin
+      - macos
+      - windows
+      - arm64
+      - aarch64
   tools:
     atuin:
       repo: atuinsh/atuin

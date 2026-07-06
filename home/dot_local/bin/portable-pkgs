@@ -11,6 +11,7 @@
 import hashlib
 import json
 import os
+import platform
 import re
 import sys
 import tarfile
@@ -19,6 +20,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -39,12 +41,28 @@ DEFAULT_MANIFEST_PATH = (
 MANIFEST_PATH = Path(
     os.environ.get("PORTABLE_PKGS_MANIFEST", DEFAULT_MANIFEST_PATH)
 ).expanduser()
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 GITHUB_API = "https://api.github.com"
 GITHUB_SHA256_PREFIX = "sha256:"
 ARCHIVE_RE = re.compile(r"\.(tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2|zip)$", re.I)
 TAR_RE = re.compile(r"\.(tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2)$", re.I)
 ZIP_RE = re.compile(r"\.zip$", re.I)
+NON_BINARY_ASSET_SUBSTRINGS = [
+    "checksum",
+    "checksums",
+    "sha256",
+    "sha512",
+    ".spdx",
+    ".sbom",
+]
+NON_BINARY_ASSET_SUFFIXES = [
+    ".asc",
+    ".sig",
+    ".minisig",
+    ".json",
+    ".txt",
+]
+PACKAGED_INSTALLER_RE = re.compile(r"\.(apk|deb|dmg|msi|pkg|rpm)$", re.I)
 
 
 def is_archive_name(name: str) -> bool:
@@ -86,6 +104,26 @@ class TargetAssetRule(BaseModel):
     @classmethod
     def validate_asset_pattern(cls, value: str) -> str:
         return require_regex(value)
+
+
+class TargetPolicy(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    asset_terms: dict[str, list[str]] = Field(default_factory=dict)
+    prefer_terms: list[str] = Field(default_factory=list)
+    reject_terms: list[str] = Field(default_factory=list)
+
+    @field_validator("asset_terms")
+    @classmethod
+    def validate_asset_terms(cls, value: dict[str, list[str]]) -> dict[str, list[str]]:
+        if not value:
+            raise ValueError("asset_terms cannot be empty")
+        for group, terms in value.items():
+            if not group:
+                raise ValueError("asset_terms group name cannot be empty")
+            if not terms:
+                raise ValueError(f"asset_terms group {group!r} cannot be empty")
+        return value
 
 
 class DownloadedAsset(BaseModel):
@@ -175,6 +213,8 @@ class PortableManifest(BaseModel):
 
     schema_version: int
     install_dir: str = ".local/bin"
+    default_targets: list[str] = Field(default_factory=list)
+    targets: dict[str, TargetPolicy] = Field(default_factory=dict)
     tools: dict[str, ToolSpec] = Field(default_factory=dict)
 
     @field_validator("install_dir")
@@ -188,6 +228,11 @@ class PortableManifest(BaseModel):
             raise ValueError(
                 f"schema_version {self.schema_version}; expected {SCHEMA_VERSION}"
             )
+        missing = [
+            target for target in self.default_targets if target not in self.targets
+        ]
+        if missing:
+            raise ValueError(f"default target has no policy: {', '.join(missing)}")
         return self
 
     def selected_tools(self, name: str | None) -> list[tuple[str, ToolSpec]]:
@@ -273,6 +318,17 @@ class GitHubClient:
             return self.json(f"/repos/{repo}/releases/latest")
         return self.json(f"/repos/{repo}/releases/tags/{urllib.parse.quote(tag)}")
 
+    def search_repositories(self, query: str, limit: int) -> list[dict[str, Any]]:
+        encoded = urllib.parse.urlencode(
+            {
+                "q": f"{query} in:name fork:false archived:false",
+                "sort": "stars",
+                "order": "desc",
+                "per_page": str(limit),
+            }
+        )
+        return list(self.json(f"/search/repositories?{encoded}").get("items", []))
+
     def download_asset(self, url: str, directory: Path) -> DownloadedAsset:
         filename = Path(urllib.parse.urlparse(url).path).name
         output = directory / filename
@@ -303,6 +359,275 @@ def choose_asset(release: dict[str, Any], pattern: str) -> dict[str, Any]:
     raise SystemExit(
         f"asset_pattern {pattern!r} matched {len(matches)} assets:\n{names}"
     )
+
+
+@dataclass(frozen=True)
+class AssetCandidate:
+    asset: dict[str, Any]
+    score: int
+    reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class PathCandidate:
+    path: str
+    score: int
+    reasons: tuple[str, ...]
+
+
+class Interaction:
+    def __init__(self, allow_input: bool, force: bool) -> None:
+        self.allow_input = allow_input
+        self.force = force
+
+    def choose(
+        self,
+        title: str,
+        candidates: list[Any],
+        formatter: Any,
+        *,
+        ambiguous_when_tied: bool = True,
+    ) -> Any:
+        if not candidates:
+            raise SystemExit(f"no candidates for {title}")
+        if self.can_choose_automatically(candidates, ambiguous_when_tied):
+            return candidates[0]
+        if not self.allow_input:
+            lines = "\n".join(
+                f"  {index}. {formatter(candidate)}"
+                for index, candidate in enumerate(candidates, start=1)
+            )
+            raise SystemExit(
+                f"{title} is ambiguous; rerun interactively or pass an override:\n{lines}"
+            )
+
+        click.echo(f"\n{title}:", err=True)
+        for index, candidate in enumerate(candidates, start=1):
+            click.echo(f"  {index}. {formatter(candidate)}", err=True)
+        while True:
+            value = click.prompt(
+                "Choose",
+                default=1,
+                type=int,
+                err=True,
+                show_default=True,
+            )
+            if 1 <= value <= len(candidates):
+                return candidates[value - 1]
+            click.echo(f"Choose a number from 1 to {len(candidates)}.", err=True)
+
+    def can_choose_automatically(
+        self, candidates: list[Any], ambiguous_when_tied: bool
+    ) -> bool:
+        if self.force:
+            return False
+        if len(candidates) == 1:
+            return True
+        if ambiguous_when_tied and hasattr(candidates[0], "score"):
+            return candidates[0].score > candidates[1].score
+        return False
+
+    def confirm(self, message: str, *, default: bool = True) -> bool:
+        if not self.allow_input:
+            return True
+        return click.confirm(message, default=default, err=True)
+
+
+def normalize_repo(repo: str) -> str:
+    value = repo.strip().removeprefix("https://github.com/")
+    value = value.removesuffix(".git").strip("/")
+    if value.count("/") != 1 or not all(value.split("/")):
+        raise click.BadParameter("expected GitHub repository as OWNER/REPO")
+    return value
+
+
+def repo_score(repo: dict[str, Any], query: str) -> int:
+    repo_name = str(repo.get("name", "")).lower()
+    query_name = query.lower()
+    score = min(int(repo.get("stargazers_count", 0) or 0), 50_000) // 100
+    if repo_name == query_name:
+        score += 1_000
+    elif repo_name.startswith(query_name):
+        score += 500
+    return score
+
+
+def repository_candidates(
+    github: GitHubClient, query: str, limit: int
+) -> list[dict[str, Any]]:
+    return sorted(
+        github.search_repositories(query, limit),
+        key=lambda repo: repo_score(repo, query),
+        reverse=True,
+    )
+
+
+def format_repo_candidate(repo: dict[str, Any]) -> str:
+    description = repo.get("description") or ""
+    return (
+        f"{repo['full_name']}\t{repo.get('stargazers_count', 0)} stars\t{description}"
+    )
+
+
+def is_probable_binary_asset(name: str) -> bool:
+    lowered = name.lower()
+    if any(term in lowered for term in NON_BINARY_ASSET_SUBSTRINGS):
+        return False
+    if any(lowered.endswith(suffix) for suffix in NON_BINARY_ASSET_SUFFIXES):
+        return False
+    return not PACKAGED_INSTALLER_RE.search(name)
+
+
+def asset_candidates_for_target(
+    release: dict[str, Any], policy: TargetPolicy, bin_name: str
+) -> list[AssetCandidate]:
+    if not policy.asset_terms:
+        raise SystemExit("target policy has no asset_terms; pass --target-asset")
+    candidates: list[AssetCandidate] = []
+    for asset in release.get("assets", []):
+        name = asset["name"]
+        lowered = name.lower()
+        if not is_probable_binary_asset(name):
+            continue
+        if any(term.lower() in lowered for term in policy.reject_terms):
+            continue
+
+        score = 0
+        reasons: list[str] = []
+        for group, terms in policy.asset_terms.items():
+            matches = [term for term in terms if term.lower() in lowered]
+            if not matches:
+                break
+            score += 100
+            reasons.append(f"{group}:{matches[0]}")
+        else:
+            for term in policy.prefer_terms:
+                if term.lower() in lowered:
+                    score += 10
+                    reasons.append(f"prefer:{term}")
+            if bin_name.lower() in lowered:
+                score += 5
+                reasons.append(f"bin:{bin_name}")
+            candidates.append(
+                AssetCandidate(asset=asset, score=score, reasons=tuple(reasons))
+            )
+    return sorted(candidates, key=lambda candidate: candidate.score, reverse=True)
+
+
+def format_asset_candidate(candidate: AssetCandidate) -> str:
+    reasons = ", ".join(candidate.reasons) or "matched policy"
+    return f"{candidate.asset['name']}\tscore {candidate.score}\t{reasons}"
+
+
+def asset_pattern_from_name(asset_name: str, tag: str) -> str:
+    pattern = re.escape(asset_name)
+    tokens = {
+        tag,
+        tag.removeprefix("v"),
+        tag.replace(".", "_"),
+        tag.removeprefix("v").replace(".", "_"),
+    }
+    for token in sorted((token for token in tokens if token), key=len, reverse=True):
+        pattern = pattern.replace(re.escape(token), ".*", 1)
+    return f"^{pattern}$"
+
+
+def path_candidates_for_bin(entries: list[str], bin_name: str) -> list[PathCandidate]:
+    candidates: list[PathCandidate] = []
+    ignored_parts = {"completion", "completions", "doc", "docs", "man", "share"}
+    for entry in entries:
+        if entry.endswith("/"):
+            continue
+        path = Path(entry)
+        if path.name != bin_name:
+            continue
+        score = 100
+        reasons = ["basename"]
+        parts = set(path.parts[:-1])
+        if parts & ignored_parts:
+            score -= 50
+            reasons.append("low-priority-dir")
+        if entry == bin_name:
+            score += 30
+            reasons.append("archive-root")
+        if len(path.parts) >= 2 and path.parts[-2] == "bin":
+            score += 20
+            reasons.append("bin-dir")
+        if len(path.parts) >= 2 and path.parts[0] != "bin":
+            score += 10
+            reasons.append("package-prefix")
+        candidates.append(
+            PathCandidate(path=entry, score=score, reasons=tuple(reasons))
+        )
+    return sorted(candidates, key=lambda candidate: candidate.score, reverse=True)
+
+
+def format_path_candidate(candidate: PathCandidate) -> str:
+    reasons = ", ".join(candidate.reasons)
+    return f"{candidate.path}\tscore {candidate.score}\t{reasons}"
+
+
+def path_pattern_from_path(asset_name: str, path: str, tag: str, bin_name: str) -> str:
+    pattern = path
+    asset_stem = ArchiveAsset.stem(asset_name)
+    if asset_stem in pattern:
+        pattern = pattern.replace(asset_stem, "{assetStem}")
+    tokens = [tag, tag.removeprefix("v")]
+    for token in sorted((token for token in tokens if token), key=len, reverse=True):
+        pattern = pattern.replace(token, "{version}")
+    if pattern == bin_name:
+        return "{bin}"
+    suffix = f"/{bin_name}"
+    if pattern.endswith(suffix):
+        return f"{pattern[: -len(suffix)]}/{{bin}}"
+    return pattern
+
+
+def coalesce_path_patterns(tool: ToolSpec) -> None:
+    archive_targets = [
+        target
+        for target in tool.targets.values()
+        if isinstance(target.resolved, ArchiveResolvedAsset)
+    ]
+    if tool.path_pattern:
+        for target in archive_targets:
+            if target.path_pattern == tool.path_pattern:
+                target.path_pattern = None
+    patterns = {
+        target.path_pattern for target in archive_targets if target.path_pattern
+    }
+    if not archive_targets or len(patterns) != 1:
+        return
+    if any(not target.path_pattern for target in archive_targets):
+        return
+    tool.path_pattern = patterns.pop()
+    for target in archive_targets:
+        target.path_pattern = None
+
+
+def render_add_summary(name: str, tool: ToolSpec, target_names: list[str]) -> str:
+    lines = [
+        "",
+        "Add portable package:",
+        f"  name: {name}",
+        f"  repo: {tool.repo}",
+        f"  tag: {tool.tag}",
+        f"  bin: {tool.bin}",
+        "  targets:",
+    ]
+    for target_name in target_names:
+        target = tool.targets[target_name]
+        resolved = target.resolved
+        if isinstance(resolved, ArchiveResolvedAsset):
+            path = target.path_pattern or tool.path_pattern or resolved.path
+            lines.append(
+                f"    {target_name}: {target.asset_pattern} -> {resolved.asset} :: {path}"
+            )
+        elif isinstance(resolved, FileResolvedAsset):
+            lines.append(
+                f"    {target_name}: {target.asset_pattern} -> {resolved.asset}"
+            )
+    return "\n".join(lines)
 
 
 # Asset paths and archives
@@ -474,6 +799,80 @@ class Verifier:
             raise SystemExit(f"verify failed for {failures} target(s)")
 
 
+# Output
+
+
+OutputFormat = Literal["table", "tsv", "json"]
+AddFormat = Literal["table", "json"]
+
+
+@dataclass(frozen=True)
+class TableColumn:
+    key: str
+    header: str
+    max_width: int | None = None
+
+
+def cell_text(value: Any) -> str:
+    if value is None:
+        return "-"
+    if isinstance(value, list):
+        return ", ".join(str(item) for item in value) or "-"
+    text = str(value)
+    return text if text else "-"
+
+
+def truncate_text(value: str, max_width: int | None) -> str:
+    if max_width is None or len(value) <= max_width:
+        return value
+    if max_width <= 3:
+        return value[:max_width]
+    return value[: max_width - 3] + "..."
+
+
+def render_table(rows: list[dict[str, Any]], columns: list[TableColumn]) -> str:
+    prepared: list[dict[str, str]] = []
+    for row in rows:
+        prepared.append(
+            {
+                column.key: truncate_text(
+                    cell_text(row.get(column.key)), column.max_width
+                )
+                for column in columns
+            }
+        )
+    widths = {
+        column.key: max(
+            [len(column.header)] + [len(row[column.key]) for row in prepared],
+        )
+        for column in columns
+    }
+    lines = [
+        "  ".join(column.header.ljust(widths[column.key]) for column in columns),
+        "  ".join("-" * widths[column.key] for column in columns),
+    ]
+    for row in prepared:
+        lines.append(
+            "  ".join(row[column.key].ljust(widths[column.key]) for column in columns)
+        )
+    return "\n".join(lines)
+
+
+def print_rows(
+    rows: list[dict[str, Any]],
+    columns: list[TableColumn],
+    output_format: OutputFormat,
+) -> None:
+    match output_format:
+        case "table":
+            print(render_table(rows, columns))
+        case "tsv":
+            for row in rows:
+                print("\t".join(cell_text(row.get(column.key)) for column in columns))
+        case "json":
+            print(json.dumps(rows, indent=2))
+
+
 # Reports
 
 
@@ -640,48 +1039,75 @@ def print_update_report(
     print(report)
 
 
-# Commands
+# Add workflows
 
 
-@click.group(context_settings={"help_option_names": ["-h", "--help"]})
-def cli() -> None:
-    """Manage standalone GitHub release binaries for chezmoi."""
+def current_target_name() -> str:
+    os_name = "darwin" if sys.platform == "darwin" else sys.platform
+    arch_aliases = {"arm64": "aarch64", "amd64": "x86_64"}
+    arch = arch_aliases.get(platform.machine(), platform.machine())
+    return f"{os_name}-{arch}"
 
 
-@cli.command("list")
-def cmd_list() -> None:
-    manifest = ManifestFile(path=MANIFEST_PATH).load()
-    for name, tool in manifest.tools.items():
-        targets = ", ".join(tool.targets)
-        print(f"{name}\t{tool.repo}\t{tool.tag}\t{targets}")
+def selected_add_targets(
+    manifest: PortableManifest,
+    requested_targets: tuple[str, ...],
+) -> list[str]:
+    target_names: list[str] = []
+    for target in requested_targets:
+        expanded = current_target_name() if target == "current" else target
+        if expanded not in target_names:
+            target_names.append(expanded)
+    if not target_names:
+        target_names = list(manifest.default_targets)
+    if not target_names:
+        raise SystemExit("manifest has no default_targets; pass --target")
+    missing = [target for target in target_names if target not in manifest.targets]
+    if missing:
+        raise SystemExit(f"target has no global policy: {', '.join(missing)}")
+    return target_names
 
 
-@cli.command("add")
-@click.argument("name")
-@click.argument("repo")
-@click.option(
-    "-T",
-    "--target-asset",
-    "target_assets",
-    required=True,
-    multiple=True,
-    metavar="TARGET=ASSET_PATTERN",
-)
-@click.option("--bin", "bin_name")
-@click.option("--tag")
-@click.option("--path-pattern")
-def cmd_add(
+def confirm_add_targets(target_names: list[str], interaction: Interaction) -> None:
+    if not interaction.allow_input:
+        return
+    click.echo("\nTargets to add:", err=True)
+    for target_name in target_names:
+        click.echo(f"  - {target_name}", err=True)
+    if not interaction.confirm("Use these targets?", default=True):
+        raise SystemExit("aborted")
+
+
+def resolve_add_repo(
+    github: GitHubClient,
+    name: str,
+    repo: str | None,
+    interaction: Interaction,
+) -> str:
+    if repo:
+        return repo
+    candidates = repository_candidates(github, name, limit=8)
+    if not candidates:
+        raise SystemExit(f"no GitHub repositories found for {name}")
+    chosen = interaction.choose(
+        f"Repository candidates for {name}",
+        candidates,
+        format_repo_candidate,
+    )
+    return chosen["full_name"]
+
+
+def add_manual_targets(
+    manifest: PortableManifest,
     name: str,
     repo: str,
     target_assets: tuple[str, ...],
     bin_name: str | None,
     tag: str | None,
     path_pattern: str | None,
-) -> None:
-    manifest_file = ManifestFile(path=MANIFEST_PATH)
-    github = GitHubClient()
+    github: GitHubClient,
+) -> tuple[ToolSpec, list[str]]:
     resolver = ReleaseResolver()
-    manifest = manifest_file.load()
     tool = manifest.tools.get(name)
     if tool is None:
         tool = ToolSpec(repo=repo, bin=bin_name or name)
@@ -702,10 +1128,507 @@ def cmd_add(
             tool.targets[rule.target] = target_spec
         else:
             target_spec.asset_pattern = rule.asset_pattern
-    for target_name, target_spec in tool.targets.items():
-        resolver.resolve_target(tool, target_name, target_spec, release)
+    for target_name in [rule.target for rule in parsed_targets]:
+        resolver.resolve_target(tool, target_name, tool.targets[target_name], release)
+    return tool, [rule.target for rule in parsed_targets]
+
+
+def add_smart_targets(
+    manifest: PortableManifest,
+    name: str,
+    repo: str | None,
+    requested_targets: tuple[str, ...],
+    bin_name: str | None,
+    tag: str | None,
+    path_pattern: str | None,
+    github: GitHubClient,
+    interaction: Interaction,
+) -> tuple[ToolSpec, list[str]]:
+    target_names = selected_add_targets(manifest, requested_targets)
+    confirm_add_targets(target_names, interaction)
+    resolved_repo = resolve_add_repo(github, name, repo, interaction)
+    release = github.fetch_release(resolved_repo, tag or "latest")
+    resolved_tag = release["tag_name"]
+
+    tool = manifest.tools.get(name)
+    if tool is None:
+        tool = ToolSpec(repo=resolved_repo, bin=bin_name or name)
+        manifest.tools[name] = tool
+    tool.repo = resolved_repo
+    tool.tag = resolved_tag
+    tool.bin = bin_name or tool.bin or name
+    if path_pattern:
+        tool.path_pattern = path_pattern
+
+    with tempfile.TemporaryDirectory(prefix="portable-pkgs-") as tmp:
+        tmp_path = Path(tmp)
+        for target_name in target_names:
+            policy = manifest.targets[target_name]
+            candidates = asset_candidates_for_target(release, policy, tool.bin)
+            if not candidates:
+                names = "\n".join(
+                    f"  - {asset['name']}" for asset in release.get("assets", [])
+                )
+                raise SystemExit(
+                    f"no asset candidates for {target_name} in {tool.repo} {resolved_tag}:\n{names}"
+                )
+            chosen = interaction.choose(
+                f"Asset candidates for {target_name}",
+                candidates,
+                format_asset_candidate,
+            )
+            asset = chosen.asset
+            asset_name = asset["name"]
+            expected_sha256 = digest_sha256(asset.get("digest"))
+            target_spec = tool.targets.get(target_name)
+            if target_spec is None:
+                target_spec = TargetSpec(
+                    asset_pattern=asset_pattern_from_name(asset_name, resolved_tag)
+                )
+                tool.targets[target_name] = target_spec
+            else:
+                target_spec.asset_pattern = asset_pattern_from_name(
+                    asset_name, resolved_tag
+                )
+            choose_asset(release, target_spec.asset_pattern)
+
+            downloaded = github.download_asset(asset["browser_download_url"], tmp_path)
+            sha256 = expected_sha256 or downloaded.sha256
+            if expected_sha256 and expected_sha256 != downloaded.sha256:
+                raise SystemExit(
+                    f"downloaded sha256 {downloaded.sha256} does not match GitHub digest {expected_sha256}"
+                )
+
+            if ArchiveAsset.is_archive(asset_name):
+                entries = ArchiveAsset.list(downloaded.path)
+                path_candidates = path_candidates_for_bin(entries, tool.bin)
+                if not path_candidates:
+                    raise SystemExit(
+                        f"no archive member named {tool.bin!r} in {asset_name}"
+                    )
+                chosen_path = interaction.choose(
+                    f"Binary path candidates for {target_name}",
+                    path_candidates,
+                    format_path_candidate,
+                )
+                if not path_pattern:
+                    target_spec.path_pattern = path_pattern_from_path(
+                        asset_name,
+                        chosen_path.path,
+                        resolved_tag,
+                        tool.bin,
+                    )
+                target_spec.resolved = ArchiveResolvedAsset(
+                    type="archive-file",
+                    asset=asset_name,
+                    path=chosen_path.path,
+                    sha256=sha256,
+                )
+            else:
+                target_spec.path_pattern = None
+                target_spec.resolved = FileResolvedAsset(
+                    type="file",
+                    asset=asset_name,
+                    sha256=sha256,
+                )
+    if not path_pattern:
+        coalesce_path_patterns(tool)
+    return tool, target_names
+
+
+def package_preview_rows(name: str, tool: ToolSpec) -> list[dict[str, Any]]:
+    return [
+        {"field": "name", "value": name},
+        {"field": "repo", "value": tool.repo},
+        {"field": "tag", "value": tool.tag},
+        {"field": "bin", "value": tool.bin},
+        {"field": "path_pattern", "value": tool.path_pattern},
+    ]
+
+
+def target_preview_rows(
+    tool: ToolSpec, target_names: list[str]
+) -> list[dict[str, Any]]:
+    rows = []
+    for target_name in target_names:
+        target = tool.targets[target_name]
+        resolved = target.resolved
+        row: dict[str, Any] = {
+            "target": target_name,
+            "asset_pattern": target.asset_pattern,
+            "path_pattern": target.path_pattern or tool.path_pattern,
+        }
+        if isinstance(resolved, ArchiveResolvedAsset):
+            row.update(
+                {
+                    "type": resolved.type,
+                    "asset": resolved.asset,
+                    "path": resolved.path,
+                    "sha256": resolved.sha256,
+                }
+            )
+        elif isinstance(resolved, FileResolvedAsset):
+            row.update(
+                {
+                    "type": resolved.type,
+                    "asset": resolved.asset,
+                    "path": "-",
+                    "sha256": resolved.sha256,
+                }
+            )
+        rows.append(row)
+    return rows
+
+
+def print_add_preview(
+    name: str,
+    tool: ToolSpec,
+    target_names: list[str],
+    output_format: AddFormat,
+) -> None:
+    match output_format:
+        case "table":
+            print("Package")
+            print(
+                render_table(
+                    package_preview_rows(name, tool),
+                    [
+                        TableColumn("field", "FIELD"),
+                        TableColumn("value", "VALUE"),
+                    ],
+                )
+            )
+            print()
+            print("Targets")
+            print(
+                render_table(
+                    target_preview_rows(tool, target_names),
+                    [
+                        TableColumn("target", "TARGET"),
+                        TableColumn("type", "TYPE"),
+                        TableColumn("asset", "ASSET", max_width=48),
+                        TableColumn("path", "PATH", max_width=36),
+                        TableColumn("asset_pattern", "ASSET_PATTERN", max_width=48),
+                        TableColumn("path_pattern", "PATH_PATTERN", max_width=32),
+                        TableColumn("sha256", "SHA256", max_width=16),
+                    ],
+                )
+            )
+        case "json":
+            print(
+                json.dumps(
+                    {
+                        "name": name,
+                        "tool": tool.model_dump(exclude_none=True, mode="json"),
+                        "targets": target_names,
+                    },
+                    indent=2,
+                )
+            )
+
+
+def tool_list_rows(manifest: PortableManifest) -> list[dict[str, Any]]:
+    return [
+        {
+            "name": name,
+            "repo": tool.repo,
+            "tag": tool.tag,
+            "bin": tool.bin,
+            "targets": list(tool.targets),
+        }
+        for name, tool in manifest.tools.items()
+    ]
+
+
+def search_rows(
+    github: GitHubClient,
+    query: str,
+    limit: int,
+) -> list[dict[str, Any]]:
+    rows = []
+    for index, repo in enumerate(repository_candidates(github, query, limit), start=1):
+        rows.append(
+            {
+                "index": index,
+                "repo": repo["full_name"],
+                "stars": repo.get("stargazers_count", 0),
+                "description": repo.get("description") or "",
+            }
+        )
+    return rows
+
+
+def print_search_rows(rows: list[dict[str, Any]], output_format: OutputFormat) -> None:
+    print_rows(
+        rows,
+        [
+            TableColumn("index", "#"),
+            TableColumn("repo", "REPOSITORY"),
+            TableColumn("stars", "STARS"),
+            TableColumn("description", "DESCRIPTION", max_width=72),
+        ],
+        output_format,
+    )
+
+
+def asset_kind(asset_name: str) -> str:
+    if ArchiveAsset.is_archive(asset_name):
+        return "archive"
+    if PACKAGED_INSTALLER_RE.search(asset_name):
+        return "installer"
+    return "file"
+
+
+def format_size(value: Any) -> str:
+    if not isinstance(value, int):
+        return "-"
+    units = ["B", "KiB", "MiB", "GiB"]
+    amount = float(value)
+    for unit in units:
+        if amount < 1024 or unit == units[-1]:
+            if unit == "B":
+                return f"{int(amount)} {unit}"
+            return f"{amount:.1f} {unit}"
+        amount /= 1024
+    return f"{amount:.1f} GiB"
+
+
+def release_asset_rows(release: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for index, asset in enumerate(release.get("assets", []), start=1):
+        asset_name = asset["name"]
+        rows.append(
+            {
+                "index": index,
+                "name": asset_name,
+                "kind": asset_kind(asset_name),
+                "size": format_size(asset.get("size")),
+                "sha256": digest_sha256(asset.get("digest")),
+            }
+        )
+    return rows
+
+
+def release_assets_payload(
+    repo: str, release: dict[str, Any], rows: list[dict[str, Any]]
+) -> dict[str, Any]:
+    return {
+        "repo": repo,
+        "tag": release["tag_name"],
+        "name": release.get("name"),
+        "assets": rows,
+    }
+
+
+def print_release_assets(
+    repo: str,
+    release: dict[str, Any],
+    output_format: OutputFormat,
+) -> None:
+    rows = release_asset_rows(release)
+    match output_format:
+        case "table":
+            print(f"{repo} {release['tag_name']}")
+            print(
+                render_table(
+                    rows,
+                    [
+                        TableColumn("index", "#"),
+                        TableColumn("name", "ASSET", max_width=72),
+                        TableColumn("kind", "TYPE"),
+                        TableColumn("size", "SIZE"),
+                        TableColumn("sha256", "SHA256", max_width=16),
+                    ],
+                )
+            )
+        case "tsv":
+            for row in rows:
+                print(
+                    "\t".join(
+                        [
+                            repo,
+                            release["tag_name"],
+                            cell_text(row["index"]),
+                            cell_text(row["name"]),
+                            cell_text(row["kind"]),
+                            cell_text(row["size"]),
+                            cell_text(row["sha256"]),
+                        ]
+                    )
+                )
+        case "json":
+            print(json.dumps(release_assets_payload(repo, release, rows), indent=2))
+
+
+# Commands
+
+
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+def cli() -> None:
+    """Manage standalone GitHub release binaries for chezmoi."""
+
+
+@cli.command("list")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["table", "tsv", "json"]),
+    default="table",
+    show_default=True,
+)
+def cmd_list(output_format: OutputFormat) -> None:
+    manifest = ManifestFile(path=MANIFEST_PATH).load()
+    print_rows(
+        tool_list_rows(manifest),
+        [
+            TableColumn("name", "NAME"),
+            TableColumn("repo", "REPOSITORY"),
+            TableColumn("tag", "TAG"),
+            TableColumn("bin", "BIN"),
+            TableColumn("targets", "TARGETS"),
+        ],
+        output_format,
+    )
+
+
+@cli.command("search")
+@click.argument("query")
+@click.option("--limit", default=8, show_default=True, type=click.IntRange(1, 50))
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["table", "tsv", "json"]),
+    default="table",
+    show_default=True,
+)
+def cmd_search(
+    query: str,
+    limit: int,
+    output_format: OutputFormat,
+) -> None:
+    github = GitHubClient()
+    print_search_rows(search_rows(github, query, limit), output_format)
+
+
+@cli.command("assets")
+@click.argument("repo")
+@click.option("--tag", default="latest", show_default=True)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["table", "tsv", "json"]),
+    default="table",
+    show_default=True,
+)
+def cmd_assets(repo: str, tag: str, output_format: OutputFormat) -> None:
+    repo = normalize_repo(repo)
+    github = GitHubClient()
+    release = github.fetch_release(repo, tag)
+    print_release_assets(repo, release, output_format)
+
+
+@cli.command("add")
+@click.argument("name")
+@click.argument("repo_arg", required=False)
+@click.option(
+    "-T",
+    "--target-asset",
+    "target_assets",
+    multiple=True,
+    metavar="TARGET=ASSET_PATTERN",
+)
+@click.option("--repo", "repo_option", help="GitHub repository as OWNER/REPO.")
+@click.option("--target", "requested_targets", multiple=True, help="Target to add.")
+@click.option("--bin", "bin_name")
+@click.option("--tag")
+@click.option("--path-pattern")
+@click.option("--interactive", is_flag=True, help="Prompt for each inferred choice.")
+@click.option("--non-interactive", is_flag=True, help="Fail instead of prompting.")
+@click.option(
+    "--dry-run", is_flag=True, help="Print the generated entry without saving."
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["table", "json"]),
+    default="table",
+    show_default=True,
+    help="Choose dry-run preview output format.",
+)
+@click.option("--verify", is_flag=True, help="Verify resolved assets after saving.")
+def cmd_add(
+    name: str,
+    repo_arg: str | None,
+    target_assets: tuple[str, ...],
+    repo_option: str | None,
+    requested_targets: tuple[str, ...],
+    bin_name: str | None,
+    tag: str | None,
+    path_pattern: str | None,
+    interactive: bool,
+    non_interactive: bool,
+    dry_run: bool,
+    output_format: AddFormat,
+    verify: bool,
+) -> None:
+    if interactive and non_interactive:
+        raise click.BadParameter(
+            "--interactive and --non-interactive cannot be combined"
+        )
+    if (
+        repo_arg
+        and repo_option
+        and normalize_repo(repo_arg) != normalize_repo(repo_option)
+    ):
+        raise click.BadParameter("repo argument and --repo disagree")
+    repo_value = repo_option or repo_arg
+    repo = normalize_repo(repo_value) if repo_value is not None else None
+    allow_input = interactive or (sys.stdin.isatty() and not non_interactive)
+    interaction = Interaction(allow_input=allow_input, force=interactive)
+
+    manifest_file = ManifestFile(path=MANIFEST_PATH)
+    github = GitHubClient()
+    verifier = Verifier(github)
+    manifest = manifest_file.load()
+    if target_assets:
+        if repo is None:
+            raise click.BadParameter("manual --target-asset mode requires --repo")
+        tool, target_names = add_manual_targets(
+            manifest,
+            name,
+            repo,
+            target_assets,
+            bin_name,
+            tag,
+            path_pattern,
+            github,
+        )
+    else:
+        tool, target_names = add_smart_targets(
+            manifest,
+            name,
+            repo,
+            requested_targets,
+            bin_name,
+            tag,
+            path_pattern,
+            github,
+            interaction,
+        )
+
+    summary = render_add_summary(name, tool, target_names)
+    if dry_run:
+        print_add_preview(name, tool, target_names, output_format)
+        return
+    click.echo(summary, err=True)
+    if not interaction.confirm("Save portable package?", default=True):
+        raise SystemExit("aborted")
+    if verify:
+        verifier.verify_many(
+            [(name, tool, target_name) for target_name in target_names]
+        )
     manifest_file.save(manifest)
-    print(f"added {name} for {', '.join(rule.target for rule in parsed_targets)}")
+    print(f"added {name} for {', '.join(target_names)}")
 
 
 @cli.command("update")

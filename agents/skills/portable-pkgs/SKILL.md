@@ -27,6 +27,9 @@ Use this skill in this chezmoi repo when the task involves:
   the manifest; the template reads resolved manifest metadata.
 - Prefer GitHub release assets with stable `sha256` metadata. Use
   `inspect --save` when the archive path needs explicit confirmation.
+- Treat `default_targets` and `targets` in the manifest as the global target
+  policy for intelligent adds. Do not duplicate target matching rules in docs
+  or prompts.
 
 ## Workflow
 
@@ -38,15 +41,40 @@ Use this skill in this chezmoi repo when the task involves:
 
 ## Commands
 
-Add a package:
+Inspect package candidates when the repository or release assets are unclear:
 
 ```bash
-portable-pkgs add <name> <owner/repo> \
-  --bin <command> \
-  --tag <tag> \
+portable-pkgs search <query> --format json
+portable-pkgs assets <owner/repo> --format json
+```
+
+Use the default table output only for human inspection. Agent-run discovery
+should use JSON so candidate selection does not depend on terminal formatting.
+
+Add a package with intelligent asset and archive path inference:
+
+```bash
+portable-pkgs add <name> --repo <owner/repo> --verify --non-interactive
+rtk git diff -- home/.chezmoidata/portable-pkgs.yaml
+```
+
+Use `--non-interactive` for agent-run commands. It disables prompts and makes
+ambiguous inference fail with candidates. Report the candidate list and rerun
+with explicit `--repo`, `--target`, `--bin`, or manual `--target-asset` values
+instead of using interactive prompts.
+
+Use `--dry-run --format json` only when the inferred repo, target assets, or
+archive paths need inspection before editing the manifest. Ordinary successful
+adds are easy to review and revert through the manifest diff.
+
+Use the manual escape hatch when inference cannot express the release layout:
+
+```bash
+portable-pkgs add <name> --repo <owner/repo> --non-interactive \
   -Tdarwin-aarch64='<darwin asset regex>' \
   -Tlinux-x86_64='<linux asset regex>' \
-  --path-pattern '<archive member path>'
+  --path-pattern '<archive member path>' \
+  --bin <command>
 ```
 
 Update a package:
@@ -80,9 +108,9 @@ For package manifest changes, prefer:
 
 ```bash
 portable-pkgs verify <name>
-chezmoi cat ~/.local/bin/<command>
-chezmoi diff ~/.local/bin/<command>
-git diff --check
+rtk chezmoi cat ~/.local/bin/<command>
+rtk chezmoi diff ~/.local/bin/<command>
+rtk git diff --check
 ```
 
 If `chezmoi` is blocked by the persistent state lock, do not delete the lock
