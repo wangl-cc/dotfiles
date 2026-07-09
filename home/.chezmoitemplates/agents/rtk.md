@@ -64,7 +64,23 @@ rtk bash -lc 'rg "pattern" src | head'
 rtk bash -lc 'git diff -- src/file.rs | sed -n "1,160p"'
 ```
 
-If shell syntax is genuinely required, use the underlying shell command directly or through `rtk` only when raw output is not important and the loss of command-specific optimization is acceptable. State why when choosing the direct underlying command.
+If shell syntax is genuinely required, run the shell directly and put `rtk`
+inside the command string around the real command being executed:
+
+```bash
+fish -lc 'rtk git diff -- src/file.rs'
+bash -lc 'rtk rg "pattern" src'
+```
+
+Avoid wrapping the shell itself with `rtk`:
+
+```bash
+rtk fish -lc 'git diff -- src/file.rs'
+rtk bash -lc 'rg "pattern" src'
+```
+
+When a shell command needs raw, unfiltered output, run the underlying command
+directly inside the shell and state why.
 
 ### Raw Output Exceptions
 
