@@ -129,12 +129,12 @@ portable_pkgs:
             path: fastfetch-macos-aarch64/usr/bin/fastfetch
             sha256: be86c281b2fc57410399357153731ae723856fbb80ee66a074648f597b80530c
         linux-x86_64:
-          asset_pattern: ^fastfetch-musl-amd64\.tar\.gz$
+          asset_pattern: ^fastfetch-linux-amd64\.tar\.gz$
           resolved:
             type: archive-file
-            asset: fastfetch-musl-amd64.tar.gz
-            path: fastfetch-musl-amd64/usr/bin/fastfetch
-            sha256: 45eb10b27a5ae344c2e3f04a3f1967841b9223bce7a687f184b6c964c76b0db9
+            asset: fastfetch-linux-amd64.tar.gz
+            path: fastfetch-linux-amd64/usr/bin/fastfetch
+            sha256: d8a477a016fbcf6cf184b1e2a54f38e702aae0d27078f72f5dac54d6d0010739
       path_pattern: '{assetStem}/usr/bin/fastfetch'
     fd:
       repo: sharkdp/fd
