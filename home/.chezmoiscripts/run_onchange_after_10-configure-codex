@@ -35,6 +35,10 @@ DESKTOP_SETTINGS: dict[str, object] = {
     "reviewDelivery": "detached",
     "preventSleepWhileRunning": True,
     "git-always-force-push": True,
+    "git-pr-instructions": (
+        "Write PR titles as final-quality commit titles, with no `[codex]` / "
+        "`[Codex]` or similar source markers."
+    ),
     "git-pull-request-merge-method": "squash",
 }
 
