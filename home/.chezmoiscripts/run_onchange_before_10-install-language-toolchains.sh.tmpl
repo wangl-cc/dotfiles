@@ -8,8 +8,9 @@ set -euo pipefail
 # {{- end }}
 # {{- if .toolchains.uv }}
 # {{-   $uvPath := lookPath "uv" }}
-# {{-   if not $uvPath }}
-echo "Installing uv"
+# {{-   $uvxPath := lookPath "uvx" }}
+# {{-   if or (not $uvPath) (not $uvxPath) }}
+echo "Installing uv because uv or uvx is missing"
 curl -fsSL https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
 # {{-   else if ne $uvMinimum "" }}
 # {{-     $uvVersionOutput := output $uvPath "--version" }}
@@ -40,8 +41,9 @@ curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile "$rustu
 # {{- end }}
 # {{- if .toolchains.bun }}
 # {{-   $bunPath := lookPath "bun" }}
-# {{-   if not $bunPath }}
-echo "Installing bun"
+# {{-   $bunxPath := lookPath "bunx" }}
+# {{-   if or (not $bunPath) (not $bunxPath) }}
+echo "Installing bun because bun or bunx is missing"
 curl -fsSL https://bun.sh/install | BUN_INSTALL="$HOME/.bun" SHELL=/bin/sh bash
 # {{-   else if ne $bunMinimum "" }}
 # {{-     $bunVersionOutput := output $bunPath "--version" }}
