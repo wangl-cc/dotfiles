@@ -18,7 +18,7 @@ UV_CACHE_DIR = Path.home() / ".cache" / "uv"
 TomlContainer: TypeAlias = tomlkit.TOMLDocument | Table
 
 TOP_LEVEL_SETTINGS: dict[str, object] = {
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "model_reasoning_effort": "high",
     "approval_policy": "on-request",
     "approvals_reviewer": "guardian_subagent",
@@ -35,6 +35,17 @@ DESKTOP_SETTINGS: dict[str, object] = {
     "reviewDelivery": "detached",
     "preventSleepWhileRunning": True,
     "git-always-force-push": True,
+    "git-commit-instructions": """Choose commit messages in this order:
+
+1. Follow repository-local commit message instructions when present, such as
+   AGENTS.md, CLAUDE.md, CONTRIBUTING.md, or an explicit user instruction.
+2. If the repository has no explicit instructions, inspect the recent commit
+   history and match its established style.
+3. If neither local instructions nor recent history establish a style, use
+   Conventional Commits.
+
+Keep the subject concise, imperative, and free of trailing punctuation. Add a
+body only when it clarifies non-obvious context.""",
     "git-pr-instructions": (
         "Write PR titles as final-quality commit titles, with no `[codex]` / "
         "`[Codex]` or similar source markers."
