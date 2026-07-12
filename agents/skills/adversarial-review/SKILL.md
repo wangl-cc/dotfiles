@@ -32,8 +32,6 @@ falsifiably. Clarify the target or gather facts first.
      disputed, or large-scope claims.
    - If using a read-only external reviewer, pass the Reviewer Assignment and
      Review Packet below as the handoff brief.
-   - For a Claude-based route, use the `claude-subagent` skill with that handoff
-     brief as its delegation brief.
    - If no independent reviewer is available, stop after stating the claim,
      falsification criteria, and unavailable route; mark the adversarial review
      as not independently performed.
