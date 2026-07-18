@@ -37,6 +37,9 @@
     "mode": "subtle",
   },
   "agent": {
+    "auto_compact": {
+      "threshold": "90%"
+    },
     "expand_edit_card": false,
     "expand_terminal_card": false,
     "single_file_review": true,
@@ -45,7 +48,7 @@
     "favorite_models": [
       {
         "provider": "openai-subscribed",
-        "model": "gpt-5.5",
+        "model": "gpt-5.6-sol",
         "enable_thinking": true,
         "effort": "high",
       },
@@ -55,7 +58,7 @@
       "effort": "high",
       "enable_thinking": true,
       "provider": "openai-subscribed",
-      "model": "gpt-5.5",
+      "model": "gpt-5.6-sol",
     },
     "inline_assistant_model": {
       "provider": "deepseek",
