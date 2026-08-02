@@ -16,6 +16,13 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
 
+[data.kache]
+{{- $kacheMaxSizeGiB := promptIntOnce . "kache.maxSizeGiB" "Maximum local kache store size in GiB" 20 }}
+{{- if lt $kacheMaxSizeGiB 1 }}
+{{-   fail (printf "kache.maxSizeGiB must be greater than zero, got %d" $kacheMaxSizeGiB) }}
+{{- end }}
+maxSizeGiB = {{ $kacheMaxSizeGiB }}
+
 [data.shell.fish]
 auto = {{ promptBoolOnce . "shell.fish.auto" "Auto-enter fish from fallback bash/zsh sessions" true }}
 

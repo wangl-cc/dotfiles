@@ -1,0 +1,4 @@
+[cache]
+local_only = true
+local_max_size = {{ printf "%dGiB" .kache.maxSizeGiB | quote }}
+auto_gc = true
