@@ -13,23 +13,8 @@
     "kimi": {
       "type": "registry"
     },
-    "claude-acp": {
-      "default_config_options": {
-        "effort": "high",
-      },
-      "type": "registry",
-    },
-    "opencode": {
-      "type": "registry",
-    },
     "codex-acp": {
       "type": "registry",
-    },
-    "OMP": {
-      "type": "custom",
-      "command": "omp",
-      "args": ["acp"],
-      "env": {},
     },
   },
   "colorize_brackets": true,
@@ -81,10 +66,6 @@
     "default_profile": "write",
   },
   "language_models": {
-    "opencode": {
-      "show_free_models": false,
-      "show_zen_models": false,
-    },
     "ollama": {
       "api_url": "http://loongcc-workstation.tail6e3cda.ts.net:11434",
     },
