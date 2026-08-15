@@ -5,52 +5,60 @@
 #   "tomlkit==0.13.3",
 # ]
 # ///
-"""Apply portable Codex preferences without taking over dynamic state."""
+"""Replace managed top-level values while preserving unmanaged top-level keys."""
 
 from pathlib import Path
-from typing import Any, TypeAlias
 
 import tomlkit
-from tomlkit.items import Array, Table
 
 CONFIG_PATH = Path.home() / ".codex" / "config.toml"
-UV_CACHE_DIR = Path.home() / ".cache" / "uv"
-TomlContainer: TypeAlias = tomlkit.TOMLDocument | Table
 
-TOP_LEVEL_SETTINGS: dict[str, object] = {
+Patch = dict[str, object | None]
+
+# Nested mappings are authoritative snapshots; complete replacement prevents local config drift.
+TOP_LEVEL_PATCH: Patch = {
     "model": "gpt-5.6-sol",
     "model_reasoning_effort": "high",
     "approval_policy": "on-request",
     "approvals_reviewer": "guardian_subagent",
+    "features": {
+        "js_repl": True,
+        "memories": True,
+        "multi_agent_v2": {
+            "enabled": True,
+            "multi_agent_mode_hint_text": """\
+Use sub-agents selectively when a configured role matches a bounded task and delegation would materially improve isolated context, independent judgment, parallel execution, or execution quality. Handle trivial lookups, routine commands, and small validations directly.
+
+Before spawning a sub-agent, define the single question or objective it owns; the unique value expected from delegation; fixed decisions it must not reopen; explicit non-goals; supplied evidence and stopping criteria; the maximum output shape; and what the root will do in parallel. Choose the narrowest fitting role and pass only the context it needs. Do not delegate routine inspection, deterministic validation, small edits, or work the root has already completed.
+
+The root agent owns decomposition, coordination, scope changes, result integration, and verification. Use at most one independent reviewer per artifact or claim. After fixes, the root performs deterministic verification; do not start a review chain. Sub-agents must not spawn child agents unless the root explicitly authorizes nested delegation in the handoff.
+
+For discovery and review work, require the sub-agent to separate novel findings, confirmations, and unknowns. If it has no novel finding, it should say so directly rather than restating supplied context.
+""",
+        },
+    },
+    "desktop": {
+        "followUpQueueMode": "queue",
+        "reviewDelivery": "detached",
+        "preventSleepWhileRunning": True,
+        "git-commit-instructions": """\
+Choose commit messages style in this order:
+
+1. Follow repository-local commit message instructions when present, such as AGENTS.md, CLAUDE.md, CONTRIBUTING.md, or an explicit user instruction.
+2. If the repository has no explicit instructions, inspect the recent commit history and match its established style.
+3. If neither local instructions nor recent history establish a style, use Conventional Commits.
+
+Keep the subject concise, imperative. Add a body when it clarifies non-obvious context.
+""",
+        "git-pr-instructions": """\
+Write PR titles as final-quality commit titles, no `[codex]` or similar source markers.
+""",
+        "git-pull-request-merge-method": "squash",
+    },
     "sandbox_mode": "workspace-write",
-}
-
-FEATURE_SETTINGS: dict[str, object] = {
-    "js_repl": True,
-    "memories": True,
-}
-
-DESKTOP_SETTINGS: dict[str, object] = {
-    "followUpQueueMode": "queue",
-    "reviewDelivery": "detached",
-    "preventSleepWhileRunning": True,
-    "git-always-force-push": True,
-    "git-commit-instructions": """Choose commit messages in this order:
-
-1. Follow repository-local commit message instructions when present, such as
-   AGENTS.md, CLAUDE.md, CONTRIBUTING.md, or an explicit user instruction.
-2. If the repository has no explicit instructions, inspect the recent commit
-   history and match its established style.
-3. If neither local instructions nor recent history establish a style, use
-   Conventional Commits.
-
-Keep the subject concise, imperative, and free of trailing punctuation. Add a
-body only when it clarifies non-obvious context.""",
-    "git-pr-instructions": (
-        "Write PR titles as final-quality commit titles, with no `[codex]` / "
-        "`[Codex]` or similar source markers."
-    ),
-    "git-pull-request-merge-method": "squash",
+    "sandbox_workspace_write": {
+        "network_access": True,
+    },
 }
 
 
@@ -60,81 +68,27 @@ def read_document() -> tomlkit.TOMLDocument:
     return tomlkit.parse(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
-def ensure_table(container: TomlContainer, key: str) -> Table:
-    value = container.get(key)
-    if value is None:
-        value = tomlkit.table()
-        container[key] = value
-
-    if not isinstance(value, Table):
-        raise SystemExit(f"{key} must be a TOML table")
-    return value
-
-
-def ensure_table_path(document: tomlkit.TOMLDocument, path: tuple[str, ...]) -> Table:
-    container: TomlContainer = document
-    for key in path:
-        container = ensure_table(container, key)
-    if not isinstance(container, Table):
-        raise SystemExit("table path must contain at least one key")
-    return container
+def apply_patch(old: tomlkit.TOMLDocument, patch: Patch) -> None:
+    for key, value in patch.items():
+        current = old.get(key)
+        if value is None:
+            old.pop(key, None)
+        elif current != value:
+            old.pop(key, None)
+            old[key] = value
 
 
-def set_values(container: TomlContainer, values: dict[str, object]) -> None:
-    for key, value in values.items():
-        container[key] = value
+def main() -> None:
+    CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    before = CONFIG_PATH.read_text(encoding="utf-8") if CONFIG_PATH.exists() else ""
+    document = read_document()
+    apply_patch(document, TOP_LEVEL_PATCH)
+
+    after = tomlkit.dumps(document)
+    if after != before:
+        CONFIG_PATH.write_text(after, encoding="utf-8")
 
 
-def string_value(value: Any) -> str | None:
-    if isinstance(value, str):
-        return value
-    return None
-
-
-def configured_roots(section: Table) -> list[str]:
-    roots = section.get("writable_roots")
-    if roots is None:
-        return []
-    if not isinstance(roots, Array):
-        raise SystemExit("sandbox_workspace_write.writable_roots must be an array")
-
-    values = [string_value(root) for root in roots]
-    if any(root is None for root in values):
-        raise SystemExit("sandbox_workspace_write.writable_roots must contain strings")
-    return [root for root in values if root is not None]
-
-
-def roots_array(roots: list[str]) -> Array:
-    array = tomlkit.array()
-    array.multiline(True)
-    for root in roots:
-        array.append(root)
-    return array
-
-
-def apply_portable_settings(document: tomlkit.TOMLDocument) -> None:
-    set_values(document, TOP_LEVEL_SETTINGS)
-    features = ensure_table(document, "features")
-    set_values(features, FEATURE_SETTINGS)
-    set_values(ensure_table(document, "desktop"), DESKTOP_SETTINGS)
-
-
-def apply_writable_roots(document: tomlkit.TOMLDocument) -> None:
-    section = ensure_table(document, "sandbox_workspace_write")
-    roots = configured_roots(section)
-    root = str(UV_CACHE_DIR)
-    if root not in roots:
-        section["writable_roots"] = roots_array([*roots, root])
-
-
-CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-UV_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-
-before = CONFIG_PATH.read_text(encoding="utf-8") if CONFIG_PATH.exists() else ""
-document = read_document()
-apply_portable_settings(document)
-apply_writable_roots(document)
-
-after = tomlkit.dumps(document)
-if after != before:
-    CONFIG_PATH.write_text(after, encoding="utf-8")
+if __name__ == "__main__":
+    main()

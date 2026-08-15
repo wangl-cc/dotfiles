@@ -1,0 +1,22 @@
+{{- if not (has .access (list "read-only" "workspace-write")) -}}
+{{- fail (printf "unsupported Kimi access profile: %s" .access) -}}
+{{- end -}}
+---
+{{ if and (hasKey . "kimi") (hasKey .kimi "name") -}}
+name: {{ .kimi.name | toJson }}
+{{ else -}}
+name: {{ .name | toJson }}
+{{ end -}}
+description: {{ printf "%s How to use: %s" .description .how_to_use | toJson }}
+whenToUse: {{ .when_to_use | toJson }}
+{{ if and (hasKey . "kimi") (hasKey .kimi "override") -}}
+override: {{ .kimi.override }}
+{{ end -}}
+{{ if eq .access "read-only" -}}
+disallowedTools: Write, Edit
+{{ end -}}
+---
+
+{{ .prompt }}
+
+Your final message must be the complete, self-contained result for the calling agent.

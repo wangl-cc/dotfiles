@@ -1,0 +1,20 @@
+{{- if not (has .access (list "read-only" "workspace-write")) -}}
+{{- fail (printf "unsupported Codex access profile: %s" .access) -}}
+{{- end -}}
+name = {{ .name | toJson }}
+model = {{ .codex.model | toJson }}
+model_reasoning_effort = {{ .codex.reasoning | toJson }}
+{{- if eq .access "read-only" }}
+default_permissions = ":read-only"
+{{- end }}
+
+description = """
+{{ .description }}
+
+When to use: {{ .when_to_use }}
+How to use: {{ .how_to_use }}
+"""
+
+developer_instructions = """
+{{ .prompt }}
+"""

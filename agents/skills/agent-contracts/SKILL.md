@@ -1,6 +1,6 @@
 ---
 name: agent-contracts
-description: Edit the shared agent contract — the chezmoi-managed AGENTS.md / CLAUDE.md instruction files generated from home/.chezmoitemplates/agents/ partials. Use when adding, changing, or removing a durable behavior rule for the agents, or when asked to update AGENTS.md, CLAUDE.md, the shared partials, or a tool's contract residue.
+description: Edit the shared agent contract and chezmoi-managed instruction files generated from home/.chezmoitemplates/agents/ partials. Use when adding, changing, or removing a durable behavior rule for the agents, or when asked to update the shared partials, a managed instruction file, or a tool's contract residue.
 ---
 
 # Agent Contracts
@@ -16,9 +16,7 @@ Source lives in the chezmoi repo (`~/.local/share/chezmoi`, source root `home/`)
 - **Shared partials** — `home/.chezmoitemplates/agents/`:
   - `epistemic-honesty.md` — evidence, inference, re-examination, sub-agent output.
   - `engineering-contract.md` — working posture, execution gate, engineering
-    design, editing/docs.
-  - `rtk.md` — RTK shell-command prefixing, raw-command proxying, and RTK
-    self-checks.
+    design, probes, editing/docs.
   - `validation-tooling.md` — project-native validation, exit-code authority,
     `bunx`/`uvx` runners, no unrequested installers or package-manager paths.
 - **Per-tool templates** — each composes the shared partials with
@@ -28,32 +26,125 @@ Source lives in the chezmoi repo (`~/.local/share/chezmoi`, source root `home/`)
 
 | Source template | Renders to | Tool-specific residue |
 | --- | --- | --- |
-| `home/private_dot_claude/CLAUDE.md.tmpl` | `~/.claude/CLAUDE.md` | Maintaining-this-file, Response style, Context assumptions |
-| `home/dot_codex/AGENTS.md.tmpl` | `~/.codex/AGENTS.md` | Pull requests |
-| `home/dot_omp/private_agent/AGENTS.md.tmpl` | `~/.omp/agent/AGENTS.md` | none |
-| `home/dot_config/opencode/AGENTS.md.tmpl` | `~/.config/opencode/AGENTS.md` | Secret redaction |
+| `home/dot_codex/AGENTS.md.tmpl` | `~/.codex/AGENTS.md` | none |
+| `home/dot_kimi-code/AGENTS.md.tmpl` | `~/.kimi-code/AGENTS.md` | `rtk.md` partial |
+
+## Sub-agent inventory
+
+Cross-harness sub-agents are data-driven, not hand-written per tool.
+
+- Each role definition lives in `home/.chezmoidata/subagents/<name>.toml`.
+  `[subagents.<key>]` separates caller-facing routing from callee-facing
+  execution:
+  - `description` gives one concise sentence saying what the role is.
+  - `when_to_use` states the trigger and threshold for delegation, not a list of
+    everything the role can do.
+  - `how_to_use` tells the root agent what context and handoff to provide and
+    what ownership it retains. Express the required context semantics, such as
+    isolation or the smallest task-relevant context, without naming a
+    harness-specific spawn parameter.
+  - `prompt` tells the spawned sub-agent how to execute the delegated task.
+  - `access` is machine-consumed portable role intent, not routing prose or a
+    promise of identical enforcement across harnesses. Renderers preserve useful
+    task capabilities and use simple native controls rather than pursuing
+    least-privilege equivalence.
+- The canonical inventory is `explorer`, `scout`, `worker`, `writer`,
+  `patch-reviewer`, `design-reviewer`, `architecture-advisor`, and
+  `adversarial-reviewer`. `explorer` owns local repository discovery, while
+  `scout` owns external research; `worker` owns scoped code and test changes,
+  while `writer` owns project-facing documentation.
+- Shared access profiles express whether a role owns project modifications:
+  - `read-only` roles inspect, research, or review rather than modify the
+    delivered project state.
+  - `workspace-write` roles may make scoped edits and run project-native
+    validation.
+  Renderers keep useful Shell, Web, Skill, and delegation capabilities when the
+  harness supports them. Role prompts govern task scope where native controls
+  would remove useful capabilities or cannot express the same boundary.
+- Nested `[subagents.<key>.<harness>]` tables contain only settings that
+  genuinely vary for that role and harness, such as models, reasoning levels,
+  native aliases, and exceptional routing residue. Do not repeat permissions or
+  tool lists that the shared `access` profile determines.
+- Shared harness templates live in `home/.chezmoitemplates/subagents/` and
+  are named for their rendered format: `codex.toml.tmpl` and
+  `kimi.md.tmpl`. Each
+  template owns that harness's output schema, optional-field handling, mapping
+  from shared `access` values to native controls, and adaptation of
+  caller-facing fields to the harness's routing metadata. For example, Codex
+  combines `description`, `when_to_use`, and `how_to_use` into its root-visible
+  `description` and uses `access` directly as its filesystem sandbox. Kimi
+  keeps `whenToUse` limited to the delegation trigger, places `how_to_use`
+  alongside its root-visible description, and denies only the direct `Write`
+  and `Edit` tools for `read-only`. It retains Bash and other useful tools, so
+  the role prompt rather than a filesystem sandbox governs indirect writes.
+  Kimi also retains nested delegation and tells every custom delegated agent to
+  return a complete, self-contained final result to its caller.
+- Each role-to-harness binding is a one-line adapter that passes the complete
+  role to a shared harness template. Adapter presence enables the binding; there
+  is no separate `disabled` state:
+  - Codex: `home/dot_codex/agents/<name>.toml.tmpl` → `~/.codex/agents/<name>.toml`
+  - Kimi: `home/dot_kimi-code/agents/<name>.md.tmpl` → `~/.kimi-code/agents/<name>.md`
+- A harness may expose a canonical role through a native name. Keep that alias
+  in the role's nested harness table and keep the adapter named for the native
+  target:
+
+  | Canonical role | Codex | Kimi Code |
+  | --- | --- | --- |
+  | `explorer` | `explorer` | `explore` |
+  | `worker` | `worker` | `coder` |
+  | `scout` | `scout` | `scout` |
+  | `patch-reviewer` | `patch-reviewer` | `patch-reviewer` |
+
+  Kimi adapters set `override: true` when replacing a built-in role.
+- When removing a binding that should disappear from every machine, delete its
+  adapter and add a native `remove_` source entry or target path to
+  `home/.chezmoiremove`. When retiring a whole harness while preserving its
+  current local configuration as a recovery seed, delete its adapters,
+  renderer, and role overlays without a tombstone, then verify the targets are
+  unmanaged and absent from `chezmoi diff`.
 
 ## Workflow
 
-1. **Classify the change.** Is the rule a shared behavior (applies to every
-   agent) or tool-specific?
+1. **Classify the change.** Decide which source owns the behavior.
    - Shared → edit the matching partial in `home/.chezmoitemplates/agents/`.
      The change propagates to all consumers.
-   - Tool-specific → edit that tool's residue section in its `*.tmpl`. Do not
-     fork shared behavior into one tool unless it is genuinely tool-specific.
-2. **Edit the source only.** Never edit a rendered target
-   (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, etc.) — it is overwritten on the
-   next `chezmoi apply`.
+   - Shared sub-agent behavior → edit the matching definition under
+     `home/.chezmoidata/subagents/`.
+   - Root routing or handoff guidance → edit `description`, `when_to_use`, or
+     `how_to_use`; do not put it in `prompt`.
+   - Spawned role behavior or output contract → edit `prompt`; do not hide
+     root-only invocation instructions there.
+   - Role-specific harness behavior → edit that role's nested harness table.
+   - Shared harness rendering or access mapping →
+     edit the matching `home/.chezmoitemplates/subagents/<harness>.<format>.tmpl`.
+   - Role-to-harness membership → add or remove the one-line adapter.
+2. **Edit the source only.** Never edit a rendered target such as
+   `~/.codex/AGENTS.md` — it is overwritten on the next `chezmoi apply`.
 3. **Rewrite the section cleanly** rather than appending bullets. Keep the
    convergence policy: shared baseline in partials, minimal residue per tool.
-4. **Verify the render** before applying:
-   - `chezmoi cat ~/.codex/AGENTS.md` (and the other targets) to inspect output.
+4. **Add a binding** by creating an adapter containing one template call. For
+   example, a Codex scout adapter is:
+
+   ```gotemplate
+   {{- template "subagents/codex.toml.tmpl" .subagents.scout -}}
+   ```
+
+5. **Verify the render** before applying:
+   - `chezmoi cat ~/.codex/AGENTS.md` (and the other contract targets) to
+     inspect shared instructions.
+   - `chezmoi cat ~/.codex/agents/<name>.toml` (and corresponding harness
+     targets) to inspect generated sub-agent configuration.
    - `chezmoi diff` to see exactly what apply would change.
-5. **Apply:** `chezmoi apply` once the diff looks right.
+6. **Apply:** `chezmoi apply` once the diff looks right.
 
 ## Adding a new consumer
 
-When a new tool gains description-loaded instructions (e.g. a `GEMINI.md` or a
-Cursor rules file), add its source as a `*.tmpl`, compose the same three
+When a new tool gains description-loaded instructions, add its source as a
+`*.tmpl`, compose the same three
 partials, and put only its unique rules in a residue section. No new partial is
 needed unless the shared content itself changes.
+
+When a new tool gains sub-agents, add one shared renderer under
+`home/.chezmoitemplates/subagents/`, then add one-line adapters only for the
+roles that tool should expose. Keep native syntax and shared access mappings in
+the harness template rather than copying them into each role definition.
