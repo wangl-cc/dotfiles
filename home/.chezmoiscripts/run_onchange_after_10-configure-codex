@@ -5,15 +5,17 @@
 #   "tomlkit==0.13.3",
 # ]
 # ///
-"""Replace managed top-level values while preserving unmanaged top-level keys."""
+"""Replace managed values while preserving unmentioned local configuration."""
 
 from pathlib import Path
 
 import tomlkit
+from tomlkit.items import Table
 
 CONFIG_PATH = Path.home() / ".codex" / "config.toml"
 
 Patch = dict[str, object | None]
+TomlContainer = tomlkit.TOMLDocument | Table
 
 # Nested mappings are authoritative snapshots; complete replacement prevents local config drift.
 TOP_LEVEL_PATCH: Patch = {
@@ -37,11 +39,17 @@ For discovery and review work, require the sub-agent to separate novel findings,
 """,
         },
     },
-    "desktop": {
-        "followUpQueueMode": "queue",
-        "reviewDelivery": "detached",
-        "preventSleepWhileRunning": True,
-        "git-commit-instructions": """\
+    "sandbox_mode": "workspace-write",
+    "sandbox_workspace_write": {
+        "network_access": True,
+    },
+}
+
+DESKTOP_PATCH: Patch = {
+    "followUpQueueMode": "queue",
+    "reviewDelivery": "detached",
+    "preventSleepWhileRunning": True,
+    "git-commit-instructions": """\
 Choose commit messages style in this order:
 
 1. Follow repository-local commit message instructions when present, such as AGENTS.md, CLAUDE.md, CONTRIBUTING.md, or an explicit user instruction.
@@ -50,15 +58,10 @@ Choose commit messages style in this order:
 
 Keep the subject concise, imperative. Add a body when it clarifies non-obvious context.
 """,
-        "git-pr-instructions": """\
+    "git-pr-instructions": """\
 Write PR titles as final-quality commit titles, no `[codex]` or similar source markers.
 """,
-        "git-pull-request-merge-method": "squash",
-    },
-    "sandbox_mode": "workspace-write",
-    "sandbox_workspace_write": {
-        "network_access": True,
-    },
+    "git-pull-request-merge-method": "squash",
 }
 
 
@@ -68,7 +71,17 @@ def read_document() -> tomlkit.TOMLDocument:
     return tomlkit.parse(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
-def apply_patch(old: tomlkit.TOMLDocument, patch: Patch) -> None:
+def ensure_table(container: TomlContainer, key: str) -> Table:
+    value = container.get(key)
+    if value is None:
+        value = tomlkit.table()
+        container[key] = value
+    if not isinstance(value, Table):
+        raise SystemExit(f"{key} must be a TOML table")
+    return value
+
+
+def apply_patch(old: TomlContainer, patch: Patch) -> None:
     for key, value in patch.items():
         current = old.get(key)
         if value is None:
@@ -84,6 +97,7 @@ def main() -> None:
     before = CONFIG_PATH.read_text(encoding="utf-8") if CONFIG_PATH.exists() else ""
     document = read_document()
     apply_patch(document, TOP_LEVEL_PATCH)
+    apply_patch(ensure_table(document, "desktop"), DESKTOP_PATCH)
 
     after = tomlkit.dumps(document)
     if after != before:
