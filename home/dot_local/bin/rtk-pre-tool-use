@@ -1,0 +1,163 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "typer>=0.12.0",
+# ]
+# ///
+"""Universal PreToolUse hook adapter for RTK (Rust Token Killer).
+
+Explicitly routes by target harness argument:
+    rtk-pre-tool-use antigravity
+    rtk-pre-tool-use codex
+"""
+
+import json
+import subprocess
+import sys
+from dataclasses import dataclass
+from enum import StrEnum
+from typing import Annotated, Any, Protocol
+
+import typer
+
+DEFAULT_TIMEOUT_SECS = 2.0
+
+
+class Harness(StrEnum):
+    ANTIGRAVITY = "antigravity"
+    CODEX = "codex"
+
+
+class PermissionDecision(StrEnum):
+    ALLOW = "allow"
+    ASK = "ask"
+
+
+@dataclass(slots=True, frozen=True)
+class RewriteResult:
+    command: str
+    permission: PermissionDecision
+
+
+def rtk_rewrite(
+    command: str, timeout: float = DEFAULT_TIMEOUT_SECS
+) -> RewriteResult | None:
+    """Rewrite via RTK: exit 0 allows, exit 3 asks, all other exits defer."""
+    if not command or command.strip().startswith("rtk "):
+        return None
+    try:
+        proc = subprocess.run(
+            ["rtk", "rewrite", command],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=timeout,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+
+    rewritten = proc.stdout.strip()
+    if not rewritten or rewritten == command:
+        return None
+    if proc.returncode == 0:
+        return RewriteResult(rewritten, PermissionDecision.ALLOW)
+    if proc.returncode == 3:
+        return RewriteResult(rewritten, PermissionDecision.ASK)
+    return None
+
+
+class HarnessAdapter(Protocol):
+    """Protocol for harness-specific payload extractors and response builders."""
+
+    def extract_command(self, payload: dict[str, Any]) -> str | None: ...
+
+    def build_response(self, result: RewriteResult | None) -> dict[str, Any] | None: ...
+
+
+@dataclass(slots=True, frozen=True)
+class AntigravityAdapter:
+    """Antigravity 2.0 toolCall protocol."""
+
+    def extract_command(self, payload: dict[str, Any]) -> str | None:
+        match payload:
+            case {"toolCall": {"args": {"CommandLine": str(cmd)}}}:
+                return cmd
+            case _:
+                return None
+
+    def build_response(self, result: RewriteResult | None) -> dict[str, Any]:
+        if result is not None:
+            return {
+                "decision": result.permission.value,
+                "overwrite": {"CommandLine": result.command},
+            }
+        return {"decision": "ask"}
+
+
+@dataclass(slots=True, frozen=True)
+class CodexAdapter:
+    """OpenAI Codex / Claude PreToolUse hook protocol."""
+
+    def extract_command(self, payload: dict[str, Any]) -> str | None:
+        match payload:
+            case {"tool_name": "Bash", "tool_input": {"command": str(cmd)}}:
+                return cmd
+            case _:
+                return None
+
+    def build_response(self, result: RewriteResult | None) -> dict[str, Any] | None:
+        # Codex only accepts updatedInput with an allow decision. An ask result must
+        # therefore fall back to the original command and native permission flow.
+        if result is not None and result.permission is PermissionDecision.ALLOW:
+            return {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "allow",
+                    "permissionDecisionReason": "RTK allowlisted rewrite",
+                    "updatedInput": {"command": result.command},
+                }
+            }
+        return None
+
+
+ADAPTERS: dict[Harness, HarnessAdapter] = {
+    Harness.ANTIGRAVITY: AntigravityAdapter(),
+    Harness.CODEX: CodexAdapter(),
+}
+
+app = typer.Typer(
+    add_completion=False,
+    help="Universal PreToolUse hook adapter for RTK.",
+)
+
+
+def write_response(response: dict[str, Any] | None) -> None:
+    if response is not None:
+        json.dump(response, sys.stdout)
+        sys.stdout.write("\n")
+
+
+@app.command()
+def main(
+    harness: Annotated[Harness, typer.Argument(help="Target agent harness")],
+) -> None:
+    adapter = ADAPTERS[harness]
+    try:
+        raw = sys.stdin.read()
+        payload = json.loads(raw)
+    except (json.JSONDecodeError, OSError):
+        write_response(adapter.build_response(None))
+        return
+
+    if not isinstance(payload, dict):
+        write_response(adapter.build_response(None))
+        return
+
+    command = adapter.extract_command(payload)
+    result = rtk_rewrite(command) if command else None
+    write_response(adapter.build_response(result))
+
+
+if __name__ == "__main__":
+    app()

@@ -1,0 +1,17 @@
+{
+  "rtk": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.local/bin/rtk-pre-tool-use antigravity",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

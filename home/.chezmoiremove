@@ -6,3 +6,4 @@
 .local/share/aquaproj-aqua
 .config/fish/conf.d/50-agent.fish
 .config/shell/conf.d/50-agent.sh
+.codex/hooks/rtk_pre_tool_use.py

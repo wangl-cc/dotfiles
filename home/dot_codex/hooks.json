@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.codex/hooks/rtk_pre_tool_use.py\"",
+            "command": "\"$HOME/.local/bin/rtk-pre-tool-use\" codex",
             "timeout": 5,
             "statusMessage": "Rewriting command through RTK"
           }
