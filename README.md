@@ -45,45 +45,21 @@ chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
 
 ## Package Strategy
 
-- Portable standalone CLI packages are declared in
-  `home/.chezmoidata/portable-pkgs.yaml` and installed by chezmoi externals on
-  macOS and Linux.
+- Portable standalone CLI packages are declared in `home/.chezmoidata/portable-pkgs.yaml` and installed by chezmoi externals on macOS and Linux.
 - `uv` and `bun` default to installed with their official installers and can be used to install ecosystem CLIs.
 - `rustup` defaults to `none`. Choose `minimal`, `default`, or `complete` to install it with the official installer and that profile.
 
-The portable package manifest renders a managed block in
-`home/.chezmoiexternal.toml.tmpl` when chezmoi applies templates.
+The portable package manifest renders a managed block in `home/.chezmoiexternal.toml.tmpl` when chezmoi applies templates.
 
 Homebrew can still be installed and used manually for macOS-specific software, GUI applications, or system packages, but it is not used by this bootstrap to install portable CLI packages.
 
 ### Portable Packages
 
-`portable-pkgs` is a small uv/Python helper for standalone release
-binaries that can be installed directly by chezmoi without an aqua shim. Its
-manifest lives in `home/.chezmoidata/portable-pkgs.yaml`. The helper only
-maintains that manifest; `home/.chezmoiexternal.toml.tmpl` reads the chezmoi data
-directly and renders the external entries itself.
+`portable-pkgs` is a small uv/Python helper for standalone release binaries that can be installed directly by chezmoi without an aqua shim. Its manifest lives in `home/.chezmoidata/portable-pkgs.yaml`. The helper only maintains that manifest; `home/.chezmoiexternal.toml.tmpl` reads the chezmoi data directly and renders the external entries itself.
 
-Normal `add` and `update` commands use GitHub release metadata only and do not
-download assets. Use `update --verify` to update metadata and then download,
-check, and extract every target touched by that update before writing the
-manifest. Because each tool has one release tag, `update` refreshes all targets
-for the selected tool; `inspect` and `verify` can still select one target. Run
-`verify` separately when you want to check existing manifest entries. If the
-selected release asset is missing a GitHub `sha256` digest or the archive path
-needs manual inspection, use `inspect --save` for that explicit
-download-and-record path:
+Normal `add` and `update` commands use GitHub release metadata only and do not download assets. Use `update --verify` to update metadata and then download, check, and extract every target touched by that update before writing the manifest. Because each tool has one release tag, `update` refreshes all targets for the selected tool; `inspect` and `verify` can still select one target. Run `verify` separately when you want to check existing manifest entries. If the selected release asset is missing a GitHub `sha256` digest or the archive path needs manual inspection, use `inspect --save` for that explicit download-and-record path:
 
-The manifest separates input rules from resolved release metadata. Per tool,
-`path_pattern` describes the usual archive layout. Per target, `asset_pattern`
-selects the GitHub release asset. `resolved.type`, `resolved.asset`,
-`resolved.path`, and `resolved.sha256` are the real values written by `add`,
-`update`, or
-`inspect --save`; chezmoi renders only resolved targets. Manifest fields are
-strictly checked so typos, invalid regexes, unsafe relative paths, and mismatched
-asset types fail before chezmoi renders them. The helper defaults to
-`~/.local/share/chezmoi/home/.chezmoidata/portable-pkgs.yaml`; set
-`PORTABLE_PKGS_MANIFEST` to use a different file.
+The manifest separates input rules from resolved release metadata. Per tool, `path_pattern` describes the usual archive layout. Per target, `asset_pattern` selects the GitHub release asset. `resolved.type`, `resolved.asset`, `resolved.path`, and `resolved.sha256` are the real values written by `add`, `update`, or `inspect --save`; chezmoi renders only resolved targets. Manifest fields are strictly checked so typos, invalid regexes, unsafe relative paths, and mismatched asset types fail before chezmoi renders them. The helper defaults to `~/.local/share/chezmoi/home/.chezmoidata/portable-pkgs.yaml`; set `PORTABLE_PKGS_MANIFEST` to use a different file.
 
 ```sh
 portable-pkgs add fd sharkdp/fd \
