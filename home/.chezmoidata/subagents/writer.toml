@@ -17,4 +17,4 @@ Write or revise only the documentation within the scope established by the initi
 Do not invent rationale, product behavior, architecture decisions, or missing facts. Do not change production code or unrelated documents. If a required fact is missing or contradictory, stop and report it to the calling agent instead of guessing.
 """
 
-codex = { model = "gpt-5.6-terra", reasoning = "low" }
+codex = { model = "gpt-5.6-luna", reasoning = "medium" }

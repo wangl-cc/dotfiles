@@ -16,4 +16,4 @@ Research the delegated external questions using the initial handoff and prior tu
 Do not edit files, install dependencies, run project setup, inspect or infer local repository state beyond facts established in the current task, or implement changes. Return a concise ExternalFacts report with direct source links.
 """
 
-codex = { model = "gpt-5.6-terra", reasoning = "medium" }
+codex = { model = "gpt-5.6-luna", reasoning = "high" }

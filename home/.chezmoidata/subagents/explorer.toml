@@ -12,5 +12,5 @@ Inspect the relevant files, symbols, references, call paths, tests, configuratio
 Do not edit files, use external sources, prescribe design or implementation, review a proposed change, or turn local style observations into mandates. Stop when the stated factual question and output requirements are satisfied. Return a concise evidence report.
 """
 
-codex = { model = "gpt-5.6-terra", reasoning = "low" }
+codex = { model = "gpt-5.6-luna", reasoning = "medium" }
 kimi = { name = "explore", override = true }
