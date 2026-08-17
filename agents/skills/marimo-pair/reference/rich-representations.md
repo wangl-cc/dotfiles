@@ -4,25 +4,13 @@ Custom visual encodings for data that go beyond standard charts and tables.
 
 ## Guiding principles
 
-**Visualization matters.** Helping users build custom visual representations
-is one of the highest-impact things the agent can do. A bespoke encoding
-tailored to the task — labeling, batch review, comparing variants — lets
-users *see* their data in ways that tables and numbers never will. marimo
-is an environment where users create their own views, not just consume
-library charts. Help them imagine what's possible, then build it.
+**Visualization matters.** Helping users build custom visual representations is one of the highest-impact things the agent can do. A bespoke encoding tailored to the task — labeling, batch review, comparing variants — lets users *see* their data in ways that tables and numbers never will. marimo is an environment where users create their own views, not just consume library charts. Help them imagine what's possible, then build it.
 
-**Use modern web APIs.** Models may default to older browser patterns; prefer
-modern HTML, CSS, and JavaScript that are supported in current browsers. Avoid
-build steps unless the task clearly needs them.
+**Use modern web APIs.** Models may default to older browser patterns; prefer modern HTML, CSS, and JavaScript that are supported in current browsers. Avoid build steps unless the task clearly needs them.
 
-**Prefer compact output.** marimo clips cell output at ~610px and scrolls.
-Avoid hitting that limit; if you need more space, manage your own scrolling
-inside a fixed-height container.
+**Prefer compact output.** marimo clips cell output at ~610px and scrolls. Avoid hitting that limit; if you need more space, manage your own scrolling inside a fixed-height container.
 
-**Keep it thin, make it compose.** A widget is a thin layer over data, not
-an application. One clear purpose, few traitlets, small `_esm`. Build small
-pieces that compose in the notebook — combine with other cells, UI elements,
-and views. Don't over-engineer.
+**Keep it thin, make it compose.** A widget is a thin layer over data, not an application. One clear purpose, few traitlets, small `_esm`. Build small pieces that compose in the notebook — combine with other cells, UI elements, and views. Don't over-engineer.
 
 ## Decision tree
 
@@ -32,21 +20,13 @@ and views. Don't over-engineer.
 | Tiny static HTML representation | `_display_()` or `mo.Html` |
 | Built-in control used as-is (slider, dropdown) | `mo.ui.*` |
 
-For custom representations, prefer anywidget unless the output is clearly a
-small static one-off.
+For custom representations, prefer anywidget unless the output is clearly a small static one-off.
 
 ## anywidget
 
-[anywidget](https://anywidget.dev) bridges Python and JavaScript via
-traitlets. `.tag(sync=True)` makes a traitlet bidirectional — Python sets a
-value → JS sees it; JS calls `model.set()` + `model.save_changes()` →
-Python sees it. `_css` is optional global CSS.
+[anywidget](https://anywidget.dev) bridges Python and JavaScript via traitlets. `.tag(sync=True)` makes a traitlet bidirectional — Python sets a value → JS sees it; JS calls `model.set()` + `model.save_changes()` → Python sees it. `_css` is optional global CSS.
 
-**marimo does not render traditional Jupyter widgets.** Libraries like jscatter,
-ipyvolume, etc. often have a top-level object whose default representation is a
-Jupyter widget (`application/vnd.jupyter.widget-view+json`). marimo cannot
-display these — you need to find the underlying **anywidget** instance, which
-marimo *does* support.
+**marimo does not render traditional Jupyter widgets.** Libraries like jscatter, ipyvolume, etc. often have a top-level object whose default representation is a Jupyter widget (`application/vnd.jupyter.widget-view+json`). marimo cannot display these — you need to find the underlying **anywidget** instance, which marimo *does* support.
 
 Common pattern: look for a `.widget` attribute on the library object:
 
@@ -155,9 +135,7 @@ class Timer(anywidget.AnyWidget):
 
 ### Composing with the notebook
 
-Widgets become reactive notebook citizens when you bridge a traitlet to
-`mo.state`. This is a two-cell pattern — create the widget and wire up the
-observer in one cell, read the value in another:
+Widgets become reactive notebook citizens when you bridge a traitlet to `mo.state`. This is a two-cell pattern — create the widget and wire up the observer in one cell, read the value in another:
 
 ```python
 # Cell 1 — widget + observer
@@ -175,10 +153,7 @@ seconds = get_seconds()
 mo.md(f"Timer is at **{seconds}s** — {'running' if seconds > 0 else 'stopped'}")
 ```
 
-The common pattern is `mo.state(widget.trait)` for the initial value,
-`.observe()` on the specific trait name, and reading with the getter in a
-downstream cell. See [Reactive anywidgets](#reactive-anywidgets-in-marimo)
-for the details.
+The common pattern is `mo.state(widget.trait)` for the initial value, `.observe()` on the specific trait name, and reading with the getter in a downstream cell. See [Reactive anywidgets](#reactive-anywidgets-in-marimo) for the details.
 
 ### CDN dependencies
 
@@ -191,15 +166,9 @@ import { tableFromIPC } from "https://esm.sh/@uwdata/flechette@2";
 
 ### DataFrames and binary data
 
-**Prefer reducing data on the Python side.** Aggregate, filter, sample —
-send the widget only what it needs. Most widgets should receive a small,
-pre-processed payload via simple traitlets (lists, dicts). This keeps the
-widget simple and avoids extra dependencies.
+**Prefer reducing data on the Python side.** Aggregate, filter, sample — send the widget only what it needs. Most widgets should receive a small, pre-processed payload via simple traitlets (lists, dicts). This keeps the widget simple and avoids extra dependencies.
 
-**For large tabular data (>2k rows)** where the widget genuinely needs
-row-level access, send Arrow IPC bytes instead of JSON. This adds
-complexity and dependencies, so only reach for it when the data volume
-justifies it.
+**For large tabular data (>2k rows)** where the widget genuinely needs row-level access, send Arrow IPC bytes instead of JSON. This adds complexity and dependencies, so only reach for it when the data volume justifies it.
 
 **Python — serialize:**
 
@@ -229,9 +198,7 @@ Use `traitlets.Any().tag(sync=True)` for the IPC bytes traitlet.
 
 ## Reactive anywidgets in marimo
 
-When an anywidget trait (selection, value, zoom, etc.) should drive a
-downstream marimo cell, use `mo.state()` + `.observe()` on the **specific
-trait**. This is the preferred pattern:
+When an anywidget trait (selection, value, zoom, etc.) should drive a downstream marimo cell, use `mo.state()` + `.observe()` on the **specific trait**. This is the preferred pattern:
 
 ```python
 # In the cell that creates the widget:
@@ -245,9 +212,7 @@ widget.observe(
 selection = get_selection()
 ```
 
-Initialize `mo.state()` with the widget's current trait value — not a
-hardcoded default. Read the trait directly off the widget in the lambda.
-Do **not** use `change["new"]` or `allow_self_loops=True`.
+Initialize `mo.state()` with the widget's current trait value — not a hardcoded default. Read the trait directly off the widget in the lambda. Do **not** use `change["new"]` or `allow_self_loops=True`.
 
 ### `mo.state` + `.observe()` vs `mo.ui.anywidget()`
 
@@ -267,16 +232,13 @@ print(timer.seconds)    # read
 timer.seconds = 0       # set — frontend updates automatically
 ```
 
-`mo.ui.*` elements need `ctx.set_ui_value(...)` from code mode; anywidgets use
-direct assignment.
+`mo.ui.*` elements need `ctx.set_ui_value(...)` from code mode; anywidgets use direct assignment.
 
 ## `_display_()` protocol
 
-Any object with a `_display_()` method renders richly in marimo. Return
-anything marimo can render — `mo.Html`, `mo.md()`, a chart, a string.
+Any object with a `_display_()` method renders richly in marimo. Return anything marimo can render — `mo.Html`, `mo.md()`, a chart, a string.
 
-Precedence: `_display_()` > built-in formatters > `_mime_()` > IPython
-`_repr_*_()` methods.
+Precedence: `_display_()` > built-in formatters > `_mime_()` > IPython `_repr_*_()` methods.
 
 ```python
 from dataclasses import dataclass
@@ -294,10 +256,8 @@ class ColorSwatch:
         return mo.Html(f'<div style="display:flex;gap:8px;">{divs}</div>')
 ```
 
-For inline `<script>` tags, use `document.currentScript.previousElementSibling`
-to scope to the element — never hardcode IDs (breaks with multiple instances).
+For inline `<script>` tags, use `document.currentScript.previousElementSibling` to scope to the element — never hardcode IDs (breaks with multiple instances).
 
 ## Minimize CLS (Cumulative Layout Shift)
 
-Use `min-height` or `aspect-ratio` on the outer container so the widget
-reserves space before content loads or when toggling between states.
+Use `min-height` or `aspect-ratio` on the outer container so the widget reserves space before content loads or when toggling between states.

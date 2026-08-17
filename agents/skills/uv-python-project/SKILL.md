@@ -7,73 +7,19 @@ description: Work on Python projects with uv. Use for repositories with pyprojec
 
 ## Scope
 
-Default to uv for project management and command execution.
+- Use for project-owned Python code and configuration, including `pyproject.toml`, `uv.lock`, `.venv`, packages, dependency groups, extras, and tests.
+- Use `uv-python-script` instead for a standalone single-file PEP 723 script; follow its publisher's instructions for an external script that must run unchanged.
 
-- Applies to project-owned Python code: `pyproject.toml`, `uv.lock`, `.venv`, package directories, dependency groups, extras, tests, and tools.
-- Prefer `uv-python-script` for standalone single-file scripts with PEP 723 inline dependencies.
+## Workflow
 
-## Rules
+- Read the project's documented commands and configuration first, then run project code and tools through `uv run`.
+- Use `uv sync` only to create or refresh the project environment; use the project's group or extra selection when documented.
+- Use `uv add` or `uv remove` only for an intentional dependency change, and use `uv lock` when that change or an explicit resolution refresh requires it.
+- Preserve the project's uv configuration, dependency groups, extras, and lockfile conventions; do not introduce uv metadata or change the lockfile without a task need.
+- Match `requires-python` and the project's declared Python version; do not reduce supported syntax for an unrelated system interpreter.
 
-- Prefer `uv run`, `uv sync`, `uv add`, `uv remove`, `uv lock`, `uv format`, and `uv check` over direct system `python3`, `pip`, or ad hoc virtualenv commands.
-- Do not run project Python code with system `python3` unless the project explicitly documents that path.
-- Do not use `python3 -m py_compile` as the project check.
-- Preserve existing project configuration. Do not introduce uv metadata, dependency groups, or lockfile changes unless needed for the task.
-- Match the project's declared Python version and write modern Python for that version. Do not downgrade syntax for an unrelated system Python.
-- Match `requires-python` and write modern Python for that version, such as `match`, `str | None`, `list[str]`, and `Path`-based filesystem code. Add a focused CLI library such as `click` when it makes parsing clearer than handwritten plumbing.
+## Validation
 
-## Commands
-
-Inspect the project first:
-
-```bash
-uv --version
-uv tree
-```
-
-Install or refresh the environment when needed:
-
-```bash
-uv sync
-uv sync --all-groups
-```
-
-Run project commands through uv:
-
-```bash
-uv run python -m pytest
-uv run pytest
-uv run <tool> <args>
-```
-
-Manage dependencies through uv:
-
-```bash
-uv add <package>
-uv add --dev <package>
-uv remove <package>
-uv lock
-```
-
-Follow existing dependency groups, extras, and lockfile conventions.
-
-## Format and Check
-
-Use uv's project-aware commands when available:
-
-```bash
-uv format
-uv format --check
-uv check
-```
-
-If the project already uses specific tools, run them through uv:
-
-```bash
-uv run ruff check .
-uv run mypy .
-uv run basedpyright
-uv run pytest
-```
-
-Prefer documented validation commands over generic guesses.
-Report the exact uv commands run and whether they passed.
+- Prefer the project's documented formatter, checker, type checker, and test commands; run them with `uv run` where applicable.
+- Otherwise use `uv format --check` and `uv check`, then the focused project test command.
+- Report the exact uv commands run and their results.
