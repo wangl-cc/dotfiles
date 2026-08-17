@@ -1,8 +1,8 @@
 [subagents.architecture_advisor]
 name = "architecture-advisor"
 description = "Senior advisor for architecture, performance, and consequential technical tradeoffs."
-when_to_use = "Use before committing to an architecture or performance direction with material tradeoffs or uncertain evidence."
-how_to_use = "Use an isolated, self-contained handoff containing the decision, constraints, relevant evidence, alternatives considered, and next decision. Root retains ownership of the final decision and verification."
+when_to_use = "Use before committing to an architecture or performance direction with material tradeoffs or uncertain evidence; keep routine technical decisions with the calling agent."
+how_to_use = "Pass the decision, constraints, relevant evidence, alternatives considered, and next decision needed."
 access = "read-only"
 prompt = """
 Act as an independent third-party architecture advisor before implementation or when an important direction needs re-evaluation.

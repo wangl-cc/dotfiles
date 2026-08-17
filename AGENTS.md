@@ -2,13 +2,9 @@
 
 ## Project Context
 
-This repository is a personal dotfiles project managed with chezmoi.
-Most changes are configuration updates, bootstrap tweaks, or tool
-settings rather than product features.
+This repository is a personal dotfiles project managed with chezmoi. Most changes are configuration updates, bootstrap tweaks, or tool settings rather than product features.
 
-Keep edits focused and preserve the existing chezmoi layout and naming
-conventions. Prefer changing the source files in this repository instead
-of describing changes to the generated home-directory paths.
+Keep edits focused and preserve the existing chezmoi layout and naming conventions. Prefer changing the source files in this repository instead of describing changes to the generated home-directory paths.
 
 ## Commit Messages
 
@@ -24,15 +20,18 @@ Examples:
 
 ```text
 fish: simplify prompt setup
+agy: add Antigravity harness configuration
+agents: consolidate global contract
+skills: streamline skill collection
 packages: add shared typst package
-chezmoi: refresh bootstrap prompts
-docs: clarify update workflow
+meta: clarify repository layout in readme
+meta: ignore markdown reformatting in blame
 ```
 
-Choose the scope from the configuration area, tool, or directory most
-responsible for the change. Good scopes include `fish`, `packages`,
-`chezmoi`, `git`, `shell`, `dev-box`, and `docs`.
+Choose the scope from the tool, directory, or configuration area most responsible for the change:
 
-Do not rewrite these into `feat:`, `fix:`, `chore:`, or other
-Conventional Commit types. Dotfiles changes often do not map cleanly to
-those categories, so the direct scope is the reviewable unit here.
+- **Specific tools/CLIs**: Use the tool's name (e.g. `agy`, `codex`, `zed`, `fish`, `git`, `uv`, `cargo`, `chezmoi`, `rime`).
+- **Domains & collections**: Use the directory or domain name (e.g. `agents`, `skills`, `packages`, `shell`).
+- **Repository meta**: Use `meta` for repository governance, project-level instructions (like `README.md` and `AGENTS.md`), and metadata outside specific tools (like `.git-blame-ignore-revs`).
+
+Do not rewrite these into `feat:`, `fix:`, `chore:`, or other Conventional Commit types. Dotfiles changes often do not map cleanly to those categories, so the direct scope is the reviewable unit here.

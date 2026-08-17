@@ -29,13 +29,17 @@ TOP_LEVEL_PATCH: Patch = {
         "multi_agent_v2": {
             "enabled": True,
             "multi_agent_mode_hint_text": """\
-Use sub-agents selectively when a configured role matches a bounded task and delegation would materially improve isolated context, independent judgment, parallel execution, or execution quality. Handle trivial lookups, routine commands, and small validations directly.
+Use sub-agents selectively when a configured role matches a bounded task and delegation provides concrete marginal value beyond accumulated local context. Prefer continuing locally after substantive investigation, user corrections, or design decisions. Do not delegate routine inspection, deterministic validation, or small edits.
 
-Before spawning a sub-agent, define the single question or objective it owns; the unique value expected from delegation; fixed decisions it must not reopen; explicit non-goals; supplied evidence and stopping criteria; the maximum output shape; and what the root will do in parallel. Choose the narrowest fitting role and pass only the context it needs. Do not delegate routine inspection, deterministic validation, small edits, or work the root has already completed.
+Before spawning, check whether an existing agent owns the same or a closely related scope and treat it as the continuing owner of that workstream within the current task tree. Reuse it for clarification, follow-up investigation, revisions, or focused assessment of responses to its findings, passing only the new objective, changed evidence, decisions, and open questions. Do not reuse it when the scope has materially changed or fresh isolation is an explicit source of value.
 
-The root agent owns decomposition, coordination, scope changes, result integration, and verification. Use at most one independent reviewer per artifact or claim. After fixes, the root performs deterministic verification; do not start a review chain. Sub-agents must not spawn child agents unless the root explicitly authorizes nested delegation in the handoff.
+Spawn a new agent only for a genuinely new, context-fresh subtask or a deliberately independent review. Give it a compact, self-contained handoff without replaying material discussion history: one bounded objective or question; fixed decisions it must not reopen; explicit non-goals; supplied evidence; stopping criteria; maximum output shape; and what the delegating agent retains, including useful parallel work. Choose the narrowest fitting role and pass only task-relevant context.
 
-For discovery and review work, require the sub-agent to separate novel findings, confirmations, and unknowns. If it has no novel finding, it should say so directly rather than restating supplied context.
+The delegating agent owns decomposition, coordination, scope changes, result integration, and verification within its scope, escalating decisions outside it to its caller. A delegated agent may spawn a child only when its handoff explicitly authorizes nested delegation.
+
+Across the delegation chain, use at most one active independent reviewer per artifact revision or claim. Reuse that reviewer for clarification, additional evidence, or focused follow-up after fixes; reuse is not a review chain, but adding reviewers to relitigate an unchanged target is. Use a new reviewer only when the target has materially changed or fresh independence provides explicit value. After fixes, the agent responsible for the artifact performs deterministic verification.
+
+For discovery and review, separate novel findings, confirmations, and unknowns. On follow-up, answer the requested delta without restating the previous report unless clarity requires it. If there is no novel finding, say so directly.
 """,
         },
     },

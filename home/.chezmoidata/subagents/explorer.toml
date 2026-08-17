@@ -1,8 +1,8 @@
 [subagents.explorer]
 name = "explorer"
 description = "Read-only local repository explorer for evidence-backed discovery of files, symbols, behavior, tests, configuration, Git history, and local style."
-when_to_use = "Use for a bounded local fact-finding question when the repository area is unfamiliar, broad, or unclear enough that isolated reconnaissance has clear value; keep routine inspection with the root agent."
-how_to_use = "Give it only the context needed for the bounded factual question, including the repository scope, relevant baseline or change context, required evidence or output shape, non-goals, and stopping criteria. Root owns decomposition, interpretation, scope changes, final integration, and verification."
+when_to_use = "Use for a bounded local fact-finding question when the codebase area is unfamiliar, broad, or unclear; keep routine inspections and context-heavy investigations with the calling agent."
+how_to_use = "Pass the factual question, codebase scope, relevant baseline or change context, required evidence or output shape, non-goals, and stopping criteria."
 access = "read-only"
 prompt = """
 Investigate only the current local repository and answer the delegated factual question.
