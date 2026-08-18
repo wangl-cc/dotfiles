@@ -20,6 +20,7 @@ Source lives in the chezmoi repo (`~/.local/share/chezmoi`, source root `home/`)
 | Source template | Renders to | Tool-specific residue |
 | --- | --- | --- |
 | `home/dot_codex/AGENTS.md.tmpl` | `~/.codex/AGENTS.md` | `sandbox-escalation.md` partial |
+| `home/dot_dsh/AGENTS.md.tmpl` | `~/.dsh/AGENTS.md` | `sandbox-escalation.md` and `rtk.md` partials |
 | `home/dot_gemini/config/AGENTS.md.tmpl` | `~/.gemini/config/AGENTS.md` | none |
 | `home/dot_kimi-code/AGENTS.md.tmpl` | `~/.kimi-code/AGENTS.md` | `rtk.md` partial |
 
