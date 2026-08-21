@@ -1,0 +1,14 @@
+#!/bin/bash
+# Generate one SSH host key of the given type into the dev-box state
+# volume. Invoked by dev-box-sshd-keygen@.service, which is skipped by its
+# ConditionPathExists when the key already exists.
+set -euo pipefail
+
+case "$1" in
+    ed25519) args=(-t ed25519) ;;
+    ecdsa)   args=(-t ecdsa -b 256) ;;
+    rsa)     args=(-t rsa -b 3072) ;;
+    *)       echo "unknown key type: $1" >&2; exit 1 ;;
+esac
+
+exec ssh-keygen -q "${args[@]}" -f "/var/lib/dev-box/ssh/ssh_host_$1_key" -C '' -N ''

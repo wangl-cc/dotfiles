@@ -1,0 +1,15 @@
+# Generates SSH host keys directly into the dev-box state volume. The
+# stock sshd-keygen@.service is unusable here because it would replace our
+# /etc/ssh symlinks with real files on the container layer.
+[Unit]
+Description=Generate dev-box %i SSH host key
+Documentation=man:ssh-keygen(1)
+ConditionPathExists=!/var/lib/dev-box/ssh/ssh_host_%i_key
+Before=sshd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dev-box-ssh-keygen %i
+
+[Install]
+WantedBy=sshd.service

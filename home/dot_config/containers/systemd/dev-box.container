@@ -5,8 +5,6 @@ Description=My General Purpose Development Container
 Image=dev-box.build
 ContainerName=my-dev-box
 
-RunInit=true
-
 # Works with host more smoothly
 Network=host
 SecurityLabelDisable=true
@@ -24,8 +22,9 @@ PodmanArgs=--ipc host
 # Persist cache of dnf5
 Volume=dev-box-dnf5-cache:/var/cache/libdnf5
 
-# Persist the container's ssh host keys
-Volume=dev-box-ssh-keys:/etc/ssh
+# Persist the container's state; services store data in subdirectories
+# (e.g. ssh/ holds the SSH host keys wired up by dev-box/tmpfiles.conf).
+Volume=dev-box-data:/var/lib/dev-box
 
 [Install]
 WantedBy=default.target
