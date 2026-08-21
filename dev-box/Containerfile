@@ -24,7 +24,11 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
     fish git man-db unzip which \
     bubblewrap openssh-server dbus-broker \
     gcc gcc-c++ make cmake pkgconfig \
-    procps-ng psmisc perf
+    procps-ng psmisc perf \
+    nodejs-npm
+
+# nodejs-npm: dsh runtime (state volume, see dsh.service) and HMR plugin
+# dev: node --expose-internals /var/lib/dev-box/npm/bin/dsh --profile <name>
 
 # Cleanup (don't run dnf clean all, just remove logs)
 RUN rm -rf /var/log/dnf*
@@ -44,10 +48,15 @@ RUN groupadd -g $USER_GID $USERNAME && \
 # dev-box-sshd-keygen@.service and exposed at sshd's default lookup paths
 # via tmpfiles.d symlinks, so the stock Fedora sshd units work unchanged.
 COPY rootfs /
+# Fill in @DEV_USER@ placeholders (units and tmpfiles have no variable expansion).
+RUN sed -i "s/@DEV_USER@/$USERNAME/g" \
+    /usr/lib/systemd/system/dsh.service \
+    /usr/lib/tmpfiles.d/20-dev-box-npm.conf
 RUN systemctl enable sshd.service \
     dev-box-sshd-keygen@ed25519.service \
     dev-box-sshd-keygen@ecdsa.service \
-    dev-box-sshd-keygen@rsa.service
+    dev-box-sshd-keygen@rsa.service \
+    dsh.service
 
 # logind cannot work inside a container; mask it to keep the boot clean.
 # Consequence: only system services are available in here (write units

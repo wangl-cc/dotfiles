@@ -1,0 +1,15 @@
+[Unit]
+Description=DeepSeek Harness web UI
+Documentation=https://github.com/deepseek-ai/deepseek-harness
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/var/lib/dev-box/npm/bin/dsh
+
+[Service]
+User=@DEV_USER@
+ExecStart=/var/lib/dev-box/npm/bin/dsh web --no-open
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

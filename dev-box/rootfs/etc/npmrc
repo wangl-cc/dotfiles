@@ -1,0 +1,2 @@
+# Global npm installs live on the dev-box state volume and survive rebuilds.
+prefix=/var/lib/dev-box/npm
