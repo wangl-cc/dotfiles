@@ -1,0 +1,31 @@
+# Host inbound policy: trust only localhost and the Tailscale interface;
+# drop everything else arriving on physical interfaces. Outbound traffic
+# and ad-hoc dev services are unaffected -- remote access to them works
+# over Tailscale with zero per-service firewall changes.
+#
+# Deploy (host /etc is not managed by chezmoi):
+#   host/install.sh   (self-elevates via sudo)
+
+table inet host-access {
+    chain input {
+        type filter hook input priority filter; policy drop;
+
+        # Trusted interfaces: localhost and the tailnet
+        iifname { "lo", "tailscale0" } accept
+
+        # Replies to outbound connections
+        ct state { established, related } accept
+        ct state invalid drop
+
+        # Tailscale direct connections (WireGuard underlay); without this,
+        # peers on the same LAN fall back to DERP relays
+        udp dport 41641 accept
+
+        # ICMPv6 is required for IPv6 itself (neighbor discovery, PMTU);
+        # ICMP echo keeps the machine pingable for diagnostics
+        meta l4proto ipv6-icmp accept
+        ip protocol icmp accept
+
+        counter drop
+    }
+}
