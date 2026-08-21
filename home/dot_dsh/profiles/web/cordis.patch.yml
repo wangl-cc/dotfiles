@@ -1,0 +1,9 @@
+# Patch layer for the dsh web profile: id-targeted config overrides.
+
+# Trust the Tailscale serve authority (TAILSCALE_DNS_NAME from $DSH_HOME/.env,
+# chezmoi-rendered per machine). openBrowser must stay wired to --no-open:
+# its schema default is true.
+- id: web-runtime
+  config:
+    openBrowser: !!js ctx.webStartup.openBrowser
+    trustedHosts: !!js "[process.env.TAILSCALE_DNS_NAME, ...(ctx.webStartup.trustedHosts ?? [])].filter(Boolean)"

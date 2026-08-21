@@ -51,3 +51,7 @@ email = "git@loongw.cc"
 {{-   $gitSigningKeyFile = printf "~/.ssh/%s.pub" $gitSigningKeySelection }}
 {{- end }}
 signingkeyFile = {{ $gitSigningKeyFile | quote }}
+
+[data.tailscale]
+enabled = {{ promptBoolOnce . "tailscale.enabled" "Use Tailscale integration on this machine" true }}
+name = {{ promptStringOnce . "tailscale.name" "Tailscale machine name" .chezmoi.hostname | quote }}
