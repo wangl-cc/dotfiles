@@ -2,13 +2,9 @@
 
 set -eu
 
-# {{- $nodeVersion := .toolchain_versions.node }}
 # {{- $installNode := true }}
 # {{- if hasKey .toolchains "node" }}
 # {{-   $installNode = index .toolchains "node" }}
-# {{- end }}
-# {{- if and $installNode (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $nodeVersion)) }}
-# {{-   fail (printf "toolchain_versions.node must be a numeric version selector, got %q" $nodeVersion) }}
 # {{- end }}
 # {{- if $installNode }}
 pnpm_bin="$HOME/.local/bin/pnpm"
@@ -21,7 +17,7 @@ export PNPM_HOME="$HOME/.pnpm"
 mkdir -p "$PNPM_HOME/bin"
 export PATH="$PNPM_HOME/bin:$PATH"
 
-echo "Installing Node.js {{ $nodeVersion }} with pnpm"
-"$pnpm_bin" runtime set node {{ $nodeVersion | quote }} -g
+echo "Installing the latest Node.js LTS release with pnpm"
+"$pnpm_bin" runtime set node lts -g
 "$PNPM_HOME/bin/node" --version
 # {{- end }}

@@ -17,7 +17,7 @@ The bootstrap installs standalone portable CLI packages with chezmoi externals.
 During the first init, chezmoi prompts once for machine-local options and stores the answers in `~/.config/chezmoi/chezmoi.toml`:
 
 - `shell.fish.auto`: default `true`. Enter fish automatically from fallback bash/zsh sessions.
-- `toolchains.node`: default `true`; pnpm installs the pinned Node.js major.
+- `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 
@@ -46,7 +46,7 @@ chezmoi init --prompt --apply https://github.com/wangl-cc/dotfiles.git
 
 - Portable standalone CLI packages are declared in `home/.chezmoidata/portable-pkgs.yaml` and installed by chezmoi externals on macOS and Linux.
 - `uv` and `uvx` are installed together from the pinned `uv` release archive and can install or run Python ecosystem CLIs.
-- pnpm is installed as a standalone portable binary, then installs the pinned Node.js major and provides `pnpm dlx` for one-off JavaScript or TypeScript CLIs.
+- pnpm is installed as a standalone portable binary, then installs the latest Node.js LTS release and provides `pnpm dlx` for one-off JavaScript or TypeScript CLIs.
 - `rustup` defaults to `none`. Choose `minimal`, `default`, or `complete` to install it with the official installer and that profile.
 
 The portable package manifest renders a managed block in `home/.chezmoiexternal.toml.tmpl` when chezmoi applies templates.
