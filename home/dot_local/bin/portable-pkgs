@@ -41,7 +41,7 @@ DEFAULT_MANIFEST_PATH = (
 MANIFEST_PATH = Path(
     os.environ.get("PORTABLE_PKGS_MANIFEST", DEFAULT_MANIFEST_PATH)
 ).expanduser()
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 GITHUB_API = "https://api.github.com"
 GITHUB_SHA256_PREFIX = "sha256:"
 ARCHIVE_RE = re.compile(r"\.(tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2|zip)$", re.I)
@@ -167,8 +167,37 @@ class ArchiveResolvedAsset(BaseModel):
         return self
 
 
+class ArchiveMembersResolvedAsset(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: Literal["archive-members"]
+    asset: str
+    files: dict[str, str]
+    sha256: str
+
+    @field_validator("files")
+    @classmethod
+    def validate_files(cls, value: dict[str, str]) -> dict[str, str]:
+        if not value:
+            raise ValueError("archive members cannot be empty")
+        validated: dict[str, str] = {}
+        for bin_name, path in value.items():
+            validated[require_bin_name(bin_name)] = require_relative_path(
+                path, f"archive path for {bin_name}"
+            )
+        if len(set(validated.values())) != len(validated):
+            raise ValueError("archive members must use distinct paths")
+        return validated
+
+    @model_validator(mode="after")
+    def validate_asset_type(self) -> "ArchiveMembersResolvedAsset":
+        if not is_archive_name(self.asset):
+            raise ValueError(f"non-archive asset must use type file: {self.asset}")
+        return self
+
+
 ResolvedAsset = Annotated[
-    FileResolvedAsset | ArchiveResolvedAsset,
+    FileResolvedAsset | ArchiveResolvedAsset | ArchiveMembersResolvedAsset,
     Field(discriminator="type"),
 ]
 
@@ -191,7 +220,8 @@ class ToolSpec(BaseModel):
 
     repo: str
     tag: str | None = None
-    bin: str
+    bin: str | None = None
+    bins: dict[str, str] | None = None
     targets: dict[str, TargetSpec] = Field(default_factory=dict)
     path_pattern: str | None = None
 
@@ -202,10 +232,40 @@ class ToolSpec(BaseModel):
             f"https://github.com/{self.repo}/releases/download/{self.tag}/{asset_name}"
         )
 
+    def bin_names(self) -> list[str]:
+        if self.bin:
+            return [self.bin]
+        return list(self.bins or {})
+
+    def primary_bin(self) -> str:
+        return self.bin_names()[0]
+
     @field_validator("bin")
     @classmethod
     def validate_bin(cls, value: str) -> str:
         return require_bin_name(value)
+
+    @field_validator("bins")
+    @classmethod
+    def validate_bins(cls, value: dict[str, str] | None) -> dict[str, str] | None:
+        if value is None:
+            return None
+        if not value:
+            raise ValueError("bins cannot be empty")
+        validated: dict[str, str] = {}
+        for bin_name, path_pattern in value.items():
+            validated[require_bin_name(bin_name)] = path_pattern
+            if not path_pattern:
+                raise ValueError(f"path pattern for {bin_name} cannot be empty")
+        return validated
+
+    @model_validator(mode="after")
+    def validate_binary_shape(self) -> "ToolSpec":
+        if (self.bin is None) == (self.bins is None):
+            raise ValueError("exactly one of bin or bins is required")
+        if self.bins is not None and self.path_pattern is not None:
+            raise ValueError("multi-binary tools store path patterns in bins")
+        return self
 
 
 class PortableManifest(BaseModel):
@@ -233,6 +293,39 @@ class PortableManifest(BaseModel):
         ]
         if missing:
             raise ValueError(f"default target has no policy: {', '.join(missing)}")
+        owners: dict[str, str] = {}
+        for tool_name, tool in self.tools.items():
+            for bin_name in tool.bin_names():
+                if owner := owners.get(bin_name):
+                    raise ValueError(
+                        f"binary destination {bin_name!r} is owned by both "
+                        f"{owner} and {tool_name}"
+                    )
+                owners[bin_name] = tool_name
+            for target_name, target in tool.targets.items():
+                resolved = target.resolved
+                if tool.bins is None:
+                    if isinstance(resolved, ArchiveMembersResolvedAsset):
+                        raise ValueError(
+                            f"{tool_name}/{target_name} uses archive-members "
+                            "without bins"
+                        )
+                    continue
+                if target.path_pattern is not None:
+                    raise ValueError(
+                        f"{tool_name}/{target_name} cannot use singular path_pattern"
+                    )
+                if resolved is None:
+                    continue
+                if not isinstance(resolved, ArchiveMembersResolvedAsset):
+                    raise ValueError(  # noqa: TRY004 - Pydantic validator contract
+                        f"{tool_name}/{target_name} multi-binary target must use "
+                        "archive-members"
+                    )
+                if set(resolved.files) != set(tool.bins):
+                    raise ValueError(
+                        f"{tool_name}/{target_name} resolved files must match bins"
+                    )
         return self
 
     def selected_tools(self, name: str | None) -> list[tuple[str, ToolSpec]]:
@@ -264,6 +357,9 @@ class ManifestFile(BaseModel):
             raise SystemExit(f"{self.path} has invalid portable_pkgs data:\n{error}")
 
     def save(self, manifest: PortableManifest) -> None:
+        manifest = PortableManifest.model_validate(
+            manifest.model_dump(exclude_none=True)
+        )
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(
             yaml.safe_dump(
@@ -584,6 +680,8 @@ def path_pattern_from_path(asset_name: str, path: str, tag: str, bin_name: str) 
 
 
 def coalesce_path_patterns(tool: ToolSpec) -> None:
+    if tool.bins is not None:
+        return
     archive_targets = [
         target
         for target in tool.targets.values()
@@ -612,13 +710,21 @@ def render_add_summary(name: str, tool: ToolSpec, target_names: list[str]) -> st
         f"  name: {name}",
         f"  repo: {tool.repo}",
         f"  tag: {tool.tag}",
-        f"  bin: {tool.bin}",
+        f"  bins: {', '.join(tool.bin_names())}",
         "  targets:",
     ]
     for target_name in target_names:
         target = tool.targets[target_name]
         resolved = target.resolved
-        if isinstance(resolved, ArchiveResolvedAsset):
+        if isinstance(resolved, ArchiveMembersResolvedAsset):
+            files = ", ".join(
+                f"{bin_name}={path}" for bin_name, path in resolved.files.items()
+            )
+            lines.append(
+                f"    {target_name}: {target.asset_pattern} -> "
+                f"{resolved.asset} :: {files}"
+            )
+        elif isinstance(resolved, ArchiveResolvedAsset):
             path = target.path_pattern or tool.path_pattern or resolved.path
             lines.append(
                 f"    {target_name}: {target.asset_pattern} -> {resolved.asset} :: {path}"
@@ -703,6 +809,20 @@ class ReleaseResolver:
             )
 
         if ArchiveAsset.is_archive(asset_name):
+            if tool.bins is not None:
+                files = {
+                    bin_name: self.render_path_pattern(
+                        pattern, tool, target_name, asset_name, bin_name
+                    )
+                    for bin_name, pattern in tool.bins.items()
+                }
+                target.resolved = ArchiveMembersResolvedAsset(
+                    type="archive-members",
+                    asset=asset_name,
+                    files=files,
+                    sha256=sha256,
+                )
+                return
             path = self.render_path(tool, target_name, target, asset_name)
             if not path:
                 raise SystemExit(
@@ -716,6 +836,11 @@ class ReleaseResolver:
                 sha256=sha256,
             )
             return
+        if tool.bins is not None:
+            raise SystemExit(
+                f"{tool.repo}/{target_name} has multiple binaries but selected "
+                f"non-archive asset {asset_name}"
+            )
         target.resolved = FileResolvedAsset(
             type="file",
             asset=asset_name,
@@ -727,20 +852,29 @@ class ReleaseResolver:
     ) -> str | None:
         pattern = target.path_pattern or tool.path_pattern
         if pattern:
-            return self.render_path_pattern(pattern, tool, target_name, asset_name)
+            if tool.bin is None:
+                raise SystemExit(f"{tool.repo} singular target has no bin")
+            return self.render_path_pattern(
+                pattern, tool, target_name, asset_name, tool.bin
+            )
         if isinstance(target.resolved, ArchiveResolvedAsset):
             return target.resolved.path
         return None
 
     def render_path_pattern(
-        self, pattern: str, tool: ToolSpec, target_name: str, asset_name: str
+        self,
+        pattern: str,
+        tool: ToolSpec,
+        target_name: str,
+        asset_name: str,
+        bin_name: str,
     ) -> str:
         if not tool.tag:
             raise SystemExit(f"{tool.repo} has no resolved tag")
         values = {
             "asset": asset_name,
             "assetStem": ArchiveAsset.stem(asset_name),
-            "bin": tool.bin,
+            "bin": bin_name,
             "repo": tool.repo,
             "tag": tool.tag,
             "target": target_name,
@@ -777,15 +911,19 @@ class Verifier:
                 )
             if isinstance(resolved, FileResolvedAsset):
                 return
-            if not resolved.path:
-                raise SystemExit(f"{tool_name}/{target_name} is missing resolved path")
-            extracted = ArchiveAsset.extract_member(
-                downloaded.path, resolved.path, Path(tmp) / "extract"
+            paths = (
+                resolved.files.values()
+                if isinstance(resolved, ArchiveMembersResolvedAsset)
+                else [resolved.path]
             )
-            if not extracted.is_file():
-                raise SystemExit(
-                    f"{tool_name}/{target_name} archive path is not a file: {resolved.path}"
+            for path in paths:
+                extracted = ArchiveAsset.extract_member(
+                    downloaded.path, path, Path(tmp) / "extract"
                 )
+                if not extracted.is_file():
+                    raise SystemExit(
+                        f"{tool_name}/{target_name} archive path is not a file: {path}"
+                    )
 
     def verify_many(self, items: list[tuple[str, ToolSpec, str]]) -> None:
         failures = 0
@@ -1097,12 +1235,60 @@ def resolve_add_repo(
     return chosen["full_name"]
 
 
+def configure_tool_binaries(
+    tool: ToolSpec,
+    name: str,
+    requested_bins: tuple[str, ...],
+    path_pattern: str | None,
+    *,
+    manual: bool,
+) -> None:
+    requested_bin_names = list(dict.fromkeys(requested_bins))
+    existing_bin_names = tool.bin_names()
+    if requested_bin_names and set(requested_bin_names) != set(existing_bin_names):
+        raise click.BadParameter(
+            f"cannot change binaries for existing package {name}; remove and re-add it"
+        )
+    if (
+        tool.bins is not None
+        and path_pattern is not None
+        and any(pattern != path_pattern for pattern in tool.bins.values())
+    ):
+        raise click.BadParameter(
+            f"cannot change path patterns for existing package {name}; "
+            "remove and re-add it"
+        )
+    bin_names = requested_bin_names or existing_bin_names or [name]
+    if len(bin_names) == 1:
+        tool.bin = require_bin_name(bin_names[0])
+        tool.bins = None
+        if path_pattern:
+            tool.path_pattern = path_pattern
+        return
+
+    if (
+        manual
+        and path_pattern is None
+        and (tool.bins is None or set(tool.bins) != set(bin_names))
+    ):
+        raise click.BadParameter(
+            "multiple --bin values in manual mode require --path-pattern"
+        )
+    existing_patterns = tool.bins if tool.bins is not None else {}
+    tool.bin = None
+    tool.path_pattern = None
+    tool.bins = {
+        bin_name: path_pattern or existing_patterns.get(bin_name, "{bin}")
+        for bin_name in map(require_bin_name, bin_names)
+    }
+
+
 def add_manual_targets(
     manifest: PortableManifest,
     name: str,
     repo: str,
     target_assets: tuple[str, ...],
-    bin_name: str | None,
+    bin_names: tuple[str, ...],
     tag: str | None,
     path_pattern: str | None,
     github: GitHubClient,
@@ -1110,12 +1296,20 @@ def add_manual_targets(
     resolver = ReleaseResolver()
     tool = manifest.tools.get(name)
     if tool is None:
-        tool = ToolSpec(repo=repo, bin=bin_name or name)
+        if len(bin_names) > 1:
+            if path_pattern is None:
+                raise click.BadParameter(
+                    "multiple --bin values in manual mode require --path-pattern"
+                )
+            tool = ToolSpec(
+                repo=repo,
+                bins={bin_name: path_pattern for bin_name in bin_names},
+            )
+        else:
+            tool = ToolSpec(repo=repo, bin=bin_names[0] if bin_names else name)
         manifest.tools[name] = tool
     tool.repo = repo
-    tool.bin = bin_name or tool.bin or name
-    if path_pattern:
-        tool.path_pattern = path_pattern
+    configure_tool_binaries(tool, name, bin_names, path_pattern, manual=True)
     requested_tag = tag or tool.tag or "latest"
     release = github.fetch_release(tool.repo, requested_tag)
     tool.tag = release["tag_name"]
@@ -1138,7 +1332,7 @@ def add_smart_targets(
     name: str,
     repo: str | None,
     requested_targets: tuple[str, ...],
-    bin_name: str | None,
+    bin_names: tuple[str, ...],
     tag: str | None,
     path_pattern: str | None,
     github: GitHubClient,
@@ -1152,19 +1346,25 @@ def add_smart_targets(
 
     tool = manifest.tools.get(name)
     if tool is None:
-        tool = ToolSpec(repo=resolved_repo, bin=bin_name or name)
+        if len(bin_names) > 1:
+            tool = ToolSpec(
+                repo=resolved_repo,
+                bins={bin_name: path_pattern or "{bin}" for bin_name in bin_names},
+            )
+        else:
+            tool = ToolSpec(repo=resolved_repo, bin=bin_names[0] if bin_names else name)
         manifest.tools[name] = tool
     tool.repo = resolved_repo
     tool.tag = resolved_tag
-    tool.bin = bin_name or tool.bin or name
-    if path_pattern:
-        tool.path_pattern = path_pattern
+    configure_tool_binaries(tool, name, bin_names, path_pattern, manual=False)
 
     with tempfile.TemporaryDirectory(prefix="portable-pkgs-") as tmp:
         tmp_path = Path(tmp)
-        for target_name in target_names:
+        for target_index, target_name in enumerate(target_names):
             policy = manifest.targets[target_name]
-            candidates = asset_candidates_for_target(release, policy, tool.bin)
+            candidates = asset_candidates_for_target(
+                release, policy, tool.primary_bin()
+            )
             if not candidates:
                 names = "\n".join(
                     f"  - {asset['name']}" for asset in release.get("assets", [])
@@ -1201,30 +1401,86 @@ def add_smart_targets(
 
             if ArchiveAsset.is_archive(asset_name):
                 entries = ArchiveAsset.list(downloaded.path)
-                path_candidates = path_candidates_for_bin(entries, tool.bin)
-                if not path_candidates:
-                    raise SystemExit(
-                        f"no archive member named {tool.bin!r} in {asset_name}"
+                if tool.bins is not None:
+                    resolved_files: dict[str, str] = {}
+                    inferred_patterns: dict[str, str] = {}
+                    for bin_name in tool.bin_names():
+                        path_candidates = path_candidates_for_bin(entries, bin_name)
+                        if not path_candidates:
+                            raise SystemExit(
+                                f"no archive member named {bin_name!r} in {asset_name}"
+                            )
+                        chosen_path = interaction.choose(
+                            f"Binary path candidates for {target_name}/{bin_name}",
+                            path_candidates,
+                            format_path_candidate,
+                        )
+                        inferred_pattern = path_pattern or path_pattern_from_path(
+                            asset_name,
+                            chosen_path.path,
+                            resolved_tag,
+                            bin_name,
+                        )
+                        rendered_path = ReleaseResolver().render_path_pattern(
+                            inferred_pattern,
+                            tool,
+                            target_name,
+                            asset_name,
+                            bin_name,
+                        )
+                        if rendered_path not in entries:
+                            raise SystemExit(
+                                f"path pattern for {bin_name!r} renders to missing "
+                                f"archive member {rendered_path!r} in {asset_name}"
+                            )
+                        resolved_files[bin_name] = rendered_path
+                        inferred_patterns[bin_name] = inferred_pattern
+                    if target_index == 0:
+                        tool.bins = inferred_patterns
+                    elif tool.bins != inferred_patterns:
+                        raise SystemExit(
+                            f"multi-binary archive layout differs for {target_name}; "
+                            "use a shared --path-pattern"
+                        )
+                    target_spec.path_pattern = None
+                    target_spec.resolved = ArchiveMembersResolvedAsset(
+                        type="archive-members",
+                        asset=asset_name,
+                        files=resolved_files,
+                        sha256=sha256,
                     )
-                chosen_path = interaction.choose(
-                    f"Binary path candidates for {target_name}",
-                    path_candidates,
-                    format_path_candidate,
-                )
-                if not path_pattern:
-                    target_spec.path_pattern = path_pattern_from_path(
-                        asset_name,
-                        chosen_path.path,
-                        resolved_tag,
-                        tool.bin,
+                else:
+                    if tool.bin is None:
+                        raise SystemExit(f"{name} singular target has no bin")
+                    path_candidates = path_candidates_for_bin(entries, tool.bin)
+                    if not path_candidates:
+                        raise SystemExit(
+                            f"no archive member named {tool.bin!r} in {asset_name}"
+                        )
+                    chosen_path = interaction.choose(
+                        f"Binary path candidates for {target_name}",
+                        path_candidates,
+                        format_path_candidate,
                     )
-                target_spec.resolved = ArchiveResolvedAsset(
-                    type="archive-file",
-                    asset=asset_name,
-                    path=chosen_path.path,
-                    sha256=sha256,
-                )
+                    if not path_pattern:
+                        target_spec.path_pattern = path_pattern_from_path(
+                            asset_name,
+                            chosen_path.path,
+                            resolved_tag,
+                            tool.bin,
+                        )
+                    target_spec.resolved = ArchiveResolvedAsset(
+                        type="archive-file",
+                        asset=asset_name,
+                        path=chosen_path.path,
+                        sha256=sha256,
+                    )
             else:
+                if tool.bins is not None:
+                    raise SystemExit(
+                        f"{name}/{target_name} selected non-archive asset "
+                        f"{asset_name} for multiple binaries"
+                    )
                 target_spec.path_pattern = None
                 target_spec.resolved = FileResolvedAsset(
                     type="file",
@@ -1241,8 +1497,11 @@ def package_preview_rows(name: str, tool: ToolSpec) -> list[dict[str, Any]]:
         {"field": "name", "value": name},
         {"field": "repo", "value": tool.repo},
         {"field": "tag", "value": tool.tag},
-        {"field": "bin", "value": tool.bin},
-        {"field": "path_pattern", "value": tool.path_pattern},
+        {"field": "bins", "value": tool.bin_names()},
+        {
+            "field": "path_patterns",
+            "value": tool.bins if tool.bins is not None else tool.path_pattern,
+        },
     ]
 
 
@@ -1256,9 +1515,22 @@ def target_preview_rows(
         row: dict[str, Any] = {
             "target": target_name,
             "asset_pattern": target.asset_pattern,
-            "path_pattern": target.path_pattern or tool.path_pattern,
+            "path_pattern": (
+                tool.bins
+                if tool.bins is not None
+                else target.path_pattern or tool.path_pattern
+            ),
         }
-        if isinstance(resolved, ArchiveResolvedAsset):
+        if isinstance(resolved, ArchiveMembersResolvedAsset):
+            row.update(
+                {
+                    "type": resolved.type,
+                    "asset": resolved.asset,
+                    "path": resolved.files,
+                    "sha256": resolved.sha256,
+                }
+            )
+        elif isinstance(resolved, ArchiveResolvedAsset):
             row.update(
                 {
                     "type": resolved.type,
@@ -1333,7 +1605,7 @@ def tool_list_rows(manifest: PortableManifest) -> list[dict[str, Any]]:
             "name": name,
             "repo": tool.repo,
             "tag": tool.tag,
-            "bin": tool.bin,
+            "bin": tool.bin_names(),
             "targets": list(tool.targets),
         }
         for name, tool in manifest.tools.items()
@@ -1539,7 +1811,12 @@ def cmd_assets(repo: str, tag: str, output_format: OutputFormat) -> None:
 )
 @click.option("--repo", "repo_option", help="GitHub repository as OWNER/REPO.")
 @click.option("--target", "requested_targets", multiple=True, help="Target to add.")
-@click.option("--bin", "bin_name")
+@click.option(
+    "--bin",
+    "bin_names",
+    multiple=True,
+    help="Binary command to install; repeat for multiple archive members.",
+)
 @click.option("--tag")
 @click.option("--path-pattern")
 @click.option("--interactive", is_flag=True, help="Prompt for each inferred choice.")
@@ -1562,7 +1839,7 @@ def cmd_add(
     target_assets: tuple[str, ...],
     repo_option: str | None,
     requested_targets: tuple[str, ...],
-    bin_name: str | None,
+    bin_names: tuple[str, ...],
     tag: str | None,
     path_pattern: str | None,
     interactive: bool,
@@ -1598,7 +1875,7 @@ def cmd_add(
             name,
             repo,
             target_assets,
-            bin_name,
+            bin_names,
             tag,
             path_pattern,
             github,
@@ -1609,7 +1886,7 @@ def cmd_add(
             name,
             repo,
             requested_targets,
-            bin_name,
+            bin_names,
             tag,
             path_pattern,
             github,
@@ -1669,9 +1946,12 @@ def cmd_update(
             updated.append((tool_name, tool, target_name))
     if verify:
         verifier.verify_many(updated)
+    else:
+        verifier.verify_many([item for item in updated if item[1].bins is not None])
     manifest_file.save(manifest)
     after_tools = {tool_name: manifest.tools[tool_name] for tool_name in before_tools}
-    print_update_report(before_tools, after_tools, verify, output_format)
+    all_verified = verify or all(tool.bins is not None for _, tool, _ in updated)
+    print_update_report(before_tools, after_tools, all_verified, output_format)
 
 
 @cli.command("inspect")
@@ -1711,6 +1991,11 @@ def cmd_inspect(
             )
         if not ArchiveAsset.is_archive(asset["name"]):
             print("type: file")
+            if tool.bins is not None:
+                raise SystemExit(
+                    f"{name}/{target} cannot install multiple binaries from "
+                    f"non-archive asset {asset['name']}"
+                )
             if save:
                 target_spec.resolved = FileResolvedAsset(
                     type="file",
@@ -1721,10 +2006,45 @@ def cmd_inspect(
                 print(f"saved metadata for {name}/{target}")
             return
 
+        entries = ArchiveAsset.list(downloaded.path)
+        if tool.bins is not None:
+            if path_regex is not None:
+                raise click.BadParameter(
+                    "--path-regex is only supported for single-binary tools"
+                )
+            resolver = ReleaseResolver()
+            files = {
+                bin_name: resolver.render_path_pattern(
+                    pattern, tool, target, asset["name"], bin_name
+                )
+                for bin_name, pattern in tool.bins.items()
+            }
+            missing = [path for path in files.values() if path not in entries]
+            print(f"binary paths ({len(files)}):")
+            for bin_name, path in files.items():
+                marker = "missing" if path in missing else "found"
+                print(f"  {bin_name}: {path} ({marker})")
+            if missing:
+                raise SystemExit(
+                    "archive is missing configured binary paths: " + ", ".join(missing)
+                )
+            if save:
+                target_spec.resolved = ArchiveMembersResolvedAsset(
+                    type="archive-members",
+                    asset=asset["name"],
+                    files=files,
+                    sha256=expected_sha256 or downloaded.sha256,
+                )
+                manifest_file.save(manifest)
+                print(f"saved metadata and paths for {name}/{target}")
+            return
+
+        if tool.bin is None:
+            raise SystemExit(f"{name} singular target has no bin")
         regex = re.compile(path_regex or rf"(^|/){re.escape(tool.bin)}$")
         matches = [
             entry
-            for entry in ArchiveAsset.list(downloaded.path)
+            for entry in entries
             if not entry.endswith("/") and regex.search(entry)
         ]
         print(f"path matches ({len(matches)}):")

@@ -1,5 +1,5 @@
 portable_pkgs:
-  schema_version: 4
+  schema_version: 5
   install_dir: .local/bin
   default_targets:
   - darwin-aarch64
@@ -390,3 +390,28 @@ portable_pkgs:
             path: pnpm
             sha256: aeb98704e3bc49de0ecb6d3d805b3e6f637287727ed4d9ca3e8ecf2c79e140f0
       path_pattern: pnpm
+    uv:
+      repo: astral-sh/uv
+      tag: 0.12.7
+      bins:
+        uv: '{assetStem}/{bin}'
+        uvx: '{assetStem}/{bin}'
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^uv\-aarch64\-apple\-darwin\.tar\.gz$
+          resolved:
+            type: archive-members
+            asset: uv-aarch64-apple-darwin.tar.gz
+            files:
+              uv: uv-aarch64-apple-darwin/uv
+              uvx: uv-aarch64-apple-darwin/uvx
+            sha256: 127ebdda7ad953cdf198e964b570ea5771b85467ea93eb7cb6d6f8e6f55408f3
+        linux-x86_64:
+          asset_pattern: ^uv\-x86_64\-unknown\-linux\-musl\.tar\.gz$
+          resolved:
+            type: archive-members
+            asset: uv-x86_64-unknown-linux-musl.tar.gz
+            files:
+              uv: uv-x86_64-unknown-linux-musl/uv
+              uvx: uv-x86_64-unknown-linux-musl/uvx
+            sha256: 3d64d44ed67da7908dc7f5c4d64ebb44bad326fa17f8a0a52fc9a7793017bbe1

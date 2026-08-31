@@ -2,29 +2,6 @@
 
 set -euo pipefail
 
-# {{- $uvMinimum := .toolchain_versions.uv_minimum }}
-# {{- if and .toolchains.uv (ne $uvMinimum "") (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $uvMinimum)) }}
-# {{-   fail (printf "toolchain_versions.uv_minimum must be empty or a numeric version, got %q" $uvMinimum) }}
-# {{- end }}
-# {{- if .toolchains.uv }}
-# {{-   $uvPath := lookPath "uv" }}
-# {{-   $uvxPath := lookPath "uvx" }}
-# {{-   if or (not $uvPath) (not $uvxPath) }}
-echo "Installing uv because uv or uvx is missing"
-curl -fsSL https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
-# {{-   else if ne $uvMinimum "" }}
-# {{-     $uvVersionOutput := output $uvPath "--version" }}
-# {{-     $uvCurrent := regexFind "[0-9]+([.][0-9]+){0,2}" $uvVersionOutput }}
-# {{-     if eq $uvCurrent "" }}
-# {{-       fail (printf "could not parse uv version from %q" $uvVersionOutput) }}
-# {{-     end }}
-# {{-     if semverCompare (printf "<%s" $uvMinimum) $uvCurrent }}
-echo "Updating uv from {{ $uvCurrent }} to latest because it is below {{ $uvMinimum }}"
-UV_NO_MODIFY_PATH=1 uv self update
-# {{-     end }}
-# {{-   end }}
-# {{- end }}
-
 # {{- $rustup := .toolchains.rustup }}
 # {{- if and (ne $rustup "none") (ne $rustup "minimal") (ne $rustup "default") (ne $rustup "complete") }}
 # {{-   fail "toolchains.rustup must be one of: none, minimal, default, complete" }}
