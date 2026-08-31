@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+set -eu
+
+# {{- $nodeVersion := .toolchain_versions.node }}
+# {{- $installNode := true }}
+# {{- if hasKey .toolchains "node" }}
+# {{-   $installNode = index .toolchains "node" }}
+# {{- end }}
+# {{- if and $installNode (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $nodeVersion)) }}
+# {{-   fail (printf "toolchain_versions.node must be a numeric version selector, got %q" $nodeVersion) }}
+# {{- end }}
+# {{- if $installNode }}
+pnpm_bin="$HOME/.local/bin/pnpm"
+if [ ! -x "$pnpm_bin" ]; then
+  echo "pnpm portable binary not found at $pnpm_bin" >&2
+  exit 1
+fi
+
+export PNPM_HOME="$HOME/.pnpm"
+mkdir -p "$PNPM_HOME/bin"
+export PATH="$PNPM_HOME/bin:$PATH"
+
+echo "Installing Node.js {{ $nodeVersion }} with pnpm"
+"$pnpm_bin" runtime set node {{ $nodeVersion | quote }} -g
+"$PNPM_HOME/bin/node" --version
+# {{- end }}

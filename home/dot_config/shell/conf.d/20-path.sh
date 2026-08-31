@@ -1,15 +1,7 @@
-# User-local tool paths.
+# User-local bin directory.
 
-for shell_path in \
-    "$HOME/.local/bin" \
-    "$HOME/.cargo/bin" \
-    "$HOME/.bun/bin"
-do
-    case ":$PATH:" in
-        *":$shell_path:"*) ;;
-        *) [ -d "$shell_path" ] && PATH="$shell_path:$PATH" ;;
-    esac
-done
-
-unset shell_path
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) [ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH" ;;
+esac
 export PATH

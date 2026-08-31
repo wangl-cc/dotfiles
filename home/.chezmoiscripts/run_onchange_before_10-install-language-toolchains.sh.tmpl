@@ -34,26 +34,3 @@ echo "Installing rustup"
 rustup_profile={{ $rustup | quote }}
 curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile "$rustup_profile"
 # {{- end }}
-
-# {{- $bunMinimum := .toolchain_versions.bun_minimum }}
-# {{- if and .toolchains.bun (ne $bunMinimum "") (not (regexMatch "^[0-9]+([.][0-9]+){0,2}$" $bunMinimum)) }}
-# {{-   fail (printf "toolchain_versions.bun_minimum must be empty or a numeric version, got %q" $bunMinimum) }}
-# {{- end }}
-# {{- if .toolchains.bun }}
-# {{-   $bunPath := lookPath "bun" }}
-# {{-   $bunxPath := lookPath "bunx" }}
-# {{-   if or (not $bunPath) (not $bunxPath) }}
-echo "Installing bun because bun or bunx is missing"
-curl -fsSL https://bun.sh/install | BUN_INSTALL="$HOME/.bun" SHELL=/bin/sh bash
-# {{-   else if ne $bunMinimum "" }}
-# {{-     $bunVersionOutput := output $bunPath "--version" }}
-# {{-     $bunCurrent := regexFind "[0-9]+([.][0-9]+){0,2}" $bunVersionOutput }}
-# {{-     if eq $bunCurrent "" }}
-# {{-       fail (printf "could not parse bun version from %q" $bunVersionOutput) }}
-# {{-     end }}
-# {{-     if semverCompare (printf "<%s" $bunMinimum) $bunCurrent }}
-echo "Updating bun from {{ $bunCurrent }} to latest because it is below {{ $bunMinimum }}"
-bun upgrade
-# {{-     end }}
-# {{-   end }}
-# {{- end }}

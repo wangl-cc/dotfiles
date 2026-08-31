@@ -4,6 +4,8 @@
 .config/fish/conf.d/95-starship.fish
 .config/shell/conf.d/25-aqua.sh
 .local/share/aquaproj-aqua
+.config/fish/conf.d/30-bun.fish
+.config/shell/conf.d/30-bun.sh
 .config/fish/conf.d/50-agent.fish
 .config/shell/conf.d/50-agent.sh
 .codex/hooks/rtk_pre_tool_use.py

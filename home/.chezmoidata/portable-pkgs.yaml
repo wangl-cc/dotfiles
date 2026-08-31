@@ -370,3 +370,23 @@ portable_pkgs:
             path: kache
             sha256: 06a4378544ee3352a8b1bc55ed3a54b066814285a470f8b55646888fa7c979f2
       path_pattern: '{bin}'
+    pnpm:
+      repo: pnpm/pnpm
+      tag: v12.0.0
+      bin: pnpm
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^pnpm-darwin-arm64[.]tar[.]gz$
+          resolved:
+            type: archive-file
+            asset: pnpm-darwin-arm64.tar.gz
+            path: pnpm
+            sha256: c31f5abe796dfc8489ea980cb438844053ad6b402bb4f3eb9abd71086279d75b
+        linux-x86_64:
+          asset_pattern: ^pnpm-linux-x64-musl[.]tar[.]gz$
+          resolved:
+            type: archive-file
+            asset: pnpm-linux-x64-musl.tar.gz
+            path: pnpm
+            sha256: aeb98704e3bc49de0ecb6d3d805b3e6f637287727ed4d9ca3e8ecf2c79e140f0
+      path_pattern: pnpm

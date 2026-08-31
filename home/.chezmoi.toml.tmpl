@@ -29,7 +29,7 @@ auto = {{ promptBoolOnce . "shell.fish.auto" "Auto-enter fish from fallback bash
 [data.toolchains]
 uv = {{ promptBoolOnce . "toolchains.uv" "Install uv with Astral's official installer on this machine" true }}
 rustup = {{ promptChoiceOnce . "toolchains.rustup" "Rustup profile to install on this machine" (list "none" "minimal" "default" "complete") "none" | quote }}
-bun = {{ promptBoolOnce . "toolchains.bun" "Install Bun with Bun's official installer on this machine" true }}
+node = {{ promptBoolOnce . "toolchains.node" "Install the configured Node.js major with pnpm on this machine" true }}
 
 [data.git]
 name = "Loong"
