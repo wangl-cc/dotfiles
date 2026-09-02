@@ -1,13 +1,13 @@
 ---
 name: uv-python-script
-description: Create, edit, run, format, and check standalone single-file Python scripts outside a Python project with uv. Use before creating or running PEP 723 or uv run --script scripts; skip third-party scripts that should be followed as-is.
+description: Create, edit, run, format, and check a session-owned standalone Python script outside a configured project with uv. Use for PEP 723 or uv run --script workflows; skip project-owned files and third-party scripts that should run unchanged.
 ---
 
 # uv Python Scripts
 
 ## Scope
 
-- Use for a standalone, session-owned Python file; use `uv-python-project` for files owned by a repository with project configuration, packages, tests, or a lockfile.
+- Use for a session-owned standalone Python file outside a configured project. Also follow the Python reference for language-level guidance; its uv-managed project subsection does not apply merely because a standalone script uses `uv run --script`.
 - Follow a third-party script's instructions and leave it unchanged unless the task authorizes modifying it.
 
 ## Script Shape
@@ -26,11 +26,13 @@ description: Create, edit, run, format, and check standalone single-file Python 
 
 ## Validation
 
-Run this order for an edited script:
+For review or check-only work, do not reformat the file; use `uv format --no-project --check -- path/to/script.py` and `uv check --script path/to/script.py`.
+
+For an authorized edit, run the applicable steps in this order:
 
 1. `uv format --no-project -- path/to/script.py`
 2. `uv check --script path/to/script.py`
-3. `uv run --script path/to/script.py --help`
-4. A dry-run or low-risk command path that exercises the changed behavior.
+3. Inspect the script's interface, then use `uv run --script path/to/script.py --help` only when `--help` is supported and side-effect-free.
+4. Exercise the changed behavior through a dry-run or another low-risk path when one is available.
 
 Report the exact uv commands run and their results.
