@@ -16,5 +16,7 @@ How to use: {{ .how_to_use }}
 """
 
 developer_instructions = """
-{{ .prompt }}
+{{ .prompt }}{{- with (get .codex "additional_instructions") }}
+{{ . }}
+{{- end }}
 """
