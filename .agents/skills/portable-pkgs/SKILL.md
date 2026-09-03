@@ -22,7 +22,7 @@ Use this skill in this chezmoi repo when the task involves:
 - Keep `home/.chezmoiexternal.toml.tmpl` as the renderer. The helper maintains the manifest; the template reads resolved manifest metadata.
 - Treat a package as the owner of its repository, tag, release asset, checksum, and real executable outputs. Keep binaries from one archive in one package so they resolve and update together.
 - Use repeated `--bin` options for a package that ships multiple real binaries. Do not model those binaries as separate top-level packages.
-- Keep invocation aliases outside `bins` and manage them as chezmoi symlinks. For example, `uvx` is a real archive member, while `pnx -> pnpm` is an alias.
+- Keep invocation aliases outside `bins`. In this repository's symlink source mode, use a chezmoi symlink source for an alias that only changes the command name, such as `symlink_pn -> pnpm`; use an executable wrapper source for an alias that injects arguments, such as `dot_local/bin/pnx` executing `pnpm dlx`.
 - Do not partially change the binary set or path patterns of an existing multi-binary package. The helper rejects these shape changes; remove and re-add the package so every target is rebuilt together.
 - Prefer GitHub release assets with stable `sha256` metadata. Use `inspect --save` when the archive path needs explicit confirmation.
 - Treat `default_targets` and `targets` in the manifest as the global target policy for intelligent adds. Do not duplicate target matching rules in docs or prompts.
