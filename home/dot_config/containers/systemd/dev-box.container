@@ -1,17 +1,26 @@
 [Unit]
 Description=My General Purpose Development Container
+Requires=ssh-agent.socket
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service
 
 [Container]
 Image=dev-box.build
 ContainerName=my-dev-box
+RunInit=true
 
 # Works with host more smoothly
 Network=host
 SecurityLabelDisable=true
 UserNS=keep-id
-Volume=%h:%h
+Volume=%h:/home/%u
+Volume=dev-box-ssh:/home/%u/.ssh:U
+Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
+
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 
 AddDevice=/dev/kfd
 AddDevice=/dev/dri
@@ -22,9 +31,12 @@ PodmanArgs=--ipc host
 # Persist cache of dnf5
 Volume=dev-box-dnf5-cache:/var/cache/libdnf5
 
-# Persist the container's state; services store data in subdirectories
-# (e.g. ssh/ holds the SSH host keys wired up by dev-box/tmpfiles.conf).
+# Persist the container's state; ssh/ contains only the SSH host keys.
 Volume=dev-box-data:/var/lib/dev-box
+
+[Service]
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=default.target

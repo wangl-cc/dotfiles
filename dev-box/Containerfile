@@ -1,69 +1,82 @@
-FROM registry.fedoraproject.org/fedora:latest
+#==============================================================================#
+# box-base
+#==============================================================================#
+
+FROM registry.fedoraproject.org/fedora:latest AS box-base
 
 ARG USERNAME=dev
 ARG USER_UID=1000
 ARG USER_GID=1000
 
-# dnf configuration, needed by the build itself; copied early so that the
-# package layers below stay cached unless this file changes
-COPY rootfs/etc/dnf/dnf.conf /etc/dnf/dnf.conf
+COPY rootfs/base /
 
-# Disable cisco-openh264.repo
 RUN sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/fedora-cisco-openh264.repo
 
-
-# Upgrade packages and reinstall all packages for docs
+# Reinstall base packages with documentation included.
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf upgrade -y && \
     dnf reinstall -y --setopt=keepcache=1 \
-    $(rpm -qa --queryformat '%{NAME}\n' | grep -v gpg-pubkey)
+    $(rpm -qa --queryformat '%{NAME}\n' | grep -v gpg-pubkey) && \
+    rm -rf /var/log/dnf*
 
-# Install container infrastructure and build tools
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf install -y --setopt=keepcache=1 \
-    fish git man-db unzip which \
-    bubblewrap openssh-server dbus-broker \
+    ca-certificates curl \
+    fish git man-db tar unzip which \
     gcc gcc-c++ make cmake pkgconfig \
-    procps-ng psmisc perf \
-    nodejs-npm
+    procps-ng psmisc perf sudo && \
+    rm -rf /var/log/dnf*
 
-# nodejs-npm: dsh runtime (state volume, see dsh.service) and HMR plugin
-# dev: node --expose-internals /var/lib/dev-box/npm/bin/dsh --profile <name>
+RUN groupadd -g "$USER_GID" "$USERNAME" && \
+    useradd -m -u "$USER_UID" -g "$USER_GID" -s /usr/bin/fish "$USERNAME" && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd && \
+    chmod 0440 /etc/sudoers.d/sudo-nopasswd
 
-# Cleanup (don't run dnf clean all, just remove logs)
-RUN rm -rf /var/log/dnf*
+#==============================================================================#
+# dev-box
+#==============================================================================#
 
-# Fedora atomic hosts expose home directories under /var/home, while the
-# container keeps the conventional /home path. Support both spellings.
-RUN ln -s /home /var/home
+FROM box-base AS dev-box
 
-# Enable sudo permission for $USERNAME
-RUN groupadd -g $USER_GID $USERNAME && \
-    useradd -u $USER_UID -g $USER_GID -s /usr/bin/fish $USERNAME && \
-    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd
+COPY rootfs/dev-box /
 
-# Copy the overlay tree: every file lands at the same path in the image.
-# Persistent state lives on a single volume mounted at /var/lib/dev-box;
-# SSH host keys are generated into its ssh subdirectory by
-# dev-box-sshd-keygen@.service and exposed at sshd's default lookup paths
-# via tmpfiles.d symlinks, so the stock Fedora sshd units work unchanged.
-COPY rootfs /
-# Fill in @DEV_USER@ placeholders (units and tmpfiles have no variable expansion).
-RUN sed -i "s/@DEV_USER@/$USERNAME/g" \
-    /usr/lib/systemd/system/dsh.service \
-    /usr/lib/tmpfiles.d/20-dev-box-npm.conf
-RUN systemctl enable sshd.service \
-    dev-box-sshd-keygen@ed25519.service \
-    dev-box-sshd-keygen@ecdsa.service \
-    dev-box-sshd-keygen@rsa.service \
-    dsh.service
-
-# logind cannot work inside a container; mask it to keep the boot clean.
-# Consequence: only system services are available in here (write units
-# with User=... instead of relying on systemd --user); dbus-broker above
-# provides the system bus for units that need it.
-RUN systemctl mask systemd-logind.service systemd-logind-varlink.socket
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    dnf install -y --setopt=keepcache=1 openssh-server && \
+    rm -rf /var/log/dnf*
 
 USER root
 
-CMD ["/usr/sbin/init"]
+CMD ["/usr/local/sbin/dev-box-run"]
+
+#==============================================================================#
+# codex-box
+#==============================================================================#
+
+FROM box-base AS codex-box
+
+ARG CODEX_REPO
+ARG CODEX_VERSION
+ARG CODEX_ASSET
+ARG CODEX_SHA256
+
+# Install Prebuilt Codex from GitHub
+RUN test -n "$CODEX_VERSION" && \
+    test -n "$CODEX_REPO" && \
+    test -n "$CODEX_ASSET" && \
+    test -n "$CODEX_SHA256" && \
+    install -d -m 0755 /opt/codex && \
+    install -d -m 0700 -o "$USERNAME" -g "$USERNAME" "/home/$USERNAME/.codex" && \
+    curl -fsSL \
+    "https://github.com/${CODEX_REPO}/releases/download/rust-v${CODEX_VERSION}/${CODEX_ASSET}" \
+    -o /tmp/codex.tar.gz && \
+    echo "$CODEX_SHA256  /tmp/codex.tar.gz" | sha256sum -c - && \
+    tar -xzf /tmp/codex.tar.gz -C /opt/codex && \
+    rm -f /tmp/codex.tar.gz && \
+    ln -s /opt/codex/bin/codex /usr/local/bin/codex && \
+    /usr/local/bin/codex --version
+
+USER ${USERNAME}
+
+WORKDIR /home/${USERNAME}
+
+CMD ["/usr/local/bin/codex", "app-server", "--remote-control", "--listen", "unix://"]

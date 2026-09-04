@@ -1,0 +1,33 @@
+[Unit]
+Description=Codex Remote Control Container
+Requires=ssh-agent.socket
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service
+
+[Container]
+Image=codex-box.build
+ContainerName=my-codex-box
+RunInit=true
+
+UserNS=keep-id
+SecurityLabelDisable=true
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
+
+# Codex shares the host user's projects, tools, configuration, and runtime
+# state. Its system environment and process lifecycle remain containerized.
+Volume=%h:/home/%u
+
+# Keep private key files outside the container. Git and SSH authenticate via
+# the host agent; this volume only holds client configuration and known hosts.
+Volume=codex-box-ssh:/home/%u/.ssh:U
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

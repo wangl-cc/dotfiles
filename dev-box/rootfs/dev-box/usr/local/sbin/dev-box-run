@@ -1,0 +1,35 @@
+#!/bin/bash
+# Prepare persistent SSH host keys, validate sshd, and replace this process
+# with the only long-running service in the container.
+set -euo pipefail
+
+key_dir=/var/lib/dev-box/ssh
+install -d -m 0755 -o root -g root "$key_dir"
+
+generate_key() {
+    local type=$1
+    shift
+
+    local key="$key_dir/ssh_host_${type}_key"
+    if [[ ! -s "$key" ]]; then
+        echo ">>> SSH host key $type not found, generating it..."
+        rm -f "$key.pub"
+        ssh-keygen -q -t "$type" "$@" -f "$key" -C '' -N ''
+    fi
+
+    if [[ ! -s "$key.pub" ]]; then
+        echo ">>> SSH host public key $type not found, deriving it..."
+        ssh-keygen -y -f "$key" > "$key.pub"
+    fi
+
+    chown root:root "$key" "$key.pub"
+    chmod 0600 "$key"
+    chmod 0644 "$key.pub"
+}
+
+generate_key ed25519
+generate_key ecdsa -b 256
+generate_key rsa -b 3072
+
+/usr/sbin/sshd -t
+exec /usr/sbin/sshd -D -e

@@ -1,0 +1,9 @@
+[Unit]
+Description=Load the Git SSH key into the user agent
+Requires=ssh-agent.socket
+After=ssh-agent.socket
+
+[Service]
+Type=oneshot
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-add -q %h/.ssh/id_ed25519

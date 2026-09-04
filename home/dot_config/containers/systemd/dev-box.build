@@ -4,6 +4,7 @@ ImageTag=localhost/fedora-dev-box
 Pull=newer
 
 SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
+Target=dev-box
 BuildArg=USERNAME=%u
 BuildArg=USER_UID=%U
 BuildArg=USER_GID=%G
