@@ -13,6 +13,7 @@ RunInit=true
 Network=host
 SecurityLabelDisable=true
 UserNS=keep-id
+HostName=%H
 Volume=%h:/home/%u
 Volume=dev-box-ssh:/home/%u/.ssh:U
 Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro

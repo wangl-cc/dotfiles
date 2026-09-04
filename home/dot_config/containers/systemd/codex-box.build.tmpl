@@ -15,3 +15,6 @@ BuildArg=CODEX_VERSION={{ trimPrefix "rust-v" $codex.tag }}
 {{ $target := index $codex.targets "linux-x86_64" }}
 BuildArg=CODEX_ASSET={{ $target.asset }}
 BuildArg=CODEX_SHA256={{ $target.sha256 }}
+
+[Service]
+TimeoutStartSec=900

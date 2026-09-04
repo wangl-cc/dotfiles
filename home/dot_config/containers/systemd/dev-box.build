@@ -8,3 +8,6 @@ Target=dev-box
 BuildArg=USERNAME=%u
 BuildArg=USER_UID=%U
 BuildArg=USER_GID=%G
+
+[Service]
+TimeoutStartSec=900

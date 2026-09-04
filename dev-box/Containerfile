@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     dnf install -y --setopt=keepcache=1 \
     ca-certificates curl \
-    fish git man-db tar unzip which \
+    fish git man-db openssh-clients tar unzip which \
     gcc gcc-c++ make cmake pkgconfig \
     procps-ng psmisc perf sudo && \
     rm -rf /var/log/dnf*
@@ -31,6 +31,8 @@ RUN groupadd -g "$USER_GID" "$USERNAME" && \
     useradd -m -u "$USER_UID" -g "$USER_GID" -s /usr/bin/fish "$USERNAME" && \
     echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-nopasswd && \
     chmod 0440 /etc/sudoers.d/sudo-nopasswd
+
+RUN ln -s /home /var/home
 
 #==============================================================================#
 # dev-box
@@ -74,6 +76,17 @@ RUN test -n "$CODEX_VERSION" && \
     rm -f /tmp/codex.tar.gz && \
     ln -s /opt/codex/bin/codex /usr/local/bin/codex && \
     /usr/local/bin/codex --version
+
+# Flatten Fedora's SSH defaults because the nested Codex sandbox cannot
+# validate root-owned include files from the outer user namespace.
+RUN sed -i '\|^Include /etc/ssh/ssh_config.d/\*\.conf$|d' /etc/ssh/ssh_config && \
+    for config in /etc/ssh/ssh_config.d/*.conf; do \
+        sed \
+        -e '\|^[[:space:]]*Include /etc/crypto-policies/back-ends/openssh.config$|r /etc/crypto-policies/back-ends/openssh.config' \
+        -e '\|^[[:space:]]*Include /etc/crypto-policies/back-ends/openssh.config$|d' \
+        "$config"; \
+    done >> /etc/ssh/ssh_config && \
+    ! grep -Eq '^[[:space:]]*Include[[:space:]]' /etc/ssh/ssh_config
 
 USER ${USERNAME}
 

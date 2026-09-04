@@ -10,6 +10,7 @@ ContainerName=my-codex-box
 RunInit=true
 
 UserNS=keep-id
+HostName=%H
 SecurityLabelDisable=true
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
@@ -20,6 +21,10 @@ Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 # Codex shares the host user's projects, tools, configuration, and runtime
 # state. Its system environment and process lifecycle remain containerized.
 Volume=%h:/home/%u
+
+# Do not expose host container storage or editor runtime sockets through the
+# recursive home bind.
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state
 
 # Keep private key files outside the container. Git and SSH authenticate via
 # the host agent; this volume only holds client configuration and known hosts.
