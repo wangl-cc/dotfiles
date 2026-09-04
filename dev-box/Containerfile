@@ -77,17 +77,6 @@ RUN test -n "$CODEX_VERSION" && \
     ln -s /opt/codex/bin/codex /usr/local/bin/codex && \
     /usr/local/bin/codex --version
 
-# Flatten Fedora's SSH defaults because the nested Codex sandbox cannot
-# validate root-owned include files from the outer user namespace.
-RUN sed -i '\|^Include /etc/ssh/ssh_config.d/\*\.conf$|d' /etc/ssh/ssh_config && \
-    for config in /etc/ssh/ssh_config.d/*.conf; do \
-        sed \
-        -e '\|^[[:space:]]*Include /etc/crypto-policies/back-ends/openssh.config$|r /etc/crypto-policies/back-ends/openssh.config' \
-        -e '\|^[[:space:]]*Include /etc/crypto-policies/back-ends/openssh.config$|d' \
-        "$config"; \
-    done >> /etc/ssh/ssh_config && \
-    ! grep -Eq '^[[:space:]]*Include[[:space:]]' /etc/ssh/ssh_config
-
 USER ${USERNAME}
 
 WORKDIR /home/${USERNAME}
