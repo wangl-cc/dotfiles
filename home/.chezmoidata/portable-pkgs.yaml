@@ -415,3 +415,23 @@ portable_pkgs:
               uv: uv-x86_64-unknown-linux-musl/uv
               uvx: uv-x86_64-unknown-linux-musl/uvx
             sha256: 3d64d44ed67da7908dc7f5c4d64ebb44bad326fa17f8a0a52fc9a7793017bbe1
+    kimi-code:
+      repo: MoonshotAI/kimi-code
+      tag: '@moonshot-ai/kimi-code@0.40.1'
+      bin: kimi
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^kimi-code-darwin-arm64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: kimi-code-darwin-arm64.tar.gz
+            path: kimi
+            sha256: fbefdf3cbed10b5b1a29ba1f51ae8db31b30d6f2e9d2e9dcaa686cc71ef8bbaf
+        linux-x86_64:
+          asset_pattern: ^kimi-code-linux-x64\.tar\.gz$
+          resolved:
+            type: archive-file
+            asset: kimi-code-linux-x64.tar.gz
+            path: kimi
+            sha256: 009f4579d220427ae3af4a16b11868511a381ba05d1d235f9c0c732a6a71c16a
+      path_pattern: kimi

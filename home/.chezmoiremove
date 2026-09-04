@@ -13,3 +13,5 @@
 .kimi-code/agents/design-reviewer.md
 .codex/agents/patch-reviewer.toml
 .kimi-code/agents/patch-reviewer.md
+.kimi-code/bin
+.config/fish/config.fish
