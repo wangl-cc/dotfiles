@@ -26,6 +26,9 @@ TOP_LEVEL_PATCH: Patch = {
     "features": {
         "js_repl": True,
         "memories": True,
+        "context_management": {
+            "experimental_mode": True,
+        },
         "multi_agent_v2": {
             "enabled": True,
             "multi_agent_mode_hint_text": """\
