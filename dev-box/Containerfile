@@ -49,36 +49,3 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 USER root
 
 CMD ["/usr/local/sbin/dev-box-run"]
-
-#==============================================================================#
-# codex-box
-#==============================================================================#
-
-FROM box-base AS codex-box
-
-ARG CODEX_REPO
-ARG CODEX_VERSION
-ARG CODEX_ASSET
-ARG CODEX_SHA256
-
-# Install Prebuilt Codex from GitHub
-RUN test -n "$CODEX_VERSION" && \
-    test -n "$CODEX_REPO" && \
-    test -n "$CODEX_ASSET" && \
-    test -n "$CODEX_SHA256" && \
-    install -d -m 0755 /opt/codex && \
-    install -d -m 0700 -o "$USERNAME" -g "$USERNAME" "/home/$USERNAME/.codex" && \
-    curl -fsSL \
-    "https://github.com/${CODEX_REPO}/releases/download/rust-v${CODEX_VERSION}/${CODEX_ASSET}" \
-    -o /tmp/codex.tar.gz && \
-    echo "$CODEX_SHA256  /tmp/codex.tar.gz" | sha256sum -c - && \
-    tar -xzf /tmp/codex.tar.gz -C /opt/codex && \
-    rm -f /tmp/codex.tar.gz && \
-    ln -s /opt/codex/bin/codex /usr/local/bin/codex && \
-    /usr/local/bin/codex --version
-
-USER ${USERNAME}
-
-WORKDIR /home/${USERNAME}
-
-CMD ["/usr/local/bin/codex", "app-server", "--remote-control", "--listen", "unix://"]

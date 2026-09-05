@@ -1,0 +1,13 @@
+[Build]
+ImageTag=localhost/fedora-box-base
+
+Pull=newer
+
+SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
+Target=box-base
+BuildArg=USERNAME=%u
+BuildArg=USER_UID=%U
+BuildArg=USER_GID=%G
+
+[Service]
+TimeoutStartSec=900

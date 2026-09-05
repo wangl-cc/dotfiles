@@ -15,3 +15,4 @@
 .kimi-code/agents/patch-reviewer.md
 .kimi-code/bin
 .config/fish/config.fish
+.config/containers/systemd/codex-box.build

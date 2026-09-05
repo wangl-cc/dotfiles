@@ -17,7 +17,7 @@ Build and restart each container independently when it is needed:
 systemctl --user restart dev-box-build.service
 systemctl --user restart dev-box.service
 
-systemctl --user restart codex-box-build.service
+systemctl --user restart box-base-build.service
 systemctl --user restart codex-box.service
 ```
 
@@ -29,7 +29,7 @@ The build service updates the image; it does not replace an already-running cont
 
 `dev-box/Containerfile` builds a shared `box-base` stage from `registry.fedoraproject.org/fedora:latest`. The base installs the common command-line and build tools, creates the configured user, and provides `/var/home` as a compatibility link to `/home` for absolute paths created on Fedora Atomic hosts. The `dev-box` target adds `openssh-server` and starts `/usr/local/sbin/dev-box-run`. That entrypoint prepares the persistent SSH host keys, validates `sshd`, and replaces itself with `sshd -D -e`, so `sshd` is the container's long-running process.
 
-The `codex-box` target reuses the base stage and installs a pinned Codex release under `/opt/codex`, exposing it as `/usr/local/bin/codex`. It uses the configured user's home as its working directory and runs `codex app-server --remote-control --listen unix://` as that user. Both Quadlet containers use `RunInit=true` and restart after failure with a five-second delay.
+`codex-box` uses the `box-base` image directly; there is no Codex-specific image stage. Its Quadlet unit selects the configured user and home working directory, then runs `/home/<user>/.local/bin/codex app-server --remote-control --listen unix://` from the shared home. The host must provide a working Linux Codex installation, including its companion binaries and resources, at that entry point. Both Quadlet containers use `RunInit=true` and restart after failure with a five-second delay.
 
 ### Storage and access boundaries
 
@@ -43,4 +43,6 @@ Because the host `~/.codex` directory is shared, its configuration, hooks, skill
 
 ### Updating Codex
 
-The Codex repository, tag, Linux x86_64 asset, and SHA-256 digest are declared together in `home/.chezmoidata/container-pkgs.yaml`. To update Codex, change that release metadata as a set, run `chezmoi apply ~/.config/containers/systemd`, reload the user units, then rebuild and restart `codex-box`. The build verifies the downloaded archive against the declared digest before installing it. Codex state remains in the shared host home directory across image updates.
+Update the host installation reached through `~/.local/bin/codex`, then restart `codex-box.service`. No image rebuild is needed for a Codex update. Keep the running version's companion binaries and resources available until the service has restarted. Codex configuration, credentials, and runtime state remain in the shared `~/.codex` directory.
+
+When migrating from the former Codex-specific image, applying the container sources removes `codex-box.build` and adds `box-base.build`. Reload the user units, build `box-base-build.service`, then restart `codex-box.service` as shown above.

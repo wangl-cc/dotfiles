@@ -5,9 +5,12 @@ Wants=ssh-agent-load.service
 After=ssh-agent-load.service
 
 [Container]
-Image=codex-box.build
+Image=box-base.build
 ContainerName=my-codex-box
 RunInit=true
+User=%u
+WorkingDir=/home/%u
+Exec=/home/%u/.local/bin/codex app-server --remote-control --listen unix://
 
 UserNS=keep-id
 HostName=%H
