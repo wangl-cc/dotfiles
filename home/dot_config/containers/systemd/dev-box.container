@@ -15,6 +15,7 @@ SecurityLabelDisable=true
 UserNS=keep-id
 HostName=%H
 Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers
 Volume=dev-box-ssh:/home/%u/.ssh:U
 Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
 Volume=/etc/localtime:/etc/localtime:ro

@@ -12,6 +12,7 @@ User=%u
 WorkingDir=/home/%u
 Exec=/home/%u/.local/bin/codex app-server --remote-control --listen unix://
 
+Network=host
 UserNS=keep-id
 HostName=%H
 SecurityLabelDisable=true
