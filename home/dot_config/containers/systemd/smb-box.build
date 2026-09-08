@@ -1,0 +1,9 @@
+[Build]
+ImageTag=localhost/fedora-smb-box
+
+Pull=newer
+
+SetWorkingDirectory=%h/.local/share/chezmoi/smb-box
+
+[Service]
+TimeoutStartSec=900

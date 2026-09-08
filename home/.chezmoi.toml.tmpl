@@ -54,3 +54,4 @@ signingkeyFile = {{ $gitSigningKeyFile | quote }}
 [data.tailscale]
 enabled = {{ promptBoolOnce . "tailscale.enabled" "Use Tailscale integration on this machine" true }}
 name = {{ promptStringOnce . "tailscale.name" "Tailscale machine name" .chezmoi.hostname | quote }}
+ipv4 = {{ promptStringOnce . "tailscale.ipv4" "Tailscale IPv4 address (empty to leave SMB unpublished)" "" | trim | quote }}

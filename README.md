@@ -20,6 +20,7 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
+- `tailscale.ipv4`: default empty. Enter this machine's Tailscale IPv4 address to publish the Samba container on that address. An empty value leaves SMB unpublished.
 
 Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers; chezmoi's `--prompt...` flags match the human prompt text and are more brittle.
 
@@ -81,6 +82,16 @@ portable-pkgs add uv astral-sh/uv \
   --verify \
   --non-interactive
 ```
+
+## Containers
+
+All custom container images are pinned to Fedora 44 to follow the workstation host's release. `dev-box` and `codex-box` share the base in `dev-box/Containerfile`; Samba uses `smb-box/Containerfile`. When upgrading the host to a new Fedora release, update both `FROM` tags together and update the release references in the container documentation. This is a maintenance convention; host upgrades do not automatically edit these files or rebuild containers.
+
+After updating the sources, rebuild and restart on the host: `dev-box-build.service` then `dev-box.service`, `box-base-build.service` then `codex-box.service`, and `smb-box-build.service` then `smb-box.service`, using `systemctl --user restart` for each unit. Confirm each build succeeds before restarting its container, then verify SSH access, Codex connectivity, and SMB login and file access. See the [development container guide](docs/dev-containers.md) and [Samba guide](smb-box/README.md) for their operational checks.
+
+The workstation uses user-level Podman Quadlets under `home/dot_config/containers/systemd/`. The [Samba container](smb-box/README.md) provides a `public` share over Tailscale, with host directories such as `~/Documents` mounted beneath it through Quadlet. It uses a Fedora image, native Samba configuration, and a persistent account database. Its build context and rootfs live in `smb-box/`.
+
+For an existing chezmoi configuration, run `chezmoi edit-config` and add `ipv4 = "<your Tailscale IPv4>"` to the existing `[data.tailscale]` table. Alternatively, run `chezmoi init --prompt` to fill the new prompt while retaining existing answers. Missing or empty `tailscale.ipv4` values leave the Samba port unpublished, so existing configurations continue to render. After setting or changing the address, inspect the diff, apply the Samba network drop-in, reload the user manager, and restart the container as described in the Samba guide. The template reads this saved value without invoking Tailscale.
 
 ## Fish
 

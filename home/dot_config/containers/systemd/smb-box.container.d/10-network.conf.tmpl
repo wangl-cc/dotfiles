@@ -1,0 +1,10 @@
+{{- $ip := get .tailscale "ipv4" | default "" | trim -}}
+{{- if and $ip (not (regexMatch `^100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])(\.(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])){2}$` $ip)) -}}
+{{- fail "tailscale.ipv4 must be an IPv4 address in 100.64.0.0/10, or empty to leave SMB unpublished" -}}
+{{- end -}}
+[Container]
+{{- if $ip }}
+PublishPort={{ $ip }}:1445:445
+{{- else }}
+# Set tailscale.ipv4 in the local chezmoi configuration to publish SMB.
+{{- end }}

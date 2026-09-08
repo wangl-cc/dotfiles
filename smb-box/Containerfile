@@ -1,0 +1,21 @@
+# Keep the Fedora release aligned with the host and dev-box/Containerfile.
+# On a host release upgrade, update both pins and rebuild all boxes (README.md).
+FROM registry.fedoraproject.org/fedora:44
+
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    dnf upgrade -y && \
+    dnf install -y --setopt=install_weak_deps=False --setopt=keepcache=1 \
+    samba samba-client samba-common-tools shadow-utils
+
+# Quadlet maps the host user to this fixed SMB account at runtime.
+RUN groupadd -g 1000 smbusers && \
+    useradd -M -u 1000 -g smbusers -s /usr/sbin/nologin smb && \
+    install -d -m 0755 /srv/public /var/lib/samba /var/cache/samba && \
+    install -d -m 0700 /var/lib/samba/private
+
+COPY rootfs /
+
+RUN testparm --suppress-prompt /etc/samba/smb.conf
+
+USER root
+CMD ["smbd", "--foreground", "--no-process-group", "--debug-stdout"]

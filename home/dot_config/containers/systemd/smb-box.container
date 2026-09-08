@@ -1,0 +1,31 @@
+[Unit]
+Description=Public folder over SMB on Tailscale
+
+[Container]
+Image=smb-box.build
+ContainerName=my-smb-box
+RunInit=true
+
+# Map the host user to the fixed smb account; start Samba as namespace root.
+UserNS=keep-id:uid=1000,gid=1000
+User=0
+
+# Use a private rootless network. Host port publication belongs in
+# smb-box.container.d/10-network.conf on the host.
+Network=private
+HostName=%H
+
+# Preserve existing host labels and ownership. Mount shared folders under /srv/public.
+SecurityLabelDisable=true
+Volume=%h/Documents:/srv/public/Documents:ro
+Volume=smb-box-data:/var/lib/samba
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+Tmpfs=/run/samba
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
