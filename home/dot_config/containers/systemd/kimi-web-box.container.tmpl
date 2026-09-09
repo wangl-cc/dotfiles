@@ -1,0 +1,38 @@
+{{- $domain := .tailscale.domain | trim -}}
+{{- if not (regexMatch `^[a-z0-9]([a-z0-9-]*[a-z0-9])?\.ts\.net$` $domain) -}}
+{{- fail "tailscale.domain must be a tailnet DNS suffix such as tail123456.ts.net" -}}
+{{- end -}}
+[Unit]
+Description=Kimi Web Container
+Requires=ssh-agent.socket
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service
+
+[Container]
+Image=box-base.build
+ContainerName=my-kimi-web-box
+RunInit=true
+User=%u
+WorkingDir=/home/%u
+Exec=/home/%u/.local/bin/kimi web --no-open --host 127.0.0.1 --port 58627 --dangerous-bypass-auth --allowed-host .{{ $domain }}
+
+Network=host
+UserNS=keep-id
+HostName=%H
+SecurityLabelDisable=true
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
+
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state
+Volume=kimi-web-box-ssh:/home/%u/.ssh:U
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
