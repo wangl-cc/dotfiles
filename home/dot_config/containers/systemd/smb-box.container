@@ -17,7 +17,7 @@ HostName=%H
 
 # Preserve existing host labels and ownership. Mount shared folders under /srv/public.
 SecurityLabelDisable=true
-Volume=%h/Documents:/srv/public/Documents:ro
+Volume=%h/Documents:/srv/public/Documents:rw
 Volume=smb-box-data:/var/lib/samba
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp

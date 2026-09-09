@@ -1,6 +1,6 @@
 # Samba container
 
-Native Samba on Fedora 44, built and run by a rootless, user-level Podman Quadlet. A single read-only `public` share exposes `/srv/public` on TCP 445 inside a private container network. A host-side Quadlet drop-in publishes it on the host's Tailscale IPv4 address at TCP 1445. Samba's configuration contains no host interface names or addresses. Quadlet mounts the host's `~/Documents` beneath the share as `Documents`; additional directories can be mounted beneath the same share. The name `public` does not enable guest access: authentication is required.
+Native Samba on Fedora 44, built and run by a rootless, user-level Podman Quadlet. A single `public` share exposes `/srv/public` on TCP 445 inside a private container network. A host-side Quadlet drop-in publishes it on the host's Tailscale IPv4 address at TCP 1445. Samba's configuration contains no host interface names or addresses. Quadlet mounts the host's `~/Documents` read-write beneath the share as `Documents`; additional directories can be mounted beneath the same share. The name `public` does not enable guest access: authentication is required.
 
 ## Files and ownership
 
@@ -19,10 +19,10 @@ SELinux container separation is disabled for this container, as in dev-box, beca
 `smb.conf` always exports `/srv/public` as `[public]`. This parent directory belongs to the container; it does not require a corresponding `~/public` folder on the host. The current Quadlet mounts:
 
 ```ini
-Volume=%h/Documents:/srv/public/Documents:ro
+Volume=%h/Documents:/srv/public/Documents:rw
 ```
 
-To also share `~/Pictures`, add this line to `smb-box.container` after making sure the host directory exists:
+To also share `~/Pictures` read-only, add this line to `smb-box.container` after making sure the host directory exists (use `:rw` instead to allow writes):
 
 ```ini
 Volume=%h/Pictures:/srv/public/Pictures:ro
@@ -92,7 +92,7 @@ ss -ltn 'sport = :1445'
 podman exec -it my-smb-box smbclient //127.0.0.1/public -p 445 -U smb -c 'ls; cd Documents; ls'
 ```
 
-The published endpoint should be exactly the configured Tailscale IPv4 address at port 1445, never `0.0.0.0:1445`, `[::]:1445`, or a LAN address. Check that connecting to the host's LAN address on port 1445 fails. A successful `smbclient` check inside the container does not verify external access: also connect from the Mac, check directory listing and opening a PDF, and confirm that creating a new file is denied. Then restart `smb-box.service` and reconnect to verify that the credentials survive. For remotely rebuilt PDFs, also test whether the chosen viewer notices updates.
+The published endpoint should be exactly the configured Tailscale IPv4 address at port 1445, never `0.0.0.0:1445`, `[::]:1445`, or a LAN address. Check that connecting to the host's LAN address on port 1445 fails. A successful `smbclient` check inside the container does not verify external access: also connect from the Mac, check directory listing and opening a PDF, and create, modify, and remove a disposable test file inside `public/Documents`. Before removing it, check on the host that the file belongs to the host user. Then restart `smb-box.service` and reconnect to verify that the credentials survive. For remotely rebuilt PDFs, also test whether the chosen viewer notices updates.
 
 ## Change configuration and update
 
@@ -105,7 +105,7 @@ systemctl --user restart smb-box.service
 
 The second command should only be run if the build succeeds. Existing SMB connections are interrupted by the restart. For Quadlet edits, first apply the affected managed bindings with chezmoi and run `systemctl --user daemon-reload`. Published-port changes belong in the network drop-in template. To change the host IP, edit `tailscale.ipv4` in the local chezmoi configuration, re-apply `~/.config/containers/systemd/smb-box.container.d/10-network.conf`, reload the user manager, and restart the container without rebuilding the image. Do not edit the generated drop-in directly.
 
-Read-only access is enforced by both `read only = yes` in the `public` share and `:ro` on the shared directory mounts. To deliberately enable writes, change the Samba setting to `read only = no` and the chosen directory mounts to `:rw`, then rebuild, apply the changed Quadlet, reload the user manager, and restart. Directories still mounted with `:ro` remain read-only. The root-owned `/srv/public` parent remains non-writable by the SMB account; clients manage files within the mounted directories. Enabling writes also allows file deletion subject to the host user's filesystem permissions. Verify file creation, modification, and removal with a disposable test file, and check on the host that the file belongs to the host user before removing it.
+The `public` share permits writes with `read only = no`; the Documents mount uses `:rw`. Clients can create, modify, and delete files within Documents subject to the host user's filesystem permissions. The root-owned `/srv/public` parent remains non-writable by the SMB account; clients manage files within the mounted directories. To make an individual directory read-only, use `:ro` on its mount, apply the changed Quadlet, reload the user manager, and restart. To make the entire share read-only, set `read only = yes` and rebuild the image before restarting.
 
 To fetch current packages even when build layers are cached, rebuild explicitly without the cache, then restart only if that succeeds:
 
