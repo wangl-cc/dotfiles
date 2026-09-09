@@ -6,8 +6,8 @@ Native Samba on Fedora 44, built and run by a rootless, user-level Podman Quadle
 
 - `Containerfile` installs Fedora's Samba packages and creates a fixed `smb` account (UID 1000) in `smbusers` (GID 1000). It prepares `/srv/public` and Samba's state/cache directories, checks the configuration with `testparm`, and starts foreground `smbd` directly through `CMD`.
 - `rootfs/etc/samba/smb.conf` is the complete, native Samba configuration. It is copied into the image without configuration generation or environment-variable substitution. No startup wrapper is needed; Samba creates its runtime lock and PID directories beneath the `/run/samba` tmpfs mount.
-- `../home/dot_config/containers/systemd/smb-box.build` and `smb-box.container` own image construction, mounts, networking, and service lifecycle. Like dev-box, these bindings are managed only on `loongcc-workstation`.
-- `../home/dot_config/containers/systemd/smb-box.container.d/10-network.conf.tmpl` reads the machine-local `tailscale.ipv4` value and publishes `<configured-ip>:1445:445`. The address is entered during chezmoi initialization and saved in `~/.config/chezmoi/chezmoi.toml`. Missing or empty values leave the port unpublished; non-empty values must be valid Tailscale IPv4 addresses in `100.64.0.0/10`.
+- `../../home/dot_config/containers/systemd/smb-box.build` and `smb-box.container` own image construction, mounts, networking, and service lifecycle. Like dev-box, these bindings are managed only on `loongcc-workstation`.
+- `../../home/dot_config/containers/systemd/smb-box.container.d/10-network.conf.tmpl` reads the machine-local `tailscale.ipv4` value and publishes `<configured-ip>:1445:445`. The address is entered during chezmoi initialization and saved in `~/.config/chezmoi/chezmoi.toml`. Missing or empty values leave the port unpublished; non-empty values must be valid Tailscale IPv4 addresses in `100.64.0.0/10`.
 - The `smb-box-data` named volume persists `/var/lib/samba`, including the server identity and password database. Configuration stays in the image; runtime locks and caches are disposable.
 
 `UserNS=keep-id:uid=1000,gid=1000` maps the host user's UID/GID to the fixed SMB account inside the container. The image is independent of the host username and numeric IDs. `User=0` starts Samba as root **inside that user namespace** so it can switch to the authenticated `smb` account; Podman itself runs as the ordinary host user. Filesystem access as `smb` is therefore constrained by that host user's permissions. Mac clients always log in as `smb`.
@@ -112,7 +112,7 @@ To fetch current packages even when build layers are cached, rebuild explicitly 
 ```sh
 podman build --pull=always --no-cache \
   -t localhost/fedora-smb-box \
-  ~/.local/share/chezmoi/smb-box
+  ~/.local/share/chezmoi/boxes/smb-box
 ```
 
 The Fedora major version is selected in `Containerfile`; changing it is an explicit image update. Recheck the effective configuration, login, file access, and listener addresses after updates. Back up the stopped container's named volume before major Samba upgrades; downgrading the image does not roll back its databases.

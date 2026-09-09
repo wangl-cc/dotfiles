@@ -3,7 +3,7 @@ ImageTag=localhost/fedora-box-base
 
 Pull=newer
 
-SetWorkingDirectory=%h/.local/share/chezmoi/dev-box
+SetWorkingDirectory=%h/.local/share/chezmoi/boxes/dev-box
 Target=box-base
 BuildArg=USERNAME=%u
 BuildArg=USER_UID=%U
