@@ -1,0 +1,14 @@
+[
+  {
+    "command": "globalDictationHold",
+    "key": null
+  },
+  {
+    "command": "hotkeyWindow",
+    "key": "Alt+Space"
+  },
+  {
+    "command": "openAvatarOverlay",
+    "key": null
+  }
+]
