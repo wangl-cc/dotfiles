@@ -65,11 +65,6 @@
     },
     "default_profile": "write",
   },
-  "language_models": {
-    "ollama": {
-      "api_url": "http://loongcc-workstation.tail6e3cda.ts.net:11434",
-    },
-  },
   "auto_install_extensions": {
     "catppuccin": true,
     "catppuccin-icons": true,
