@@ -22,7 +22,7 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 - `device.tailscale_ipv4`: default empty; shared device address used to publish workspace and SMB ports on Tailscale. Empty leaves workspace localhost-only and SMB unpublished.
 - `device.domain`: default empty; the device's complete service DNS suffix, such as `workstation.example.com`. Required when workspace is enabled.
-- `workspace.enabled`: default `false`; manage the workspace Pod, its four members, and their build configurations.
+- `workspace.enabled`: default `false`; manage the workspace Pod, its five members, and their build configurations.
 - `smb.enabled`: default `false`; independently manage the SMB container and build configuration.
 - `acme.ca`: defaults to the ZeroSSL production ACME URL; Let's Encrypt is also available.
 - `acme.email`: defaults to empty; required when workspace uses ZeroSSL. Stored only in machine-local configuration.
@@ -32,6 +32,8 @@ Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-
 Existing workspace installations must add `acme.ca` and `acme.email` with `chezmoi edit-config`, or run `chezmoi init` and answer the new prompts before applying Caddyfile. See the [container guide](docs/dev-containers.md) for the local configuration example. Keep the existing Caddy data volume to preserve accounts and certificates.
 
 For existing installations, use `chezmoi edit-config` to move the former `tailscale.ipv4` to `device.tailscale_ipv4` and `dev_pod.domain` to `device.domain`, then explicitly set `workspace.enabled` and `smb.enabled`. Alternatively, run `chezmoi init --prompt` without applying and supply the new answers. Remove the obsolete `[data.tailscale]` and `[data.dev_pod]` tables after migration. Hostname no longer controls deployment. Missing enable flags are treated as disabled; ignoring files does not stop or remove existing services. See the [container guide](docs/dev-containers.md) before applying the Pod rename.
+
+DSH now trusts only hosts supplied through its CLI. Its existing `~/.dsh/.env` is left untouched to preserve user-added settings; the former Tailnet environment entry is no longer used.
 
 After the first bootstrap, normal updates usually only need:
 

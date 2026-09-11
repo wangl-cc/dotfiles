@@ -1,6 +1,6 @@
 # Development containers
 
-The development Pod groups `dev-box`, `codex`, `kimi`, and `caddy` on one private network. dev-box provides SSH and the interactive compute environment; the agents run from installations in the shared home. Caddy exposes Kimi at `https://kimi.workstation.example.com`. SMB remains independent.
+The development Pod groups `dev-box`, `codex`, `kimi`, `dsh`, and `caddy` on one private network. dev-box provides SSH and the interactive compute environment; the agents run from installations in the shared home. Caddy exposes Kimi and DSH at `https://kimi.workstation.example.com` and `https://dsh.workstation.example.com`. SMB remains independent.
 
 ## Setup and migration
 
@@ -42,7 +42,7 @@ Rootless Podman needs `net.ipv4.ip_unprivileged_port_start` at most 443. If it i
 
 Create a Cloudflare API Token scoped to `example.com` with `Zone:Read` and `DNS:Edit`. Keep the raw token in a mode-0600 file outside the repository, preferably temporarily in the host runtime directory. Do not put it in the Caddyfile, shell history, or a committed environment file. Replace `/path/to/token` below with that file.
 
-In the Cloudflare `example.com` zone, manually create a DNS-only wildcard A record named `*.workstation` pointing to the host Tailscale IPv4, or an A record named `kimi.workstation`. This name corresponds to `kimi.<device.domain>`; adjust them together if changing the suffix. Do not enable Cloudflare's HTTP proxy.
+In the Cloudflare `example.com` zone, manually create a DNS-only wildcard A record named `*.workstation` pointing to the host Tailscale IPv4, or separate A records named `kimi.workstation` and `dsh.workstation`. These names correspond to `kimi.<device.domain>` and `dsh.<device.domain>`; adjust them together if changing the suffix. Do not enable Cloudflare's HTTP proxy.
 
 Provide the token to Caddy through a host Podman secret:
 
@@ -54,7 +54,7 @@ Caddy manages ACME challenge TXT records and certificate renewal through the Clo
 
 ### Apply, build, and start
 
-Container names no longer use the `my-` prefix. Kimi and Codex now use matching container and service names: `kimi` and `codex`. Before applying this rename or reloading the user manager, stop the old `kimi-web-box.service` and `codex-box.service` from a host terminal so their old units remove the old containers. Stop the other existing workspace services too, and `smb-box.service` if migrating its container name. Named volumes retain their existing names; do not delete them.
+Container names no longer use the `my-` prefix. Kimi and Codex now use matching container and service names: `kimi` and `codex`; DSH is added as `dsh`. Before applying this rename or reloading the user manager, stop the old `kimi-web-box.service` and `codex-box.service` from a host terminal so their old units remove the old containers. Stop the other existing workspace services too, and `smb-box.service` if migrating its container name. Named volumes retain their existing names; do not delete them.
 
 After stopping the old services, apply their explicit retirement entries so the old units cannot return on the next reload:
 
@@ -73,6 +73,7 @@ chezmoi apply --include=files \
   ~/.config/containers/systemd/dev-box.container \
   ~/.config/containers/systemd/codex.container \
   ~/.config/containers/systemd/kimi.container \
+  ~/.config/containers/systemd/dsh.container \
   ~/.config/containers/systemd/caddy.build \
   ~/.config/containers/systemd/caddy.container
 systemctl --user daemon-reload
@@ -84,9 +85,9 @@ Before starting, inspect `tailscale serve status`: if an existing Serve listener
 After successful builds and credential/DNS setup, stop the old containers and start the Pod from the host terminal:
 
 ```sh
-systemctl --user stop dev-box.service codex.service kimi.service caddy.service
+systemctl --user stop dev-box.service codex.service kimi.service dsh.service caddy.service
 systemctl --user start workspace-pod.service
-systemctl --user status workspace-pod.service dev-box.service codex.service kimi.service caddy.service
+systemctl --user status workspace-pod.service dev-box.service codex.service kimi.service dsh.service caddy.service
 ```
 
 If the previous `dev.pod` was already deployed, stop `dev-pod.service` and its members from host SSH before applying the rename, remove the obsolete `~/.config/containers/systemd/dev.pod` file, and reload the user manager. Preserve all named volumes. The new Pod is named `workspace`; its generated unit is `workspace-pod.service`.
@@ -103,13 +104,13 @@ uv run marimo edit notebook.py --host 0.0.0.0 --port 2718 --no-browser
 
 Agents reach notebooks through `127.0.0.1:2718`; remote clients use the host Tailscale address. Only 2718–2720 are reserved for development. These ports belong to the whole Pod, not exclusively dev-box.
 
-Open `https://kimi.workstation.example.com` directly. Kimi retains the existing authentication bypass: anyone allowed to reach that endpoint can submit tasks with the shared user's access. Codex pairing and Remote Control keep using the shared `~/.codex`; only codex should own its app server.
+Open `https://kimi.workstation.example.com` directly. Kimi retains the existing authentication bypass: anyone allowed to reach that endpoint can submit tasks with the shared user's access. DSH retains native authentication: get its startup URL from `journalctl --user -u dsh.service`, replace the localhost origin with `https://dsh.workstation.example.com`, and preserve the token query. Treat the URL and logs as credentials. Codex pairing and Remote Control keep using the shared `~/.codex`; only codex should own its app server.
 
-Verify from another tailnet device: SSH login, marimo access, and Kimi browser/API interaction. Inspect `journalctl --user -u caddy.service` for certificate errors. After verifying new endpoints, remove obsolete per-port Serve listeners with `tailscale serve --https=58627 off` on the host, if present; do not reset unrelated Serve configuration.
+Verify from another tailnet device: SSH login, marimo access, Kimi browser/API interaction, and DSH login plus a live session. Inspect `journalctl --user -u caddy.service` for certificate errors. DSH returning 401 without credentials is expected. After verifying new endpoints, remove obsolete per-port Serve listeners with `tailscale serve --https=58627 off` and `tailscale serve --https=3080 off` on the host, if present; do not reset unrelated Serve configuration.
 
 ## Architecture
 
-`containers/dev-box/Containerfile` builds shared Fedora `box-base` and SSH-enabled `dev-box` stages. Agents use the base and home installations: `~/.local/bin/codex` and `~/.local/bin/kimi`. Updating an agent requires restarting its container, not rebuilding its image. Fedora follows the [repository upgrade policy](../README.md#containers).
+`containers/dev-box/Containerfile` builds shared Fedora `box-base` and SSH-enabled `dev-box` stages. Agents use the base and home installations: `~/.local/bin/codex`, `~/.local/bin/kimi`, and `~/.pnpm/bin/dsh`. DSH uses login fish for home-managed Node. Updating an agent requires restarting its container, not rebuilding its image. Fedora follows the [repository upgrade policy](../README.md#containers).
 
 The Pod owns the private network, `keep-id` user namespace, and host-compatible hostname. It shares network and UTS only, not PID or IPC. dev-box retains host IPC and GPU devices; other members do not inherit them. Its SSH entrypoint runs as namespace root to prepare persistent host keys, then executes foreground sshd. Agents run as the host user. All containers use a small init and restart after failure.
 

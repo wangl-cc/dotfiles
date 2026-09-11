@@ -1,0 +1,32 @@
+[Unit]
+Description=DeepSeek Harness Web Container
+Requires=ssh-agent.socket
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service
+
+[Container]
+Image=box-base.build
+ContainerName=dsh
+RunInit=true
+User=%u
+WorkingDir=/home/%u
+Exec=/usr/bin/fish -lc 'exec /home/%u/.pnpm/bin/dsh web --no-open --host 127.0.0.1 --port 3080 --trusted-host dsh.{{ .device.domain }}'
+
+Pod=workspace.pod
+SecurityLabelDisable=true
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
+
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state
+Volume=dsh-box-ssh:/home/%u/.ssh:U
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
