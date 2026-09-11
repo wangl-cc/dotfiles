@@ -108,9 +108,15 @@ Open `https://kimi.workstation.example.com` directly. Kimi retains the existing 
 
 Verify from another tailnet device: SSH login, marimo access, Kimi browser/API interaction, and DSH login plus a live session. Inspect `journalctl --user -u caddy.service` for certificate errors. DSH returning 401 without credentials is expected. After verifying new endpoints, remove obsolete per-port Serve listeners with `tailscale serve --https=58627 off` and `tailscale serve --https=3080 off` on the host, if present; do not reset unrelated Serve configuration.
 
+## Image upgrades
+
+The shared development base and Samba image are pinned to Fedora 44 to follow the workstation host. When upgrading Fedora, update the `FROM` tags in `containers/dev-box/Containerfile` and `containers/smb-box/Containerfile` together. Host upgrades do not rebuild these images automatically; Caddy has its own version pin.
+
+On the host, restart `dev-box-build.service`, `box-base-build.service`, and, if enabled, `smb-box-build.service`. Confirm the builds succeed before restarting their consumers: `dev-box.service`, the enabled agent services (`codex`, `kimi`, `dsh`), and `smb-box.service`. Verify SSH, agent connectivity, and [SMB login and file access](../containers/smb-box/README.md) afterward.
+
 ## Architecture
 
-`containers/dev-box/Containerfile` builds shared Fedora `box-base` and SSH-enabled `dev-box` stages. Agents use the base and home installations: `~/.local/bin/codex`, `~/.local/bin/kimi`, and `~/.pnpm/bin/dsh`. DSH uses login fish for home-managed Node. Updating an agent requires restarting its container, not rebuilding its image. Fedora follows the [repository upgrade policy](../README.md#containers).
+`containers/dev-box/Containerfile` builds shared Fedora `box-base` and SSH-enabled `dev-box` stages. Agents use the base and home installations: `~/.local/bin/codex`, `~/.local/bin/kimi`, and `~/.pnpm/bin/dsh`. DSH uses login fish for home-managed Node. Updating an agent requires restarting its container, not rebuilding its image.
 
 The Pod owns the private network, `keep-id` user namespace, and host-compatible hostname. It shares network and UTS only, not PID or IPC. dev-box retains host IPC and GPU devices; other members do not inherit them. Its SSH entrypoint runs as namespace root to prepare persistent host keys, then executes foreground sshd. Agents run as the host user. All containers use a small init and restart after failure.
 
