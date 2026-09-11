@@ -26,7 +26,7 @@ ca = "https://acme.zerossl.com/v2/DV90"
 email = "admin@example.com"
 ```
 
-Both deployment switches default to false. The container directory's ignore rules independently select the complete workspace group and SMB, without hostname checks; Caddyfile follows the workspace switch. Enabling workspace requires a nonempty device domain at initialization. Disabling a group stops managing its files but does not remove or stop previously deployed services. Different devices may use different domains.
+Both deployment switches default to false. The container directory's ignore rules independently select the complete workspace group and SMB, without hostname checks; Caddyfile follows the workspace switch. Enabling workspace requires a nonempty device domain at initialization. When a Tailscale IPv4 address is configured, the workspace Pod waits for Tailscale and verifies that exact address before binding its published ports. Disabling a group stops managing its files but does not remove or stop previously deployed services. Different devices may use different domains.
 
 The Pod publishes TCP 2222 for SSH, TCP 443 for Caddy, and TCP 2718–2720 for marimo on localhost and the configured Tailscale IPv4 only. Check for port conflicts and wait for Tailscale to have its address before startup:
 
