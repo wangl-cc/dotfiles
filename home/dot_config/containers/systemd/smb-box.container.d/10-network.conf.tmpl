@@ -1,7 +1,4 @@
-{{- $ip := get .device "tailscale_ipv4" -}}
 [Container]
-{{- if $ip }}
-PublishPort={{ $ip }}:1445:445
-{{- else }}
-# Set device.tailscale_ipv4 in the local chezmoi configuration to publish SMB.
-{{- end }}
+{{ with get .device "tailscale_ipv4" -}}
+PublishPort={{ . }}:1445:445
+{{ end -}}
