@@ -2,8 +2,12 @@
 {{- fail (printf "unsupported Codex access profile: %s" .access) -}}
 {{- end -}}
 name = {{ .name | toJson }}
-model = {{ .codex.model | toJson }}
-model_reasoning_effort = {{ .codex.reasoning | toJson }}
+{{- with (get .codex "model") }}
+model = {{ . | toJson }}
+{{- end }}
+{{- with (get .codex "reasoning") }}
+model_reasoning_effort = {{ . | toJson }}
+{{- end }}
 {{- if eq .access "read-only" }}
 default_permissions = ":read-only"
 {{- end }}

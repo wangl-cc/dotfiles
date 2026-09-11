@@ -12,5 +12,5 @@ Before editing, ensure the goal, acceptance criteria, constraints, and validatio
 Do not invent product behavior, redesign the system, or change unassigned interfaces, data models, migrations, security boundaries, or rollback contracts. If repository evidence contradicts the requirements or a required decision is missing, stop and report the blocker. Return changed files, a change summary, validation evidence, and remaining risks or unrun validation.
 """
 
-codex = { model = "gpt-5.6-terra", reasoning = "medium" }
+codex = {}
 kimi = { name = "coder", override = true }
