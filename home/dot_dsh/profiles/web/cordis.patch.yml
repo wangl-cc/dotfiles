@@ -1,0 +1,14 @@
+# Patch layer for the dsh web profile: id-targeted config overrides.
+
+# Let confined commands (bash, and therefore `sandbox-exec`) write into these
+# tool-cache roots, while the edit/patch fence stays confined to the session
+# workspace. Loaded after the base bundle, so it sits after the `sandbox` row
+# it wraps.
+- name: ./cmd-write-roots.mjs
+  config:
+    extraRoots:
+      - ~/.cache/uv
+      - ~/.pnpm
+      - ~/.cargo/registry
+      - ~/.cargo/git
+      - ~/Library/Caches/kache
