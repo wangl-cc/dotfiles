@@ -10,6 +10,8 @@ Keep edits focused and preserve the existing chezmoi layout and naming conventio
 
 Treat prompt keys and defaults in `home/.chezmoi.toml.tmpl` as the machine-local bootstrap schema. When they change, account for existing configurations, document any reinitialization or migration in `README.md`, and validate both default and overridden initialization.
 
+Validate and normalize machine-local configuration at its input boundary in `home/.chezmoi.toml.tmpl`. Consuming templates should use those values directly, without repeating validation or normalization. Keep optional-feature conditions separate from input validation.
+
 When changing OS-, architecture-, hostname-, or machine-data-dependent templates, validate every affected branch that can be exercised locally and report any branch that remains unverified.
 
 For changes to templates or other rendered configuration, inspect affected targets with `chezmoi cat` and inspect the complete `chezmoi diff` before applying. For a focused change, apply and verify only the affected targets. A full apply may refresh externals or run scripts that install tools and modify live configuration, so inspect those effects before applying the whole source state. After applying, verify the actual managed targets or paths and run the repository's relevant checks plus `git diff --check`.

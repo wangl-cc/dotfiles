@@ -1,0 +1,22 @@
+[Unit]
+Description=Development and agent Pod
+
+[Pod]
+PodName=workspace
+Network=pasta
+UserNS=keep-id
+HostName=%H
+# Do not share PID or IPC; dev-box retains its own host IPC setting.
+PodmanArgs=--share=net,uts --security-opt=label=disable
+ExitPolicy=continue
+PublishPort=127.0.0.1:2222:2222
+PublishPort=127.0.0.1:443:8443
+PublishPort=127.0.0.1:2718-2720:2718-2720
+{{- $ip := get .device "tailscale_ipv4" -}}
+{{ if $ip -}}
+PublishPort={{ $ip }}:2222:2222
+PublishPort={{ $ip }}:443:8443
+PublishPort={{ $ip }}:2718-2720:2718-2720
+{{ end }}
+[Install]
+WantedBy=default.target

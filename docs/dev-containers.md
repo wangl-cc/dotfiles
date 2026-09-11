@@ -1,70 +1,128 @@
 # Development containers
 
-These Fedora-based development containers separate the interactive environment from long-running agents. `dev-box` provides SSH access, `codex-box` runs Codex Remote Control, and `kimi-web-box` runs Kimi's browser UI and API. They share the host user's development files while retaining separate processes and service lifecycles.
+The development Pod groups `dev-box`, `codex`, `kimi`, and `caddy` on one private network. dev-box provides SSH and the interactive compute environment; the agents run from installations in the shared home. Caddy exposes Kimi at `https://kimi.workstation.example.com`. SMB remains independent.
 
-## Related operations
+## Setup and migration
 
-Container lifecycle commands run on the host. After changing the container sources or their chezmoi data, render the managed systemd files and reload the user units:
+Run lifecycle commands on the host, not inside a development container. Migration recreates the existing containers and interrupts their sessions: use host SSH or a host terminal. Existing home and named-volume data are reused, but changes made only in a container's writable layer are lost.
+
+### Host prerequisites
+
+Use Podman 5.8 or later. Set `device.tailscale_ipv4` in local chezmoi data to the address reported by `tailscale ip -4`; if omitted, the Pod publishes only on localhost. Set the complete `device.domain` suffix in this machine's local `~/.config/chezmoi/chezmoi.toml`, not in repository data. All domain names below are examples:
+
+```toml
+[data.device]
+tailscale_ipv4 = "100.64.0.1"
+domain = "workstation.example.com"
+
+[data.workspace]
+enabled = true
+
+[data.smb]
+enabled = false
+
+[data.acme]
+ca = "https://acme.zerossl.com/v2/DV90"
+email = "admin@example.com"
+```
+
+Both deployment switches default to false. The container directory's ignore rules independently select the complete workspace group and SMB, without hostname checks; Caddyfile follows the workspace switch. Enabling workspace requires a nonempty device domain at initialization. Disabling a group stops managing its files but does not remove or stop previously deployed services. Different devices may use different domains.
+
+The Pod publishes TCP 2222 for SSH, TCP 443 for Caddy, and TCP 2718–2720 for marimo on localhost and the configured Tailscale IPv4 only. Check for port conflicts and wait for Tailscale to have its address before startup:
 
 ```sh
-chezmoi apply ~/.config/containers/systemd
+tailscale ip -4
+ss -ltn
+sysctl net.ipv4.ip_unprivileged_port_start
+```
+
+Rootless Podman needs `net.ipv4.ip_unprivileged_port_start` at most 443. If it is higher, an administrator must deliberately permit low-port binding before deployment. For example, `sudo sysctl -w net.ipv4.ip_unprivileged_port_start=443` changes it until reboot; persistence belongs in host `/etc/sysctl.d/`. This permits all unprivileged host users to bind available ports 443–1023, not just this Pod. The repository does not apply this host-wide change automatically.
+
+### Cloudflare DNS and credentials
+
+Create a Cloudflare API Token scoped to `example.com` with `Zone:Read` and `DNS:Edit`. Keep the raw token in a mode-0600 file outside the repository, preferably temporarily in the host runtime directory. Do not put it in the Caddyfile, shell history, or a committed environment file. Replace `/path/to/token` below with that file.
+
+In the Cloudflare `example.com` zone, manually create a DNS-only wildcard A record named `*.workstation` pointing to the host Tailscale IPv4, or an A record named `kimi.workstation`. This name corresponds to `kimi.<device.domain>`; adjust them together if changing the suffix. Do not enable Cloudflare's HTTP proxy.
+
+Provide the token to Caddy through a host Podman secret:
+
+```sh
+podman secret create cloudflare-dns-token /path/to/token
+```
+
+Caddy manages ACME challenge TXT records and certificate renewal through the Cloudflare provider, not the A records. ZeroSSL is the default ACME issuer; Caddy uses the machine-local contact email to obtain EAB credentials automatically. The TLS configuration waits 60 seconds before checking DNS propagation. To use Let's Encrypt instead, set `acme.ca` to `https://acme-v02.api.letsencrypt.org/directory`. Only the selected issuer is configured, without a second-CA fallback. Remove the temporary token file after provisioning; Caddy receives the Podman secret as `CF_API_TOKEN`. Rotating the token requires replacing the host Podman secret and recreating the Caddy container.
+
+### Apply, build, and start
+
+Container names no longer use the `my-` prefix. Kimi and Codex now use matching container and service names: `kimi` and `codex`. Before applying this rename or reloading the user manager, stop the old `kimi-web-box.service` and `codex-box.service` from a host terminal so their old units remove the old containers. Stop the other existing workspace services too, and `smb-box.service` if migrating its container name. Named volumes retain their existing names; do not delete them.
+
+After stopping the old services, apply their explicit retirement entries so the old units cannot return on the next reload:
+
+```sh
+chezmoi apply \
+  ~/.config/containers/systemd/codex-box.container \
+  ~/.config/containers/systemd/kimi-web-box.container
+```
+
+Review `chezmoi diff` first, then apply only these configuration targets without running unrelated scripts:
+
+```sh
+chezmoi apply --include=files \
+  ~/.config/caddy/Caddyfile \
+  ~/.config/containers/systemd/workspace.pod \
+  ~/.config/containers/systemd/dev-box.container \
+  ~/.config/containers/systemd/codex.container \
+  ~/.config/containers/systemd/kimi.container \
+  ~/.config/containers/systemd/caddy.build \
+  ~/.config/containers/systemd/caddy.container
 systemctl --user daemon-reload
+systemctl --user restart box-base-build.service dev-box-build.service caddy-build.service
 ```
 
-Build and restart each container independently when it is needed:
+Before starting, inspect `tailscale serve status`: if an existing Serve listener occupies the Tailscale address on HTTPS 443, disable that listener with `tailscale serve --https=443 off` after confirming its current users can tolerate the interruption. Do not reset unrelated Serve listeners.
+
+After successful builds and credential/DNS setup, stop the old containers and start the Pod from the host terminal:
 
 ```sh
-systemctl --user restart dev-box-build.service
-systemctl --user restart dev-box.service
-
-systemctl --user restart box-base-build.service
-systemctl --user restart codex-box.service
-systemctl --user restart kimi-web-box.service
+systemctl --user stop dev-box.service codex.service kimi.service caddy.service
+systemctl --user start workspace-pod.service
+systemctl --user status workspace-pod.service dev-box.service codex.service kimi.service caddy.service
 ```
 
-The build service updates the image; it does not replace an already-running container. Restart the corresponding container service after its build completes. Both build services are capped at 15 minutes.
+If the previous `dev.pod` was already deployed, stop `dev-pod.service` and its members from host SSH before applying the rename, remove the obsolete `~/.config/containers/systemd/dev.pod` file, and reload the user manager. Preserve all named volumes. The new Pod is named `workspace`; its generated unit is `workspace-pod.service`.
+
+Quadlet starts members with the Pod. Restart an individual container service to update only that process. Changing Pod network or port publications requires recreating the Pod and its members; do not delete named volumes. SMB is unaffected. Build failures are separate from container failures: fix and retry failed build services explicitly.
+
+### Access and verification
+
+SSH stays on port 2222 at the host Tailscale address. Start notebooks inside dev-box with an explicit published port and keep marimo authentication enabled:
+
+```sh
+uv run marimo edit notebook.py --host 0.0.0.0 --port 2718 --no-browser
+```
+
+Agents reach notebooks through `127.0.0.1:2718`; remote clients use the host Tailscale address. Only 2718–2720 are reserved for development. These ports belong to the whole Pod, not exclusively dev-box.
+
+Open `https://kimi.workstation.example.com` directly. Kimi retains the existing authentication bypass: anyone allowed to reach that endpoint can submit tasks with the shared user's access. Codex pairing and Remote Control keep using the shared `~/.codex`; only codex should own its app server.
+
+Verify from another tailnet device: SSH login, marimo access, and Kimi browser/API interaction. Inspect `journalctl --user -u caddy.service` for certificate errors. After verifying new endpoints, remove obsolete per-port Serve listeners with `tailscale serve --https=58627 off` on the host, if present; do not reset unrelated Serve configuration.
 
 ## Architecture
 
-### Images and processes
+`containers/dev-box/Containerfile` builds shared Fedora `box-base` and SSH-enabled `dev-box` stages. Agents use the base and home installations: `~/.local/bin/codex` and `~/.local/bin/kimi`. Updating an agent requires restarting its container, not rebuilding its image. Fedora follows the [repository upgrade policy](../README.md#containers).
 
-`boxes/dev-box/Containerfile` builds a shared `box-base` stage from `registry.fedoraproject.org/fedora:44`. The Fedora release follows the host's release; see the [container upgrade policy](../README.md#containers). The base installs the common command-line and build tools, creates the configured user, and provides `/var/home` as a compatibility link to `/home` for absolute paths created on Fedora Atomic hosts. The `dev-box` target adds `openssh-server` and starts `/usr/local/sbin/dev-box-run`. That entrypoint prepares the persistent SSH host keys, validates `sshd`, and replaces itself with `sshd -D -e`, so `sshd` is the container's long-running process.
+The Pod owns the private network, `keep-id` user namespace, and host-compatible hostname. It shares network and UTS only, not PID or IPC. dev-box retains host IPC and GPU devices; other members do not inherit them. Its SSH entrypoint runs as namespace root to prepare persistent host keys, then executes foreground sshd. Agents run as the host user. All containers use a small init and restart after failure.
 
-`codex-box` uses the `box-base` image directly; there is no Codex-specific image stage. Its Quadlet unit selects the configured user and home working directory, then runs `/home/<user>/.local/bin/codex app-server --remote-control --listen unix://` from the shared home. The host must provide a working Linux Codex installation, including its companion binaries and resources, at that entry point. `kimi-web-box` uses the same image and runs the host's `~/.local/bin/kimi web` in the foreground. All three containers use `RunInit=true` and restart after failure with a five-second delay.
+The four development/agent containers mount home read-write and forward the host SSH agent. Each has a separate SSH volume hiding host private keys; dev-box also mounts `authorized_keys` read-only. All mask host Podman storage. Agents additionally mask Zed server state; dev-box keeps it for Zed. These are cooperative environments, not mutually untrusted tenants: shared home and localhost allow cross-container access. They no longer share host localhost; host-only listeners need a deliberately configured route.
 
-### Storage and access boundaries
+Caddy uses a separate image with a pinned Cloudflare DNS module. Its chezmoi-rendered `~/.config/caddy/Caddyfile` is mounted read-only; no startup script generates configuration. It has no shared-home or SSH-agent mount. Certificates and ACME state persist in `caddy-data`; configuration state uses `caddy-config`. Caddy listens on unprivileged Pod port 8443, mapped to host 443. HTTP redirects and HTTP/3 are disabled, so port 80 and UDP 443 are unnecessary. Its admin API uses a container-local Unix socket rather than the shared localhost.
 
-`dev-box` uses the host network and IPC namespaces; its `sshd` listens on port 2222 in the shared host network namespace. It mounts the host home directory at `/home/<user>`, while the ordinary named volume `dev-box-ssh` overlays the host `~/.ssh`, the host `authorized_keys` remains available read-only for inbound login, and outbound SSH authentication uses the host agent socket. It receives `/dev/kfd` and `/dev/dri`, uses an unconfined seccomp profile, and mounts `/tmp` as a tmpfs. The `dev-box-data` volume is mounted at `/var/lib/dev-box`; only the SSH host keys are kept there. The `dev-box-dnf5-cache` volume persists the DNF cache.
-
-`codex-box` mounts the host home directory read-write, including projects, portable tools, shell and Git configuration, the chezmoi source repository, and `~/.codex`. The recursive bind is intentionally broad, but the host's rootless Podman storage and Zed server runtime directory are masked because they expose container state and live sockets rather than development files. The ordinary named volume `codex-box-ssh` overlays the host `~/.ssh` with a container-owned directory that does not contain private keys, while Fedora's systemd user SSH agent socket supplies authentication; forwarding the agent still authorizes Codex to use keys already loaded in that agent. Both container units trigger `ssh-agent-load.service` before startup. The container shares the host network namespace, so it can reach notebooks and other services started in `dev-box` through localhost without port mappings; listening ports are shared with the host and `dev-box`. It does not receive the host IPC namespace, devices, or the host user runtime directory apart from the explicitly forwarded SSH agent socket. The service uses `UserNS=keep-id` and `SecurityLabelDisable=true`.
-
-`kimi-web-box` uses the same home, host network, SSH agent, and directory masks as `codex-box`, with its own `kimi-web-box-ssh` volume. Kimi configuration, credentials, and sessions reside in the shared `~/.kimi-code`. Update the host Kimi installation and restart `kimi-web-box.service` to update the agent without rebuilding the image.
-
-All three containers mask the host's rootless Podman storage at `~/.local/share/containers`. The agent containers also mask `~/.local/share/zed/server_state`; `dev-box` keeps it accessible for Zed's remote server running inside that container.
-
-All three containers use the host's hostname so hostname-dependent chezmoi templates render consistently. Applying systemd units and controlling the containers still belongs to the host: the containers do not receive the host user systemd bus.
-
-Because the host `~/.codex` directory is shared, its configuration, hooks, skills, credentials, and app-server state are shared as well. `codex-box` must be the only app-server owner using that home at a time; do not start a second host or SSH app-server against the same `~/.codex`. The separate container remains useful as a process, package, device, namespace, and lifecycle boundary, but it is not a confidentiality boundary for the shared home.
-
-### Updating Codex
-
-Update the host installation reached through `~/.local/bin/codex`, then restart `codex-box.service`. No image rebuild is needed for a Codex update. Keep the running version's companion binaries and resources available until the service has restarted. Codex configuration, credentials, and runtime state remain in the shared `~/.codex` directory.
-
-When migrating from the former Codex-specific image, applying the container sources removes `codex-box.build` and adds `box-base.build`. Reload the user units, build `box-base-build.service`, then restart `codex-box.service` as shown above.
-
-### Kimi Web access
-
-Kimi listens on `127.0.0.1:58627` with native authentication disabled. Codex and other host-network processes can call its API directly. Remote access belongs to Tailscale Serve and the tailnet access policy; anyone allowed to use the endpoint can submit tasks with access to the shared home. The allowed Host suffix comes from `tailscale.domain` in the chezmoi data. It is a DNS-rebinding check, not user authentication.
-
-On the host, check the existing Serve configuration before assigning HTTPS port 58627. If that listener is already in use, choose a free HTTPS port rather than replacing it:
+Reload a changed Caddyfile without restarting other members:
 
 ```sh
-curl --fail http://127.0.0.1:58627/api/v1/healthz
-tailscale serve status
-sudo tailscale serve --bg --https=58627 http://127.0.0.1:58627
-tailscale serve status
+podman exec caddy caddy reload \
+  --config /etc/caddy/Caddyfile --adapter caddyfile \
+  --address unix//tmp/caddy-admin.sock
 ```
 
-Open the HTTPS URL printed by Serve without a token. Restrict access to the host's TCP port 58627 to the intended users or devices in the tailnet policy. Serve's background configuration persists across reboots; do not enable Funnel for this endpoint. To remove only this listener, run `sudo tailscale serve --https=58627 off`.
-
-Kimi may advance to the next port if 58627 is occupied. Check `journalctl --user -u kimi-web-box.service` after startup and resolve a port collision before relying on the proxy target. Verify both the browser UI and an API request through Serve after deployment; the localhost health probe alone does not validate the remote path.
+If the single-file bind still exposes the old file after chezmoi replaces it, recreate only `caddy.service` instead. Adding a domain requires its DNS record and backend allowed-host configuration; a Caddy route alone does not create A records.

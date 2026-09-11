@@ -3,7 +3,7 @@ Description=Public folder over SMB on Tailscale
 
 [Container]
 Image=smb-box.build
-ContainerName=my-smb-box
+ContainerName=smb-box
 RunInit=true
 
 # Map the host user to the fixed smb account; start Samba as namespace root.

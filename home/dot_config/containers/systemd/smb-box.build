@@ -3,7 +3,7 @@ ImageTag=localhost/fedora-smb-box
 
 Pull=newer
 
-SetWorkingDirectory=%h/.local/share/chezmoi/boxes/smb-box
+SetWorkingDirectory=%h/.local/share/chezmoi/containers/smb-box
 
 [Service]
 TimeoutStartSec=900

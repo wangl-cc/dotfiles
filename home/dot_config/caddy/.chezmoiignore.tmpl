@@ -1,0 +1,3 @@
+{{ if or (ne .chezmoi.os "linux") (not (get (get . "workspace" | default dict) "enabled")) }}
+Caddyfile
+{{ end }}

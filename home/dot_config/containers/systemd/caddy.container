@@ -1,0 +1,24 @@
+[Unit]
+Description=Private HTTPS entry point for development services
+
+[Container]
+Image=caddy.build
+ContainerName=caddy
+Pod=workspace.pod
+RunInit=true
+User=%U
+Group=%G
+SecurityLabelDisable=true
+Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+Secret=cloudflare-dns-token,type=env,target=CF_API_TOKEN
+Volume=%h/.config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+Volume=caddy-data:/data:U
+Volume=caddy-config:/config:U
+Tmpfs=/tmp
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

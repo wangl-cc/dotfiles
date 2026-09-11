@@ -16,3 +16,5 @@
 .kimi-code/bin
 .config/fish/config.fish
 .config/containers/systemd/codex-box.build
+.config/containers/systemd/codex-box.container
+.config/containers/systemd/kimi-web-box.container

@@ -68,13 +68,13 @@ The service builds its image through `smb-box-build.service`. Inspect startup be
 ```sh
 systemctl --user status smb-box-build.service smb-box.service
 journalctl --user -u smb-box.service -n 80 --no-pager
-podman exec --user 0 -it my-smb-box smbpasswd -a smb
+podman exec --user 0 -it smb-box smbpasswd -a smb
 ```
 
 There is no guest access or default password. Before `smbpasswd -a`, the Unix account exists but cannot log in over SMB. The password is stored in the named volume, not in Git or the image. To change it later:
 
 ```sh
-podman exec --user 0 -it my-smb-box smbpasswd smb
+podman exec --user 0 -it smb-box smbpasswd smb
 ```
 
 `WantedBy=default.target` starts the generated service with the user manager; Quadlet handles enablement when the manager reloads. For startup at boot without an interactive login, the host user also needs lingering. Check `loginctl show-user "$USER" -p Linger`; if needed, enable it on the host with `sudo loginctl enable-linger "$USER"`.
@@ -86,10 +86,10 @@ In macOS Finder, press Command-K and enter `smb://<host-tailscale-name>:1445/pub
 On the host, check Samba's configuration, Podman's published endpoint, and the host listener:
 
 ```sh
-podman exec my-smb-box testparm --suppress-prompt
-podman port my-smb-box 445/tcp
+podman exec smb-box testparm --suppress-prompt
+podman port smb-box 445/tcp
 ss -ltn 'sport = :1445'
-podman exec -it my-smb-box smbclient //127.0.0.1/public -p 445 -U smb -c 'ls; cd Documents; ls'
+podman exec -it smb-box smbclient //127.0.0.1/public -p 445 -U smb -c 'ls; cd Documents; ls'
 ```
 
 The published endpoint should be exactly the configured Tailscale IPv4 address at port 1445, never `0.0.0.0:1445`, `[::]:1445`, or a LAN address. Check that connecting to the host's LAN address on port 1445 fails. A successful `smbclient` check inside the container does not verify external access: also connect from the Mac, check directory listing and opening a PDF, and create, modify, and remove a disposable test file inside `public/Documents`. Before removing it, check on the host that the file belongs to the host user. Then restart `smb-box.service` and reconnect to verify that the credentials survive. For remotely rebuilt PDFs, also test whether the chosen viewer notices updates.
@@ -112,7 +112,7 @@ To fetch current packages even when build layers are cached, rebuild explicitly 
 ```sh
 podman build --pull=always --no-cache \
   -t localhost/fedora-smb-box \
-  ~/.local/share/chezmoi/boxes/smb-box
+  ~/.local/share/chezmoi/containers/smb-box
 ```
 
 The Fedora major version is selected in `Containerfile`; changing it is an explicit image update. Recheck the effective configuration, login, file access, and listener addresses after updates. Back up the stopped container's named volume before major Samba upgrades; downgrading the image does not roll back its databases.

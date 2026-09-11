@@ -1,0 +1,22 @@
+{
+    admin unix//tmp/caddy-admin.sock
+    https_port 8443
+    auto_https disable_redirects
+    servers {
+        protocols h1 h2
+    }
+}
+
+(cloudflare_tls) {
+    tls{{ if .acme.email }} {{ .acme.email | quote }}{{ end }} {
+        ca {{ .acme.ca }}
+        dns cloudflare {env.CF_API_TOKEN}
+        propagation_delay 60s
+        resolvers 1.1.1.1 1.0.0.1
+    }
+}
+
+https://kimi.{{ .device.domain }} {
+    import cloudflare_tls
+    reverse_proxy 127.0.0.1:58627
+}

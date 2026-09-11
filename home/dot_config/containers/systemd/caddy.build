@@ -1,0 +1,7 @@
+[Build]
+ImageTag=localhost/caddy
+Pull=newer
+SetWorkingDirectory=%h/.local/share/chezmoi/containers/caddy
+
+[Service]
+TimeoutStartSec=900

@@ -51,7 +51,39 @@ email = "git@loongw.cc"
 {{- end }}
 signingkeyFile = {{ $gitSigningKeyFile | quote }}
 
-[data.tailscale]
-enabled = {{ promptBoolOnce . "tailscale.enabled" "Use Tailscale integration on this machine" true }}
-name = {{ promptStringOnce . "tailscale.name" "Tailscale machine name" .chezmoi.hostname | quote }}
-ipv4 = {{ promptStringOnce . "tailscale.ipv4" "Tailscale IPv4 address (empty to leave SMB unpublished)" "" | trim | quote }}
+[data.workspace]
+{{- $workspaceEnabled := promptBoolOnce . "workspace.enabled" "Deploy the workspace Pod on this machine" false }}
+enabled = {{ $workspaceEnabled }}
+
+[data.smb]
+enabled = {{ promptBoolOnce . "smb.enabled" "Deploy the SMB container on this machine" false }}
+
+[data.device]
+{{- $ip := promptStringOnce . "device.tailscale_ipv4" "Device Tailscale IPv4 address" "" | trim }}
+{{- if and $ip (not (regexMatch `^100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])(\.(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])){2}$` $ip)) }}
+{{- fail "device.tailscale_ipv4 must be an IPv4 address in 100.64.0.0/10, or empty" }}
+{{- end }}
+tailscale_ipv4 = {{ $ip | quote }}
+{{- $domain := promptStringOnce . "device.domain" "Device DNS suffix (e.g. workstation.example.com)" "" | trim | lower }}
+{{- if and $domain (not (regexMatch `^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$` $domain)) }}
+{{- fail "device.domain must be a DNS suffix such as workstation.example.com, or empty" }}
+{{- end }}
+{{- if and $workspaceEnabled (not $domain) }}
+{{- fail "device.domain is required when workspace.enabled is true" }}
+{{- end }}
+domain = {{ $domain | quote }}
+
+[data.acme]
+{{- $ca := promptChoiceOnce . "acme.ca" "ACME certificate authority" (list "https://acme.zerossl.com/v2/DV90" "https://acme-v02.api.letsencrypt.org/directory") "https://acme.zerossl.com/v2/DV90" }}
+{{- if not (has $ca (list "https://acme.zerossl.com/v2/DV90" "https://acme-v02.api.letsencrypt.org/directory")) }}
+{{- fail "acme.ca must be the ZeroSSL or Let's Encrypt production ACME URL" }}
+{{- end }}
+ca = {{ $ca | quote }}
+{{- $email := promptStringOnce . "acme.email" "ACME contact email (required for ZeroSSL workspace deployment)" "" | trim }}
+{{- if and $email (not (regexMatch `^[^[:space:]@"{}]+@[^[:space:]@"{}]+\.[^[:space:]@"{}]+$` $email)) }}
+{{- fail "acme.email must be an email address, or empty" }}
+{{- end }}
+{{- if and $workspaceEnabled (eq $ca "https://acme.zerossl.com/v2/DV90") (not $email) }}
+{{- fail "acme.email is required for a workspace using ZeroSSL" }}
+{{- end }}
+email = {{ $email | quote }}

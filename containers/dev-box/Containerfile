@@ -2,7 +2,7 @@
 # box-base
 #==============================================================================#
 
-# Keep the Fedora release aligned with the host and boxes/smb-box/Containerfile.
+# Keep the Fedora release aligned with the host and containers/smb-box/Containerfile.
 # On a host release upgrade, update both pins and rebuild all boxes (README.md).
 FROM registry.fedoraproject.org/fedora:44 AS box-base
 

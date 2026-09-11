@@ -1,7 +1,3 @@
-{{- $domain := .tailscale.domain | trim -}}
-{{- if not (regexMatch `^[a-z0-9]([a-z0-9-]*[a-z0-9])?\.ts\.net$` $domain) -}}
-{{- fail "tailscale.domain must be a tailnet DNS suffix such as tail123456.ts.net" -}}
-{{- end -}}
 [Unit]
 Description=Kimi Web Container
 Requires=ssh-agent.socket
@@ -10,15 +6,13 @@ After=ssh-agent-load.service
 
 [Container]
 Image=box-base.build
-ContainerName=my-kimi-web-box
+ContainerName=kimi
 RunInit=true
 User=%u
 WorkingDir=/home/%u
-Exec=/home/%u/.local/bin/kimi web --no-open --host 127.0.0.1 --port 58627 --dangerous-bypass-auth --allowed-host .{{ $domain }}
+Exec=/home/%u/.local/bin/kimi web --no-open --host 127.0.0.1 --port 58627 --dangerous-bypass-auth --allowed-host kimi.{{ .device.domain }}
 
-Network=host
-UserNS=keep-id
-HostName=%H
+Pod=workspace.pod
 SecurityLabelDisable=true
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
