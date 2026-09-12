@@ -435,3 +435,24 @@ portable_pkgs:
         codex-code-mode-host: bin/{bin}
       type: bundle
       strip_components: 0
+    zmx:
+      repo: neurosnap/zmx
+      tag: v0.8.1
+      targets:
+        darwin-aarch64:
+          asset_pattern: ^zmx-.*-macos-aarch64[.]tar[.]gz$
+          resolved:
+            asset: zmx-0.8.1-macos-aarch64.tar.gz
+            sha256: 1d86b1c9fba47fa707a6f0e976b20510b07c1c26d0ed010b9414b2a2c5e6beef
+            files:
+              zmx: zmx
+        linux-x86_64:
+          asset_pattern: ^zmx-.*-linux-x86_64[.]tar[.]gz$
+          resolved:
+            asset: zmx-0.8.1-linux-x86_64.tar.gz
+            sha256: dfd75720b942466f28870731cc86dbc07afa72fb8f3bd5eeb4ff707e4eecebe8
+            files:
+              zmx: zmx
+      bins:
+        zmx: '{bin}'
+      type: archive-files
