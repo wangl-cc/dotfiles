@@ -1,14 +1,34 @@
-# Patch layer for the dsh web profile: id-targeted config overrides.
+# Patch layer for the dsh web profile.
+#
+# Every row here is either an id-targeted override or an `insert:` patch. A bare
+# `name:` row matches nothing: the loader warns "patch: id is required for
+# non-insert patches" and skips it, so adding a plugin needs the `insert:` form.
 
 # Let confined commands (bash, and therefore `sandbox-exec`) write into these
-# tool-cache roots, while the edit/patch fence stays confined to the session
-# workspace. Loaded after the base bundle, so it sits after the `sandbox` row
-# it wraps.
-- name: ./cmd-write-roots.mjs
-  config:
-    extraRoots:
-      - ~/.cache/uv
-      - ~/.pnpm
-      - ~/.cargo/registry
-      - ~/.cargo/git
-      - ~/Library/Caches/kache
+# tool-cache and uv tool-install roots, while the edit/patch fence stays confined
+# to the session workspace. Inserted at the root of the tree, so it mounts after
+# the `sandbox` row it wraps. `common` applies everywhere; each platform key is
+# added on that platform only, so one config serves both.
+#
+# `~/.local/share/uv/tools` is not a cache: it holds uv's installed tool
+# environments plus the `.lock` that plain `uvx` creates, so it is granted to
+# make `uvx` work without `--isolated`. `uv tool install` still needs
+# `~/.local/bin` for its shims, and `uv python install` still needs
+# `~/.local/share/uv/python`; neither is granted.
+- insert:
+    - id: cmd-write-roots
+      name: ./cmd-write-roots/index.ts
+      config:
+        extraRoots:
+          common:
+            - ~/.cache/uv
+            - ~/.local/share/uv/tools
+            - ~/.pnpm
+            - ~/.cargo/registry
+            - ~/.cargo/git
+          darwin:
+            - ~/Library/Caches/kache
+            - ~/.Trash
+          linux:
+            - ~/.cache/kache
+            - ~/.local/share/Trash
