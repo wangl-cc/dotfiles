@@ -1,136 +1,101 @@
 ---
 name: portable-pkgs
-description: Maintain this chezmoi repo's portable GitHub release packages, including packages that install one or more real CLI binaries. Use when adding, updating, removing, inspecting, verifying, or changing the rendering of entries in home/.chezmoidata/portable-pkgs.yaml.
+description: Maintain this chezmoi repo's portable GitHub release packages, including selected CLI binaries and complete bundles with command symlinks. Use when adding, updating, removing, inspecting, verifying, or changing the rendering of entries in home/.chezmoidata/portable-pkgs.yaml.
 ---
 
 # Portable Packages
 
-## When to Use This Skill
+Run commands from this repository root. The helper is a local uv project, not a global command. From another directory, pass the absolute path to this checkout’s `portable-pkgs` project with `--project`.
 
-Use this skill in this chezmoi repo when the task involves:
+Use this skill for packages in `home/.chezmoidata/portable-pkgs.yaml`, their installer template `home/.chezmoiexternal.toml.tmpl`, and the `portable-pkgs` helper.
 
-- adding one or more standalone CLI binaries from a GitHub release package
-- updating, removing, inspecting, or verifying an entry in `home/.chezmoidata/portable-pkgs.yaml`
-- changing `home/.chezmoiexternal.toml.tmpl` behavior for portable packages
-- discussing how portable package installation should work on new machines
+## Contract
 
-## Rules
+- Use the helper for ordinary package changes. Hand-edit only when it cannot express a necessary change, and state why.
+- `inspect` provides read-only facts; the agent chooses the repository, assets, command membership, and paths. The tool has no interactive prompts or heuristic selection.
+- Specify the installation `--type`: `file` for one bare binary, `archive-files` for selected archive members, `bundle` for complete extraction with command symlinks. An archive does not automatically mean bundle.
+- Declare every real executable with `--bin`. Keep binaries from one release archive in one package. Invocation aliases remain separate chezmoi symlinks or wrappers.
+- Keep rendering in the external template. The helper owns the manifest and generated bundle symlink/removal sources.
+- Use JSON for agent discovery and dry-run review. Do not infer successful installation from successful resolution or verification: installation requires chezmoi apply and checking the managed targets.
 
-- Use `portable-pkgs` as the manifest maintenance interface by default.
-- Do not hand-edit `home/.chezmoidata/portable-pkgs.yaml` for ordinary add, update, remove, inspect, or verify operations.
-- Hand-edit the manifest only when the helper cannot express the required change. In that case, state why the helper was insufficient and keep the diff minimal.
-- Keep `home/.chezmoiexternal.toml.tmpl` as the renderer. The helper maintains the manifest; the template reads resolved manifest metadata.
-- Treat a package as the owner of its repository, tag, release asset, checksum, and real executable outputs. Keep binaries from one archive in one package so they resolve and update together.
-- Use repeated `--bin` options for a package that ships multiple real binaries. Do not model those binaries as separate top-level packages.
-- Keep invocation aliases outside `bins`. In this repository's symlink source mode, use a chezmoi symlink source for an alias that only changes the command name, such as `symlink_pn -> pnpm`; use an executable wrapper source for an alias that injects arguments, such as `dot_local/bin/pnx` executing `pnpm dlx`.
-- Do not partially change the binary set or path patterns of an existing multi-binary package. The helper rejects these shape changes; remove and re-add the package so every target is rebuilt together.
-- Prefer GitHub release assets with stable `sha256` metadata. Use `inspect --save` when the archive path needs explicit confirmation.
-- Treat `default_targets` and `targets` in the manifest as the global target policy for intelligent adds. Do not duplicate target matching rules in docs or prompts.
+## Discover and Add
 
-Schema v5 stores a single binary in `bin` with an `archive-file` or `file` resolution. It stores multiple binaries in `bins` with one shared `archive-members` resolution; the renderer expands the resolved members into separate chezmoi `archive-file` entries with the same URL and checksum.
-
-## Workflow
-
-1. Read the current manifest entry and release asset shape, distinguishing real archive members from invocation aliases.
-2. Use a JSON dry-run when repository, asset, binary membership, or path inference needs confirmation.
-3. Use the helper command that matches the operation.
-4. Review the generated diff before making follow-up edits.
-5. Verify the touched package and every binary it owns.
-6. Verify the chezmoi render for relevant install targets when practical.
-
-## Commands
-
-Inspect package candidates when the repository or release assets are unclear:
-
-```bash
-portable-pkgs search <query> --format json
-portable-pkgs assets <owner/repo> --format json
+```sh
+uv run --locked --project portable-pkgs portable-pkgs search <query> --format json
+uv run --locked --project portable-pkgs portable-pkgs inspect <owner/repo> --tag <release-tag>
+uv run --locked --project portable-pkgs portable-pkgs inspect <owner/repo> --tag <release-tag> --asset <exact-archive-name>
 ```
 
-Use the default table output only for human inspection. Agent-run discovery should use JSON so candidate selection does not depend on terminal formatting.
+`inspect` does not require a configured package. It lists release assets or raw archive member paths, types, permission bits, sizes, and link targets. It does not extract, select members, or save anything. Use `--path-regex` with `--asset` to filter rows; names and permissions are evidence for the agent to inspect, not proof that an archive is installable. There is no `assets` command or `inspect --save`.
 
-Add a package with intelligent asset and archive path inference:
+New packages require `--repo`, `--type`, and explicit platform asset regexes. Archives require a shared `--path-pattern` or a complete `--paths` mapping. Asset rules must match exactly one asset. Resolve ambiguity by inspecting the returned list and making the rule more precise.
 
-```bash
-portable-pkgs add <name> --repo <owner/repo> --verify --non-interactive
-rtk git diff -- home/.chezmoidata/portable-pkgs.yaml
+```sh
+uv run --locked --project portable-pkgs portable-pkgs add <name> --repo <owner/repo> --type archive-files \
+  --bin <command> \
+  -Tdarwin-aarch64='<macOS asset regex>' \
+  -Tlinux-x86_64='<Linux asset regex>' \
+  --path-pattern '{assetStem}/{bin}' --dry-run --format json
 ```
 
-Add multiple real binaries from the same release archive by repeating `--bin`:
+Review the JSON and rerun without `--dry-run` to save. For multiple binaries repeat `--bin`; use `--paths '{"tool":"bin/tool","helper":"libexec/helper"}'` when one pattern cannot express all shared paths. `--paths` and `--path-pattern` are mutually exclusive. Path variables are `{asset}`, `{assetStem}`, `{bin}`, `{repo}`, `{tag}`, `{version}` (leading `v` removed), and `{target}`.
 
-```bash
-portable-pkgs add uv --repo astral-sh/uv \
-  --bin uv \
-  --bin uvx \
-  --verify \
-  --non-interactive
+Existing packages reuse omitted repository, pinned tag, commands, and rules. Changing the repository without specifying a tag selects that repository's latest release. `--target-paths '{"linux-x86_64":{"helper":"libexec/helper"}}'` replaces that target's overrides; an empty map clears them. It does not normalize or rewrite other targets. Remove and re-add when changing existing command membership, type, stripping, or multi-command shared paths.
+
+```sh
+uv run --locked --project portable-pkgs portable-pkgs add codex --repo openai/codex --type bundle \
+  --bin codex --bin codex-code-mode-host --path-pattern 'bin/{bin}' \
+  -Tdarwin-aarch64='^codex-package-aarch64-apple-darwin\.tar\.gz$' \
+  -Tlinux-x86_64='^codex-package-x86_64-unknown-linux-musl\.tar\.gz$'
 ```
 
-Use `--non-interactive` for agent-run commands. It disables prompts and makes ambiguous inference fail with candidates. Report the candidate list and rerun with explicit `--repo`, `--target`, `--bin`, or manual `--target-asset` values instead of using interactive prompts.
+There are no `--interactive`, `--non-interactive`, or inferred `add --target` options. Bare `file` packages have exactly one command and no archive path options. Bundle stripping defaults to zero; patterns refer to paths after stripping.
 
-Use `--dry-run --format json` when the inferred repository, target assets, binary members, or archive paths need inspection before editing the manifest. Ordinary unambiguous single-binary adds can be reviewed directly through the manifest diff.
+## Update, Verify, and Remove
 
-Use the manual escape hatch when inference cannot express the release layout:
-
-```bash
-portable-pkgs add <name> --repo <owner/repo> --non-interactive \
-  -Tdarwin-aarch64='<darwin asset regex>' \
-  -Tlinux-x86_64='<linux asset regex>' \
-  --path-pattern '<archive member path>' \
-  --bin <command>
+```sh
+uv run --locked --project portable-pkgs portable-pkgs update <name> --verify
+uv run --locked --project portable-pkgs portable-pkgs update <name> --tag <explicit-tag> --verify
+uv run --locked --project portable-pkgs portable-pkgs verify <name>
+uv run --locked --project portable-pkgs portable-pkgs remove <name>
 ```
 
-For a multi-binary manual add, repeat `--bin` and provide one shared `--path-pattern` containing `{bin}` when the archive layout permits it:
+`update` uses saved rules for every target and skips implicit SemVer downgrades. Explicit `--tag` permits a deliberate downgrade. `add` always verifies selected assets and archive members, including on dry runs; it has no `--verify` flag. Multi-command and bundle updates always verify; `update --verify` also verifies single-command packages. A shared metadata change on add refreshes retained targets and verifies every target. `verify` uses pinned checksums without updating configuration.
 
-```bash
-portable-pkgs add <name> --repo <owner/repo> --non-interactive \
-  -Tdarwin-aarch64='<darwin asset regex>' \
-  -Tlinux-x86_64='<linux asset regex>' \
-  --path-pattern '{assetStem}/{bin}' \
-  --bin <command-a> \
-  --bin <command-b>
+Checksums come from the current release or current downloaded bytes. GitHub API access and downloads go through githubkit/httpx with 30-second timeouts and automatic rate-limit and server-error retries; downloads reject declared Content-Length truncation, and httpx strips credentials when a redirect crosses origins. Bundle verification checks the complete archive tree and executable commands; tar hardlinks are rejected. Installation uses an exact bundle directory and updates in place, without atomic replacement or rollback.
+
+Generated symlink sources use the common link template. Removing packages generates owned native `remove_` sources; bundles also retire their directory. Hand-written and edited sources are refused. Review source changes and the manifest together. Source planning requires a manifest under the source `.chezmoidata` directory. The per-manifest lock remains held through verification and save; competing writers fail immediately. Never delete the lock file. Each source is replaced atomically, the manifest last; after interruption retry the same operation. Avoid applying or hand-editing sources during a save because the multi-file operation is not a transaction with chezmoi.
+
+## CLI Argument Syntax
+
+Pydantic Settings parses the CLI. Only package name (or repository for `inspect`) is positional. `-T` / `--target-asset` accepts repeated `TARGET=REGEX` values or JSON; repeated target keys use the last value. Shell quoting removes its outer quotes, so preserve inner double quotes around regex values containing commas:
+
+```sh
+-T 'linux-x86_64="^tool[0-9]{1,3}\.tar\.gz$"'
+--target-asset '{"linux-x86_64":"^tool[0-9]{1,3}\\.tar\\.gz$"}'
 ```
 
-Update a package:
+Use the same inner quoting or JSON for special list strings. Attach option values starting with `-` using `=`. Native scalar `None` means unset, not a literal release tag.
 
-```bash
-portable-pkgs update <name> --verify
+```sh
+--bin '"true"' --bin '"a,b"'
+--bin '["true","a,b"]'
+--tag=-preview
 ```
 
-Multi-binary updates always verify every resolved archive member before saving, even without `--verify`. Keep `--verify` when the selected operation may also include single-binary packages.
+## Implementation and Validation
 
-Inspect an archive when the binary path is unclear:
+The uv project is `portable-pkgs/`, with `pyproject.toml`, `uv.lock`, `src/portable_pkgs/`, and `tests/`. Its console entry is `portable_pkgs.cli:cli`; no global installation or import-path modification is needed. The default manifest is located relative to this checkout’s source package, so worktrees maintain their own configuration. Domain models and nested mappings are immutable. `AddCommand` inherits the single `AddOptions` schema. `requests.py` owns pure configuration inheritance; `operations.py` owns release I/O and resolution; `installation.py` owns archive installation policy; `PackageStore` coordinates source/manifest saving.
 
-```bash
-portable-pkgs inspect <name> --target <target>
-portable-pkgs inspect <name> --target <target> --save
+Schema v8 keeps package entries unchanged and removes the global `default_targets` and inference `targets` fields. Upgrade v7 with an external one-off migration that removes those fields and sets `schema_version: 8`; do not add migration logic to the helper. Earlier schemas are rejected. `PORTABLE_PKGS_MANIFEST` overrides the default manifest location.
+
+Run these commands from the repository root:
+
+```sh
+uv run --locked --project portable-pkgs python -m unittest discover -s portable-pkgs/tests
+uv run --locked --project portable-pkgs ty check portable-pkgs
+uv run --locked --project portable-pkgs ruff check portable-pkgs
+uv run --locked --project portable-pkgs ruff format --check portable-pkgs
 ```
 
-For a multi-binary package, `inspect` checks every configured path together. Do not use the single-binary `--path-regex` escape hatch for it.
-
-Verify an entry:
-
-```bash
-portable-pkgs verify <name>
-```
-
-Remove an entry:
-
-```bash
-portable-pkgs remove <name>
-```
-
-## Validation
-
-For package manifest changes, prefer:
-
-```bash
-portable-pkgs verify <name>
-chezmoi execute-template --file home/.chezmoiexternal.toml.tmpl
-rtk chezmoi diff ~/.local/bin/<command-a> ~/.local/bin/<command-b>
-rtk git diff --check
-```
-
-Validate every binary owned by the package. For a multi-binary archive, confirm that the rendered entries share the expected URL and checksum, use distinct member paths, and produce real executable files. When practical, apply into an isolated temporary destination and run each binary's version command.
-
-If `chezmoi` is blocked by the persistent state lock, do not delete the lock file casually. Use a temporary `--persistent-state` and `--cache` path for render verification, and report that the real state lock prevented a normal diff.
+Append `-k <test-name>` to the unittest command for a subset. `[tool.ruff]` in `pyproject.toml` selects the enforced lint rules and `ruff format` owns layout; no CI job runs these checks, so run all four commands before handing work back. Keep `pyproject.toml` and `uv.lock` together when changing dependencies. Inspect affected package targets with `chezmoi cat` and `chezmoi diff` before a focused apply; verify every executable owned by the changed package afterward. Isolated package installation tests are not a real-home installation. The helper itself is repository-local and is no longer deployed by chezmoi.

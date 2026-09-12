@@ -21,33 +21,41 @@ clone.args = ["--filter=blob:none"]
 pull.args = ["--ff-only"]
 {{ end -}}
 
-{{- $portable_pkgs_arch_aliases := dict "arm64" "aarch64" "amd64" "x86_64" }}
-{{- $portable_pkgs_arch := default .chezmoi.arch (index $portable_pkgs_arch_aliases .chezmoi.arch) }}
-{{- $portable_pkgs_target := printf "%s-%s" .chezmoi.os $portable_pkgs_arch }}
-{{- $portable_pkgs := .portable_pkgs }}
-{{- $install_dir := $portable_pkgs.install_dir }}
-{{- range $name, $tool := $portable_pkgs.tools }}
-{{-   $target := index $tool.targets $portable_pkgs_target }}
-{{-   if and $target $target.resolved $target.resolved.type $target.resolved.asset $target.resolved.sha256 }}
-{{-     $asset := $target.resolved.asset }}
-{{-     if and (hasKey $tool "bins") (eq $target.resolved.type "archive-members") }}
-{{-       range $bin, $path := $target.resolved.files }}
+{{/* Portable GitHub release packages. */}}
+{{- $arch_aliases := dict "arm64" "aarch64" "amd64" "x86_64" }}
+{{- $arch := default .chezmoi.arch (index $arch_aliases .chezmoi.arch) }}
+{{- $target_name := printf "%s-%s" .chezmoi.os $arch }}
+{{- $install_dir := .portable_pkgs.install_dir }}
+{{- range $name, $tool := .portable_pkgs.tools }}
+{{-   with index $tool.targets $target_name }}
+{{-     with $resolved := get . "resolved" }}
+{{-       $url := printf "https://github.com/%s/releases/download/%s/%s" $tool.repo (urlquery $tool.tag | replace "+" "%20") (urlquery $resolved.asset | replace "+" "%20") }}
+
+{{-       if eq $tool.type "bundle" }}
+[{{ printf ".local/share/portable-pkgs/%s" $name | quote }}]
+type = "archive"
+url = {{ $url | quote }}
+exact = true
+stripComponents = {{ $tool.strip_components }}
+checksum.sha256 = {{ $resolved.sha256 | quote }}
+
+{{-       else if eq $tool.type "file" }}
+[{{ printf "%s/%s" $install_dir $tool.bin | quote }}]
+type = "file"
+url = {{ $url | quote }}
+executable = true
+checksum.sha256 = {{ $resolved.sha256 | quote }}
+
+{{-       else }}
+{{-         range $bin, $_ := $tool.bins }}
 [{{ printf "%s/%s" $install_dir $bin | quote }}]
 type = "archive-file"
-url = {{ printf "https://github.com/%s/releases/download/%s/%s" $tool.repo $tool.tag $asset | quote }}
-path = {{ $path | quote }}
+path = {{ get $resolved.files $bin | quote }}
+url = {{ $url | quote }}
 executable = true
-checksum.sha256 = {{ $target.resolved.sha256 | quote }}
+checksum.sha256 = {{ $resolved.sha256 | quote }}
+{{-         end }}
 {{-       end }}
-{{-     else }}
-[{{ printf "%s/%s" $install_dir $tool.bin | quote }}]
-type = {{ $target.resolved.type | quote }}
-url = {{ printf "https://github.com/%s/releases/download/%s/%s" $tool.repo $tool.tag $asset | quote }}
-{{-     if eq $target.resolved.type "archive-file" }}
-path = {{ $target.resolved.path | quote }}
-{{-     end }}
-executable = true
-checksum.sha256 = {{ $target.resolved.sha256 | quote }}
 {{-     end }}
 {{-   end }}
 {{- end }}

@@ -1,0 +1,7 @@
+home/.chezmoidata/.*.lock
+
+__pycache__/
+.ruff_cache/
+
+portable-pkgs/.venv/
+portable-pkgs/dist/

@@ -1,0 +1,51 @@
+[project]
+name = "portable-pkgs"
+version = "0.1.0"
+description = "Maintain this chezmoi repository's portable release packages"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.12,<3",
+    "pydantic-settings>=2.15,<3",
+    "pydantic-extra-types[semver]>=2.10,<3",
+    "pyyaml>=6,<7",
+    "githubkit>=0.16.1",
+]
+
+[project.scripts]
+portable-pkgs = "portable_pkgs.cli:cli"
+
+[dependency-groups]
+dev = ["ruff", "ty"]
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Failure messages here are the CLI's user-facing text and the tests assert them,
+# so EM101/EM102/TRY003 stay off; every other selected rule is enforced.
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "UP",
+    "B",
+    "C4",
+    "PIE",
+    "RET",
+    "SIM",
+    "FBT",
+    "PL",
+    "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Fixture sizes and modes read better as literals than as named constants.
+# The recursive schema fixture filler needs one branch per JSON value kind.
+"tests/**" = ["PLR2004", "PLR0912"]

@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PORTABLE_PKGS_MANIFEST: home/.chezmoidata/portable-pkgs.yaml
 
     steps:
       - name: Check out repository
@@ -28,16 +27,14 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
-      - name: Add repo bin to PATH
-        run: echo "$GITHUB_WORKSPACE/home/dot_local/bin" >> "$GITHUB_PATH"
-
       - name: Parse current manifest
-        run: portable-pkgs list
+        run: uv run --locked --project portable-pkgs portable-pkgs list
 
       - name: Update and verify releases
         run: >
-          portable-pkgs update --verify --format markdown
-          > .github/portable-pkgs-pr-body.md
+          uv run --locked --project portable-pkgs portable-pkgs update
+            --verify --format markdown
+            > .github/portable-pkgs-pr-body.md
 
       - name: Check generated diff
         run: |

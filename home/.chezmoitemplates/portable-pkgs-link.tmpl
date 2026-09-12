@@ -1,0 +1,14 @@
+{{- $arch_aliases := dict "arm64" "aarch64" "amd64" "x86_64" }}
+{{- $arch := default .chezmoi.arch (index $arch_aliases .chezmoi.arch) }}
+{{- $target_name := printf "%s-%s" .chezmoi.os $arch }}
+{{- $bin := base .chezmoi.targetFile }}
+{{- $prefix := repeat (len (splitList "/" (clean .portable_pkgs.install_dir))) "../" }}
+{{- range $name, $tool := .portable_pkgs.tools }}
+{{-   if and (eq $tool.type "bundle") (hasKey $tool.bins $bin) }}
+{{-     with index $tool.targets $target_name }}
+{{-       with get . "resolved" }}
+{{-         printf "%s.local/share/portable-pkgs/%s/%s" $prefix $name (index .files $bin) }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end -}}
