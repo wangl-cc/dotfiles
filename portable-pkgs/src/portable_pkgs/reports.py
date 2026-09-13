@@ -50,10 +50,20 @@ class UpdateReport:
 
     before_tools: Mapping[str, PackageSpec]
     after_tools: Mapping[str, PackageSpec]
-    verification_status: VerificationStatus
+    verified_target_count: int
     verify_requested: bool
     resolved_target_count: int
     skipped_downgrades: tuple[SkippedDowngrade, ...]
+
+    @property
+    def verification_status(self) -> VerificationStatus:
+        if not self.resolved_target_count:
+            return "not run"
+        if self.verified_target_count == self.resolved_target_count:
+            return "passed"
+        if self.verified_target_count:
+            return "partial"
+        return "not requested"
 
     def render(self, output_format: ReportFormat) -> str:
         changed_rows = changed_update_rows(self.before_tools, self.after_tools)
@@ -98,25 +108,21 @@ def render_text_update_report(
     report: UpdateReport,
     changed_rows: list[ChangedTool],
 ) -> str:
-    verification = {
-        "passed": "verified",
-        "partial": "partially verified",
-        "not requested": "not verified",
-        "not run": "verification not run",
-    }[report.verification_status]
-    if not changed_rows:
-        return (
-            f"no portable package changes "
-            f"(checked {count_label(len(report.after_tools), 'package')}, "
-            f"{count_label(report.resolved_target_count, 'target')}; "
-            f"{verification})"
-        )
-    return "\n".join(
+    lines = [
         f"{row.tool_name}: {markdown_cell(row.before.tag)} -> "
         f"{markdown_cell(row.after.tag)}"
         f"{format_text_targets(row.changed_targets)}"
         for row in changed_rows
+    ]
+    if not changed_rows:
+        lines.append("no portable package changes")
+    lines.append(
+        f"checked {count_label(len(report.after_tools), 'package')}, "
+        f"{count_label(report.resolved_target_count, 'target')}; "
+        f"verification: {report.verification_status} "
+        f"({report.verified_target_count}/{report.resolved_target_count} targets)"
     )
+    return "\n".join(lines)
 
 
 def format_text_targets(targets: list[str]) -> str:
@@ -143,6 +149,7 @@ def render_markdown_update_report(
         "",
         f"- Packages checked: {len(report.after_tools)}",
         f"- Targets resolved: {report.resolved_target_count}",
+        f"- Targets verified: {report.verified_target_count}",
         f"- Verification: {report.verification_status}",
         "",
         "### Changes",

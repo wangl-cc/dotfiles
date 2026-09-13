@@ -31,9 +31,9 @@ jobs:
         run: uv run --locked --project portable-pkgs portable-pkgs list
 
       - name: Update and verify releases
-        run: >
-          uv run --locked --project portable-pkgs portable-pkgs update
-            --verify --format markdown
+        run: |
+          uv run --locked --project portable-pkgs portable-pkgs update \
+            --verify --format markdown \
             > .github/portable-pkgs-pr-body.md
 
       - name: Check generated diff

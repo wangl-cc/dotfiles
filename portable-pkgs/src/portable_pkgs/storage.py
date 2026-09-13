@@ -27,6 +27,17 @@ def manifest_path() -> Path:
     ).expanduser()
 
 
+def preserve_key_order(value: object, previous: object) -> object:
+    """Serialize new values in the document's existing order; append new keys."""
+    if not isinstance(value, dict) or not isinstance(previous, dict):
+        return value
+    return {
+        key: preserve_key_order(value[key], previous.get(key))
+        for key in dict.fromkeys((*previous, *value))
+        if key in value
+    }
+
+
 def atomic_write_text(path: Path, content: str) -> None:
     """Replace one source file without exposing a partial write.
 
@@ -69,13 +80,20 @@ class ManifestFile:
         except OSError as error:
             raise PackageError(f"lock manifest {self.path}: {error}") from error
 
-    def load(self) -> PortableManifest:
+    def read_document(self) -> dict[str, object]:
         try:
-            data = MANIFEST_DOCUMENT.validate_python(
+            return MANIFEST_DOCUMENT.validate_python(
                 yaml.safe_load(self.path.read_text()) or {}
             )
-            return PortableManifest.model_validate(data.get("portable_pkgs"))
         except (OSError, ValueError, yaml.YAMLError) as error:
+            raise PackageError(f"read manifest {self.path}: {error}") from error
+
+    def load(self) -> PortableManifest:
+        try:
+            return PortableManifest.model_validate(
+                self.read_document().get("portable_pkgs")
+            )
+        except ValueError as error:
             raise PackageError(f"read manifest {self.path}: {error}") from error
 
     def save(self, content: str) -> None:
@@ -91,7 +109,7 @@ class PackageStore:
     """Coordinate a package manifest with its generated chezmoi sources.
 
     The caller holds the lock through load, resolution, verification, and save.
-    All sources are preflighted before changes; the manifest is written last so
+    Generated source ownership is checked before writes; the manifest is last so
     retrying the same operation can recover a partially applied source plan.
     Obsolete generated sources are unlinked rather than moved aside: their
     content is reproducible and version control already tracks them.
@@ -107,10 +125,22 @@ class PackageStore:
 
     def save(self, manifest: PortableManifest) -> None:
         try:
-            before = self.load() if self.path.exists() else None
+            file = ManifestFile(self.path)
+            exists = self.path.exists()
+            document = file.read_document() if exists else {}
+            before = None
+            if exists:
+                before = PortableManifest.model_validate(document.get("portable_pkgs"))
             changes = PackageSources(self.path).plan(before, manifest)
             content = yaml.safe_dump(
-                {"portable_pkgs": manifest.model_dump(exclude_none=True, mode="json")},
+                preserve_key_order(
+                    {
+                        "portable_pkgs": manifest.model_dump(
+                            exclude_none=True, mode="json"
+                        )
+                    },
+                    document,
+                ),
                 sort_keys=False,
                 width=1000,
             )
@@ -119,6 +149,6 @@ class PackageStore:
                     path.unlink()
                 else:
                     atomic_write_text(path, source)
-            ManifestFile(self.path).save(content)
+            file.save(content)
         except (OSError, ValueError, yaml.YAMLError) as error:
             raise PackageError(f"save packages {self.path}: {error}") from error

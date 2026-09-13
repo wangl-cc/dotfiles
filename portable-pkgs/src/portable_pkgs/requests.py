@@ -108,7 +108,7 @@ class AddOptions(FrozenModel):
         return paths
 
     def targets_for(
-        self, existing: PackageSpec | None, commands: tuple[str, ...]
+        self, existing: PackageSpec | None
     ) -> dict[str, FileTarget | ArchiveTarget]:
         targets: dict[str, FileTarget | ArchiveTarget] = (
             dict(existing.targets) if existing else {}
@@ -130,8 +130,6 @@ class AddOptions(FrozenModel):
         for name, overrides in self.target_paths.items():
             if name not in targets:
                 raise PackageError(f"path override refers to unknown target: {name}")
-            if not overrides.keys() <= set(commands):
-                raise PackageError("target paths must refer to declared commands")
             targets[name] = targets[name].updated(bins=overrides or None, resolved=None)
         return targets
 
@@ -174,7 +172,7 @@ class AddOptions(FrozenModel):
         data: dict[str, object] = {
             "type": self.package_type,
             "repo": repo,
-            "targets": self.targets_for(existing, commands),
+            "targets": self.targets_for(existing),
             **self.command_paths(existing, commands),
         }
         if self.package_type == "bundle":

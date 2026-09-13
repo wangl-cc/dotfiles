@@ -30,6 +30,7 @@ from .models import (
     is_archive_name,
 )
 from .operations import PackageOperations, ToolTarget, verification_required
+from .progress import progress_output
 from .requests import AddOptions
 from .storage import PackageStore, manifest_path
 
@@ -203,21 +204,12 @@ class UpdateCommand(CommandModel):
                 f"is older than configured {skipped.configured_tag}; "
                 f"use --tag {skipped.candidate_tag} to downgrade explicitly"
             )
-        status: reports.VerificationStatus
-        if not plan.updated:
-            status = "not run"
-        elif len(checks) == len(plan.updated):
-            status = "passed"
-        elif checks:
-            status = "partial"
-        else:
-            status = "not requested"
         selected = dict(before.selected_tools(self.name))
         print(
             reports.UpdateReport(
                 before_tools=selected,
                 after_tools={name: plan.manifest.tools[name] for name in selected},
-                verification_status=status,
+                verified_target_count=len(checks),
                 verify_requested=self.verify,
                 resolved_target_count=len(plan.updated),
                 skipped_downgrades=plan.skipped,
@@ -244,6 +236,10 @@ class VerifyCommand(CommandModel):
                         raise PackageError(f"{name} has no target {target}")
                     items.append(ToolTarget(name, tool, target))
             packages.verify_many(items)
+        print(
+            f"verified {reports.count_label(len(items), 'target')} across "
+            f"{reports.count_label(len({item.tool_name for item in items}), 'package')}"
+        )
 
 
 class RemoveCommand(CommandModel):
@@ -303,7 +299,8 @@ class PortablePkgsCli(BaseSettings):
 
 def cli(args: list[str] | None = None) -> None:
     try:
-        CliApp.run(PortablePkgsCli, cli_args=args, cli_exit_on_error=False)
+        with progress_output():
+            CliApp.run(PortablePkgsCli, cli_args=args, cli_exit_on_error=False)
     except ValidationError as error:
         for detail in error.errors(include_url=False):
             location = ".".join(str(part) for part in detail["loc"])
@@ -315,6 +312,6 @@ def cli(args: list[str] | None = None) -> None:
     except KeyboardInterrupt as error:
         tables.log("Aborted!")
         raise SystemExit(1) from error
-    except PackageError as error:
+    except (PackageError, OSError) as error:
         tables.log(f"Error: {error}")
         raise SystemExit(1) from error

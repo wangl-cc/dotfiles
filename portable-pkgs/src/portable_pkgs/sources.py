@@ -9,6 +9,7 @@ from .models import BUNDLE_ROOT, PackageError, PortableManifest
 # chezmoi strips source state attributes from every source path component, so a
 # target directory named `private_tools` would otherwise deploy to `tools`.
 ATTRIBUTE_PREFIX_RE = re.compile(r"^[a-z]+_")
+SourceKind = Literal["symlink", "remove"]
 
 
 def source_directory(part: str) -> str:
@@ -59,7 +60,7 @@ class PackageSources:
             if tool.type == "bundle"
         }
 
-    def source_path(self, target: str, kind: Literal["symlink", "remove"]) -> Path:
+    def source_path(self, target: str, kind: SourceKind) -> Path:
         parts = Path(target).parts
         directories = [source_directory(part) for part in parts[:-1]]
         command = parts[-1]
@@ -78,18 +79,19 @@ class PackageSources:
         self, before: PortableManifest | None, after: PortableManifest
     ) -> dict[Path, str | None]:
         old_links, new_links = self.links(before), self.links(after)
+        previous = self.destinations(before)
         active = self.destinations(after)
-        retired = self.destinations(before) - active
-        desired = {
-            self.source_path(target, kind): (target, content)
-            for kind, targets, content in (
-                ("symlink", new_links, self.LINK_CONTENT),
-                ("remove", retired, self.REMOVE_CONTENT),
+        retired = previous - active
+        desired: dict[Path, SourceKind] = {
+            self.source_path(target, kind): kind
+            for kind, targets in (
+                ("symlink", new_links),
+                ("remove", retired),
             )
             for target in targets
         }
-        obsolete = {
-            path
+        obsolete: dict[Path, SourceKind] = {
+            path: kind
             for kind, targets in (
                 ("symlink", old_links - new_links),
                 ("remove", active),
@@ -105,12 +107,9 @@ class PackageSources:
                 "source .chezmoidata directory"
             )
         changes: dict[Path, str | None] = {}
-        for path in desired.keys() | obsolete:
-            expected = (
-                self.REMOVE_CONTENT
-                if path.name.startswith("remove_")
-                else self.LINK_CONTENT
-            )
+        sources = desired | obsolete
+        for path, kind in sources.items():
+            expected = self.REMOVE_CONTENT if kind == "remove" else self.LINK_CONTENT
             if path.is_symlink() or (
                 path.exists() and (not path.is_file() or path.read_text() != expected)
             ):
@@ -118,6 +117,6 @@ class PackageSources:
             if path in obsolete:
                 changes[path] = None
             elif not path.exists():
-                changes[path] = desired[path][1]
+                changes[path] = expected
         # Remove the old source before creating its replacement at the same target.
         return dict(sorted(changes.items(), key=lambda item: item[1] is not None))

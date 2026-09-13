@@ -169,9 +169,7 @@ def asset_kind(asset_name: str) -> str:
     return "file"
 
 
-def format_size(value: object) -> str:
-    if not isinstance(value, int):
-        return "-"
+def format_size(value: int) -> str:
     amount = float(value)
     for unit in ("B", "KiB", "MiB"):
         if amount < KIB:

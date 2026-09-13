@@ -1,5 +1,6 @@
 """Deterministic package resolution and immutable update plans."""
 
+import logging
 import tempfile
 from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
@@ -11,6 +12,7 @@ from githubkit_schemas.latest.models import Release, ReleaseAsset
 from .github import (
     AssetDownloads,
     GitHubClient,
+    default_cache_directory,
     digest_sha256,
 )
 from .installation import render_path_pattern, verify_archive
@@ -26,6 +28,8 @@ from .models import (
     is_semantic_version_downgrade,
 )
 from .requests import AddOptions
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -66,23 +70,14 @@ class PackageOperations:
     @classmethod
     @contextmanager
     def open(cls, github: GitHubClient) -> Iterator["PackageOperations"]:
-        try:
-            workspace = tempfile.TemporaryDirectory(prefix="portable-pkgs-")
-        except OSError as error:
-            raise PackageError(f"create package workspace: {error}") from error
-        body_error: BaseException | None = None
-        try:
-            yield cls(AssetDownloads(github, Path(workspace.name)))
-        except BaseException as error:
-            body_error = error
-            raise
-        finally:
-            try:
-                workspace.cleanup()
-            except OSError as error:
-                if body_error is None:
-                    raise PackageError(f"clean package workspace: {error}") from error
-                body_error.add_note(f"also failed to clean package workspace: {error}")
+        with tempfile.TemporaryDirectory(prefix="portable-pkgs-") as workspace:
+            yield cls(
+                AssetDownloads(
+                    github,
+                    Path(workspace),
+                    cache_directory=default_cache_directory(),
+                )
+            )
 
     @staticmethod
     def select(tool: PackageSpec, target_name: str, release: Release) -> ReleaseAsset:
@@ -135,6 +130,7 @@ class PackageOperations:
     ) -> PackageSpec:
         targets = dict(tool.targets)
         for name in names:
+            logger.info("resolve target %s/%s", tool.repo, name)
             resolved = self.resolve(tool, name, self.select(tool, name, release))
             targets[name] = tool.targets[name].updated(resolved=resolved)
         return tool.updated(targets=targets)
@@ -145,6 +141,7 @@ class PackageOperations:
         existing = manifest.tools.get(request.name)
         candidate = request.candidate(existing)
         requested_tag = candidate.tag if candidate.tag is not None else "latest"
+        logger.info("resolve %s: %s@%s", request.name, candidate.repo, requested_tag)
         release = self.downloads.github.fetch_release(candidate.repo, requested_tag)
         if (
             existing is not None
@@ -167,9 +164,18 @@ class PackageOperations:
         replacements = dict(manifest.tools)
         updated: list[ToolTarget] = []
         skipped: list[SkippedDowngrade] = []
-        for name, tool in manifest.selected_tools(selected_name):
+        selected = manifest.selected_tools(selected_name)
+        for index, (name, tool) in enumerate(selected, 1):
             if not tool.targets:
                 raise PackageError(f"{name} has no targets")
+            logger.info(
+                "resolve [%d/%d] %s: %s@%s",
+                index,
+                len(selected),
+                name,
+                tool.repo,
+                tag or "latest",
+            )
             release = self.downloads.github.fetch_release(tool.repo, tag or "latest")
             if tag is None and is_semantic_version_downgrade(
                 tool.tag, release.tag_name
@@ -211,7 +217,14 @@ class PackageOperations:
 
     def verify_many(self, items: Sequence[ToolTarget]) -> None:
         failures: list[str] = []
-        for item in items:
+        for index, item in enumerate(items, 1):
+            logger.info(
+                "verify [%d/%d] %s/%s",
+                index,
+                len(items),
+                item.tool_name,
+                item.target_name,
+            )
             try:
                 self.verify_target(item)
             except PackageError as error:
@@ -220,6 +233,8 @@ class PackageOperations:
             raise PackageError(
                 f"verify failed for {len(failures)} target(s):\n" + "\n".join(failures)
             )
+        if items:
+            logger.info("verification passed: %d targets", len(items))
 
 
 def verification_required(tool: PackageSpec, *, requested: bool = False) -> bool:

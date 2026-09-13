@@ -212,9 +212,6 @@ class PackageBase(FrozenModel, ABC, Generic[TargetT]):
         """Reject an asset name this package type cannot install."""
         raise NotImplementedError
 
-    def primary_bin(self) -> str:
-        return self.bin_names()[0]
-
 
 class FileSpec(PackageBase[FileTarget]):
     type: Literal["file"]
@@ -305,10 +302,8 @@ class PortableManifest(FrozenModel):
                     raise ValueError(f"unsafe bundle command name: {bin_name}")
             bundle_dir = Path(BUNDLE_ROOT) / tool_name
             install_dir = Path(self.install_dir)
-            if (
-                install_dir == bundle_dir
-                or install_dir.is_relative_to(bundle_dir)
-                or bundle_dir.is_relative_to(install_dir)
+            if install_dir.is_relative_to(bundle_dir) or bundle_dir.is_relative_to(
+                install_dir
             ):
                 raise ValueError("bundle directory and install_dir cannot overlap")
         return self

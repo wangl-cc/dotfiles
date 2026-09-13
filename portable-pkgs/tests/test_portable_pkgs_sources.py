@@ -95,7 +95,11 @@ class PackageFixture(unittest.TestCase):
         self.archive = self.base / "tool.tar.gz"
         self.make_tar()
         manifest_env = patch.dict(
-            os.environ, {"PORTABLE_PKGS_MANIFEST": str(self.manifest)}
+            os.environ,
+            {
+                "PORTABLE_PKGS_MANIFEST": str(self.manifest),
+                "XDG_CACHE_HOME": str(self.base / "cache"),
+            },
         )
         manifest_env.start()
         self.addCleanup(manifest_env.stop)
@@ -329,6 +333,29 @@ class SchemaTest(PackageFixture):
 
 
 class LifecycleTest(PackageFixture):
+    def test_save_update_and_remove_without_chezmoi(self) -> None:
+        with patch.dict(os.environ, {"PATH": ""}):
+            self.save()
+            updated = self.tool()
+            updated["tag"] = "v1.1.0"
+            self.save(updated)
+            store = storage.PackageStore(self.manifest)
+            store.save(store.load().updated(tools={}))
+        self.assertEqual(dict(store.load().tools), {})
+        self.assertTrue(
+            (self.source / "dot_local/bin/remove_literal_tool.literal").is_file()
+        )
+
+    def test_generated_source_cannot_escape_its_root(self) -> None:
+        outside = self.base / "outside"
+        outside.mkdir()
+        (self.source / "dot_local").symlink_to(outside, target_is_directory=True)
+        before = self.manifest.read_bytes()
+        with self.assertRaisesRegex(models.PackageError, "escapes"):
+            self.save()
+        self.assertEqual(self.manifest.read_bytes(), before)
+        self.assertEqual(list(outside.iterdir()), [])
+
     def add_args(self, package_type: str = "bundle") -> list[str]:
         return [
             "add",
@@ -447,7 +474,7 @@ class LifecycleTest(PackageFixture):
         before = self.manifest.read_bytes()
         result = self.invoke(*self.add_args(), "--dry-run", "--format", "json")
         self.assertEqual(result.exit_code, 0, result.output)
-        dry_tool = json.loads(result.output)["tool"]
+        dry_tool = json.loads(result.stdout)["tool"]
         self.assertEqual(dry_tool["type"], "bundle")
         self.assertEqual(dry_tool["bins"], {"tool": "bin/{bin}"})
         self.assertEqual(
@@ -542,10 +569,28 @@ class ChezmoiIntegrationTest(PackageFixture):
         self.assertEqual(result.returncode, 0, result.stderr)
         return result.stdout
 
-    def render(self, *args: str) -> str:
+    @staticmethod
+    def external_template() -> str:
         template = (ROOT / "home/.chezmoiexternal.toml.tmpl").read_text()
-        template = template[template.index("{{/* Portable GitHub release packages.") :]
-        return self.chezmoi(*args, "execute-template", template)
+        return template[template.index("{{/* Portable GitHub release packages.") :]
+
+    def render(self, *args: str) -> str:
+        return self.chezmoi(*args, "execute-template", self.external_template())
+
+    def local_external(self, remote: str, local: str) -> None:
+        # Keep declarations driven by the manifest, as in the real source tree.
+        # Only redirect downloads to the test fixture after rendering.
+        template = self.templates / "packages.tmpl"
+        template.write_text(self.external_template())
+        (self.source / ".chezmoiexternal.toml").write_text(
+            "{{ includeTemplate "
+            + json.dumps(str(template))
+            + " . | replace "
+            + json.dumps(remote)
+            + " "
+            + json.dumps(local)
+            + " }}"
+        )
 
     def test_source_prefix_order_and_literal_command_round_trip(self) -> None:
         sibling = self.source / "dot_local/bin/readonly_private_tool"
@@ -621,12 +666,7 @@ class ChezmoiIntegrationTest(PackageFixture):
                 url = models.PACKAGE_ADAPTER.validate_python(tool).download_url(
                     asset_path.name
                 )
-                external = self.source / ".chezmoiexternal.toml"
-                external.write_text(
-                    "{{ "
-                    + json.dumps(self.render().replace(url, asset_path.as_uri()))
-                    + " }}"
-                )
+                self.local_external(url, asset_path.as_uri())
                 self.chezmoi("apply")
                 target = self.destination / ".local/bin" / command
                 neighbor = target.parent / "t"
@@ -634,16 +674,10 @@ class ChezmoiIntegrationTest(PackageFixture):
                 self.assertTrue(target.is_file())
                 result = self.invoke("remove", "tool")
                 self.assertEqual(result.exit_code, 0, result.output)
-                external.write_text(self.render())
                 self.chezmoi("apply")
                 self.assertFalse(target.exists())
                 self.assertEqual(neighbor.read_text(), "unrelated")
                 self.save(tool)
-                external.write_text(
-                    "{{ "
-                    + json.dumps(self.render().replace(url, asset_path.as_uri()))
-                    + " }}"
-                )
                 self.chezmoi("apply")
                 self.assertTrue(target.is_file())
 
@@ -800,14 +834,8 @@ class ChezmoiIntegrationTest(PackageFixture):
             self.save()
             url = f"http://127.0.0.1:{server.server_port}/tool.tar.gz"
 
-            def write_external() -> None:
-                external = self.render().replace(
-                    "https://github.com/demo/tool/releases/download/v1.0.0/tool.tar.gz",
-                    url,
-                )
-                (self.source / ".chezmoiexternal.toml").write_text(external)
-
-            write_external()
+            remote = "https://github.com/demo/tool/releases/download/v1.0.0/tool.tar.gz"
+            self.local_external(remote, url)
             self.chezmoi("apply")
             command = self.destination / ".local/bin/tool"
             bundle = self.destination / ".local/share/portable-pkgs/tool"
@@ -826,13 +854,13 @@ class ChezmoiIntegrationTest(PackageFixture):
             # Releases have distinct immutable URLs; avoid HTTP Last-Modified
             # timestamps hiding a same-second fixture rewrite.
             url += "?version=2"
-            write_external()
+            self.local_external(remote, url)
             self.chezmoi("--refresh-externals=always", "apply")
             self.assertFalse((bundle / "old.txt").exists())
             self.assertFalse((bundle / "bin/link").exists())
             result = self.invoke("remove", "tool")
             self.assertEqual(result.exit_code, 0, result.output)
-            write_external()
+            self.local_external(remote, url)
             self.chezmoi("apply")
             self.assertFalse(command.is_symlink())
             self.assertFalse(bundle.exists())

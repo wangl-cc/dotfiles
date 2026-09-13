@@ -11,6 +11,7 @@ import tempfile
 import threading
 import unittest
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
@@ -343,6 +344,149 @@ class DownloadCacheTest(unittest.TestCase):
             self.assertEqual(first.path.read_bytes(), b"first")
             self.assertEqual(second.path.read_bytes(), b"second")
             self.assertEqual(calls, 2)
+
+
+class PersistentDownloadCacheTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.cache = self.root / "cache"
+        self.payload = b"verified asset"
+        self.calls = 0
+        self.workspaces = 0
+        self.url = "https://example.invalid/tool.tar.gz?secret=private"
+        self.barrier: threading.Barrier | None = None
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            self.calls += 1
+            if self.barrier is not None:
+                self.barrier.wait(timeout=5)
+            return httpx.Response(
+                200,
+                headers={"Content-Length": str(len(self.payload))},
+                stream=httpx.ByteStream(self.payload),
+            )
+
+        self.client = github.GitHubClient(
+            token="", download_transport=httpx.MockTransport(handler)
+        )
+        self.addCleanup(self.client.close)
+
+    def downloads(self) -> github.AssetDownloads:
+        self.workspaces += 1
+        workspace = self.root / str(self.workspaces)
+        workspace.mkdir()
+        return github.AssetDownloads(self.client, workspace, cache_directory=self.cache)
+
+    def digest(self) -> str:
+        return hashlib.sha256(self.payload).hexdigest()
+
+    def test_verified_asset_is_reused_across_workspaces_with_original_filename(
+        self,
+    ) -> None:
+        with self.assertLogs(github.LOGGER, level="INFO") as logs:
+            first = self.downloads().download(self.url, self.digest())
+            second = self.downloads().download(self.url, self.digest())
+        self.assertEqual(self.calls, 1)
+        self.assertNotEqual(first.path, second.path)
+        self.assertEqual(second.path.name, "tool.tar.gz")
+        self.assertEqual(second.path.read_bytes(), self.payload)
+        self.assertEqual(stat.S_IMODE(self.cache.stat().st_mode), 0o700)
+        self.assertEqual(
+            stat.S_IMODE((self.cache / self.digest()).stat().st_mode), 0o600
+        )
+        self.assertIn("Downloading tool.tar.gz", "\n".join(logs.output))
+        self.assertIn("Using cached asset tool.tar.gz", "\n".join(logs.output))
+        self.assertNotIn("private", "\n".join(logs.output))
+        renamed = self.downloads().download(
+            "https://example.invalid/renamed.tar.gz", self.digest()
+        )
+        self.assertEqual(renamed.path.name, "renamed.tar.gz")
+        self.assertEqual(self.calls, 1)
+
+    def test_download_progress_reports_bytes_without_exposing_url_query(self) -> None:
+        with (
+            patch.object(github, "PROGRESS_BYTES", 1),
+            self.assertLogs(github.LOGGER, level="INFO") as logs,
+        ):
+            self.downloads().download(self.url)
+        self.assertIn("MiB received", "\n".join(logs.output))
+        self.assertNotIn("private", "\n".join(logs.output))
+
+    def test_corrupt_entry_is_refetched_and_new_checksum_uses_new_entry(self) -> None:
+        original = self.digest()
+        self.downloads().download(self.url, original)
+        (self.cache / original).write_bytes(b"damaged")
+        restored = self.downloads().download(self.url, original)
+        self.assertEqual(restored.path.read_bytes(), self.payload)
+        self.assertEqual(self.calls, 2)
+        self.payload = b"new release asset"
+        updated = self.downloads().download(self.url, self.digest())
+        self.assertEqual(self.calls, 3)
+        self.assertEqual(updated.path.read_bytes(), self.payload)
+        self.assertEqual(
+            {path.name for path in self.cache.iterdir()}, {original, self.digest()}
+        )
+
+    def test_unknown_checksum_does_not_read_or_populate_persistent_cache(self) -> None:
+        self.downloads().download(self.url, self.digest())
+        self.downloads().download(self.url)
+        self.downloads().download(self.url)
+        self.assertEqual(self.calls, 3)
+        self.payload = b"unverified new asset"
+        self.downloads().download(self.url)
+        self.assertFalse((self.cache / self.digest()).exists())
+
+    def test_mismatch_is_not_cached_or_remembered_as_verified(self) -> None:
+        downloads = self.downloads()
+        with self.assertRaises(models.PackageError):
+            downloads.download(self.url, "0" * 64)
+        self.assertEqual(downloads.assets, {})
+        self.assertFalse(self.cache.exists())
+        downloads.download(self.url, self.digest())
+        self.assertEqual(self.calls, 2)
+
+    def test_later_known_checksum_can_publish_an_unverified_workspace_download(
+        self,
+    ) -> None:
+        downloads = self.downloads()
+        downloads.download(self.url)
+        self.assertFalse(self.cache.exists())
+        downloads.download(self.url, self.digest())
+        self.downloads().download(self.url, self.digest())
+        self.assertEqual(self.calls, 1)
+
+    def test_interrupted_publish_leaves_no_cache_hit(self) -> None:
+        with (
+            patch(
+                "portable_pkgs.asset_cache.os.replace", side_effect=KeyboardInterrupt
+            ),
+            self.assertRaises(KeyboardInterrupt),
+        ):
+            self.downloads().download(self.url, self.digest())
+        self.assertEqual(list(self.cache.iterdir()), [])
+        self.downloads().download(self.url, self.digest())
+        self.assertEqual(self.calls, 2)
+
+    def test_concurrent_publish_has_one_complete_digest_entry(self) -> None:
+        self.barrier = threading.Barrier(2)
+        downloads = [self.downloads(), self.downloads()]
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            results = list(
+                executor.map(
+                    lambda owner: owner.download(self.url, self.digest()), downloads
+                )
+            )
+        self.barrier = None
+        self.assertEqual(self.calls, 2)
+        self.assertTrue(
+            all(asset.path.read_bytes() == self.payload for asset in results)
+        )
+        self.assertEqual([path.name for path in self.cache.iterdir()], [self.digest()])
+        self.assertEqual((self.cache / self.digest()).read_bytes(), self.payload)
+        self.downloads().download(self.url, self.digest())
+        self.assertEqual(self.calls, 2)
 
 
 class BundleFixture(unittest.TestCase):

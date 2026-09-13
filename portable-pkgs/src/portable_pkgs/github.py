@@ -1,6 +1,7 @@
 """GitHub API boundary via githubkit; verified asset downloads over httpx."""
 
 import hashlib
+import logging
 import os
 import urllib.parse
 from contextlib import AbstractContextManager
@@ -18,13 +19,21 @@ from githubkit.exception import GitHubException
 from githubkit_schemas.latest.models import Release, RepoSearchResultItem
 from pydantic import TypeAdapter
 
+from .asset_cache import AssetCache
 from .models import GITHUB_SHA256_PREFIX, SHA256, DownloadedAsset, PackageError
 
 TIMEOUT = httpx.Timeout(30.0)
+LOGGER = logging.getLogger(__name__)
+PROGRESS_BYTES = 8 * 1024 * 1024
 # Downloads authenticate only to GitHub's own HTTPS origins. httpx strips the
 # Authorization header when a redirect leaves the origin, so release-asset
 # redirects to the CDN never receive credentials.
 DOWNLOAD_ORIGINS = {"api.github.com", "github.com"}
+
+
+def default_cache_directory() -> Path:
+    root = os.environ.get("XDG_CACHE_HOME")
+    return (Path(root) if root else Path.home() / ".cache") / "portable-pkgs" / "assets"
 
 
 class GitHubClient(AbstractContextManager["GitHubClient"]):
@@ -120,6 +129,8 @@ class GitHubClient(AbstractContextManager["GitHubClient"]):
         filename = Path(urllib.parse.urlparse(url).path).name
         output = directory / filename
         received = 0
+        next_progress = PROGRESS_BYTES
+        LOGGER.info("Downloading %s", filename)
         try:
             with (
                 self.http.stream(
@@ -130,6 +141,13 @@ class GitHubClient(AbstractContextManager["GitHubClient"]):
                 response.raise_for_status()
                 for chunk in response.iter_bytes():
                     stream.write(chunk)
+                    if response.num_bytes_downloaded >= next_progress:
+                        LOGGER.info(
+                            "Downloading %s: %.1f MiB received",
+                            filename,
+                            response.num_bytes_downloaded / (1024 * 1024),
+                        )
+                        next_progress = response.num_bytes_downloaded + PROGRESS_BYTES
                 # Content-Length describes the encoded HTTP body. iter_bytes()
                 # decodes content encodings before writing the asset to disk.
                 received = response.num_bytes_downloaded
@@ -155,25 +173,47 @@ class GitHubClient(AbstractContextManager["GitHubClient"]):
 
 
 class AssetDownloads:
-    """Reuse assets within the caller's temporary directory, checking each request."""
+    """Reuse assets in this workspace and optionally across verified commands."""
 
-    def __init__(self, github: GitHubClient, directory: Path) -> None:
+    def __init__(
+        self,
+        github: GitHubClient,
+        directory: Path,
+        *,
+        cache_directory: Path | None = None,
+    ) -> None:
         self.github = github
         self.directory = directory
         self.assets: dict[str, DownloadedAsset] = {}
+        self.cache = (
+            AssetCache(cache_directory) if cache_directory is not None else None
+        )
 
     def download(self, url: str, expected_sha256: str | None = None) -> DownloadedAsset:
         try:
             if url not in self.assets:
                 destination = self.directory / str(len(self.assets))
                 destination.mkdir(exist_ok=True)
-                self.assets[url] = self.github.download_asset(url, destination)
-            downloaded = self.assets[url]
+                downloaded = None
+                if self.cache is not None and expected_sha256 is not None:
+                    filename = Path(urllib.parse.urlparse(url).path).name
+                    downloaded = self.cache.restore(
+                        expected_sha256, destination / filename
+                    )
+                    if downloaded is not None:
+                        LOGGER.info("Using cached asset %s", filename)
+                if downloaded is None:
+                    downloaded = self.github.download_asset(url, destination)
+            else:
+                downloaded = self.assets[url]
             if expected_sha256 is not None and downloaded.sha256 != expected_sha256:
                 raise PackageError(
                     f"sha256 mismatch for {url}: "
                     f"expected {expected_sha256}, got {downloaded.sha256}"
                 )
+            if self.cache is not None and expected_sha256 is not None:
+                self.cache.store(downloaded)
+            self.assets[url] = downloaded
             return downloaded
         except OSError as error:
             raise PackageError(f"asset download {url}: {error}") from error

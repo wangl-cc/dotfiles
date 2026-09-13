@@ -15,7 +15,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any, cast
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import yaml
 from githubkit_schemas.latest.models import Release, ReleaseAsset
@@ -176,7 +176,13 @@ class WorkflowTest(unittest.TestCase):
         self.path.write_text(
             yaml.safe_dump({"portable_pkgs": {"schema_version": 8, "tools": {}}})
         )
-        env = patch.dict(os.environ, {"PORTABLE_PKGS_MANIFEST": str(self.path)})
+        env = patch.dict(
+            os.environ,
+            {
+                "PORTABLE_PKGS_MANIFEST": str(self.path),
+                "XDG_CACHE_HOME": str(self.root / "cache"),
+            },
+        )
         env.start()
         self.addCleanup(env.stop)
         self.archive = self.root / "tool.tar.gz"
@@ -263,6 +269,51 @@ class WorkflowTest(unittest.TestCase):
         self.client.fetch_release.assert_not_called()
         self.client.search_repositories.assert_not_called()
 
+    def test_inspect_reports_workspace_failures_without_tracebacks(self) -> None:
+        for phase in ("create", "cleanup"):
+            failure = OSError(f"{phase} workspace failed")
+            resource = MagicMock()
+            resource.__enter__.return_value = str(self.root)
+            resource.__exit__.side_effect = failure
+            with (
+                self.subTest(phase=phase),
+                patch.object(
+                    operations.tempfile,
+                    "TemporaryDirectory",
+                    return_value=resource,
+                    side_effect=failure if phase == "create" else None,
+                ),
+                patch.object(
+                    github.AssetDownloads,
+                    "download",
+                    return_value=models.DownloadedAsset(
+                        path=self.archive, sha256=self.sha
+                    ),
+                ),
+            ):
+                result = run_cli(["inspect", "demo/tool", "--asset", "tool.tar.gz"])
+                self.assertEqual(result.exit_code, 1, result.output)
+                self.assertEqual(result.stderr, f"Error: {failure}\n")
+                self.assertEqual(result.stdout, "")
+
+    def test_add_rejects_unknown_command_override_before_network(self) -> None:
+        self.save(self.tool())
+        before = self.path.read_bytes()
+        result = run_cli(
+            [
+                "add",
+                "tool",
+                "--type",
+                "archive-files",
+                "--target-paths",
+                '{"linux":{"unknown":"bin/unknown"}}',
+            ]
+        )
+        self.assertEqual(result.exit_code, 2, result.output)
+        self.assertIn("target bins must refer to declared commands", result.stderr)
+        self.client.fetch_release.assert_not_called()
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_add_reuses_configured_repo_tag_and_rules(self) -> None:
         self.save(self.tool())
         result = run_cli(["add", "tool", "--type", "archive-files", "--format", "json"])
@@ -270,6 +321,76 @@ class WorkflowTest(unittest.TestCase):
         self.client.fetch_release.assert_called_once_with("demo/tool", "v1.0.0")
         self.client.search_repositories.assert_not_called()
         self.assertEqual(json.loads(result.stdout)["tool"]["repo"], "demo/tool")
+
+    def test_progress_stays_on_stderr_and_reports_verified_unchanged_targets(
+        self,
+    ) -> None:
+        for tag in ("v0.9.0", "v1.0.0"):
+            with self.subTest(tag=tag):
+                self.save(self.tool(tag=tag))
+                result = run_cli(["update", "tool", "--verify"])
+                self.assertEqual(result.exit_code, 0, result.output)
+                self.assertIn("verification: passed (2/2 targets)", result.stdout)
+                self.assertIn("checked 1 package, 2 targets", result.stdout)
+                self.assertEqual(result.stderr.count("resolve [1/1] tool"), 1)
+                self.assertIn("verify [1/2] tool/linux", result.stderr)
+                self.assertIn("verify [2/2] tool/darwin", result.stderr)
+                self.assertNotIn("resolve [", result.stdout)
+        preview = run_cli(
+            ["add", "tool", "--type", "archive-files", "--dry-run", "--format", "json"]
+        )
+        self.assertEqual(preview.exit_code, 0, preview.output)
+        self.assertEqual(json.loads(preview.stdout)["name"], "tool")
+        self.assertIn("verify [1/2]", preview.stderr)
+        verified = run_cli(["verify", "tool"])
+        self.assertEqual(verified.exit_code, 0, verified.output)
+        self.assertEqual(verified.stdout.strip(), "verified 2 targets across 1 package")
+
+    def test_failed_verification_never_reports_success(self) -> None:
+        self.save(self.tool())
+        before = self.path.read_bytes()
+        self.client.download_asset.side_effect = models.PackageError("broken transfer")
+        result = run_cli(["update", "tool", "--verify"])
+        self.assertEqual(result.exit_code, 1)
+        self.assertIn("verify [2/2]", result.stderr)
+        self.assertNotIn("verification passed", result.output)
+        self.assertEqual(result.stdout, "")
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_save_preserves_existing_nested_field_order(self) -> None:
+        tool = self.tool().model_dump(mode="json", exclude_none=True)
+        # A valid hand-ordered document must not adopt Pydantic inheritance order.
+        ordered_tool = {
+            key: tool[key] for key in ("type", "bins", "repo", "tag", "targets")
+        }
+        for target in ordered_tool["targets"].values():
+            resolved = target["resolved"]
+            target["resolved"] = {
+                key: resolved[key] for key in ("files", "sha256", "asset")
+            }
+        original = yaml.safe_dump(
+            {
+                "portable_pkgs": {
+                    "schema_version": 8,
+                    "install_dir": ".local/bin",
+                    "tools": {"tool": ordered_tool},
+                }
+            },
+            sort_keys=False,
+            width=1000,
+        )
+        self.path.write_text(original)
+        store = storage.PackageStore(self.path)
+        manifest = store.load()
+        store.save(
+            manifest.with_package("tool", manifest.tools["tool"].updated(tag="v2.0.0"))
+        )
+        self.assertEqual(
+            self.path.read_text(), original.replace("tag: v1.0.0", "tag: v2.0.0")
+        )
+        updated = self.path.read_bytes()
+        store.save(store.load())
+        self.assertEqual(self.path.read_bytes(), updated)
 
     def test_candidate_inheritance_is_pure_and_explicit_paths_take_precedence(
         self,
@@ -490,12 +611,14 @@ class WorkflowTest(unittest.TestCase):
         result = run_cli(["update", "--format", "markdown"])
         self.assertEqual(result.exit_code, 0, result.output)
         self.assertIn("Verification: partial", result.stdout)
+        self.assertIn("Targets verified: 1", result.stdout)
         self.save(self.tool(tag="v2.0.0"))
         result = run_cli(["update", "tool", "--format", "markdown"])
         self.assertEqual(result.exit_code, 0, result.output)
         self.assertIn("Verification: not run", result.stdout)
         self.assertIn("is older than configured", result.stderr)
         self.assertIn("- Targets resolved: 0", result.stdout)
+        self.assertIn("- Targets verified: 0", result.stdout)
         self.assertIn(
             "| tool | v2.0.0 | "
             "[v1.0.0](https://github.com/demo/tool/releases/tag/v1.0.0) |",
@@ -526,50 +649,22 @@ class WorkspaceTest(unittest.TestCase):
         assert directory is not None
         self.assertFalse(directory.exists())
 
-    def test_resource_errors_are_attributed_to_creation_or_cleanup(self) -> None:
-        failure = OSError("workspace unavailable")
-        with (
-            patch.object(
-                operations.tempfile, "TemporaryDirectory", side_effect=failure
-            ),
-            self.assertRaises(models.PackageError) as caught,
-            operations.PackageOperations.open(github.GitHubClient()),
-        ):
-            self.fail("must not enter the body")
-        self.assertIs(caught.exception.__cause__, failure)
-        self.assertIn("create package workspace", str(caught.exception))
-
-        resource = Mock(name="workspace")
-        resource.cleanup.side_effect = failure
-        resource.name = "/unused/workspace"
-        with (
-            patch.object(
-                operations.tempfile, "TemporaryDirectory", return_value=resource
-            ),
-            self.assertRaises(models.PackageError) as caught,
-            operations.PackageOperations.open(github.GitHubClient()),
-        ):
-            pass
-        resource.cleanup.assert_called_once_with()
-        self.assertIs(caught.exception.__cause__, failure)
-        self.assertIn("clean package workspace", str(caught.exception))
-
-    def test_cleanup_failure_does_not_replace_the_body_failure(self) -> None:
+    def test_cleanup_failure_retains_body_failure_in_exception_chain(self) -> None:
         failure = models.PackageError("verification failed")
-        resource = Mock()
-        resource.cleanup.side_effect = OSError("cleanup failed")
-        resource.name = "/unused/workspace"
+        cleanup_failure = OSError("cleanup failed")
+        resource = MagicMock()
+        resource.__enter__.return_value = "/unused/workspace"
+        resource.__exit__.side_effect = cleanup_failure
         with (
             patch.object(
                 operations.tempfile, "TemporaryDirectory", return_value=resource
             ),
-            self.assertRaises(models.PackageError) as caught,
+            self.assertRaises(OSError) as caught,
             operations.PackageOperations.open(github.GitHubClient()),
         ):
             raise failure
-        self.assertIs(caught.exception, failure)
-        self.assertEqual(len(failure.__notes__), 1)
-        resource.cleanup.assert_called_once_with()
+        self.assertIs(caught.exception, cleanup_failure)
+        self.assertIs(caught.exception.__context__, failure)
 
 
 class ProjectEntryTest(unittest.TestCase):
