@@ -167,20 +167,20 @@ portable_pkgs:
       type: archive-files
     lazygit:
       repo: jesseduffield/lazygit
-      tag: v0.65.0
+      tag: v0.65.1
       targets:
         darwin-aarch64:
           asset_pattern: ^lazygit_.*_darwin_arm64\.tar\.gz$
           resolved:
-            asset: lazygit_0.65.0_darwin_arm64.tar.gz
-            sha256: d8ea1cade9e4279e45cbb58652e84edb07e98a9f8ec0604099c8b0a8f709e63a
+            asset: lazygit_0.65.1_darwin_arm64.tar.gz
+            sha256: 65a367c6ea9a88efebaaf7998a6835eedb987e04916cef677264ff9b31b1b13e
             files:
               lazygit: lazygit
         linux-x86_64:
           asset_pattern: ^lazygit_.*_linux_x86_64\.tar\.gz$
           resolved:
-            asset: lazygit_0.65.0_linux_x86_64.tar.gz
-            sha256: 44d8e7dd1484b4a66e191bd4ab25a71e8b4b3a65ab122f838e65677ef58c5506
+            asset: lazygit_0.65.1_linux_x86_64.tar.gz
+            sha256: 02beacbcda0fa342e50ae3480ba8147307353af3fb28e1d5f790e02329c201a6
             files:
               lazygit: lazygit
       bins:
@@ -325,20 +325,20 @@ portable_pkgs:
       bin: jq
     kache:
       repo: kunobi-ninja/kache
-      tag: v0.19.0
+      tag: v0.20.0
       targets:
         darwin-aarch64:
           asset_pattern: ^kache\-aarch64\-apple\-darwin\.tar\.gz$
           resolved:
             asset: kache-aarch64-apple-darwin.tar.gz
-            sha256: 8dcdaa95f3678b00696ca4742d8ad67c1f00d9baa7d142cbf9337b3f3ecb03b7
+            sha256: bc19c7015b1ca449c13f827cff7235e9adcba3f48c01ac2ff902e3f93e78dc7c
             files:
               kache: kache
         linux-x86_64:
           asset_pattern: ^kache\-x86_64\-unknown\-linux\-musl\.tar\.gz$
           resolved:
             asset: kache-x86_64-unknown-linux-musl.tar.gz
-            sha256: 64d8e10abc1e916859ce5bf2937887df15933e1b65e66a1efe7dc769bcaa7798
+            sha256: fe5ce52406e0dcb8c9a49798671a073440cae13a88731b1b712b7c0fa372b85b
             files:
               kache: kache
       bins:
