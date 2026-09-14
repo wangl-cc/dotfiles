@@ -46,18 +46,18 @@ portable_pkgs:
       type: archive-files
     chezmoi:
       repo: twpayne/chezmoi
-      tag: v2.72.1
+      tag: v2.72.2
       targets:
         darwin-aarch64:
           asset_pattern: ^chezmoi-darwin-arm64$
           resolved:
             asset: chezmoi-darwin-arm64
-            sha256: b5972b8a615e27655825d68e9667ed69e1b2ccf0d54d6357911af9539d2a9a0d
+            sha256: 0cc637cd52aa9dbce58cf6000d386c03259e4937503725d4390c9218eccb6166
         linux-x86_64:
           asset_pattern: ^chezmoi-linux-amd64-musl$
           resolved:
             asset: chezmoi-linux-amd64-musl
-            sha256: cdc6ebea76886b192d9e0972d14f905a1766aa2a536ca35021ef4aad4adc326c
+            sha256: b2ff4d3c3e4fb0de0bf48cda50b888cb24f32562f622dc4688ee02f0291c4424
       type: file
       bin: chezmoi
     delta:
@@ -325,20 +325,20 @@ portable_pkgs:
       bin: jq
     kache:
       repo: kunobi-ninja/kache
-      tag: v0.20.0
+      tag: v0.21.0
       targets:
         darwin-aarch64:
           asset_pattern: ^kache\-aarch64\-apple\-darwin\.tar\.gz$
           resolved:
             asset: kache-aarch64-apple-darwin.tar.gz
-            sha256: bc19c7015b1ca449c13f827cff7235e9adcba3f48c01ac2ff902e3f93e78dc7c
+            sha256: 19469430e4c7f1a8bcc561c28c15fd487d32b51ebc62c922d71ee7de21f060f0
             files:
               kache: kache
         linux-x86_64:
           asset_pattern: ^kache\-x86_64\-unknown\-linux\-musl\.tar\.gz$
           resolved:
             asset: kache-x86_64-unknown-linux-musl.tar.gz
-            sha256: fe5ce52406e0dcb8c9a49798671a073440cae13a88731b1b712b7c0fa372b85b
+            sha256: 6354bb76414be68f8f906206c87c1394e5b79fdebcb3a9d31e2254ddfadc2820
             files:
               kache: kache
       bins:
@@ -391,20 +391,20 @@ portable_pkgs:
       type: archive-files
     kimi-code:
       repo: MoonshotAI/kimi-code
-      tag: '@moonshot-ai/kimi-code@0.42.0'
+      tag: '@moonshot-ai/kimi-code@0.43.0'
       targets:
         darwin-aarch64:
           asset_pattern: ^kimi-code-darwin-arm64\.tar\.gz$
           resolved:
             asset: kimi-code-darwin-arm64.tar.gz
-            sha256: cc20baccba41e767c95d0f1624cef58481b159277439c2060144dc2768314ae7
+            sha256: b97bde0fd2626ddcfd89ddb4bc3d3f1f074a9073bd5a04c5eb606d3185ae8b9a
             files:
               kimi: kimi
         linux-x86_64:
           asset_pattern: ^kimi-code-linux-x64\.tar\.gz$
           resolved:
             asset: kimi-code-linux-x64.tar.gz
-            sha256: 6121d0bcfeb39fe24ae2a54197d341f8078aa7c1517043a2c8fd5b545cfd97fc
+            sha256: 80ee35d2157e4580e7490601cccace568171f551eba318580a3c69f93787f5b0
             files:
               kimi: kimi
       bins:
