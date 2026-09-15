@@ -1,0 +1,3 @@
+[url "http://127.0.0.1:8787/overleaf/"]
+	insteadOf = https://git.overleaf.com/
+	insteadOf = https://git@git.overleaf.com/

@@ -1,6 +1,6 @@
 # Development containers
 
-The development Pod groups `dev-box`, `codex`, `kimi`, `dsh`, and `caddy` on one private network. dev-box provides SSH and the interactive compute environment; the agents run from installations in the shared home. Caddy exposes Kimi and DSH at `https://kimi.workstation.example.com` and `https://dsh.workstation.example.com`. SMB remains independent.
+The development Pod groups `dev-box`, `codex`, `kimi`, `dsh`, `caddy`, and the optional `secret-proxy` on one private network. dev-box provides SSH and the interactive compute environment; the agents run from installations in the shared home. Caddy exposes Kimi and DSH at `https://kimi.workstation.example.com` and `https://dsh.workstation.example.com`. The [secret proxy](../containers/secret-proxy/README.md) provides HTTP authentication at the Pod's `127.0.0.1:8787`, with credentials delivered only to its container; it remains inactive until provisioned. SMB remains independent.
 
 ## Setup and migration
 

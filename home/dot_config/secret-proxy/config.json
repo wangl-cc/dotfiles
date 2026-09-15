@@ -1,0 +1,13 @@
+{
+  "listen": "127.0.0.1:8787",
+  "services": {
+    "overleaf": {
+      "upstream": "https://git.overleaf.com",
+      "auth": {
+        "type": "basic",
+        "username": "git",
+        "credential": "overleaf-token"
+      }
+    }
+  }
+}

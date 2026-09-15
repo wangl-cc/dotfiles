@@ -6,6 +6,7 @@ codex.*
 kimi.*
 dsh.*
 caddy.*
+secret-proxy.*
 {{ end }}
 
 {{ if or (ne .chezmoi.os "linux") (not (get (get . "smb" | default dict) "enabled")) }}

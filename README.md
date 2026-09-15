@@ -27,4 +27,5 @@ Use `chezmoi edit-config` to change local options, then review `chezmoi diff` be
 - [Machine configuration](docs/configuration.md): initialization options, migration, and shell behavior.
 - [Portable packages](docs/portable-packages.md): package strategy and manifest helper.
 - [Development containers](docs/dev-containers.md): workspace Pod, HTTPS, and maintenance.
+- [Secret proxy](containers/secret-proxy/README.md): HTTP authentication and encrypted host credentials.
 - [Samba container](containers/smb-box/README.md): file sharing.

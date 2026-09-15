@@ -21,7 +21,8 @@ Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 
 Volume=%h:/home/%u
-Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state
+Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/secret-proxy/credentials
 Volume=dsh-box-ssh:/home/%u/.ssh:U
 
 [Service]
