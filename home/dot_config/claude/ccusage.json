@@ -1,0 +1,12 @@
+{
+  "$schema": "https://ccusage.com/config-schema.json",
+  "defaults": {
+    "pricingOverrides": {
+      "k3-256k": {
+        "inputCostPerToken": 0.000003,
+        "outputCostPerToken": 0.000015,
+        "cacheReadInputTokenCost": 0.0000003
+      }
+    }
+  }
+}
