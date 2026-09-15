@@ -2,7 +2,7 @@
 # On a host release upgrade, update both pins and rebuild all boxes (README.md).
 FROM registry.fedoraproject.org/fedora:44
 
-RUN --mount=type=cache,target=/var/cache/libdnf5 \
+RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     dnf upgrade -y && \
     dnf install -y --setopt=install_weak_deps=False --setopt=keepcache=1 \
     samba samba-client samba-common-tools shadow-utils

@@ -15,13 +15,13 @@ COPY rootfs/base /
 RUN sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/fedora-cisco-openh264.repo
 
 # Reinstall base packages with documentation included.
-RUN --mount=type=cache,target=/var/cache/libdnf5 \
+RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     dnf upgrade -y && \
     dnf reinstall -y --setopt=keepcache=1 \
     $(rpm -qa --queryformat '%{NAME}\n' | grep -v gpg-pubkey) && \
     rm -rf /var/log/dnf*
 
-RUN --mount=type=cache,target=/var/cache/libdnf5 \
+RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     dnf install -y --setopt=keepcache=1 \
     ca-certificates curl \
     fish git man-db openssh-clients tar unzip which \
@@ -44,7 +44,7 @@ FROM box-base AS dev-box
 
 COPY rootfs/dev-box /
 
-RUN --mount=type=cache,target=/var/cache/libdnf5 \
+RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     dnf install -y --setopt=keepcache=1 openssh-server && \
     rm -rf /var/log/dnf*
 
