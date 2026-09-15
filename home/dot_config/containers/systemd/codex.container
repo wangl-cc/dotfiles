@@ -14,6 +14,9 @@ Exec=/home/%u/.local/bin/codex app-server --remote-control --listen unix://
 
 Pod=workspace.pod
 SecurityLabelDisable=true
+# Nested bwrap needs a fully visible outer /proc to mount its own procfs.
+# Podman's /proc masks and read-only submounts otherwise cause EPERM.
+Unmask=/proc/*
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
 

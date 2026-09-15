@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     ca-certificates curl \
     fish git man-db openssh-clients tar unzip which \
     gcc gcc-c++ make cmake pkgconfig \
-    procps-ng psmisc perf sudo && \
+    bubblewrap procps-ng psmisc perf sudo && \
     rm -rf /var/log/dnf*
 
 RUN groupadd -g "$USER_GID" "$USERNAME" && \
