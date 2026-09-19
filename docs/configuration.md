@@ -6,18 +6,20 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
-- `device.tailscale_ipv4`: default empty; shared device address used to publish workspace and SMB ports on Tailscale. Empty leaves workspace localhost-only and SMB unpublished.
-- `device.domain`: default empty; the device's complete service DNS suffix, such as `workstation.example.com`. Required when workspace is enabled.
-- `workspace.enabled`: default `false`; manage the workspace Pod, its five members, and their build configurations.
-- `smb.enabled`: default `false`; independently manage the SMB container and build configuration.
-- `acme.ca`: defaults to the ZeroSSL production ACME URL; Let's Encrypt is also available.
-- `acme.email`: defaults to empty; required when workspace uses ZeroSSL. Stored only in machine-local configuration.
+- `workspace.enabled`: Linux only, default `false`; manage the workspace Pod, its five members, and their build configurations.
+- `smb.enabled`: Linux only, default `false`; independently manage the SMB container and build configuration.
+- `device.tailscale_ipv4`: asked only when workspace or SMB is enabled, default empty; shared device address used to publish their ports on Tailscale. Empty leaves workspace localhost-only and SMB unpublished.
+- `device.domain`: asked only when workspace is enabled and required; the device's complete service DNS suffix, such as `workstation.example.com`.
+- `acme.ca`: written only when workspace is enabled; initialization sets the ZeroSSL production ACME URL without prompting.
+- `acme.email`: asked only when workspace is enabled and required for ZeroSSL. Stored only in machine-local configuration.
 
 Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers.
 
 ## Updating configuration
 
 Edit saved answers with `chezmoi edit-config`, then inspect `chezmoi diff` before applying. Run `chezmoi init --prompt` to revisit initialization prompts without applying changes.
+
+Reinitialization emits container settings only on Linux and device/ACME settings only for enabled services. It resets `acme.ca` to ZeroSSL for enabled workspaces, including configurations that previously selected another CA; supply a contact email when prompted.
 
 ## Container configuration migration
 

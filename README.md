@@ -14,6 +14,8 @@ curl -fsLS https://get.chezmoi.io | sh -s -- \
 
 Initialization prompts for machine-local options and saves them in `~/.config/chezmoi/chezmoi.toml`.
 
+Container deployment prompts appear only on Linux, and networking and ACME prompts follow the enabled services. Run `chezmoi init --prompt` without applying to regenerate existing configuration with these conditions; enabled workspaces initialize `acme.ca` to ZeroSSL and require a contact email.
+
 ## Updates
 
 ```sh
