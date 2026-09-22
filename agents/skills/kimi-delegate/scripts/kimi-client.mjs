@@ -105,7 +105,7 @@ export class KimiClient {
         ...(profile ? { profile } : {}),
         ...(model ? { model } : {}),
         ...(thinking ? { thinking } : {}),
-        permission_mode: 'manual',
+        permission_mode: 'yolo',
       });
       check(accepted?.prompt_id === promptId && ['running', 'queued', 'blocked'].includes(accepted.status),
         'Unexpected prompt acknowledgement; query the returned handle before retrying');
@@ -165,10 +165,13 @@ export class KimiClient {
 
   async withInteractions(result, signal) {
     const session = await this.request('GET', `/sessions/${result.session_id}`, undefined, signal);
-    // An interaction elsewhere in this session must not be attributed to this task.
-    if (session?.current_prompt_id !== result.prompt_id) return result;
-    const kind = session.pending_interaction;
+    const kind = session?.pending_interaction;
     if (!['approval', 'question'].includes(kind)) return result;
+    // Kimi 0.42.0 omits current_prompt_id from the session response.
+    // Only attribute pending input to the active prompt, never a queued task.
+    const queue = await this.request('GET', `/sessions/${result.session_id}/prompts`, undefined, signal);
+    check(Array.isArray(queue?.queued), 'Unsupported prompt queue response');
+    if (queue.active?.prompt_id !== result.prompt_id) return result;
     const pending = await this.request('GET', `/sessions/${result.session_id}/${kind}s?status=pending`, undefined, signal);
     check(Array.isArray(pending?.items), 'Unsupported pending interaction response');
     return pending.items.length ? { ...result, status: 'needs_input', interaction: kind, pending: pending.items } : result;

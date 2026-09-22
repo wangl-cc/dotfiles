@@ -67,7 +67,7 @@ test('submit forwards a caller brief and existing profile; no auth header when o
   assert.deepEqual(requests[0].body, { metadata: { cwd: '/tmp/repo' } });
   assert.deepEqual(requests[1].body, {
     prompt_id: 'p1', content: [{ type: 'text', text: 'specific brief' }],
-    profile: 'reviewer', model: 'k3', permission_mode: 'manual',
+    profile: 'reviewer', model: 'k3', permission_mode: 'yolo',
   });
 });
 
@@ -78,6 +78,7 @@ test('follow-up reuses session without resetting its profile or model', async t 
   assert.equal(requests[0].url, '/api/v1/sessions/session-1/prompts');
   assert.equal(requests[0].body.profile, undefined);
   assert.equal(requests[0].body.model, undefined);
+  assert.equal(requests[0].body.permission_mode, 'yolo');
 });
 
 test('ambiguous prompt submission preserves handle and never retries POST', async t => {
@@ -120,19 +121,26 @@ test('non-advancing transcript pagination fails explicitly', async t => {
   await assert.rejects(client.result('s', 'missing'), /cursor did not advance/);
 });
 
-test('only the active target prompt receives pending approval details', async t => {
-  let current = 'p';
-  const { client } = await server(t, req => {
-    if (req.url.includes('/transcript')) return { items: [turn('p', 'running')], has_more: false };
-    if (req.url.includes('/approvals')) return { items: [{ approval_id: 'a1', tool_name: 'Bash' }] };
-    return { current_prompt_id: current, pending_interaction: 'approval' };
+for (const kind of ['approval', 'question']) {
+  test(`only the active target prompt receives ${kind} details when current_prompt_id is absent`, async t => {
+    let current = 'p';
+    const pending = { [`${kind}_id`]: 'input-1' };
+    const { client, requests } = await server(t, req => {
+      if (req.url.includes('/transcript')) return { items: [turn('p', 'running')], has_more: false };
+      if (req.url.endsWith('/prompts')) return { active: current ? { prompt_id: current } : null, queued: [{ prompt_id: 'p' }] };
+      if (req.url.includes(`/${kind}s?`)) return { items: [pending] };
+      return { pending_interaction: kind };
+    });
+    const result = await client.wait('s', 'p', { timeoutMs: 1000 });
+    assert.equal(result.status, 'needs_input');
+    assert.equal(result.interaction, kind);
+    assert.deepEqual(result.pending, [pending]);
+    for (current of ['other', null]) {
+      assert.equal((await client.result('s', 'p')).status, 'running');
+    }
+    assert.equal(requests.filter(req => req.url.includes(`/${kind}s?`)).length, 1);
   });
-  const result = await client.result('s', 'p');
-  assert.equal(result.status, 'needs_input');
-  assert.equal(result.pending[0].approval_id, 'a1');
-  current = 'other';
-  assert.equal((await client.result('s', 'p')).status, 'running');
-});
+}
 
 test('wait timeout covers stalled HTTP and does not cancel the task', async t => {
   const { client, requests } = await server(t, () => undefined);

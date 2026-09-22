@@ -22,7 +22,7 @@ node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs submit \
   --prompt-file /absolute/path/to/brief.txt
 ```
 
-Use `--prompt-file -` with a quoted heredoc for a short brief. Avoid shell interpolation of task text. Reuse `submit --session SESSION_ID --prompt-file FILE` for follow-up; it preserves the profile and model unless explicitly overridden. Use a separate session for unrelated work. Submit requests use Kimi's `manual` permission mode; this is not a filesystem sandbox.
+Use `--prompt-file -` with a quoted heredoc for a short brief. Avoid shell interpolation of task text. Reuse `submit --session SESSION_ID --prompt-file FILE` for follow-up; it preserves the profile and model unless explicitly overridden. Use a separate session for unrelated work. Every submit, including follow-ups, sets Kimi's `yolo` (Ask When Needed) permission mode: routine commands and edits run automatically, while built-in approval checks and user questions can still pause the task. This is not a read-only mode or a filesystem sandbox; keep the brief within the caller's authorized scope.
 
 ## Track and finish
 
