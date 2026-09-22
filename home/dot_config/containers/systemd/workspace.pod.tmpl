@@ -11,11 +11,9 @@ PodmanArgs=--share=net,uts --security-opt=label=disable
 ExitPolicy=continue
 PublishPort=127.0.0.1:2222:2222
 PublishPort=127.0.0.1:443:8443
-PublishPort=127.0.0.1:2718-2720:2718-2720
 {{ with get .device "tailscale_ipv4" -}}
 PublishPort={{ . }}:2222:2222
 PublishPort={{ . }}:443:8443
-PublishPort={{ . }}:2718-2720:2718-2720
 
 [Service]
 ExecStartPre=/usr/bin/tailscale wait --timeout=90s

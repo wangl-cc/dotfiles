@@ -18,3 +18,6 @@
 .config/containers/systemd/codex-box.build
 .config/containers/systemd/codex-box.container
 .config/containers/systemd/kimi-web-box.container
+.config/containers/systemd/marimo.build
+.local/bin/marimo-server
+.local/state/marimo/server-token

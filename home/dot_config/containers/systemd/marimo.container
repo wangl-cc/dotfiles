@@ -1,0 +1,28 @@
+[Unit]
+Description=Shared marimo notebook server
+
+[Container]
+Image=box-base.build
+ContainerName=marimo
+RunInit=true
+User=%u
+WorkingDir=/home/%u/Documents
+Exec=/home/%u/.local/bin/uvx --from marimo[sandbox]==0.24.0 marimo edit /home/%u/Documents --sandbox --headless --host 127.0.0.1 --port 2718 --no-token --skip-update-check
+
+Pod=workspace.pod
+SecurityLabelDisable=true
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+ShmSize=256m
+
+# The server and per-notebook kernels share the user's project environments.
+Volume=%h:/home/%u
+Mask=/home/%u/.ssh:/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/secret-proxy/credentials
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

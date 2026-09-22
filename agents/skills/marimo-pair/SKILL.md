@@ -16,37 +16,49 @@ A user interacts with the same runtime via a notebook UI with cells, outputs, an
 
 ## Connect to a Notebook
 
-Use the bundled script (`bash scripts/execute-code.sh`) or MCP (`execute_code(...)`) to run Python in a live marimo kernel.
+Use the bundled scripts from this skill's directory. They require Bash and Python 3, and connect to the managed shared server at `https://marimo.ws.loongw.cc` by default. `MARIMO_URL` overrides the default; `--url` or `--port` selects an explicit server. The configured Tailscale endpoint uses no token.
 
-If the user provides a notebook URL, target it directly:
+First list the server's active sessions:
 
 ```bash
-bash scripts/execute-code.sh --url http://localhost:2718 -c "print('connected')"
+bash scripts/discover-servers.sh
 ```
 
-Use `-c` only for short one-liners. For multiline code or code containing quotes, backticks, `$`, or braces, use a single-quoted heredoc:
+Select the intended notebook by its server-side path. A relative path must uniquely match an active session; use the full path when names overlap:
 
 ```bash
-bash scripts/execute-code.sh --url http://localhost:2718 <<'PY'
+bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py -c "print('connected')"
+```
+
+A browser URL also selects its `?file=` notebook:
+
+```bash
+bash scripts/execute-code.sh --url 'https://marimo.ws.loongw.cc/?file=ecDNA%2Fnotebooks%2Famplicon_cohorts.py' -c "print('connected')"
+```
+
+Use `--session` instead of a file selector when selecting an exact session ID. If no selector is supplied, execution requires exactly one active session. Do not guess between sessions.
+
+Use `-c` only for short one-liners. For multiline code or shell-sensitive characters, use a single-quoted heredoc:
+
+```bash
+bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py <<'PY'
 import marimo._code_mode as cm
 
 async with cm.get_context() as ctx:
-    cid = ctx.create_cell("x = df.head()")
-    ctx.run_cell(cid)
+    for cell in ctx.cells:
+        print(cell.id, cell.code)
 PY
 ```
 
-When code already lives in a file, pass the file path:
+When code already lives in a file, pass its path as the positional argument; `--file` always means the target notebook:
 
 ```bash
-bash scripts/execute-code.sh --url http://localhost:2718 /tmp/code.py
+bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py /tmp/code.py
 ```
 
-If no target is provided, find or start a session. First run `bash scripts/discover-servers.sh`. The script checks marimo's registry and, if the registry is empty, probes local listening ports for marimo's `/health`, `/api/version`, and `/api/sessions` endpoints. This fallback matters because marimo only writes registry entries for servers started without auth; a live notebook can still be reachable at `localhost:2718` even when discovery by registry returns nothing. When multiple servers or sessions are possible, target with `--url`, `--port`, or `--session`.
+The scripts query HTTP APIs only. They do not scan ports, inspect or delete registry entries, or read tokens from logs. Inside the workspace Pod, `--port 2718` selects `http://127.0.0.1:2718`; host processes use HTTPS.
 
-When the user provides a browser URL such as `http://192.168.1.191:2718/?file=notebook%2Fgenetics.py`, prefer that URL directly. If the URL is not local, warn about trust before connecting; the script already prints a warning for non-local hosts.
-
-If no server is running and the user wants a notebook, start marimo with `--no-token` (and without `--headless`) so it auto-registers for discovery. The notebook UI must be open before there is an active session for `execute-code` to target. The right way to invoke marimo depends on context (project tooling, global install, sandbox mode). If the notebook file contains a PEP 723 `# /// script` header, it MUST be opened with `--sandbox` — otherwise marimo ignores the inline dependencies. See [finding-marimo.md](reference/finding-marimo.md) for the full decision tree and [execution-context.md](reference/execution-context.md) for scripts, MCP, and shell quoting.
+`marimo.service` owns the server. If the notebook has no active session, have the user open it in the shared notebook browser. Do not launch a per-project server or restart the shared service to make a session appear. A transport error may occur after code has run: inspect the notebook before retrying a mutation. See [finding-marimo.md](reference/finding-marimo.md) for lifecycle and environment selection, and [execution-context.md](reference/execution-context.md) for targeting, authentication, and failures.
 
 ## Scratchpad Scope
 
@@ -186,12 +198,23 @@ Submit the code that belongs in the cell.
 
 ### Prefer `cm`-Managed Changes
 
-Use `cm` APIs when they exist. Avoid direct file edits, shell package commands, and scratchpad-only state for changes that should persist.
+Use `cm` APIs for notebook structure and UI. Choose package operations according to the environment ownership described below, and avoid scratchpad-only state for changes that should persist.
 
 - **Do not edit the `.py` artifact** - DO NOT use `Edit`, `Write`, or `NotebookEdit` on the notebook file during a live session. Use `ctx.edit_cell(...)` even for small changes.
-- **Manage packages through `cm`** - use `ctx.packages.add()` or `ctx.packages.remove()` instead of direct `uv` or `pip`; confirm non-obvious dependency changes.
+- **Respect dependency ownership** - use `ctx.packages.add()` or `ctx.packages.remove()` for notebook-managed sandboxes. For an existing project `.venv`, manage dependencies through the project workflow rather than notebook package APIs.
 - **Avoid transient paths** - persisted cells should not depend on `/tmp/...` unless the work is intentionally transient.
 - **Delete deliberately** - deleting a cell removes globals it defines. Reuse empty cells when convenient and delete cells left empty after edits.
+
+### Package and Environment Ownership
+
+Before changing dependencies, inspect the notebook's inline metadata, relevant project configuration, and the active kernel's `sys.executable` and package locations. A shared server does not imply shared kernels, and a notebook's `dependencies` header does not prove it runs in a separate sandbox.
+
+- **Notebook-managed sandbox**: inline PEP 723 dependencies describe the notebook environment. Use `ctx.packages` for authorized package changes.
+- **Existing project `.venv`**: `[tool.marimo.venv]` selects that environment instead of an automatic sandbox. Follow the project's dependency workflow; for an authorized uv-managed project change, run `uv add` from the project directory and synchronize through its normal workflow. Keep `pyproject.toml` and `uv.lock` consistent with the intended environment. Do not run `uv sync` merely to investigate an installation, since it may remove undeclared packages.
+
+In the inspected marimo 0.24 behavior, `writable=false` is not a complete read-only guarantee. UI or missing-package installation can still modify the selected `.venv`, while automatic dependency recording can write notebook metadata without updating the project's dependency files. Do not use this flag as permission to install packages. Seeing `uv add` alone does not establish that project metadata was updated: `uv add --script notebook.py` writes the notebook's inline dependencies.
+
+Local editable packages, native extensions, and import hooks need their own sandbox configuration and runtime verification. Do not assume a sandbox inherits project `.venv` packages or startup hooks, or that moving a notebook to sandbox mode has already been completed.
 
 ### UI and Widgets
 
@@ -204,8 +227,8 @@ For designing custom visual or interactive output, see [rich-representations.md]
 
 ## References
 
-- [execution-context.md](reference/execution-context.md) — scripts, MCP, auth, startup, and shell quoting
-- [finding-marimo.md](reference/finding-marimo.md) — choosing the right marimo invocation
+- [execution-context.md](reference/execution-context.md) — script targeting, auth, failures, and shell quoting
+- [finding-marimo.md](reference/finding-marimo.md) — shared service lifecycle and environment selection
 - [gotchas.md](reference/gotchas.md) — name redefinition, cached module proxies, and notebook traps
 - [rich-representations.md](reference/rich-representations.md) — custom widgets and visualizations
 - [notebook-improvements.md](reference/notebook-improvements.md) — improving existing notebooks

@@ -25,3 +25,8 @@ https://dsh.{{ .device.domain }} {
     import cloudflare_tls
     reverse_proxy 127.0.0.1:3080
 }
+
+https://marimo.{{ .device.domain }} {
+    import cloudflare_tls
+    reverse_proxy 127.0.0.1:2718
+}
