@@ -1,5 +1,8 @@
 mode = "symlink"
 
+[env]
+PATH = {{ concat (list (joinPath .chezmoi.homeDir ".local/bin") (joinPath .chezmoi.homeDir ".cargo/bin")) (splitList ":" (env "PATH")) | uniq | join ":" | quote }}
+
 [data.mirrors]
 {{- /* Use mirrors in China, we determine if in China by comparing tzdata */}}
 enabled = {{ eq (include "/etc/localtime" | sha1sum)  "79360e38e040eaa15b6e880296c1d1531f537b6f" }}

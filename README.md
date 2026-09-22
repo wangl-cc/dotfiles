@@ -14,6 +14,8 @@ curl -fsLS https://get.chezmoi.io | sh -s -- \
 
 Initialization prompts for machine-local options and saves them in `~/.config/chezmoi/chezmoi.toml`.
 
+Initialization also prepends `~/.local/bin` and `~/.cargo/bin` to the saved PATH for chezmoi and its child processes. Existing installations should run `"$HOME/.local/bin/chezmoi" init` without applying to generate this setting, then review the diff before applying. The remaining PATH entries are captured at initialization; use `chezmoi edit-config` to update the saved `env.PATH` if those search paths change.
+
 Container deployment prompts appear only on Linux, and networking and ACME prompts follow the enabled services. Run `chezmoi init --prompt` without applying to regenerate existing configuration with these conditions; enabled workspaces initialize `acme.ca` to ZeroSSL and require a contact email.
 
 ## Updates
