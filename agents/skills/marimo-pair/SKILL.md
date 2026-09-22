@@ -207,7 +207,7 @@ Use `cm` APIs for notebook structure and UI. Choose package operations according
 
 ### Package and Environment Ownership
 
-Before changing dependencies, inspect the notebook's inline metadata, relevant project configuration, and the active kernel's `sys.executable` and package locations. A shared server does not imply shared kernels, and a notebook's `dependencies` header does not prove it runs in a separate sandbox.
+Before changing dependencies, inspect the notebook's inline metadata, relevant project configuration, and the active kernel's `sys.executable` and package locations. A shared server does not imply shared kernels, and a notebook's `dependencies` header does not prove it runs in a separate sandbox. Read [dependencies.md](reference/dependencies.md) for adding ordinary packages, local editable dependencies, native extensions and import hooks, or reusable helpers, including live-session constraints and verification examples.
 
 - **Notebook-managed sandbox**: inline PEP 723 dependencies describe the notebook environment. Use `ctx.packages` for authorized package changes.
 - **Existing project `.venv`**: `[tool.marimo.venv]` selects that environment instead of an automatic sandbox. Follow the project's dependency workflow; for an authorized uv-managed project change, run `uv add` from the project directory and synchronize through its normal workflow. Keep `pyproject.toml` and `uv.lock` consistent with the intended environment. Do not run `uv sync` merely to investigate an installation, since it may remove undeclared packages.
@@ -229,6 +229,7 @@ For designing custom visual or interactive output, see [rich-representations.md]
 
 - [execution-context.md](reference/execution-context.md) — script targeting, auth, failures, and shell quoting
 - [finding-marimo.md](reference/finding-marimo.md) — shared service lifecycle and environment selection
+- [dependencies.md](reference/dependencies.md) — package installation, local sources, native rebuilds, helpers, and verification
 - [gotchas.md](reference/gotchas.md) — name redefinition, cached module proxies, and notebook traps
 - [rich-representations.md](reference/rich-representations.md) — custom widgets and visualizations
 - [notebook-improvements.md](reference/notebook-improvements.md) — improving existing notebooks
