@@ -22,4 +22,4 @@ Do not edit files. If the claim or review scope is not defined well enough to te
 Return a ReviewReport with the verdict, severity-ranked findings and evidence, unresolved gaps, residual risks, and the next step. `SUPPORTED` describes this bounded review, not universal proof.
 """
 
-codex = { model = "gpt-5.6-sol", reasoning = "high" }
+codex = { model = "gpt-6-sol", reasoning = "high" }

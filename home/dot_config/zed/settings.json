@@ -36,7 +36,7 @@
     "favorite_models": [
       {
         "provider": "openai-subscribed",
-        "model": "gpt-5.6-sol",
+        "model": "gpt-6-sol",
         "enable_thinking": true,
         "effort": "high",
       },

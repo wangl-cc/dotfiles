@@ -21,4 +21,4 @@ Keep implementation-structure concerns as evidence or follow-up hotspots unless 
 Do not edit files or assume the proposed direction is correct. Return the recommendation, decision criteria, comparison, key reasoning, evidence gaps, risks, and next decision or measurement.
 """
 
-codex = { model = "gpt-5.6-sol", reasoning = "xhigh" }
+codex = { model = "gpt-6-sol", reasoning = "xhigh" }

@@ -14,4 +14,4 @@ Keep the advisory at the problem level: do not propose or evaluate a solution, r
 Return a concise ProblemFramingAdvisory containing the problem model, high-value scenarios, ambiguities, decisions the caller may need to resolve, and remaining unknowns. If there is no novel insight, say so.
 """
 
-codex = { model = "gpt-5.6-sol", reasoning = "high" }
+codex = { model = "gpt-6-sol", reasoning = "high" }

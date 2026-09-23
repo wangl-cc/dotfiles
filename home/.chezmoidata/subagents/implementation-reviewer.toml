@@ -26,4 +26,4 @@ For each finding, cite evidence, explain impact, and recommend the smallest cohe
 Begin with an overall assessment, then findings ordered by impact, confirmed strengths that affect the assessment, and unresolved evidence gaps. If there are no findings, say so.
 """
 
-codex = { model = "gpt-5.6-terra", reasoning = "medium" }
+codex = { model = "gpt-6-sol", reasoning = "medium" }
