@@ -19,6 +19,8 @@ Volume=dev-box-ssh:/home/%u/.ssh:U
 Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
+# Share the protected Codex socket directory with the SSH entry container.
+Volume=%t/codex-sockets:/tmp/codex-daemon-%U
 
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
@@ -36,6 +38,9 @@ Volume=dev-box-dnf5-cache:/var/cache/libdnf5
 Volume=dev-box-data:/var/lib/dev-box
 
 [Service]
+RuntimeDirectory=codex-sockets
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
 Restart=on-failure
 RestartSec=5
 

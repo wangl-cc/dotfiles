@@ -19,6 +19,8 @@ SecurityLabelDisable=true
 Unmask=/proc/*
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
+# Share the protected Codex socket directory with the SSH entry container.
+Volume=%t/codex-sockets:/tmp/codex-daemon-%U
 
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
@@ -37,6 +39,9 @@ Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/ho
 Volume=codex-box-ssh:/home/%u/.ssh:U
 
 [Service]
+RuntimeDirectory=codex-sockets
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
 Restart=on-failure
 RestartSec=5
 
