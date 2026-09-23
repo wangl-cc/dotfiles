@@ -14,6 +14,8 @@ Exec=/home/%u/.local/bin/codex app-server --remote-control --listen unix://
 
 Pod=workspace.pod
 SecurityLabelDisable=true
+# Allow profiling syscalls such as perf_event_open.
+SeccompProfile=unconfined
 # Nested bwrap needs a fully visible outer /proc to mount its own procfs.
 # Podman's /proc masks and read-only submounts otherwise cause EPERM.
 Unmask=/proc/*
