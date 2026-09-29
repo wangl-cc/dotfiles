@@ -29,3 +29,4 @@
 .local/bin/marimo-server
 .local/state/marimo/server-token
 .config/containers/systemd/workspace.pod
+.claude/statusline.sh

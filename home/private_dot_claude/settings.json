@@ -1,0 +1,42 @@
+{
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.agents"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(cargo test *)",
+      "Bash(cargo build *)",
+      "Bash(cargo clippy *)",
+      "Bash(typst compile *)",
+      "Bash(echo \"EXIT: $?\")"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "enableWorkflows": true,
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "theme": "dark-ansi",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": true
+}
