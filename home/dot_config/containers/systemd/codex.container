@@ -1,49 +1,72 @@
 [Unit]
 Description=Codex Remote Control Container
-Requires=ssh-agent.socket
+Requires=ssh-agent.socket gh-config.service
 Wants=ssh-agent-load.service
-After=ssh-agent-load.service
+After=ssh-agent-load.service gh-config.service
 
 [Container]
+# Process
 Image=box-base.build
 ContainerName=codex
-RunInit=true
-User=%u
 WorkingDir=/home/%u
-Exec=/home/%u/.local/bin/codex app-server --remote-control --listen unix://
+Exec=codex app-server --remote-control --listen unix://
 
-Pod=workspace.pod
+# Shared development tool paths and application configuration directories.
+EnvironmentFile=./development.env
+
+# Reap orphaned processes from agent tools and shell commands.
+RunInit=true
+
+# Network: call workspace services and the credential proxy.
+Network=workspace.network
+Network=secret-proxy.network
+
+# Identity: retain host ownership when reading and writing the shared home.
+UserNS=keep-id
+
+# SELinux: preserve existing labels on shared host files and sockets.
 SecurityLabelDisable=true
-# Allow profiling syscalls such as perf_event_open.
-SeccompProfile=unconfined
-# Nested bwrap needs a fully visible outer /proc to mount its own procfs.
-# Podman's /proc masks and read-only submounts otherwise cause EPERM.
-Unmask=/proc/*
-Volume=/etc/localtime:/etc/localtime:ro
-Tmpfs=/tmp
-# Share the protected Codex socket directory with the SSH entry container.
-Volume=%t/codex-sockets:/tmp/codex-daemon-%U
 
+# Tool permissions: allow profiling syscalls such as perf_event_open.
+SeccompProfile=unconfined
+
+# Sandbox support: nested bwrap needs an unmasked outer /proc to mount its own procfs.
+Unmask=/proc/*
+
+# Git authentication: rewrite configured upstreams through secret-proxy.
+Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
+
+# GitHub CLI: shadow host login state with ordinary config and a proxy socket.
+Volume=%t/gh-config:/home/%u/.config/gh:ro
+Volume=%t/secret-proxy:/run/secret-proxy:ro
+Environment=GH_TOKEN=proxy-placeholder
+
+# Shared home: reuse projects, tools and configuration; mask private host state.
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/credstore.encrypted
+
+# Delegate through service APIs; hide other agents' provider credentials.
+# Keep Kimi's server.token available to its API client.
+Mask=/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env
+
+# SSH: hide host private keys behind a client-state volume and use the forwarded agent.
+Volume=codex-box-ssh:/home/%u/.ssh:U
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 
-# Codex shares the host user's projects, tools, configuration, and runtime
-# state. Its system environment and process lifecycle remain containerized.
-Volume=%h:/home/%u
-Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
+# Codex control socket: share the protected runtime directory with the SSH entry container.
+Volume=%t/codex-sockets:/tmp/codex-daemon-%U
 
-# Do not expose host container storage or editor runtime sockets through the
-# recursive home bind.
-Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/secret-proxy/credentials
-
-# Keep private key files outside the container. Git and SSH authenticate via
-# the host agent; this volume only holds client configuration and known hosts.
-Volume=codex-box-ssh:/home/%u/.ssh:U
+# Runtime files: use host timezone data and disposable scratch space.
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
 
 [Service]
-RuntimeDirectory=codex-sockets
+# Keep the shared control-socket directory across individual service restarts.
+RuntimeDirectory=codex-sockets secret-proxy
 RuntimeDirectoryMode=0700
 RuntimeDirectoryPreserve=yes
+
 Restart=on-failure
 RestartSec=5
 

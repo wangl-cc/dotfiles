@@ -1,4 +1,1 @@
-*
-!go.mod
-!*.go
-!Containerfile
+README.md

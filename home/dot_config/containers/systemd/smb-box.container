@@ -2,23 +2,31 @@
 Description=Public folder over SMB on Tailscale
 
 [Container]
+# Process
 Image=smb-box.build
 ContainerName=smb-box
+
+# Reap orphaned processes from Samba client sessions.
 RunInit=true
 
-# Map the host user to the fixed smb account; start Samba as namespace root.
-UserNS=keep-id:uid=1000,gid=1000
-User=0
-
-# Use a private rootless network. Host port publication belongs in
-# smb-box.container.d/10-network.conf on the host.
+# Network: independent rootless networking; the drop-in publishes the Tailscale port.
 Network=private
 HostName=%H
 
-# Preserve existing host labels and ownership. Mount shared folders under /srv/public.
+# Identity: map the host user to smb; namespace root can switch to that account.
+UserNS=keep-id:uid=1000,gid=1000
+User=0
+
+# SELinux: preserve existing labels on the shared host Documents directory.
 SecurityLabelDisable=true
+
+# Shared files: expose host Documents with their existing ownership.
 Volume=%h/Documents:/srv/public/Documents:rw
+
+# Persistent state: retain Samba accounts and service databases.
 Volume=smb-box-data:/var/lib/samba
+
+# Runtime files: use host timezone data and disposable scratch space.
 Volume=/etc/localtime:/etc/localtime:ro
 Tmpfs=/tmp
 Tmpfs=/run/samba

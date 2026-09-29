@@ -1,0 +1,5 @@
+[Network]
+NetworkName=llm
+# Bifrost and its ingress only. Keep Bifrost off workspace so a compromised
+# gateway cannot reach unauthenticated development services.
+Options=isolate=true

@@ -1,0 +1,66 @@
+[Unit]
+Description=DeepSeek Harness Web Container
+Requires=ssh-agent.socket gh-config.service
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service gh-config.service
+
+[Container]
+# Process
+Image=box-base.build
+ContainerName=dsh
+WorkingDir=/home/%u
+# The deployment overlay sets the listener and ingress hosts on the normal web profile.
+Exec=dsh web --patch /home/%u/.dsh/profiles/web/hosts.yml --no-open
+
+# Shared development tool paths and application configuration directories.
+EnvironmentFile=./development.env
+
+# Reap orphaned processes from agent tools and shell commands.
+RunInit=true
+
+# Network: serve the web API and reach the credential proxy.
+Network=workspace.network
+Network=secret-proxy.network
+
+# Identity: retain host ownership when reading and writing the shared home.
+UserNS=keep-id
+
+# SELinux: preserve existing labels on shared host files and sockets.
+SecurityLabelDisable=true
+
+# Git authentication: rewrite configured upstreams through secret-proxy.
+Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
+
+# GitHub CLI: shadow host login state with ordinary config and a proxy socket.
+Volume=%t/gh-config:/home/%u/.config/gh:ro
+Volume=%t/secret-proxy:/run/secret-proxy:ro
+Environment=GH_TOKEN=proxy-placeholder
+
+# Shared home: reuse projects, tools and configuration; mask private host state.
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/credstore.encrypted
+
+# Delegate through service APIs; hide other agents' provider credentials.
+# Keep Kimi's server.token available to its API client.
+Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml
+
+# SSH: hide host private keys behind a client-state volume and use the forwarded agent.
+Volume=dsh-box-ssh:/home/%u/.ssh:U
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
+
+# Runtime files: use host timezone data and disposable scratch space.
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+
+[Service]
+# Preserve the shared socket directory across proxy and client restarts.
+RuntimeDirectory=secret-proxy
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

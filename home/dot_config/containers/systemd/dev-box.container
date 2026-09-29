@@ -5,42 +5,58 @@ Wants=ssh-agent-load.service
 After=ssh-agent-load.service
 
 [Container]
+# Process
 Image=dev-box.build
 ContainerName=dev-box
+
+# Reap orphaned processes from SSH sessions and interactive commands.
 RunInit=true
 
-Pod=workspace.pod
+# Network: workspace services and credential proxy; SSH publication is in the drop-in.
+Network=workspace.network
+Network=secret-proxy.network
+
+# Identity: map the login user to the host; sshd starts as namespace root.
+UserNS=keep-id
 User=0
+
+# SELinux: preserve existing labels on shared host files and sockets.
 SecurityLabelDisable=true
-Volume=%h:/home/%u
+
+# Tool permissions: retain the development environment's syscall access.
+SeccompProfile=unconfined
+
+# Git authentication: rewrite configured upstreams through secret-proxy.
 Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
-Mask=/home/%u/.local/share/containers:/home/%u/.config/secret-proxy/credentials
+
+# Shared home: reuse projects, tools and configuration; mask private host state.
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.config/credstore.encrypted
+
+# SSH: hide host private keys behind a client-state volume and use the forwarded agent.
+# Mount authorized_keys separately for inbound login.
 Volume=dev-box-ssh:/home/%u/.ssh:U
 Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
-Volume=/etc/localtime:/etc/localtime:ro
-Tmpfs=/tmp
-# Share the protected Codex socket directory with the SSH entry container.
-Volume=%t/codex-sockets:/tmp/codex-daemon-%U
-
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 
-AddDevice=/dev/kfd
-AddDevice=/dev/dri
-Ulimit=memlock=-1:-1
-SeccompProfile=unconfined
-PodmanArgs=--ipc host
+# Codex control socket: let SSH clients reach the separate Codex service.
+Volume=%t/codex-sockets:/tmp/codex-daemon-%U
 
-# Persist cache of dnf5
+# Persistent state: retain SSH host keys and the package cache across recreation.
+Volume=dev-box-data:/var/lib/dev-box
 Volume=dev-box-dnf5-cache:/var/cache/libdnf5
 
-# Persist the container's state; ssh/ contains only the SSH host keys.
-Volume=dev-box-data:/var/lib/dev-box
+# Runtime files: use host timezone data and disposable scratch space.
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
 
 [Service]
+# Keep the shared control-socket directory across individual service restarts.
 RuntimeDirectory=codex-sockets
 RuntimeDirectoryMode=0700
 RuntimeDirectoryPreserve=yes
+
 Restart=on-failure
 RestartSec=5
 

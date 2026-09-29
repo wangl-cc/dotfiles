@@ -10,23 +10,33 @@
 (cloudflare_tls) {
     tls{{ if .acme.email }} {{ .acme.email | quote }}{{ end }} {
         ca {{ .acme.ca }}
-        dns cloudflare {env.CF_API_TOKEN}
+        dns cloudflare {file./run/credentials/cloudflare-dns-token}
         propagation_delay 60s
         resolvers 1.1.1.1 1.0.0.1
     }
 }
 
+{{ if .services.development -}}
 https://kimi.{{ .device.domain }} {
     import cloudflare_tls
-    reverse_proxy 127.0.0.1:58627
+    reverse_proxy kimi:58627
 }
 
 https://dsh.{{ .device.domain }} {
     import cloudflare_tls
-    reverse_proxy 127.0.0.1:3080
+    reverse_proxy dsh:3080
 }
 
 https://marimo.{{ .device.domain }} {
     import cloudflare_tls
-    reverse_proxy 127.0.0.1:2718
+    reverse_proxy marimo:2718
 }
+
+{{ end -}}
+
+{{ if .services.llm -}}
+https://llm.{{ .device.domain }} {
+    import cloudflare_tls
+    reverse_proxy bifrost:8080
+}
+{{ end -}}

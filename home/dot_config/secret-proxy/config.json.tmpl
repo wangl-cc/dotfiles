@@ -1,0 +1,33 @@
+{
+  "endpoints": [
+    {
+      "adapter": "http",
+      "address": "0.0.0.0:8787"
+    },
+    {
+      "adapter": "gh",
+      "address": "/run/secret-proxy/proxy.sock"
+    }
+  ],
+  "upstreams": {
+    "git.overleaf.com": {
+      "auth": {
+        "type": "basic",
+        "username": "git",
+        "credential": "overleaf-token"
+      }
+    },
+    "api.github.com": {
+      "auth": {
+        "type": "bearer",
+        "credential": "github-token"
+      }
+    },
+    "uploads.github.com": {
+      "auth": {
+        "type": "bearer",
+        "credential": "github-token"
+      }
+    }
+  }
+}

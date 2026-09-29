@@ -1,0 +1,68 @@
+[Unit]
+Description=Kimi Web Container
+Requires=ssh-agent.socket gh-config.service
+Wants=ssh-agent-load.service
+After=ssh-agent-load.service gh-config.service
+
+[Container]
+# Process
+Image=box-base.build
+ContainerName=kimi
+WorkingDir=/home/%u
+Exec=kimi web --no-open --host 0.0.0.0 --port 58627 --dangerous-bypass-auth
+
+# Shared development tool paths and application configuration directories.
+EnvironmentFile=./development.env
+
+# HTTP Host allowlist: container DNS and the enabled ingress hostnames.
+EnvironmentFile=./kimi.env
+
+# Reap orphaned processes from agent tools and shell commands.
+RunInit=true
+
+# Network: serve the web API and reach the credential proxy.
+Network=workspace.network
+Network=secret-proxy.network
+
+# Identity: retain host ownership when reading and writing the shared home.
+UserNS=keep-id
+
+# SELinux: preserve existing labels on shared host files and sockets.
+SecurityLabelDisable=true
+
+# Shared home: reuse projects, tools and configuration; mask private host state.
+Volume=%h:/home/%u
+Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/credstore.encrypted
+
+# Delegate through service APIs; hide other agents' provider credentials.
+Mask=/home/%u/.codex/auth.json:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env
+
+# SSH authentication by ssh-agent
+Volume=kimi-web-box-ssh:/home/%u/.ssh:U
+Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
+
+# Git authentication: rewrite configured upstreams through secret-proxy.
+Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
+
+# GitHub CLI authentication
+Volume=%t/gh-config:/home/%u/.config/gh:ro
+Volume=%t/secret-proxy:/run/secret-proxy:ro
+Environment=GH_TOKEN=proxy-placeholder
+
+
+# Runtime files: use host timezone data and disposable scratch space.
+Volume=/etc/localtime:/etc/localtime:ro
+Tmpfs=/tmp
+
+[Service]
+# Preserve the shared socket directory across proxy and client restarts.
+RuntimeDirectory=secret-proxy
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

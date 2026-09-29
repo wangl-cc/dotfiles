@@ -1,0 +1,8 @@
+{{ with get .device "tailscale_ipv4" -}}
+[Container]
+PublishPort={{ . }}:2222:2222
+
+[Service]
+ExecStartPre=/usr/bin/tailscale wait --timeout=90s
+ExecStartPre=/usr/bin/tailscale ip --assert={{ . }}
+{{ end -}}

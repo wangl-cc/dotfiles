@@ -1,0 +1,24 @@
+# Container listener: the native webserver supports this bind; the CLI rejects --host 0.0.0.0.
+# Patches replace the whole config, so retain the shipped compression settings.
+- id: webserver
+  config:
+    host: 0.0.0.0
+    port: 3080
+    compression: gzip
+    compressionLevel: 1
+    compressionThresholdBytes: 1024
+
+# Retain native bind-derived and CLI trusted hosts.
+- id: connection
+  config:
+    trustedHosts: !!js >-
+      [
+        "dsh",
+{{- if .ingress.caddy }}
+        {{ printf "dsh.%s" .device.domain | quote }},
+{{- end }}
+{{- if .ingress.cloudflared }}
+        {{ printf "dsh-%s" .device.domain | quote }},
+{{- end }}
+        ...ctx.webRuntime.trustedHosts,
+      ]

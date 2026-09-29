@@ -1,0 +1,6 @@
+[Build]
+ImageTag=localhost/vllm
+SetWorkingDirectory=%h/.local/share/chezmoi/containers/vllm
+
+[Service]
+TimeoutStartSec=900

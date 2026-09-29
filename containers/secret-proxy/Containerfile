@@ -1,11 +1,15 @@
-FROM docker.io/library/golang:1.27.1-alpine AS build
+FROM docker.io/library/golang:1.27.1-alpine AS source
 WORKDIR /src
-COPY go.mod ./
-COPY *.go ./
-RUN go test ./... && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /secret-proxy .
+COPY . .
 
-FROM scratch
+FROM source AS test
+RUN go test -count=1 ./...
+
+FROM source AS build
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /secret-proxy ./cmd/secret-proxy
+
+FROM scratch AS runtime
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /secret-proxy /secret-proxy
-USER 65532:65532
+
 ENTRYPOINT ["/secret-proxy"]

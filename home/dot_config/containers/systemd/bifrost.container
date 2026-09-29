@@ -1,0 +1,46 @@
+[Unit]
+Description=LLM API gateway
+
+[Container]
+# Process: the image entrypoint prepares state, then execs the gateway.
+Image=docker.io/maximhq/bifrost:v2.2.3
+ContainerName=bifrost
+
+# Network: accept ingress requests on llm and reach vLLM on the inference network.
+# Stay off workspace: development services there have no application login.
+Network=llm.network
+Network=inference.network
+
+# Confinement: the gateway does not need Linux capabilities or privilege escalation.
+NoNewPrivileges=true
+DropCapability=all
+
+# Podman reads the systemd-decrypted env file before starting the image entrypoint.
+# Keep the key stable; replacing it requires re-encrypting the existing database.
+# Podman stores the value in the container config beside bifrost-data, which it protects;
+# the encrypted credential covers volume copies. Bifrost cannot read the key from a file.
+EnvironmentFile=%d/bifrost.env
+
+# State and bootstrap configuration: SQLite persists beneath APP_DIR.
+# Mount the data volume before its config file; U adjusts ownership and Z labels both.
+Volume=bifrost-data:/app/data:U,Z
+Volume=%h/.config/bifrost/config.json:/app/data/config.json:ro,Z
+
+# Scratch: temporary files do not belong in persistent service state.
+Tmpfs=/tmp
+
+# Readiness: define the check explicitly; the published image has no HEALTHCHECK.
+Notify=healthy
+HealthCmd=/usr/bin/wget -q --spider http://127.0.0.1:8080/health
+HealthTimeout=5s
+HealthStartPeriod=60s
+HealthOnFailure=kill
+
+[Service]
+LoadCredentialEncrypted=bifrost.env
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+
+[Install]
+WantedBy=default.target

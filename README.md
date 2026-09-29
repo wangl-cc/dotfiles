@@ -14,9 +14,9 @@ curl -fsLS https://get.chezmoi.io | sh -s -- \
 
 Initialization prompts for machine-local options and saves them in `~/.config/chezmoi/chezmoi.toml`.
 
-Initialization also prepends `~/.local/bin` and `~/.cargo/bin` to the saved PATH for chezmoi and its child processes. Existing installations should run `"$HOME/.local/bin/chezmoi" init` without applying to generate this setting, then review the diff before applying. The remaining PATH entries are captured at initialization; use `chezmoi edit-config` to update the saved `env.PATH` if those search paths change.
+Initialization also prepends `~/.local/bin` and `~/.cargo/bin` to the saved PATH for chezmoi and its child processes. The remaining PATH entries are captured at initialization; use `chezmoi edit-config` to update the saved `env.PATH` if those search paths change.
 
-Container deployment prompts appear only on Linux, and networking and ACME prompts follow the enabled services. Run `chezmoi init --prompt` without applying to regenerate existing configuration with these conditions; enabled workspaces initialize `acme.ca` to ZeroSSL and require a contact email.
+Containers are Linux-only and optional. See [machine configuration](docs/configuration.md) for service choices and the [container guide](docs/containers.md) for credentials, DNS, and startup.
 
 ## Updates
 
@@ -24,12 +24,12 @@ Container deployment prompts appear only on Linux, and networking and ACME promp
 chezmoi update
 ```
 
-Use `chezmoi edit-config` to change local options, then review `chezmoi diff` before `chezmoi apply`. When initialization options change, run `chezmoi init --prompt` without applying first; see the [configuration and migration notes](docs/configuration.md).
+Use `chezmoi edit-config` to change local options, or `chezmoi init --prompt` to revisit initialization choices; see [machine configuration](docs/configuration.md).
+
+For local edits, use `chezmoi diff` followed by `chezmoi apply`. Review scripts and external-package changes as part of the diff. Container service reloads and restarts are separate from applying dotfiles.
 
 ## Documentation
 
-- [Machine configuration](docs/configuration.md): initialization options, migration, and shell behavior.
+- [Machine configuration](docs/configuration.md): initialization options and shell behavior.
 - [Portable packages](docs/portable-packages.md): package strategy and manifest helper.
-- [Development containers](docs/dev-containers.md): workspace Pod, HTTPS, and maintenance.
-- [Secret proxy](containers/secret-proxy/README.md): HTTP authentication and encrypted host credentials.
-- [Samba container](containers/smb-box/README.md): file sharing.
+- [Container services](docs/containers.md): services, networks, credentials, and deployment.

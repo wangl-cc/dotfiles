@@ -1,0 +1,19 @@
+[Unit]
+Description=Generate the GitHub CLI configuration for proxy clients
+Wants=gh-config.path
+# Repeated saves must not permanently stop the path watcher.
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+RuntimeDirectory=gh-config
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
+WorkingDirectory=%t/gh-config
+UMask=0077
+# Append the container-only socket setting, then replace the file within the
+# preserved directory so existing directory mounts see the updated config.
+ExecStart=/bin/sh -c '\
+    cat "%h/.config/gh/config.yml" > config.yml.tmp && \
+    printf "\\nhttp_unix_socket: /run/secret-proxy/proxy.sock\\n" >> config.yml.tmp && \
+    mv -f config.yml.tmp config.yml'

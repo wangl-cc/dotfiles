@@ -1,0 +1,38 @@
+[Unit]
+Description=Public workspace ingress through Cloudflare Tunnel
+
+[Container]
+# Process: use the image user; upgrades are controlled by the pinned image.
+# Keep metrics on loopback; in containers cloudflared otherwise listens on all addresses.
+Image=docker.io/cloudflare/cloudflared:2026.9.3
+ContainerName=cloudflared
+# Map the credential owner to the image user without changing credential permissions.
+UserNS=keep-id:uid=65532,gid=65532
+Exec=tunnel --no-autoupdate --metrics 127.0.0.1:20241 --config /etc/cloudflared/config.yml run
+
+# Network: reach upstream services directly; the connector publishes no host ports.
+# Join each enabled backend network; a multi-homed container does not route between them.
+{{- if .services.development }}
+Network=workspace.network
+{{- end }}
+{{- if .services.llm }}
+Network=llm.network
+{{- end }}
+
+# Confinement: no writable image state or additional process privileges are needed.
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
+# Configuration and Tunnel credentials: mount read-only.
+Volume=%h/.config/cloudflared/config.yml:/etc/cloudflared/config.yml:ro,Z
+Volume=%d:/run/credentials:ro,Z
+
+[Service]
+LoadCredentialEncrypted=cloudflared-credentials
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+
+[Install]
+WantedBy=default.target

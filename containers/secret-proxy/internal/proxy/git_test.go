@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"io"
@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 )
 
 // Exercise an actual smart-HTTP push and clone when Git is available. The
@@ -58,7 +57,7 @@ func TestGitPushAndCloneWithoutClientCredentials(t *testing.T) {
 		Env:    []string{"GIT_PROJECT_ROOT=" + dir, "GIT_HTTP_EXPORT_ALL=1", "REMOTE_USER=git", "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL=/dev/null"},
 		Stderr: io.Discard,
 	}
-	upstream := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, password, ok := r.BasicAuth()
 		if !ok || user != "git" || password != "dummy-token" {
 			http.Error(w, "authentication required", http.StatusUnauthorized)
@@ -66,15 +65,18 @@ func TestGitPushAndCloneWithoutClientCredentials(t *testing.T) {
 		}
 		cgiBackend.ServeHTTP(w, r)
 	}))
-	defer upstream.Close()
+	defer server.Close()
 	writeFile(t, dir, "credential", "dummy-token")
-	s, err := compileService(serviceConfig{Upstream: upstream.URL, Auth: authConfig{Type: "basic", Username: "git", Credential: "credential"}}, dir)
+	s, err := compileAuth(&authConfig{Type: "basic", Username: "git", Credential: "credential"}, dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	proxy := httptest.NewServer(newHandler(map[string]service{"overleaf": s}, upstream.Client().Transport, 10*time.Second, log.New(io.Discard, "", 0)))
+	proxy := httptest.NewServer(pathAdapter.handler(map[string]credential{"git.overleaf.com": s}, fixtureTransport(server), log.New(io.Discard, "", 0)))
 	defer proxy.Close()
-	remote := proxy.URL + "/overleaf/repo.git"
+	// Exercise the actual insteadOf integration while keeping the original remote URL.
+	rewriteKey := "url." + proxy.URL + "/git.overleaf.com/.insteadOf"
+	env = append(env, "GIT_CONFIG_COUNT=1", "GIT_CONFIG_KEY_0="+rewriteKey, "GIT_CONFIG_VALUE_0=https://git.overleaf.com/")
+	remote := "https://git.overleaf.com/repo.git"
 	gitRun("-C", local, "push", remote, "main")
 	gitRun("clone", "--branch=main", remote, clone)
 	if gitRun("-C", local, "rev-parse", "HEAD") != gitRun("-C", clone, "rev-parse", "HEAD") {

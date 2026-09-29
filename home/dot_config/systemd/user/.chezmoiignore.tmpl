@@ -1,3 +1,7 @@
 {{ if ne .chezmoi.hostname "loongcc-workstation" }}
 ssh-agent-load.service
 {{ end }}
+{{ if not .services.development }}
+gh-config.path
+gh-config.service
+{{ end }}

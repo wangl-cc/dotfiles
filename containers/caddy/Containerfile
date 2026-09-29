@@ -3,5 +3,14 @@ FROM docker.io/library/caddy:${CADDY_VERSION}-builder AS builder
 ARG CADDY_VERSION
 RUN xcaddy build "${CADDY_VERSION}" --with github.com/caddy-dns/cloudflare@v0.2.4
 
-FROM docker.io/library/caddy:${CADDY_VERSION}
+FROM docker.io/library/alpine:3.23
+RUN apk add --no-cache ca-certificates \
+    && mkdir -p /config/caddy /data/caddy /etc/caddy /srv \
+    && chown -R 65532:65532 /config /data
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+ENV XDG_CONFIG_HOME=/config \
+    XDG_DATA_HOME=/data
+USER 65532:65532
+WORKDIR /srv
+EXPOSE 8443/tcp
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

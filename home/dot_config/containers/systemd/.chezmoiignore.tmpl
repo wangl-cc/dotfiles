@@ -1,15 +1,30 @@
-{{ if or (ne .chezmoi.os "linux") (not (get (get . "workspace" | default dict) "enabled")) }}
-workspace.pod
+{{ if not .services.development }}
+workspace.network
+development.env
 box-base.build
 dev-box.*
 codex.*
 kimi.*
 dsh.*
 marimo.*
-caddy.*
 secret-proxy.*
 {{ end }}
 
-{{ if or (ne .chezmoi.os "linux") (not (get (get . "smb" | default dict) "enabled")) }}
+{{ if not .services.llm }}
+llm.network
+inference.network
+vllm.*
+bifrost.*
+{{ end }}
+
+{{ if not .ingress.caddy }}
+caddy.*
+{{ end }}
+
+{{ if not .ingress.cloudflared }}
+cloudflared.*
+{{ end }}
+
+{{ if not .services.smb }}
 smb-box.*
 {{ end }}

@@ -1,0 +1,60 @@
+[Unit]
+Description=vLLM (AMD ROCm)
+
+[Container]
+# Process: expose one model name for clients and usage statistics.
+# Report cached prompt tokens so Bifrost can measure upstream cache hits.
+Image=vllm.build
+ContainerName=vllm
+Exec=tencent/Hy-MT2-7B-FP8 \
+    --revision 883d09eb21d9be92058556cd0a4016d8a648c7db \
+    --served-model-name hy-mt2-7b \
+    --host 0.0.0.0 --port 8000 \
+    --tensor-parallel-size 1 --max-model-len 4096 \
+    --max-num-seqs 64 --gpu-memory-utilization 0.85 --kv-cache-dtype auto \
+    --enable-prompt-tokens-details
+
+# Network: only Bifrost shares this backend network.
+Network=inference.network
+
+# Cache storage: retain model downloads and compilation artifacts across restarts.
+# Default rootless container root maps to the host cache owner.
+Environment=HF_HOME=/cache/huggingface
+Environment=VLLM_CACHE_ROOT=/cache/vllm
+Environment=TRITON_CACHE_DIR=/cache/triton
+Volume=%h/.cache/huggingface:/cache/huggingface
+Volume=%h/.cache/vllm:/cache/vllm
+Volume=%h/.cache/triton:/cache/triton
+
+# GPU access: retain device groups for Unix permissions and select the ROCm GPU.
+AddDevice=/dev/kfd
+AddDevice=/dev/dri
+GroupAdd=keep-groups
+Environment=HIP_VISIBLE_DEVICES=0
+# ROCm maps /dev/kfd; the host SELinux policy lacks this permission.
+# Disable label separation for this container instead of changing host policy.
+SecurityLabelDisable=true
+
+# Worker IPC: keep /dev/shm isolated from the host.
+# The 32 GiB limit allocates on demand; it is not a memory reservation.
+PodmanArgs=--ipc=private
+ShmSize=32g
+
+# Readiness: allow time for model loading and ROCm compilation before declaring failure.
+Notify=healthy
+HealthCmd=/usr/bin/curl --fail --silent --show-error --max-time 4 http://127.0.0.1:8000/health
+HealthTimeout=5s
+HealthStartPeriod=10m
+HealthOnFailure=kill
+
+# Shutdown: allow the model process time to release resources.
+StopTimeout=60
+
+[Service]
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=900
+TimeoutStopSec=120
+
+[Install]
+WantedBy=default.target

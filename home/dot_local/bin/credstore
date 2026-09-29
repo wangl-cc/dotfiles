@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    printf '%s\n' \
+        'Usage: credstore set NAME' \
+        'Store or replace a user credential. Prompt on a terminal; otherwise read stdin.' \
+        'Linux only; uses systemd-creds and $XDG_CONFIG_HOME/credstore.encrypted.'
+}
+
+if [[ $# -eq 1 && ( $1 == --help || $1 == -h ) ]]; then
+    usage
+    exit 0
+fi
+if [[ $# -ne 2 || $1 != set ]]; then
+    usage >&2
+    exit 2
+fi
+
+name=$2
+if [[ ! $name =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]*$ || ${#name} -gt 255 ]]; then
+    printf '%s\n' 'credstore: NAME must start with a letter or digit and contain only letters, digits, _, ., or - (up to 255 characters).' >&2
+    exit 2
+fi
+if [[ $(uname -s) != Linux ]]; then
+    printf '%s\n' 'credstore: only Linux is supported for now.' >&2
+    exit 1
+fi
+command -v systemd-creds >/dev/null || {
+    printf '%s\n' 'credstore: systemd-creds is required.' >&2
+    exit 1
+}
+
+umask 077
+store=${XDG_CONFIG_HOME:-"$HOME/.config"}/credstore.encrypted
+install -d -m 700 -- "$store"
+temporary=$(mktemp "$store/.credstore.XXXXXX")
+trap 'rm -f -- "$temporary"' EXIT
+trap 'exit 1' HUP INT TERM
+
+# Keep plaintext in the pipe; only ciphertext is written to the temporary file.
+{
+    if [[ -t 0 ]]; then
+        systemd-ask-password --echo=masked --emoji=no -n "Credential $name:"
+    else
+        cat
+    fi
+} | systemd-creds encrypt --user --name="$name" - "$temporary"
+
+mv -fT -- "$temporary" "$store/$name"
