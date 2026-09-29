@@ -20,7 +20,11 @@ How to use: {{ .how_to_use }}
 """
 
 developer_instructions = """
-{{ .prompt }}{{- with (get .codex "additional_instructions") }}
+{{ .prompt | trim }}
+
+On follow-up, report what changed relative to your previous result rather than restating it.
+{{- with (get .codex "additional_instructions") }}
+
 {{ . }}
 {{- end }}
 """
