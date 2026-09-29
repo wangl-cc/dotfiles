@@ -21,7 +21,7 @@ Begin with the domain concepts, main data flow, ownership of state and behavior,
 
 ## Establish structural evidence
 
-A finding must connect a structural cause to a concrete maintenance, comprehension, extensibility, testability, or diagnosability cost. Weigh retaining the structure against changing it under the same required behavior: what responsibility does it serve, what burden does it impose, and how would the correction improve that balance? Distinguish real requirements from constraints introduced by replaceable implementation choices. Judge impact by how often the cost is paid and how much it burdens each change or reader; omit findings whose correction would cost more than the burden it removes.
+A finding must connect a structural cause to a concrete maintenance, comprehension, extensibility, testability, or diagnosability cost. Weigh retaining the structure against changing it under the same required behavior: what responsibility does it serve, what burden does it impose, and how would the correction improve that balance? Distinguish real requirements from constraints introduced by replaceable implementation choices. Judge impact by how often the cost is paid and how much it burdens each change or reader; omit findings whose burden is marginal. Weigh the cost of correction when ranking findings and choosing the recommended correction — a costly correction may be deferred, but its burden still belongs in the report.
 
 Choose the methods that can resolve the question at hand; they are not steps to complete for every review:
 

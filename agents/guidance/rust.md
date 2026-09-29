@@ -7,7 +7,7 @@ Apply these personal defaults to Rust-specific implementation and review decisio
 - Inspect `rust-toolchain.toml`, `rust-toolchain`, CI commands, `Cargo.toml`, `clippy.toml`, `rustfmt.toml`, `.rustfmt.toml`, and relevant crate documentation before editing.
 - Respect the declared MSRV, edition, targets, and feature matrix; use newer idioms only when they are supported by the MSRV.
 - Format with the toolchain and command used by CI; use `cargo +nightly fmt` only when the project explicitly requires nightly or unstable rustfmt options.
-- Prefer project CI-equivalent checks; otherwise start with `cargo fmt --check` and `cargo clippy --all-targets --all-features`.
+- Prefer project CI-equivalent checks; otherwise start with `cargo fmt --check` and `cargo clippy --all-targets`, adding `--all-features` when the project's features are additive.
 - Follow the lint policy. Keep any lint exception narrow and justified; prefer `#[expect(lint_name, reason = "...")]` when the MSRV supports it.
 
 ## Ownership and APIs
