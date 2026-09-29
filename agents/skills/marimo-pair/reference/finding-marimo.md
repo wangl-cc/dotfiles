@@ -1,6 +1,6 @@
 # Finding a Notebook on the Shared Server
 
-`marimo.service` owns the shared server and its kernels in a dedicated container. The skill connects to `https://marimo.ws.loongw.cc` by default; use `MARIMO_URL` or `--url` for another deployment. Inside the workspace Pod, `--port 2718` connects directly to the same server. Host processes do not share Pod localhost and use HTTPS.
+`marimo.service` owns the shared server and its kernels in a dedicated container. The skill connects to `https://marimo.ws.loongw.cc` by default; use `MARIMO_URL` or `--url` for another deployment. From containers on the workspace network, use `--url http://marimo:2718` to connect directly to the same server. Host processes use HTTPS; each container has its own localhost.
 
 ## Find an Active Session
 
@@ -9,7 +9,7 @@ bash scripts/discover-servers.sh
 bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py -c "print('connected')"
 ```
 
-Discovery reads the selected server's version and sessions through HTTP. It does not read a process registry, check local PIDs, scan ports, or delete stale entries. Containers share the network and home directory but have different PID namespaces, so a local PID check cannot establish the shared server's liveness.
+Discovery reads the selected server's version and sessions through HTTP. It does not read a process registry, check local PIDs, scan ports, or delete stale entries. Development containers mount the same home directory and communicate through a bridge network, but have separate network and PID namespaces, so a local PID check cannot establish the shared server's liveness.
 
 Use the server's reported notebook path or a unique relative path suffix. A notebook browser URL containing `?file=` also selects that file. When multiple sessions match, choose an exact session ID with `--session`; do not execute against an arbitrary match. See [execution-context.md](execution-context.md) for the full command interface.
 

@@ -7,7 +7,7 @@ Use this reference when the bundled scripts cannot reach the intended notebook, 
 Server selection is explicit `--url` or `--port`, then `MARIMO_URL`, then `https://marimo.ws.loongw.cc`. `--url` and `--port` are mutually exclusive.
 
 - `--url URL` accepts a server base URL or a browser URL. A browser `?file=` is decoded into a notebook selector and removed from the API base URL.
-- `--port PORT` connects to `http://127.0.0.1:PORT`. Use this only from a network namespace where that listener is reachable; the workspace Pod uses port 2718.
+- `--port PORT` connects to `http://127.0.0.1:PORT`. Use this only from the server's network namespace or an explicitly configured local forwarding endpoint. Other workspace containers use `--url http://marimo:2718`.
 - `--file PATH` selects the notebook by exact server-side path or a unique relative path suffix. The path does not have to exist on the client filesystem.
 - `--session ID` selects an exact active session ID. It is mutually exclusive with a file selector, including a browser URL's `?file=`.
 - Without a session or file selector, exactly one active session must exist. Missing or ambiguous matches fail before execution.
@@ -16,7 +16,7 @@ Discover sessions without executing notebook code:
 
 ```bash
 bash scripts/discover-servers.sh
-bash scripts/discover-servers.sh --port 2718
+bash scripts/discover-servers.sh --url http://marimo:2718
 ```
 
 Discovery queries only the selected endpoint and emits an array containing its `url`, `version`, and `sessions`. It does not search a registry or probe other ports.

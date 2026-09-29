@@ -45,10 +45,27 @@ test('HTTP 200 business error remains a failure and redacts the server token', a
   await assert.rejects(client.doctor(), error => error.code === 40101 && !error.message.includes('secret-token'));
 });
 
-test('loopback only; reject URL credentials and redirects without sending token onward', async t => {
-  for (const url of ['http://example.com', 'https://127.0.0.1', 'http://u:p@127.0.0.1', 'http://127.0.0.1/path']) {
-    assert.throws(() => new KimiClient({ url }));
+test('accept numeric loopback and explicit workspace Kimi origins without changing the default', () => {
+  assert.equal(new KimiClient().url, 'http://127.0.0.1:58627');
+  for (const url of ['http://127.0.0.1:58627', 'http://[::1]:58627', 'http://kimi:58627']) {
+    assert.equal(new KimiClient({ url }).url, url);
   }
+});
+
+test('reject other origins and URL credentials, paths, queries, and fragments', () => {
+  for (const url of [
+    'http://example.com', 'http://localhost:58627', 'http://10.0.0.2:58627',
+    'http://kimi.example.com', 'http://kimi.', 'http://other-kimi',
+    'https://127.0.0.1', 'https://kimi:58627',
+    'http://u:p@127.0.0.1', 'http://u:p@kimi:58627',
+    'http://127.0.0.1/path', 'http://kimi:58627/api/v1',
+    'http://kimi:58627?token=secret', 'http://kimi:58627#fragment',
+  ]) {
+    assert.throws(() => new KimiClient({ url }), { name: 'Error' }, url);
+  }
+});
+
+test('reject redirects without sending token onward', async t => {
   let received = false;
   const destination = await server(t, () => { received = true; return {}; });
   const { client } = await server(t, (_req, res) => {

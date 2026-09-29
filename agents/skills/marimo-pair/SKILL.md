@@ -56,7 +56,7 @@ When code already lives in a file, pass its path as the positional argument; `--
 bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py /tmp/code.py
 ```
 
-The scripts query HTTP APIs only. They do not scan ports, inspect or delete registry entries, or read tokens from logs. Inside the workspace Pod, `--port 2718` selects `http://127.0.0.1:2718`; host processes use HTTPS.
+The scripts query HTTP APIs only. They do not scan ports, inspect or delete registry entries, or read tokens from logs. From containers on the workspace network, use `--url http://marimo:2718` or set `MARIMO_URL=http://marimo:2718`; host processes use HTTPS. `--port` selects the calling container's loopback, not the separate marimo container.
 
 `marimo.service` owns the server. If the notebook has no active session, have the user open it in the shared notebook browser. Do not launch a per-project server or restart the shared service to make a session appear. A transport error may occur after code has run: inspect the notebook before retrying a mutation. See [finding-marimo.md](reference/finding-marimo.md) for lifecycle and environment selection, and [execution-context.md](reference/execution-context.md) for targeting, authentication, and failures.
 

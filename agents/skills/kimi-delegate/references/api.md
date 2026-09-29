@@ -12,11 +12,13 @@ The [official Server API reference](https://moonshotai.github.io/kimi-code/en/re
 | Inspect pending input for the active prompt | `GET /sessions/{id}` for interaction kind, `/prompts` for active prompt ID, then `/approvals?status=pending` or `/questions?status=pending` |
 | Request cancellation | `POST /sessions/{id}/prompts/{prompt_id}:abort` |
 
-JSON responses use `{code, msg, data, request_id}`. HTTP 200 alone is not success. Mutation requests are never retried automatically, and redirects are refused so a server token cannot follow a redirect. Connections are restricted to numeric loopback origins. Each HTTP operation has a 10-second timeout; a wait additionally has its own deadline, which does not cancel the server task.
+JSON responses use `{code, msg, data, request_id}`. HTTP 200 alone is not success. Mutation requests are never retried automatically, and redirects are refused so a server token cannot follow a redirect. Connections are restricted to HTTP origins on `127.0.0.1`, `[::1]`, or the exact workspace service hostname `kimi`, without URL credentials, paths, queries, or fragments. Each HTTP operation has a 10-second timeout; a wait additionally has its own deadline, which does not cancel the server task.
+
+The default remains `http://127.0.0.1:58627` for host-local servers. Workspace containers must explicitly pass `--url http://kimi:58627 --no-auth` for their deliberately unauthenticated Kimi service and retain those options when tracking a task. The client does not discover services or fall back to another origin. Network membership is the direct service's trust boundary; the adapter does not authenticate other members or configure external ingress.
 
 The task handle is the server origin, session ID, and client-chosen prompt ID. A transcript turn is matched by `triggerPromptId`; its `turnId` is returned with the result. Pagination searches up to 100 pages and rejects non-advancing cursors. Missing turns are checked against the prompt queue, then reported as unknown. In particular, `busy=false`, an empty queue, and another turn's completion never establish that the target task succeeded.
 
-The caller retains the handle across command invocations. The client writes no task registry, credentials, or configuration and leaves session history in Kimi for follow-up. It does not manage server lifetime, create remote connections, or forward arbitrary management endpoints. Review-specific prompts and finding validation belong to the calling agent and existing Kimi profiles.
+The caller retains the handle across command invocations. The client writes no task registry, credentials, or configuration and leaves session history in Kimi for follow-up. It does not manage server lifetime, establish tunnels, or forward arbitrary management endpoints. Review-specific prompts and finding validation belong to the calling agent and existing Kimi profiles.
 
 Run validation from the chezmoi repository:
 

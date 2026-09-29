@@ -9,13 +9,16 @@ Use `node scripts/kimi-client.mjs` with the resolved absolute script path. Requi
 
 ## Submit
 
-1. Run `doctor` once for the selected server to check connectivity, authentication, and available model aliases. The default URL is `http://127.0.0.1:58627`; use `--url` for another known loopback port. The client does not start or reconfigure Kimi. If no service is available, report that prerequisite rather than repeatedly retrying.
+1. Run `doctor` once for the selected server to check connectivity, authentication, and available model aliases. In workspace containers, pass `--url http://kimi:58627 --no-auth`: the service is reached by its container network name and this workspace deliberately runs Kimi without authentication. The default URL remains `http://127.0.0.1:58627` for host-local servers; use `--url` for another known loopback port. The client does not start or reconfigure Kimi. If no service is available, report that prerequisite rather than repeatedly retrying.
 2. Select an existing Kimi agent profile appropriate to the task: `architecture-advisor` for design decisions and their premises, `implementation-reviewer` for implementation structure, or `correctness-reviewer` for behavioral defects and guarantees. Do not copy their role instructions into the brief or create duplicate profiles. Other tasks may use other existing profiles or Kimi's default agent.
 3. Write the task-specific brief: working scope or exact diff baseline, relevant context and constraints, accepted tradeoffs, and the question to resolve. Do not send unrelated conversation history. Choose a model from `doctor` only when requested or required; omitting `--model` uses Kimi's configured model (or the existing session's model).
 4. Submit with an absolute `--cwd` for a new session. Save the returned `server`, `session_id`, and `prompt_id` in the calling task so another invocation can continue tracking it. Pass that exact `server` as `--url` on every follow-up, wait, result, and cancel command, along with the same authentication options. IDs alone do not identify a server.
 
 ```sh
+node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs doctor \
+  --url http://kimi:58627 --no-auth
 node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs submit \
+  --url http://kimi:58627 --no-auth \
   --cwd /absolute/path/to/repo \
   --profile correctness-reviewer \
   --model kimi-code/k3-256k \
@@ -28,12 +31,14 @@ Use `--prompt-file -` with a quoted heredoc for a short brief. Avoid shell inter
 
 ```sh
 node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs wait \
-  --url SERVER_URL --session SESSION_ID --prompt-id PROMPT_ID --timeout 30
+  --url http://kimi:58627 --no-auth --session SESSION_ID --prompt-id PROMPT_ID --timeout 30
 node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs result \
-  --url SERVER_URL --session SESSION_ID --prompt-id PROMPT_ID
+  --url http://kimi:58627 --no-auth --session SESSION_ID --prompt-id PROMPT_ID
 node /absolute/path/to/kimi-delegate/scripts/kimi-client.mjs cancel \
-  --url SERVER_URL --session SESSION_ID --prompt-id PROMPT_ID
+  --url http://kimi:58627 --no-auth --session SESSION_ID --prompt-id PROMPT_ID
 ```
+
+These examples use the trusted workspace service. For another allowed server, use the exact `server` from the task handle and retain its authentication options throughout.
 
 - `submit` acknowledges acceptance, not task completion. `wait` polls the durable transcript for the exact prompt, for at most 60 seconds per invocation. Re-run it when the task is still pending, communicating meaningful progress to the user. `result` gives a single snapshot, including assistant text from that turn only.
 - `completed` means Kimi finished that turn. Inspect its text; completion is not proof that the requested work succeeded or that its findings are correct. Verify findings before acting on them.
@@ -47,5 +52,7 @@ All commands emit one JSON result. Exit 0 means the command was accepted or the 
 ## Connection
 
 The client reads `$KIMI_CODE_HOME/server.token` or `~/.kimi-code/server.token`; `--token-file` selects another server token file. Never copy a token into the brief, command arguments, or logs. If the server is already deliberately running without authentication, pass `--no-auth`. Do not disable authentication or widen its network bind to make delegation work.
+
+Allowed origins are HTTP on `127.0.0.1`, `[::1]`, or the exact container network hostname `kimi`. The workspace URL requires membership in its trusted container network; it is not a public endpoint. Other hostnames and IP addresses are rejected, as are URL credentials, paths, queries, fragments, and redirects. There is no fallback between the workspace service and loopback.
 
 The adapter uses REST polling instead of a persistent WebSocket, so process restarts do not lose a stream cursor. It extracts all assistant text frames from the matching turn, excluding thinking and tool output. Unsupported or missing history is reported explicitly. See [API notes](references/api.md) for the protocol boundary and validation commands.

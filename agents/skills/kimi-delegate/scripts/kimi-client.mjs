@@ -29,8 +29,8 @@ function segment(value) {
 export class KimiClient {
   constructor({ url = 'http://127.0.0.1:58627', token, requestTimeoutMs = 10000 } = {}) {
     const endpoint = new URL(url);
-    check(endpoint.protocol === 'http:' && ['127.0.0.1', '[::1]'].includes(endpoint.hostname),
-      'Use a numeric loopback HTTP address for the local Kimi Web service');
+    check(endpoint.protocol === 'http:' && ['127.0.0.1', '[::1]', 'kimi'].includes(endpoint.hostname),
+      'Use an HTTP origin on numeric loopback or the workspace service hostname kimi');
     check(!endpoint.username && !endpoint.password && !endpoint.search && !endpoint.hash && endpoint.pathname === '/',
       'Server URL must be an origin without credentials, path, query, or fragment');
     this.url = endpoint.origin;
@@ -222,7 +222,11 @@ const help = `Kimi Web delegation client (Node.js 22+; local server required)
   result --session ID --prompt-id ID
   cancel --session ID --prompt-id ID
 
-All commands: --url http://127.0.0.1:58627 [--token-file FILE | --no-auth]
+All commands: [--url ORIGIN] [--token-file FILE | --no-auth]
+Default URL: http://127.0.0.1:58627 (numeric loopback only).
+Workspace containers: --url http://kimi:58627 --no-auth
+Only numeric loopback and the exact workspace hostname kimi are allowed over HTTP.
+Use --no-auth only for a server deliberately configured without authentication.
 Default token: $KIMI_CODE_HOME/server.token or ~/.kimi-code/server.token.
 One JSON result on stdout. Exit 0: accepted/completed; 2: pending, needs input,
 timeout, cancellation requested, or unknown; 1: failure/cancelled/client error.
