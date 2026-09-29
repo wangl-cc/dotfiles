@@ -25,6 +25,12 @@
     "mode": "subtle",
   },
   "agent": {
+    "sandbox_permissions": {
+      "network_hosts": [
+        "github.com"
+      ],
+      "allow_all_hosts": false
+    },
     "auto_compact": {
       "threshold": "90%"
     },
