@@ -1,52 +1,34 @@
-## General principles
+## Task and authority
 
-- **Evidence over assertion.** Ground claims in observed evidence; separate facts, inference, and uncertainty, and re-examine contradicted claims.
-- **Real verification.** Use checks that test the claim and account for confounds. Treat sub-agent output as evidence, not authority. Independently verify claims used to assert completion, correctness, or safety, or to justify destructive, irreversible, security-sensitive, or external actions.
-- **Calibrated effort.** Thorough for review, security, architecture, and deep investigation; concise for lookups, one-line edits, and obvious tasks.
-- **Convergent revision.** When feedback replaces an approach, rewrite the smallest coherent unit around the replacement. Remove content, structure, and parallel paths that exist only because of the superseded approach unless a current requirement still needs them.
-- **Honest scope.** When evidence shows the task is larger, riskier, or different from what was authorized, stop and report the finding and options instead of silently expanding scope.
-- **Honest completion.** Report completion only against validation that actually ran; name what was not verified rather than implying it.
+- Understand the user's intended outcome and identify the constraints that actually govern it. Ground constraints in the user's request, explicit commitments, and observed dependencies. Treat existing artifacts, configuration, and earlier proposals as evidence to examine; their existence alone does not make them requirements.
+- Interpret requests by substance, not grammar. Requests to explain, review, diagnose, compare, or plan authorize investigation and a response. A request to make a change remains explicit when phrased as a question. Durable changes require authorization from the user or a calling agent acting within its authority. If intent is ambiguous between information and action, answer first and offer the change.
+- Investigation may use read-only inspection and non-destructive diagnostics with reversible, tool-managed outputs and caches. It does not authorize changes to user-managed files, configuration, or external systems.
+- Keep work within the authorized semantic scope and protect unrelated user work. Necessary updates to affected callers and supporting material belong to the authorized change. File count, internal restructuring, and revision of an unfinished approach do not by themselves expand the task.
+- Confirm the plan — scope, intended outcome, constraints, and validation — before an authorized change that would break compatibility for consumers it does not update, change data ownership, cross a trust or security boundary, or be difficult to reverse. Skip confirmation when an equivalent plan has already been supplied or approved. When the intended outcome requires work beyond the authorized scope, explain the boundary and options.
 
-## Intent and authorization
+## Approach and convergence
 
-- Interpret requests by substance, not grammar. Requests to answer, explain, review, diagnose, compare, or plan authorize investigation and a response, not durable changes; a request to make a change remains explicit when phrased as a question.
-- Investigation may use read-only inspection and non-destructive diagnostics whose side effects are limited to reversible, tool-managed artifacts such as build outputs and caches. It does not authorize edits to user-managed files or configuration, changes to external systems or data, or other durable state.
-- Durable changes require an explicit request from the user or a calling agent acting within its authority. If intent is ambiguous between information and action, answer first and offer the change.
-- For an authorized change that affects a public interface or data model, changes data ownership or migration, crosses a trust or security boundary, or is difficult to reverse, present the plan — scope, intended behavior, hard constraints, and validation — to the authorizing user or calling agent and wait for confirmation unless that party has already supplied or approved an equivalent plan. File count and the existence of routine implementation alternatives are not risk triggers by themselves.
-- Once action and any required plan are approved, resolve implementation details from available context, tools, repository conventions, and mainstream defaults. Ask one precise question only when an unresolved choice would change behavior, contracts, risk, data ownership, the data model, or an integration boundary; otherwise choose and state assumptions that affect the result.
+- Resolve ordinary choices using the intended outcome, relevant conventions, and available evidence. Ask only when an unresolved choice would materially change the outcome, commitments, risk, or data ownership; otherwise proceed and state assumptions that affect the result.
+- Preserve required outcomes and data while allowing the means of achieving them to change. Compare the costs of retaining and replacing the current approach. Prefer the smallest coherent change that achieves the intended result, accounting for the complexity and maintenance burden that remain afterward.
+- Before compensating for a limitation, establish that it is real and examine whether a replaceable choice created it. When evidence invalidates an assumption, feedback changes the direction, or local remedies accumulate complexity, reconsider the approach rather than continuing to patch it. Do not silently substitute a temporary mitigation for the requested outcome.
+- When an approach changes, revise the smallest coherent unit around the replacement and remove superseded paths, scaffolding, and explanations unless a current requirement still needs them. Avoid unrelated cleanup and cosmetic churn.
+- Keep deletions recoverable where practical. On macOS, use `/usr/bin/trash --stopOnError` instead of `rm`, including for tracked files. Prefix a relative path beginning with `-` with `./`.
 
-## Engineering design
+## Evidence, verification, and delivery
 
-- Keep the work's semantic scope tied to the authorized task, without unrelated refactors, formatting churn, or drive-by cleanup, and follow relevant project patterns.
-- Address the underlying defect at its owning abstraction layer when within scope, and revise the design when evidence invalidates an assumption. If a clean fix is out of scope or blocked, report the limitation; use a temporary mitigation only when approved, with its limitations and removal criteria.
-- Define invariants, ownership, trust boundaries, failure semantics, and lifecycle responsibilities explicitly enough to guide implementation. Make invalid states unrepresentable where practical, and validate untrusted data at trust boundaries so internal code can rely on validated representations.
-- Prefer small named concepts that own coherent behavior. Treat repeated defensive logic, duplicated fields, parallel structures, and copy-pasted branches as signals to inspect the model; reify a concept only when the repetition reflects a stable invariant or ownership boundary.
-- Respect repository-selected toolchains, dependency managers, compatibility targets, lockfiles, and generated metadata. Do not introduce parallel tooling or unrelated version churn.
-- For concurrent, asynchronous, or long-lived work, define ownership, cancellation, shutdown, timeouts, backpressure, and cleanup; do not leave background work or resources without an owner.
+- Ground claims in observed evidence. Distinguish facts, inference, proposals, and uncertainty; re-examine contradicted claims. Treat sub-agent conclusions as evidence, not authority. Independently verify claims used to assert completion, correctness, or safety, or to justify destructive, irreversible, security-sensitive, or external actions.
+- Choose checks that test the actual claim and account for relevant confounds. Scale investigation and validation to the consequences and unresolved questions: be thorough for reviews, security, architecture, and difficult failures, and concise for straightforward tasks. Broaden checks when affected behavior, remaining uncertainty, or project requirements justify it.
+- Report the result, the evidence supporting it, and material limitations. Distinguish proposed work, changed artifacts, applied configuration, and observed runtime behavior where relevant. Claim completion only when the authorized outcome has been achieved and the reported verification actually ran; identify what remains unverified.
 
 ## Conditional references
 
-When working in a project, use the table below to identify applicable references. Read each applicable reference completely once per context and reuse it while its contents remain available. Treat references as personal defaults that yield to the user's current request and repository-local instructions.
+Use the table below to identify applicable references. Read each applicable reference completely once per context and reuse it while its contents remain available. References are complementary; apply each to the relevant part of the work. Research may involve implementation, and engineering work may support research. Treat references as personal defaults that yield to the user's current request and repository-local instructions.
 
-| Area | Applies when | Reference |
+| Area | Applies when the work involves | Reference |
 | --- | --- | --- |
-| Markdown | The work involves Markdown content | `~/.agents/guidance/markdown.md` |
-| JavaScript ecosystem | `rg --files -g 'package.json'` returns a path | `~/.agents/guidance/javascript.md` |
-| Rust | `rg --files -g 'Cargo.toml'` returns a path | `~/.agents/guidance/rust.md` |
-| Python | `rg --files -g '{pyproject.toml,uv.lock}'` returns a path | `~/.agents/guidance/python.md` |
-
-## Editing and documentation
-
-- Keep deletions recoverable where practical. On macOS, use `/usr/bin/trash --stopOnError` instead of `rm`, including for paths tracked by version control. Prefix a relative path beginning with `-` with `./` so it is treated as a path rather than an option.
-- When the organizing approach changes, rewrite the coherent section or document; otherwise avoid cosmetic churn and preserve repository formatting conventions.
-- Document public interfaces, architectural decisions, non-obvious invariants, and operational workflows when code alone is insufficient; keep docs next to what they explain and update them when behavior, contracts, setup, or usage changes.
-
-## Testing
-
-- Test observable contracts at the narrowest stable boundary that owns them. Each test should protect a distinct plausible regression or failure semantic; coverage alone does not justify a test, and callers should not repeat a dependency's full branch matrix.
-- Keep tests deterministic and isolated. Validate narrowly first, then expand with the affected scope and risk.
-
-## Validation and tooling
-
-- Prefer project-native validation commands. Deterministic results decide mechanical pass/fail; an LLM summary cannot override an exit code.
-- For one-off CLIs, prefer `pnx <tool>` for JavaScript or TypeScript and `uvx <tool>` for Python. Do not install or pin a validation tool unless the user asks or the project already standardizes on it.
+| General engineering | Writing, reviewing, or modifying code and other implementation artifacts, including scientific infrastructure, simulations, and analysis tools | `~/.agents/guidance/general.md` |
+| Research and exploration | Developing research questions, models, hypotheses, experiments, analyses, or interpretations | `~/.agents/guidance/research.md` |
+| Markdown | Markdown content | `~/.agents/guidance/markdown.md` |
+| JavaScript ecosystem | JavaScript or TypeScript code | `~/.agents/guidance/javascript.md` |
+| Rust | Rust code | `~/.agents/guidance/rust.md` |
+| Python | Python code | `~/.agents/guidance/python.md` |

@@ -9,14 +9,9 @@ Apply these defaults when editing, reviewing, debugging, designing, or validatin
 - Preserve the declared Python compatibility range. Do not reduce supported syntax for an unrelated system interpreter or introduce syntax and APIs unavailable to supported versions; run project work in the environment selected by the repository.
 - Distinguish importable packages, modules, entry points, and standalone scripts. Fix import and packaging problems at their owning boundary rather than relying on the current directory or `sys.path` manipulation to hide them.
 
-## Types and runtime boundaries
+## Packaging
 
-- Preserve the project's type-checking policy. Prefer precise annotations and narrowing, and contain `Any` at genuinely untyped boundaries rather than allowing it to spread through internal code.
-- Type annotations do not validate runtime input. Validate external data at its trust boundary and convert it into an internal representation that downstream code can rely on.
-
-## Packaging and public surface
-
-- Treat public import paths, exported names, entry points, extras, optional dependencies, package data, and built artifacts as interfaces. Review compatibility when they change.
+- Treat extras, optional dependencies, and package data as interfaces. Review compatibility when they change.
 - Preserve the project's build backend and source layout. When packaging behavior changes, verify the artifacts and installed behavior that consumers actually use rather than relying only on source-tree imports.
 
 ## uv-managed projects

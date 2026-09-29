@@ -13,10 +13,9 @@
 - Treat `exports`, `imports`, `types`, `typesVersions`, entry points, declaration output, and build targets as public interfaces. Verify both source-level typing and the artifacts or package paths consumers actually load.
 - Keep Node.js, browser, worker, and edge-runtime boundaries explicit; do not assume APIs, globals, module formats, or environment variables cross those boundaries.
 
-## Types and runtime data
+## TypeScript assertions
 
-- Preserve the project's TypeScript strictness. Prefer `unknown` followed by narrowing over `any`, and use type assertions or non-null assertions only when an established invariant justifies them.
-- TypeScript types do not validate runtime input. Validate external data at its trust boundary and convert it into an internal representation that downstream code can rely on.
+- Use type assertions (`as`) and non-null assertions (`!`) only when an established invariant justifies them.
 
 ## Asynchronous work
 
