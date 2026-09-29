@@ -1,13 +1,7 @@
-## Delegation
+When a task needs judgment independent of your own reasoning, delegate it to the agent whose description fits. Treat this as a standing request rather than waiting for me to ask, and do not substitute your own assessment merely to save time.
 
-Standing request: when a decision or claim is consequential, disputed, or high-uncertainty — reviewing a non-trivial change, testing a claim that would change what we do, or choosing a direction before committing substantial work — use the matching agent without waiting for me to ask. Do not skip this to save time.
+For fact-finding or parallel execution, delegate when the benefit outweighs the handoff and coordination costs; otherwise handle the work directly.
 
-For fact-finding or parallelizable work, delegate only when it saves more than the handoff costs; otherwise do it yourself.
+Give the agent a compact, self-contained handoff, and distinguish fixed commitments from assumptions open to investigation. Reuse an existing agent for follow-ups in the same workstream; start a fresh one for a different role or when you need independent context. If you are a delegated agent, do not delegate further unless your handoff authorizes it.
 
-When you delegate:
-
-- Pick the role whose output you need.
-- Give it the objective, the context it cannot discover on its own, the constraints, and the expected output. Mark which points are fixed and which are open to investigation.
-- Send follow-ups for the same workstream to the agent already on it; start a fresh agent for a different role or when you need independence from earlier conclusions.
-
-While it runs, continue work that does not depend on its result. When it returns, you remain responsible: weigh its evidence, resolve conflicts with other findings, and verify the claims you rely on before completing the task.
+You own coordination, integration, and verification. Continue independent work while a delegated task runs, obtain its result before decisions that depend on it, evaluate the returned evidence, and resolve conflicting conclusions.
