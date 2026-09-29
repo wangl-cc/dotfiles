@@ -5,7 +5,6 @@
 export XDG_CONFIG_HOME XDG_DATA_HOME
 
 export WAKATIME_HOME="$XDG_CONFIG_HOME/wakatime"
-export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
 # Prevent tar from creating ._ files on macOS.
 export COPYFILE_DISABLE=1

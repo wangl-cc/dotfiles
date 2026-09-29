@@ -1,0 +1,5 @@
+{{ if eq .chezmoi.os "linux" -}}
+# BLAS selection for native builds.
+set -gx PLATFORM_BLAS_LIB_DIR "$HOME/.local/lib"
+set -gx PLATFORM_BLAS_LIB blis-mt
+{{ end -}}

@@ -1,7 +1,6 @@
 # Force some programs use XDG_CONFIG_HOME
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx WAKATIME_HOME $XDG_CONFIG_HOME/wakatime
-set -gx GNUPGHOME $XDG_CONFIG_HOME/gnupg
 
 # Prevent tar from creating ._ files on macOS
 set -gx COPYFILE_DISABLE 1

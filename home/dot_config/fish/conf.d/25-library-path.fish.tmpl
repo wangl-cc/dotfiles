@@ -1,0 +1,6 @@
+{{ if eq .chezmoi.os "linux" -}}
+# User-installed native libraries.
+if not contains -- "$HOME/.local/lib" $LD_LIBRARY_PATH
+    set -gx LD_LIBRARY_PATH "$HOME/.local/lib" (string split --no-empty : -- "$LD_LIBRARY_PATH")
+end
+{{ end -}}
