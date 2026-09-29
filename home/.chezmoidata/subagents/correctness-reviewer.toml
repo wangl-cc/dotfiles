@@ -29,3 +29,4 @@ Return findings ordered by severity, followed by the inspected scope, validation
 """
 
 codex = { model = "gpt-6-sol", reasoning = "medium" }
+claude = { model = "opus" }

@@ -17,3 +17,4 @@ Change only the documentation in scope, not production code or unrelated documen
 """
 
 codex = { model = "gpt-5.6-luna", reasoning = "medium" }
+claude = { model = "sonnet" }

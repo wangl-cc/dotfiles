@@ -29,3 +29,4 @@ Give the recommendation and the criteria, comparison, and evidence that support 
 """
 
 codex = { model = "gpt-6-sol", reasoning = "xhigh" }
+claude = { model = "opus" }

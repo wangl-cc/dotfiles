@@ -50,7 +50,7 @@ Do not rewrite these into `feat:`, `fix:`, `chore:`, or other Conventional Commi
 
 This repository is the authoritative source for shared agent instructions and sub-agent configuration. Edit repository sources, never rendered targets under a tool's home-directory configuration.
 
-- `home/.chezmoitemplates/agents/` owns the shared contract and optional harness partials. Per-tool `AGENTS.md.tmpl` files compose those sources and contain only the partials or residue that their harness requires.
+- `home/.chezmoitemplates/agents/` owns the shared contract and optional harness partials. Per-tool instruction templates (`AGENTS.md.tmpl`, or `CLAUDE.md.tmpl` for Claude Code) compose those sources and contain only the partials or residue that their harness requires.
 - `agents/guidance/` owns personal defaults loaded through the global contract's conditional references: `general.md` for cross-language engineering work, `research.md` for exploratory and research work, and language- or format-specific files for their respective projects, while `agents/skills/` owns reusable workflows exposed through the managed `~/.agents` root.
 - `home/.chezmoidata/subagents/` owns portable role definitions. Keep caller routing in `description`, `when_to_use`, and `how_to_use`; keep spawned-role behavior in `prompt`; use `access` for portable capability intent; and put only genuine harness differences in nested harness tables.
 - `home/.chezmoitemplates/subagents/` owns each harness's output schema and shared access mapping. Per-tool agent templates are one-line role bindings; adapter presence enables a binding.

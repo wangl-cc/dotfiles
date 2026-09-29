@@ -17,6 +17,9 @@
 .kimi-code/agents/adversarial-reviewer.md
 .codex/agents/problem-framing-advisor.toml
 .kimi-code/agents/problem-framing-advisor.md
+.claude/agents/adversarial-reviewer.md
+.claude/agents/design-reviewer.md
+.claude/agents/patch-reviewer.md
 .kimi-code/bin
 .config/fish/config.fish
 .config/containers/systemd/codex-box.build

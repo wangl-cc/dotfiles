@@ -16,3 +16,4 @@ Run targeted project-native validation against the acceptance criteria and affec
 
 codex = {}
 kimi = { name = "coder", override = true }
+claude = { name = "general-purpose" }

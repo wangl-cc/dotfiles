@@ -1,0 +1,19 @@
+{{- if not (has .access (list "read-only" "workspace-write")) -}}
+{{- fail (printf "unsupported Claude access profile: %s" .access) -}}
+{{- end -}}
+---
+name: {{ get .claude "name" | default .name | toJson }}
+description: {{ printf "%s When to use: %s How to use: %s" .description .when_to_use .how_to_use | toJson }}
+model: {{ get .claude "model" | default "inherit" }}
+{{ if eq .access "read-only" -}}
+tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
+{{ end -}}
+---
+
+{{ .prompt | trim }}
+{{- with (get .claude "additional_instructions") }}
+
+{{ . }}
+{{- end }}
+
+Your final message must be the complete, self-contained result for the calling agent. On follow-up, report what changed relative to your previous result rather than restating it.

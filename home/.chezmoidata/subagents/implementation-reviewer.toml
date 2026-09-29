@@ -46,3 +46,4 @@ Begin with an overall design assessment, then findings ordered by impact and con
 """
 
 codex = { model = "gpt-6-sol", reasoning = "medium" }
+claude = { model = "opus" }

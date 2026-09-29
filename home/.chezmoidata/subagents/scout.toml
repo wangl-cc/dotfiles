@@ -13,3 +13,4 @@ Use supplied local facts to frame the research, without inspecting or inferring 
 """
 
 codex = { model = "gpt-5.6-luna", reasoning = "high", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
+claude = { model = "sonnet", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
