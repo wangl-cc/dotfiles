@@ -42,10 +42,12 @@ Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/ho
 
 # Delegate through service APIs; hide other agents' provider credentials.
 # Keep Kimi's server.token available to its API client.
-Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml
+Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml:/home/%u/.claude/.credentials.json
 
 # SSH: hide host private keys behind a client-state volume and use the forwarded agent.
+# Trust host keys recorded on the host.
 Volume=dsh-box-ssh:/home/%u/.ssh:U
+Volume=%h/.ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 

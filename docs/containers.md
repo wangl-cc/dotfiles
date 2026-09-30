@@ -4,7 +4,7 @@ Optional Linux services run as independent rootless Podman containers. Enable th
 
 | Option | Services |
 | --- | --- |
-| `services.development` | dev-box, Codex, Kimi, DSH, marimo, and secret-proxy |
+| `services.development` | dev-box, claude-box, Codex, Kimi, DSH, marimo, and secret-proxy |
 | `services.llm` | Bifrost and vLLM |
 | `services.smb` | [Samba](../containers/smb-box/README.md) |
 | `ingress.caddy` | Private HTTPS through Tailscale |
@@ -47,7 +47,7 @@ systemctl --user daemon-reload
 
 Start the services you enabled with `systemctl --user start <name>.service`; for example, `systemctl --user start vllm.service bifrost.service caddy.service`. Quadlet creates the required networks and runs build dependencies. Complete credential provisioning before starting services that need it.
 
-For later changes, restart affected services to activate new mounts, environment, or network settings. If a Containerfile changed, rebuild its image first with `systemctl --user restart <name>-build.service`, then restart its consumers. Agents and marimo share `box-base`; dev-box has its own image. Applying dotfiles does not itself restart these containers, and disabling a chezmoi option does not stop or remove a deployed service.
+For later changes, restart affected services to activate new mounts, environment, or network settings. If a Containerfile changed, rebuild its image first with `systemctl --user restart <name>-build.service`, then restart its consumers. Agents and marimo share `box-base`; dev-box has its own image, and claude-box extends it. Applying dotfiles does not itself restart these containers, and disabling a chezmoi option does not stop or remove a deployed service.
 
 In symlink mode, edits to static source files can already be visible on the host before apply. When changing a shared network or a proxy/client interface, stop the affected services together and activate the complete change at a session boundary. Container restarts interrupt agent sessions and notebook kernels. Preserve home and named volumes.
 
@@ -106,7 +106,9 @@ The vLLM image requires Linux x86_64 and a compatible AMD GPU. Before first star
 
 Development containers reuse tools and projects from the shared home directory. Codex, Kimi, DSH, and marimo read common tool paths from `development.env`. Updating a home-installed tool needs a service restart, not an image rebuild. SSH is available through dev-box on the Tailscale address at port 2222.
 
-Agents delegate through service APIs and hide each other's provider credential files. Git and gh use [secret-proxy](../containers/secret-proxy/README.md); gh preferences are regenerated automatically from the host config. These are cooperative containers with shared home access, not isolation for mutually untrusted users.
+Claude Desktop connects over SSH to claude-box on the Tailscale address at port 10022, with the same authorized keys as dev-box. Desktop starts and upgrades its remote server inside the container, so sessions can open any folder in the shared home; restarting claude-box ends them. claude-box has agent permissions: gh goes through secret-proxy and other agents' credentials are masked. dev-box is for interactive login and keeps the host's gh login and agent credentials visible, so point Desktop at claude-box rather than dev-box or the host.
+
+Agents delegate through service APIs and hide each other's provider credential files. Containers use the forwarded ssh-agent and trust the host's `~/.ssh/known_hosts` read-only; restart them after replacing that file, for example with `ssh-keygen -R`. Git and gh use [secret-proxy](../containers/secret-proxy/README.md); gh preferences are regenerated automatically from the host config. These are cooperative containers with shared home access, not isolation for mutually untrusted users.
 
 marimo serves `~/Documents` through private HTTPS; containers use `http://marimo:2718`. Its service installs `marimo[sandbox]` with `uv tool install --managed-python` into shared home before startup. Upgrade explicitly with `uv tool upgrade marimo`. Restarting the service stops all notebook kernels. See [environment selection](../agents/skills/marimo-pair/reference/finding-marimo.md#environment-selection) for project venvs and [marimo-pair](../agents/skills/marimo-pair/SKILL.md) for agent access.
 

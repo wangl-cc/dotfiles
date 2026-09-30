@@ -34,8 +34,9 @@ Volume=%h:/home/%u
 Mask=/home/%u/.local/share/containers:/home/%u/.config/credstore.encrypted
 
 # SSH: hide host private keys behind a client-state volume and use the forwarded agent.
-# Mount authorized_keys separately for inbound login.
-Volume=dev-box-ssh:/home/%u/.ssh:U
+# Trust host keys recorded on the host; mount authorized_keys separately for inbound login.
+Volume=dev-box-ssh.volume:/home/%u/.ssh
+Volume=%h/.ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
 Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket

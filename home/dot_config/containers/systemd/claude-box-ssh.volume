@@ -1,0 +1,6 @@
+[Volume]
+VolumeName=claude-box-ssh
+# Owner 0 in the rootless namespace is the host user, which keep-id maps to
+# the login user; :U would instead choose the container's root process user.
+User=0
+Group=0

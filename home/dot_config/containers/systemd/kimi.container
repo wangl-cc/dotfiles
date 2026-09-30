@@ -35,10 +35,12 @@ Volume=%h:/home/%u
 Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/home/%u/.config/credstore.encrypted
 
 # Delegate through service APIs; hide other agents' provider credentials.
-Mask=/home/%u/.codex/auth.json:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env
+Mask=/home/%u/.codex/auth.json:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env:/home/%u/.claude/.credentials.json
 
-# SSH authentication by ssh-agent
+# SSH: hide host private keys behind a client-state volume and use the forwarded agent.
+# Trust host keys recorded on the host.
 Volume=kimi-web-box-ssh:/home/%u/.ssh:U
+Volume=%h/.ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
 Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 

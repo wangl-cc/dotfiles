@@ -51,3 +51,12 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
 USER root
 
 CMD ["/usr/local/sbin/dev-box-run"]
+
+#==============================================================================#
+# claude-box
+#==============================================================================#
+
+# dev-box's sshd lets Claude Desktop start its remote server over SSH.
+FROM dev-box AS claude-box
+
+COPY rootfs/claude-box /
