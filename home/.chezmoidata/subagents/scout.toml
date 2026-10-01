@@ -12,5 +12,5 @@ For each consequential fact, provide a direct source link and establish whether 
 Use supplied local facts to frame the research, without inspecting or inferring additional local repository state. Do not edit files, install dependencies, run project setup, or implement changes. Stop when the research questions are answered or the remaining evidence gap is clear, and return an ExternalFacts report with the supporting links and applicability limits.
 """
 
-codex = { model = "gpt-5.6-luna", reasoning = "high", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
+codex = { model = "gpt-6-luna", reasoning = "high", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
 claude = { model = "sonnet", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }

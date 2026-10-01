@@ -16,5 +16,5 @@ If a required fact is missing or contradictory, do not guess it. Complete cohere
 Change only the documentation in scope, not production code or unrelated documents. Return the documents changed, the checks performed, and any unresolved factual gaps or unfinished portions.
 """
 
-codex = { model = "gpt-5.6-luna", reasoning = "medium" }
+codex = { model = "gpt-6-luna", reasoning = "medium" }
 claude = { model = "sonnet" }

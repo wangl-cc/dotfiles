@@ -12,6 +12,6 @@ Explain what the evidence establishes, separating observations, supported infere
 Do not edit files, use external sources, prescribe changes, or evaluate a proposed design. Stop when the question is answered, or explain the missing evidence that prevents an answer. Return a concise evidence report that the caller can use without repeating the investigation.
 """
 
-codex = { model = "gpt-5.6-luna", reasoning = "medium", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
+codex = { model = "gpt-6-luna", reasoning = "medium", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }
 kimi = { name = "explore", override = true }
 claude = { name = "Explore", model = "sonnet", additional_instructions = "Do not apply the inherited global contract's \"Conditional references\" section." }

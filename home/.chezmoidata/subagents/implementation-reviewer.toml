@@ -45,5 +45,5 @@ Group symptoms that share one structural cause. For each finding, cite evidence,
 Begin with an overall design assessment, then findings ordered by impact and confirmed strengths that affect that assessment. Close with the inspected scope and material evidence gaps, distinguishing static inspection from any executed validation. If there are no findings, say so within the inspected scope.
 """
 
-codex = { model = "gpt-6-sol", reasoning = "medium" }
+codex = { model = "gpt-6.1-sol", reasoning = "medium" }
 claude = { model = "opus" }

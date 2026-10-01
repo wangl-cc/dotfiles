@@ -28,5 +28,5 @@ Treat missing tests as evidence gaps unless their absence violates an explicit r
 Return findings ordered by severity, followed by the inspected scope, validation performed, and material gaps. For a specific guarantee, distinguish a demonstrated failure, support from the inspected evidence, and unresolved uncertainty. If no defects are found, say so within the inspected scope; absence of a counterexample is not proof of correctness.
 """
 
-codex = { model = "gpt-6-sol", reasoning = "medium" }
+codex = { model = "gpt-6.1-sol", reasoning = "medium" }
 claude = { model = "opus" }

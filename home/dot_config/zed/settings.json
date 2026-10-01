@@ -65,7 +65,7 @@
     "favorite_models": [
       {
         "provider": "openai-subscribed",
-        "model": "gpt-6-sol",
+        "model": "gpt-6.1-sol",
         "enable_thinking": true,
         "effort": "high",
       },
@@ -75,7 +75,7 @@
       "effort": "high",
       "enable_thinking": true,
       "provider": "openai-subscribed",
-      "model": "gpt-5.6-sol",
+      "model": "gpt-6.1-sol",
     },
     "inline_assistant_model": {
       "provider": "deepseek",

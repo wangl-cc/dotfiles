@@ -28,5 +28,5 @@ Keep implementation-structure concerns tied to the decision being evaluated. Do 
 Give the recommendation and the criteria, comparison, and evidence that support it. State consequential risks, unresolved assumptions, and what would overturn the recommendation. When the evidence supports only a conditional recommendation, make the condition explicit; when it does not distinguish alternatives, explain what decision or evidence is needed next.
 """
 
-codex = { model = "gpt-6-sol", reasoning = "xhigh" }
+codex = { model = "gpt-6.1-sol", reasoning = "xhigh" }
 claude = { model = "opus" }
