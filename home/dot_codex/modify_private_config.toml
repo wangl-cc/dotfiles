@@ -1,6 +1,9 @@
 {{- /* chezmoi:modify-template */ -}}
 {{- /* Preserve unmentioned local settings; managed values converge on every apply. */ -}}
 {{- $config := fromToml .chezmoi.stdin -}}
+{{- /* Legacy sandbox settings take precedence over permission profiles. */ -}}
+{{- $config = $config | deleteValueAtPath "sandbox_mode" | deleteValueAtPath "sandbox_workspace_write" -}}
+{{- $permissionProfileName := "Approve for me (with cache)" -}}
 {{- $kacheCacheDir := joinPath .chezmoi.homeDir ".cache" "kache" -}}
 {{- if eq .chezmoi.os "darwin" -}}
 {{- $kacheCacheDir = joinPath .chezmoi.homeDir "Library" "Caches" "kache" -}}
@@ -11,7 +14,8 @@
     "model" "gpt-6-astra"
     "model_reasoning_effort" "high"
     "approval_policy" "on-request"
-    "approvals_reviewer" "guardian_subagent"
+    "approvals_reviewer" "auto_review"
+    "default_permissions" $permissionProfileName
     "features" (dict
         "js_repl" true
         "memories" true
@@ -21,15 +25,22 @@
             "multi_agent_mode_hint_text" (include ".chezmoitemplates/agents/delegation.md")
         )
     )
-    "sandbox_mode" "workspace-write"
-    "sandbox_workspace_write" (dict
-        "network_access" true
-        "writable_roots" (list $kacheCacheDir (joinPath .chezmoi.homeDir ".cache" "uv"))
-    )
 -}}
 {{- range $key, $value := $patch -}}
 {{- $config = setValueAtPath (list $key) $value $config -}}
 {{- end -}}
+
+{{- /* Replace the managed permissions table wholesale. */ -}}
+{{- $permissions := dict
+    "description" "Only ask for actions detected as potentially unsafe. Cache access is allowed."
+    "extends" ":workspace"
+    "filesystem" (dict
+        $kacheCacheDir "write"
+        (joinPath .chezmoi.homeDir ".cache" "uv") "write"
+    )
+    "network" (dict "enabled" true)
+-}}
+{{- $config = setValueAtPath (list "permissions") (dict $permissionProfileName $permissions) $config -}}
 
 {{- /* Desktop settings are managed per key; retain all other desktop preferences. */ -}}
 {{- $desktopPatch := dict
