@@ -11,13 +11,6 @@ marimo.*
 secret-proxy.*
 {{ end }}
 
-{{ if not .services.llm }}
-llm.network
-inference.network
-vllm.*
-bifrost.*
-{{ end }}
-
 {{ if not .ingress.caddy }}
 caddy.*
 {{ end }}

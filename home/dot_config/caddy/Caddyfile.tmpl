@@ -16,7 +16,6 @@
     }
 }
 
-{{ if .services.development -}}
 https://kimi.{{ .device.domain }} {
     import cloudflare_tls
     reverse_proxy kimi:58627
@@ -31,12 +30,3 @@ https://marimo.{{ .device.domain }} {
     import cloudflare_tls
     reverse_proxy marimo:2718
 }
-
-{{ end -}}
-
-{{ if .services.llm -}}
-https://llm.{{ .device.domain }} {
-    import cloudflare_tls
-    reverse_proxy bifrost:8080
-}
-{{ end -}}

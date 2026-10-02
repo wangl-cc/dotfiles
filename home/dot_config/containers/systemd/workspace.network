@@ -1,5 +1,5 @@
 [Network]
 NetworkName=workspace
 # Development services and their callers; external access goes through Caddy or cloudflared.
-# Block routing to the llm, inference, and secret-proxy bridges.
+# Block direct routing to other bridges, including secret-proxy.
 Options=isolate=true

@@ -5,7 +5,6 @@ Optional Linux services run as independent rootless Podman containers. Enable th
 | Option | Services |
 | --- | --- |
 | `services.development` | dev-box, claude-box, Codex, Kimi, DSH, marimo, and secret-proxy |
-| `services.llm` | Bifrost and vLLM |
 | `services.smb` | [Samba](../containers/smb-box/README.md) |
 | `ingress.caddy` | Private HTTPS through Tailscale |
 | `ingress.cloudflared` | Public HTTPS through Cloudflare Tunnel |
@@ -24,7 +23,6 @@ Credentials live outside chezmoi in `~/.config/credstore.encrypted`. systemd dec
 | --- | --- | --- |
 | Caddy | `cloudflare-dns-token` | Cloudflare API token with zone read and DNS edit permissions |
 | cloudflared | `cloudflared-credentials` | Locally managed Tunnel's JSON credential |
-| Bifrost | `bifrost.env` | `BIFROST_ENCRYPTION_KEY=<64 hex characters>` |
 | secret-proxy | `overleaf-token`, `github-token` | Upstream tokens; see [provisioning](../containers/secret-proxy/README.md#deployment) |
 
 The managed [credstore](../home/dot_local/bin/credstore) command creates or replaces a credential with `credstore set NAME` on Linux. It masks terminal input with asterisks, or reads stdin unchanged when piped or redirected. Only encrypted data is written to disk, with private permissions; failed writes preserve the previous credential. For example, provision Caddy's token from a host terminal:
@@ -33,7 +31,7 @@ The managed [credstore](../home/dot_local/bin/credstore) command creates or repl
 credstore set cloudflare-dns-token
 ```
 
-Restart the affected service through `systemctl --user` after rotating a credential. Keep Bifrost's encryption key stable and back it up with its database; replacing the key alone makes existing encrypted data unreadable. Machine-bound encrypted files alone are not a recovery backup for a replacement host. Bifrost receives its decrypted key through a container environment file, so it also exists in Podman's runtime configuration.
+Restart the affected service through `systemctl --user` after rotating a credential. Machine-bound encrypted files alone are not a recovery backup for a replacement host.
 
 ### Apply, build, and start
 
@@ -45,7 +43,7 @@ chezmoi apply
 systemctl --user daemon-reload
 ```
 
-Start the services you enabled with `systemctl --user start <name>.service`; for example, `systemctl --user start vllm.service bifrost.service caddy.service`. Quadlet creates the required networks and runs build dependencies. Complete credential provisioning before starting services that need it.
+Start the services you enabled with `systemctl --user start <name>.service`; for example, `systemctl --user start kimi.service caddy.service`. Quadlet creates the required networks and runs build dependencies. Complete credential provisioning before starting services that need it.
 
 For later changes, restart affected services to activate new mounts, environment, or network settings. If a Containerfile changed, rebuild its image first with `systemctl --user restart <name>-build.service`, then restart its consumers. Agents and marimo share `box-base`; dev-box has its own image, and claude-box extends it. Applying dotfiles does not itself restart these containers, and disabling a chezmoi option does not stop or remove a deployed service.
 
@@ -55,11 +53,11 @@ Check `systemctl --user --failed`, `podman ps`, and the affected service's brows
 
 ## Private HTTPS
 
-Caddy serves `kimi.<device.domain>`, `dsh.<device.domain>`, `marimo.<device.domain>`, and `llm.<device.domain>` for the enabled service groups. Create DNS-only A records pointing to the Tailscale address, or a matching wildcard. Do not enable Cloudflare's HTTP proxy for these private names. Caddy manages certificate challenge records, not these service A records.
+Caddy serves `kimi.<device.domain>`, `dsh.<device.domain>`, and `marimo.<device.domain>` for development services. Create DNS-only A records pointing to the Tailscale address, or a matching wildcard. Do not enable Cloudflare's HTTP proxy for these private names. Caddy manages certificate challenge records, not these service A records.
 
 ZeroSSL is the default issuer and needs `acme.email`. To use another issuer, edit `acme.ca`; reinitialization resets it to ZeroSSL.
 
-Kimi and marimo have no application login on the private network; Bifrost's dashboard also trusts private access. DSH retains its own login. Limit private access through Tailscale rules. Bifrost inference requires a virtual key on both private and public endpoints.
+Kimi and marimo have no application login on the private network. DSH retains its own login. Limit private access through Tailscale rules.
 
 ## Cloudflare Tunnel
 
@@ -67,14 +65,12 @@ cloudflared connects directly to services on the container network; it does not 
 
 | Hostname | Service | Authentication |
 | --- | --- | --- |
-| `llm-ws.example.com` | Bifrost `/v1/models` and `/v1/chat/completions` only | Bifrost virtual key |
-| `admin-llm-ws.example.com` | Bifrost dashboard and management API | Cloudflare Access |
 | `dsh-ws.example.com` | DSH | Access plus DSH login |
 | `kimi-ws.example.com` | Kimi | Access |
 
-Only enabled service groups contribute routes. Use a device suffix that produces single-level public hostnames under your Cloudflare zone; a hyphen does not flatten deeper suffixes.
+Ingress is available when development services are enabled. Use a device suffix that produces single-level public hostnames under your Cloudflare zone; a hyphen does not flatten deeper suffixes.
 
-Create a locally managed Tunnel, DNS routes for the enabled hostnames, and one Access application covering the browser hostnames. Keep the `llm` API hostname outside that browser-login application. Supply the Tunnel UUID, Access team name, and application AUD during initialization. cloudflared validates Access JWTs on browser routes; unknown hosts and unlisted API paths return 404. chezmoi does not create these Cloudflare resources.
+Create a locally managed Tunnel, DNS routes for the enabled hostnames, and one Access application covering the browser hostnames. Supply the Tunnel UUID, Access team name, and application AUD during initialization. cloudflared validates Access JWTs on browser routes; unknown hosts return 404. chezmoi does not create these Cloudflare resources.
 
 Encrypt the Tunnel's JSON credential on the host:
 
@@ -82,25 +78,7 @@ Encrypt the Tunnel's JSON credential on the host:
 credstore set cloudflared-credentials < /path/to/tunnel-uuid.json
 ```
 
-Before relying on public access, check that browser routes require Access, the API rejects missing virtual keys, and valid streaming requests work. Adding or changing ingress also updates Kimi/DSH host allowlists, so restart those services when their configuration changes.
-
-## Local models
-
-Bifrost is the only model gateway; vLLM has no host or ingress port. Issue virtual keys in the Bifrost dashboard, restricted to provider `vllm` and model `hy-mt2-7b`. Clients use `https://llm.<device.domain>/v1` privately or the public API hostname, with standard bearer authorization.
-
-Bifrost keeps configuration and request statistics in the `bifrost-data` volume. Request content logging is disabled. Back up this volume and the encryption key together.
-
-For a fresh database only, generate the encryption credential from Bash:
-
-```bash
-set -o pipefail
-if [ ! -e "${XDG_CONFIG_HOME:-$HOME/.config}/credstore.encrypted/bifrost.env" ] && bifrost_key=$(openssl rand -hex 32); then
-  printf 'BIFROST_ENCRYPTION_KEY=%s\n' "$bifrost_key" | credstore set bifrost.env
-  unset bifrost_key
-fi
-```
-
-The vLLM image requires Linux x86_64 and a compatible AMD GPU. Before first startup, create its cache directories with `mkdir -p ~/.cache/{huggingface,vllm,triton}`. GPU access currently requires disabling SELinux label separation for this container; the reason is documented beside the setting in its [Quadlet](../home/dot_config/containers/systemd/vllm.container).
+Before relying on public access, check that browser routes require Access and authenticated sessions work. Adding or changing ingress also updates Kimi/DSH host allowlists, so restart those services when their configuration changes.
 
 ## Development services
 
@@ -117,12 +95,8 @@ marimo serves `~/Documents` through private HTTPS; containers use `http://marimo
 | Network | Purpose |
 | --- | --- |
 | `workspace` | Development services, their callers, Caddy, and cloudflared |
-| `llm` | Bifrost, Caddy, and cloudflared |
-| `inference` | Bifrost to vLLM |
 | `secret-proxy` | Trusted development clients to the credential proxy |
 
-Networks retain outbound access and block direct routing between bridges. Containers use service names, not each other's localhost. Neither `workspace` nor `llm` publishes a port; external access goes through Caddy or cloudflared.
-
-Caddy and cloudflared are the only containers joining both `workspace` and `llm`; a multi-homed container does not route between its networks. Bifrost stays off `workspace` because Kimi and marimo there have no application login. If development services later need local models, route them through a Caddy site on `workspace` that proxies only inference paths to Bifrost, rather than adding clients to `llm`.
+Networks retain outbound access and block direct routing between bridges. Containers use service names, not each other's localhost. External HTTPS access goes through Caddy or cloudflared; SSH uses the development containers' published ports.
 
 [Quadlets](../home/dot_config/containers/systemd) own process settings, mounts, permissions, and build dependencies. [Caddy](../home/dot_config/caddy/Caddyfile.tmpl) and [Tunnel](../home/dot_config/cloudflared/config.yml.tmpl) own ingress routes. Keep implementation details and their reasons next to those settings.

@@ -66,15 +66,13 @@ signingkeyFile = {{ $gitSigningKeyFile | quote }}
 [data.services]
 {{- $developmentEnabled := promptBoolOnce . "services.development" "Deploy development containers and their credential proxy" $legacyWorkspace }}
 development = {{ $developmentEnabled }}
-{{- $llmEnabled := promptBoolOnce . "services.llm" "Deploy Bifrost and local model inference" $legacyWorkspace }}
-llm = {{ $llmEnabled }}
 {{- $smbEnabled := promptBoolOnce . "services.smb" "Deploy SMB file sharing" $legacySMB }}
 smb = {{ $smbEnabled }}
 
 [data.ingress]
 {{- $caddyEnabled := false }}
 {{- $tunnelEnabled := false }}
-{{- if or $developmentEnabled $llmEnabled }}
+{{- if $developmentEnabled }}
 {{- $caddyEnabled = promptBoolOnce . "ingress.caddy" "Configure private HTTPS ingress through Caddy" $legacyWorkspace }}
 {{- $tunnelEnabled = promptBoolOnce . "ingress.cloudflared" "Configure public ingress through Cloudflare Tunnel" $legacyTunnel }}
 {{- end }}

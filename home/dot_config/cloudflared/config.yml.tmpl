@@ -2,22 +2,6 @@ tunnel: {{ .cloudflared.tunnel_id | quote }}
 credentials-file: /run/credentials/cloudflared-credentials
 
 ingress:
-{{ if .services.llm }}
-  - hostname: llm-{{ .device.domain }}
-    path: ^/v1/(models|chat/completions)$
-    service: http://bifrost:8080
-
-  - hostname: admin-llm-{{ .device.domain }}
-    service: http://bifrost:8080
-    originRequest:
-      access:
-        required: true
-        teamName: {{ .cloudflared.access_team | quote }}
-        audTag:
-          - {{ .cloudflared.access_aud | quote }}
-
-{{ end }}
-{{ if .services.development }}
   - hostname: dsh-{{ .device.domain }}
     service: http://dsh:3080
     originRequest:
@@ -36,5 +20,4 @@ ingress:
         audTag:
           - {{ .cloudflared.access_aud | quote }}
 
-{{ end }}
   - service: http_status:404

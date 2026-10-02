@@ -1,4 +1,0 @@
-[Network]
-NetworkName=inference
-# Only Bifrost and vLLM join; retain outbound access for model downloads.
-Options=isolate=true

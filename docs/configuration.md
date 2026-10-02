@@ -7,15 +7,15 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `rime.enabled`: macOS-only, default `true`. Deploy Rime configuration and the rime-ice repository to `~/Library/Rime`; Squirrel must be installed and added as a macOS input source separately.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
-- `services.development`, `services.llm`, and `services.smb`: Linux-only service groups, all defaulting to `false`. Development manages dev-box, Codex, Kimi, DSH, marimo, secret-proxy, their builds, and the secret-proxy network; LLM manages Bifrost, vLLM, their builds, and the inference network; SMB manages the independent Samba service.
-- `ingress.caddy` and `ingress.cloudflared`: Linux-only ingress groups, both defaulting to `false`. Caddy serves private HTTPS routes and Cloudflare Tunnel serves public routes. These questions appear only when `services.development` or `services.llm` is enabled; otherwise initialization writes both ingress flags as `false`, including previously saved choices.
+- `services.development` and `services.smb`: Linux-only service groups, both defaulting to `false`. Development manages dev-box, claude-box, Codex, Kimi, DSH, marimo, secret-proxy, their builds, and the secret-proxy network; SMB manages the independent Samba service.
+- `ingress.caddy` and `ingress.cloudflared`: Linux-only ingress groups, both defaulting to `false`. Caddy serves private HTTPS routes and Cloudflare Tunnel serves public routes. These questions appear only when `services.development` is enabled; otherwise initialization writes both ingress flags as `false`, including previously saved choices.
 - `device.tailscale_ipv4`: asked only when development, SMB, or Caddy is enabled, default empty; the address used for published SSH, HTTPS, or SMB ports. Empty leaves those services unpublished.
 - `device.domain`: asked only when Caddy or Cloudflare Tunnel is enabled and required; the device's complete service DNS suffix, such as `workstation.example.com`.
 - `acme.ca`: written only when Caddy is enabled; initialization sets the ZeroSSL production ACME URL without prompting.
 - `acme.email`: asked only when Caddy is enabled and required for ZeroSSL. Stored only in machine-local configuration.
 - `cloudflared.tunnel_id`: required when Cloudflare Tunnel is enabled; UUID of a locally managed Tunnel. Runtime credentials are stored in the standard user encrypted credential store and decrypted by systemd and mounted read-only into the container.
 - `cloudflared.access_team`: required when Cloudflare Tunnel is enabled; the team-name prefix of `<team>.cloudflareaccess.com`.
-- `cloudflared.access_aud`: required when Cloudflare Tunnel is enabled; the 64-character hexadecimal AUD of one Access application covering the enabled public browser hostnames. Keep the public LLM API hostname outside that application.
+- `cloudflared.access_aud`: required when Cloudflare Tunnel is enabled; the 64-character hexadecimal AUD of one Access application covering the enabled public browser hostnames.
 
 Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers.
 
@@ -28,6 +28,19 @@ Reinitialization emits all container and ingress settings only on Linux, and emi
 For containers, follow the [apply and startup workflow](containers.md#apply-build-and-start). Disabling a group stops managing its files; it does not stop or remove deployed services.
 
 Rime is also controlled per machine through its initialization prompt. Disabling `rime.enabled` stops managing both its configuration and rime-ice; it does not remove existing files or disable the input method. Redeploy from Squirrel's input menu after applying Rime changes.
+
+### Retiring local inference
+
+The `services.llm` option and the vLLM/Bifrost deployment have been removed. Run `chezmoi init` to regenerate machine-local configuration without the old `services.llm` key. Use `--prompt` if other saved choices need to change. Ingress now requires `services.development`; reinitialization writes both ingress flags as `false` when development is disabled.
+
+Existing installations require explicit cleanup because removing sources does not remove previously deployed files or services:
+
+1. Move translation clients to their provider's API, then stop `vllm.service` and `bifrost.service`. Stop shared Caddy/cloudflared services before changing their networks; this briefly interrupts development HTTPS access.
+2. Remove the retired targets from `~/.config/containers/systemd`: `vllm.container`, `vllm.build`, `bifrost.container`, `llm.network`, and `inference.network`, plus `~/.config/bifrost`. Inspect `chezmoi diff` and apply the updated Caddy/cloudflared targets. If development is disabled, remove their obsolete targets instead.
+3. Run `systemctl --user daemon-reload`, then restart the retained ingress services. Check their development routes and remove the unused `llm` and `inference` Podman networks after their containers have detached.
+4. Remove obsolete inference images and model/compiler caches once no other consumer needs them. Decide whether to archive or delete the `bifrost-data` volume and its `bifrost.env` encrypted credential together; they contain historical configuration and usage records.
+
+DNS routes and Cloudflare Access applications are managed externally. Remove the retired `llm.<device.domain>`, `llm-<device.domain>`, and `admin-llm-<device.domain>` hostnames from those resources while retaining development routes. This retirement does not add automatic deletion rules for other machines.
 
 ## Fish
 

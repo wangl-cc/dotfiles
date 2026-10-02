@@ -8,14 +8,8 @@ ContainerName=caddy
 # Map the credential owner to the image user without changing credential permissions.
 UserNS=keep-id:uid=65532,gid=65532
 
-# Network: join each enabled backend network; the drop-in publishes Tailscale HTTPS.
-# A multi-homed container does not route between its networks.
-{{- if .services.development }}
+# Network: reach development services; the drop-in publishes Tailscale HTTPS.
 Network=workspace.network
-{{- end }}
-{{- if .services.llm }}
-Network=llm.network
-{{- end }}
 
 # Caddy reads the token directly through its file placeholder.
 Volume=%d:/run/credentials:ro,Z

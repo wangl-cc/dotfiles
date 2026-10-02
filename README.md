@@ -28,6 +28,8 @@ Use `chezmoi edit-config` to change local options, or `chezmoi init --prompt` to
 
 On existing Macs, run `chezmoi init` once to add the `rime.enabled` option before diffing or applying this update. Rime configuration and rime-ice are now available on every Mac through this prompt (default `true`), replacing the old hostname restriction. After reviewing `chezmoi diff`, use `chezmoi apply ~/Library/Rime` to apply only Rime, then redeploy from Squirrel's input menu.
 
+Local inference and Bifrost have been retired. Run `chezmoi init` to remove the old `services.llm` bootstrap setting; ingress now requires development services. Previously deployed services need explicit shutdown and target cleanup before reloading systemd and restarting retained ingress. Follow the [migration steps](docs/configuration.md#retiring-local-inference); DNS and Cloudflare Access resources are managed separately.
+
 For local edits, use `chezmoi diff` followed by `chezmoi apply`. Review scripts and external-package changes as part of the diff. Container service reloads and restarts are separate from applying dotfiles.
 
 ## Documentation
