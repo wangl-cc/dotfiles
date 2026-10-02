@@ -48,6 +48,9 @@
     "mode": "subtle",
   },
   "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
     "sandbox_permissions": {
       "network_hosts": [
         "github.com"
@@ -61,7 +64,6 @@
     "expand_terminal_card": false,
     "single_file_review": true,
     "dock": "right",
-    "sidebar_side": "right",
     "favorite_models": [
       {
         "provider": "openai-subscribed",
@@ -79,11 +81,11 @@
     },
     "inline_assistant_model": {
       "provider": "deepseek",
-      "model": "deepseek-v4-pro",
+      "model": "deepseek-flash",
     },
     "commit_message_model": {
       "provider": "deepseek",
-      "model": "deepseek-v4-flash",
+      "model": "deepseek-flash",
     },
     "thread_summary_model": {
       "provider": "openai-subscribed",
