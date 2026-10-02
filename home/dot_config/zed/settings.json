@@ -89,7 +89,7 @@
     },
     "thread_summary_model": {
       "provider": "openai-subscribed",
-      "model": "gpt-5-nano",
+      "model": "gpt-6-luna",
     },
     "tool_permissions": {
       "default": "allow",
