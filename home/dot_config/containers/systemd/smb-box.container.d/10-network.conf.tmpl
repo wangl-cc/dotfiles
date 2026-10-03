@@ -1,4 +1,4 @@
 [Container]
 {{ with get .device "tailscale_ipv4" -}}
-PublishPort={{ . }}:1445:445
+PublishPort={{ . }}:445:445
 {{ end -}}

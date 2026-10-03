@@ -1,13 +1,13 @@
 # Samba container
 
-Native Samba on Fedora 44, built and run by a rootless, user-level Podman Quadlet. A single `public` share exposes `/srv/public` on TCP 445 inside a private container network. A host-side Quadlet drop-in publishes it on the host's Tailscale IPv4 address at TCP 1445. Samba's configuration contains no host interface names or addresses. Quadlet mounts the host's `~/Documents` read-write beneath the share as `Documents`; additional directories can be mounted beneath the same share. The name `public` does not enable guest access: authentication is required.
+Native Samba on Fedora 44, built and run by a rootless, user-level Podman Quadlet. A single `public` share exposes `/srv/public` on TCP 445 inside a private container network. A host-side Quadlet drop-in publishes it on the host's Tailscale IPv4 address at TCP 445. Samba's configuration contains no host interface names or addresses. Quadlet mounts the host's `~/Documents` read-write beneath the share as `Documents`; additional directories can be mounted beneath the same share. The name `public` does not enable guest access: authentication is required.
 
 ## Files and ownership
 
 - `Containerfile` installs Fedora's Samba packages and creates a fixed `smb` account (UID 1000) in `smbusers` (GID 1000). It prepares `/srv/public` and Samba's state/cache directories, checks the configuration with `testparm`, and starts foreground `smbd` directly through `CMD`.
 - `rootfs/etc/samba/smb.conf` is the complete, native Samba configuration. It is copied into the image without configuration generation or environment-variable substitution. No startup wrapper is needed; Samba creates its runtime lock and PID directories beneath the `/run/samba` tmpfs mount.
 - `../../home/dot_config/containers/systemd/smb-box.build` and `smb-box.container` own image construction, mounts, networking, and service lifecycle. Like dev-box, these bindings are managed only on `loongcc-workstation`.
-- `../../home/dot_config/containers/systemd/smb-box.container.d/10-network.conf.tmpl` reads the machine-local `tailscale.ipv4` value and publishes `<configured-ip>:1445:445`. The address is entered during chezmoi initialization and saved in `~/.config/chezmoi/chezmoi.toml`. Missing or empty values leave the port unpublished; non-empty values must be valid Tailscale IPv4 addresses in `100.64.0.0/10`.
+- `../../home/dot_config/containers/systemd/smb-box.container.d/10-network.conf.tmpl` reads the machine-local `tailscale.ipv4` value and publishes `<configured-ip>:445:445`. The address is entered during chezmoi initialization and saved in `~/.config/chezmoi/chezmoi.toml`. Missing or empty values leave the port unpublished; non-empty values must be valid Tailscale IPv4 addresses in `100.64.0.0/10`.
 - The `smb-box-data` named volume persists `/var/lib/samba`, including the server identity and password database. Configuration stays in the image; runtime locks and caches are disposable.
 
 `UserNS=keep-id:uid=1000,gid=1000` maps the host user's UID/GID to the fixed SMB account inside the container. The image is independent of the host username and numeric IDs. `User=0` starts Samba as root **inside that user namespace** so it can switch to the authenticated `smb` account; Podman itself runs as the ordinary host user. Filesystem access as `smb` is therefore constrained by that host user's permissions. Mac clients always log in as `smb`.
@@ -40,18 +40,18 @@ systemctl --user restart smb-box.service
 
 ## First start
 
-Run these commands on the Fedora host, as the user who owns `~/Documents`. Podman, user namespaces, and host Tailscale must already be working. Get the host's Tailscale IPv4 address and check that TCP 1445 is unused:
+Run these commands on the Fedora host, as the user who owns `~/Documents`. Podman, user namespaces, and host Tailscale must already be working. Get the host's Tailscale IPv4 address and check that TCP 445 is unused:
 
 ```sh
 tailscale ip -4
-ss -ltn 'sport = :1445'
+ss -ltn 'sport = :445'
 ```
 
 Enter that IPv4 address in the `Tailscale IPv4 address` prompt during chezmoi initialization. For an existing configuration, use `chezmoi edit-config` and add `ipv4 = "<your Tailscale IPv4>"` to its existing `[data.tailscale]` table, or run `chezmoi init --prompt` to fill the new prompt. The default is empty, which leaves SMB unpublished.
 
 Chezmoi generates `~/.config/containers/systemd/smb-box.container.d/10-network.conf` from this saved value; rendering does not execute Tailscale. If the address changes, update `tailscale.ipv4`, re-apply the drop-in, reload the user manager, and restart the container.
 
-The Tailscale address must be available when Podman starts; after Tailscale is ready, restart `smb-box.service` if it previously failed to bind. No Tailscale Serve rule or low-port sysctl change is needed. Host loopback has no published port; local Samba diagnostics below run inside the container.
+The Tailscale address must be available when Podman starts; after Tailscale is ready, restart `smb-box.service` if it previously failed to bind. Rootless binding requires `net.ipv4.ip_unprivileged_port_start` to be at most 445; this host already uses 443. No Tailscale Serve rule is needed. Host loopback has no published port; local Samba diagnostics below run inside the container.
 
 Review and apply the three managed files. This repository uses chezmoi's symlink mode, so `chezmoi cat` displays source link paths for the two non-template files and rendered content for the drop-in:
 
@@ -81,18 +81,18 @@ podman exec --user 0 -it smb-box smbpasswd smb
 
 ## Connect and verify
 
-In macOS Finder, press Command-K and enter `smb://<host-tailscale-name>:1445/public`, then open `Documents` inside it. Authenticate as `smb` with the SMB password created above. Tailscale policy and any host firewall must allow this Mac to reach TCP 1445 on the host's Tailscale address.
+In macOS Finder, press Command-K and enter `smb://<host-tailscale-name>/public`, then open `Documents` inside it. Authenticate as `smb` with the SMB password created above. Tailscale policy and any host firewall must allow this Mac to reach TCP 445 on the host's Tailscale address.
 
 On the host, check Samba's configuration, Podman's published endpoint, and the host listener:
 
 ```sh
 podman exec smb-box testparm --suppress-prompt
 podman port smb-box 445/tcp
-ss -ltn 'sport = :1445'
+ss -ltn 'sport = :445'
 podman exec -it smb-box smbclient //127.0.0.1/public -p 445 -U smb -c 'ls; cd Documents; ls'
 ```
 
-The published endpoint should be exactly the configured Tailscale IPv4 address at port 1445, never `0.0.0.0:1445`, `[::]:1445`, or a LAN address. Check that connecting to the host's LAN address on port 1445 fails. A successful `smbclient` check inside the container does not verify external access: also connect from the Mac, check directory listing and opening a PDF, and create, modify, and remove a disposable test file inside `public/Documents`. Before removing it, check on the host that the file belongs to the host user. Then restart `smb-box.service` and reconnect to verify that the credentials survive. For remotely rebuilt PDFs, also test whether the chosen viewer notices updates.
+The published endpoint should be exactly the configured Tailscale IPv4 address at port 445, never `0.0.0.0:445`, `[::]:445`, or a LAN address. Check that connecting to the host's LAN address on port 445 fails. A successful `smbclient` check inside the container does not verify external access: also connect from the Mac, check directory listing and opening a PDF, and create, modify, and remove a disposable test file inside `public/Documents`. Before removing it, check on the host that the file belongs to the host user. Then restart `smb-box.service` and reconnect to verify that the credentials survive. For remotely rebuilt PDFs, also test whether the chosen viewer notices updates.
 
 ## Change configuration and update
 
