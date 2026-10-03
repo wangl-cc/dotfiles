@@ -33,6 +33,10 @@ auto = {{ promptBoolOnce . "shell.fish.auto" "Auto-enter fish from fallback bash
 rustup = {{ promptChoiceOnce . "toolchains.rustup" "Rustup profile to install on this machine" (list "none" "minimal" "default" "complete") "none" | quote }}
 node = {{ promptBoolOnce . "toolchains.node" "Install the configured Node.js major with pnpm on this machine" true }}
 
+{{ if eq .chezmoi.os "darwin" -}}
+[data.rime]
+enabled = {{ promptBoolOnce . "rime.enabled" "Deploy Rime configuration and rime-ice on this Mac" true }}
+{{ end }}
 [data.git]
 name = "Loong"
 email = "git@loongw.cc"

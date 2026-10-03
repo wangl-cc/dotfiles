@@ -26,6 +26,8 @@ chezmoi update
 
 Use `chezmoi edit-config` to change local options, or `chezmoi init --prompt` to revisit initialization choices; see [machine configuration](docs/configuration.md).
 
+On existing Macs, run `chezmoi init` once to add the `rime.enabled` option before diffing or applying this update. Rime configuration and rime-ice are now available on every Mac through this prompt (default `true`), replacing the old hostname restriction. After reviewing `chezmoi diff`, use `chezmoi apply ~/Library/Rime` to apply only Rime, then redeploy from Squirrel's input menu.
+
 For local edits, use `chezmoi diff` followed by `chezmoi apply`. Review scripts and external-package changes as part of the diff. Container service reloads and restarts are separate from applying dotfiles.
 
 ## Documentation

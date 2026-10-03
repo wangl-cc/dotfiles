@@ -5,6 +5,7 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `shell.fish.auto`: default `true`. Enter fish automatically from fallback bash/zsh sessions.
 - `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
+- `rime.enabled`: macOS-only, default `true`. Deploy Rime configuration and the rime-ice repository to `~/Library/Rime`; Squirrel must be installed and added as a macOS input source separately.
 - `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
 - `services.development`, `services.llm`, and `services.smb`: Linux-only service groups, all defaulting to `false`. Development manages dev-box, Codex, Kimi, DSH, marimo, secret-proxy, their builds, and the secret-proxy network; LLM manages Bifrost, vLLM, their builds, and the inference network; SMB manages the independent Samba service.
 - `ingress.caddy` and `ingress.cloudflared`: Linux-only ingress groups, both defaulting to `false`. Caddy serves private HTTPS routes and Cloudflare Tunnel serves public routes. These questions appear only when `services.development` or `services.llm` is enabled; otherwise initialization writes both ingress flags as `false`, including previously saved choices.
@@ -25,6 +26,8 @@ Edit saved answers with `chezmoi edit-config`, then inspect `chezmoi diff` befor
 Reinitialization emits all container and ingress settings only on Linux, and emits device or ACME settings only for the groups that need them. It resets `acme.ca` to ZeroSSL when Caddy is enabled, including configurations that previously selected another CA; supply a contact email when prompted.
 
 For containers, follow the [apply and startup workflow](containers.md#apply-build-and-start). Disabling a group stops managing its files; it does not stop or remove deployed services.
+
+Rime is also controlled per machine through its initialization prompt. Disabling `rime.enabled` stops managing both its configuration and rime-ice; it does not remove existing files or disable the input method. Redeploy from Squirrel's input menu after applying Rime changes.
 
 ## Fish
 
