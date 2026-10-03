@@ -11,7 +11,7 @@
 
 {{- /* Replace managed tables wholesale so obsolete settings do not survive. */ -}}
 {{- $patch := dict
-    "model" "gpt-6-astra"
+    "model" "gpt-6.1-sol"
     "model_reasoning_effort" "high"
     "approval_policy" "on-request"
     "approvals_reviewer" "auto_review"
