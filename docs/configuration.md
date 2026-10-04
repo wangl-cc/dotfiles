@@ -6,7 +6,7 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.
 - `rime.enabled`: macOS-only, default `true`. Deploy Rime configuration and the rime-ice repository to `~/Library/Rime`; Squirrel must be installed and added as a macOS input source separately.
-- `git.signingkeyFile`: choose a public key found in `~/.ssh/*.pub` by filename stem, such as `id_ed25519`, or choose `none` to leave signing off.
+- `git.signingkey`: enter a complete SSH public key or a public key file path beginning with `/` or `~/`, such as `~/.ssh/id_ed25519.pub`; leave empty to disable signing. Initialization validates the public key with `ssh-keygen` and saves its value with a `key::` prefix. Signing requires the matching private key in an accessible SSH agent.
 - `services.development` and `services.smb`: Linux-only service groups, both defaulting to `false`. Development manages dev-box, claude-box, Codex, Kimi, DSH, marimo, secret-proxy, their builds, and the secret-proxy network; SMB manages the independent Samba service.
 - `ingress.caddy` and `ingress.cloudflared`: Linux-only ingress groups, both defaulting to `false`. Caddy serves private HTTPS routes and Cloudflare Tunnel serves public routes. These questions appear only when `services.development` is enabled; otherwise initialization writes both ingress flags as `false`, including previously saved choices.
 - `device.tailscale_ipv4`: asked only when development, SMB, or Caddy is enabled, default empty; the address used for published SSH, HTTPS, or SMB ports. Empty leaves those services unpublished.
@@ -17,7 +17,7 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `cloudflared.access_team`: required when Cloudflare Tunnel is enabled; the team-name prefix of `<team>.cloudflareaccess.com`.
 - `cloudflared.access_aud`: required when Cloudflare Tunnel is enabled; the 64-character hexadecimal AUD of one Access application covering the enabled public browser hostnames.
 
-Use `--promptDefaults` to choose defaults non-interactively. Prefer `--override-data` when scripted bootstrap needs non-default answers.
+Use `--promptDefaults` to choose defaults non-interactively. Use flags such as `--promptString` and `--promptBool` when scripted bootstrap needs non-default answers.
 
 ## Updating configuration
 

@@ -1,14 +1,6 @@
-{{- $gitSigningKeyFile := get .git "signingkeyFile" | default "" -}}
-{{- if $gitSigningKeyFile -}}
-{{- $gitSigningKeyPath := expandenv $gitSigningKeyFile -}}
-{{- if hasPrefix "~/" $gitSigningKeyPath -}}
-{{-   $gitSigningKeyPath = joinPath .chezmoi.homeDir (trimPrefix "~/" $gitSigningKeyPath) -}}
-{{- end -}}
-{{- if not (stat $gitSigningKeyPath) -}}
-{{-   fail (printf "git.signingkeyFile does not exist: %s" $gitSigningKeyPath) -}}
-{{- end -}}
+{{- if (get .git "signingkey" | default "") -}}
 [user]
-	signingkey = {{ include $gitSigningKeyPath | trim | quote }}
+	signingkey = {{ .git.signingkey | quote }}
 [commit]
 	gpgsign = true
 [gpg]

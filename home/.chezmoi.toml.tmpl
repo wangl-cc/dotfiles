@@ -40,23 +40,39 @@ enabled = {{ promptBoolOnce . "rime.enabled" "Deploy Rime configuration and rime
 [data.git]
 name = "Loong"
 email = "git@loongw.cc"
-{{- $gitSigningKeyFiles := glob (joinPath .chezmoi.homeDir ".ssh/*.pub") }}
-{{- $gitSigningDisabled := "none" }}
-{{- $gitSigningKeyChoices := list $gitSigningDisabled }}
-{{- range $gitSigningKeyPath := $gitSigningKeyFiles }}
-{{-   $gitSigningKeyChoices = append $gitSigningKeyChoices (trimSuffix ".pub" (base $gitSigningKeyPath)) }}
+{{- /* Existing file-based configurations migrate through the new input boundary. */}}
+{{- $gitSigningKeyDefault := get (get . "git" | default dict) "signingkeyFile" | default "" | expandenv }}
+{{- if and $gitSigningKeyDefault (not (or (hasPrefix "/" $gitSigningKeyDefault) (hasPrefix "~/" $gitSigningKeyDefault))) }}
+{{-   $gitSigningKeyDefault = joinPath .chezmoi.commandDir $gitSigningKeyDefault }}
 {{- end }}
-{{- $gitSigningKeySelection := promptChoiceOnce . "git.signingkeyFile" "Git SSH commit signing public key" $gitSigningKeyChoices $gitSigningDisabled }}
-{{- $gitSigningKeyFile := "" }}
-{{- if or (eq $gitSigningKeySelection "") (eq $gitSigningKeySelection $gitSigningDisabled) }}
-{{- else if contains "/" $gitSigningKeySelection }}
-{{-   $gitSigningKeyFile = $gitSigningKeySelection }}
-{{- else if hasSuffix ".pub" $gitSigningKeySelection }}
-{{-   $gitSigningKeyFile = printf "~/.ssh/%s" $gitSigningKeySelection }}
-{{- else }}
-{{-   $gitSigningKeyFile = printf "~/.ssh/%s.pub" $gitSigningKeySelection }}
+{{- if hasKey (get . "git" | default dict) "signingkey" }}
+{{-   $gitSigningKeyDefault = .git.signingkey }}
 {{- end }}
-signingkeyFile = {{ $gitSigningKeyFile | quote }}
+{{- $gitSigningKey := promptStringOnce . "git.signingkey" "Git SSH signing public key (.pub path starting with / or ~/, full public key, or empty to disable)" $gitSigningKeyDefault | trim }}
+{{- if or (hasPrefix "/" $gitSigningKey) (hasPrefix "~/" $gitSigningKey) }}
+{{-   $gitSigningKeyPath := $gitSigningKey }}
+{{-   if hasPrefix "~/" $gitSigningKeyPath }}
+{{-     $gitSigningKeyPath = joinPath .chezmoi.homeDir (trimPrefix "~/" $gitSigningKeyPath) }}
+{{-   end }}
+{{-   if not (stat $gitSigningKeyPath) }}
+{{-     fail (printf "Git SSH signing public key file does not exist: %s" $gitSigningKeyPath) }}
+{{-   end }}
+{{-   $gitSigningKey = include $gitSigningKeyPath | trim }}
+{{-   if not $gitSigningKey }}
+{{-     fail (printf "Git SSH signing public key file is empty: %s" $gitSigningKeyPath) }}
+{{-   end }}
+{{- end }}
+{{- if $gitSigningKey }}
+{{-   $gitSigningKey = trimPrefix "key::" $gitSigningKey | trim }}
+{{-   $gitSigningKey = regexReplaceAll `[\t ]+` $gitSigningKey " " }}
+{{-   if not (regexMatch `^(ssh-|ecdsa-sha2-|sk-)[^[:space:]]+ [A-Za-z0-9+/]+={0,2}( [^\r\n]*)?$` $gitSigningKey) }}
+{{-     fail "git.signingkey must be one SSH public key, an absolute or ~/ public key file path, or empty" }}
+{{-   end }}
+{{- /* Pass the key as data, never interpolate it into shell code. */}}
+{{-   $_ := output "sh" "-c" `printf '%s\n' "$1" | ssh-keygen -l -f /dev/stdin` "git-signing-key" $gitSigningKey }}
+{{-   $gitSigningKey = printf "key::%s" $gitSigningKey }}
+{{- end }}
+signingkey = {{ $gitSigningKey | quote }}
 
 {{ if eq .chezmoi.os "linux" -}}
 {{- /* Legacy flags supply migration defaults only; consumers use the new groups. */ -}}
