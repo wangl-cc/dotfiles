@@ -46,57 +46,57 @@ portable_pkgs:
       type: archive-files
     chezmoi:
       repo: twpayne/chezmoi
-      tag: v2.72.2
+      tag: v2.73.0
       targets:
         darwin-aarch64:
           asset_pattern: ^chezmoi-darwin-arm64$
           resolved:
             asset: chezmoi-darwin-arm64
-            sha256: 0cc637cd52aa9dbce58cf6000d386c03259e4937503725d4390c9218eccb6166
+            sha256: 4ba16b902a275576ac78a75a1c3370eb09eb21d96ec4ddda53570125837ddb2a
         linux-x86_64:
           asset_pattern: ^chezmoi-linux-amd64-musl$
           resolved:
             asset: chezmoi-linux-amd64-musl
-            sha256: b2ff4d3c3e4fb0de0bf48cda50b888cb24f32562f622dc4688ee02f0291c4424
+            sha256: 7e7f1ed1127178a4fe44787ffc6941f9bd5753810e3913fcbcd53f0be69c9557
       type: file
       bin: chezmoi
     delta:
       repo: dandavison/delta
-      tag: 0.19.2
+      tag: 0.20.1
       targets:
         darwin-aarch64:
           asset_pattern: ^delta-.*-aarch64-apple-darwin\.tar\.gz$
           resolved:
-            asset: delta-0.19.2-aarch64-apple-darwin.tar.gz
-            sha256: 9be36612a5a13e9e386dc498fb8e50dc87c72ee42b63db0ea05b32f99a72a69a
+            asset: delta-0.20.1-aarch64-apple-darwin.tar.gz
+            sha256: bc1839cea69288d4673a24faffbb825d408ca907e0f7d33b1678c9e6cdd5e58e
             files:
-              delta: delta-0.19.2-aarch64-apple-darwin/delta
+              delta: delta-0.20.1-aarch64-apple-darwin/delta
         linux-x86_64:
           asset_pattern: ^delta-.*-x86_64-unknown-linux-musl\.tar\.gz$
           resolved:
-            asset: delta-0.19.2-x86_64-unknown-linux-musl.tar.gz
-            sha256: f1ea01ca7728ce3462debc359f39dfc7cbbc1a63224b71fefabf92042864aa1b
+            asset: delta-0.20.1-x86_64-unknown-linux-musl.tar.gz
+            sha256: 69dcb4043f55c29118f408c6efd30115e0a4e0a6709253343b8c8fa814ab4a31
             files:
-              delta: delta-0.19.2-x86_64-unknown-linux-musl/delta
+              delta: delta-0.20.1-x86_64-unknown-linux-musl/delta
       bins:
         delta: '{assetStem}/delta'
       type: archive-files
     fastfetch:
       repo: fastfetch-cli/fastfetch
-      tag: 2.68.1
+      tag: 2.69.0
       targets:
         darwin-aarch64:
           asset_pattern: ^fastfetch-macos-aarch64\.tar\.gz$
           resolved:
             asset: fastfetch-macos-aarch64.tar.gz
-            sha256: 22426608dca945e0531af37054e21a2727aa7bb30179efaf44de7f59163be5fe
+            sha256: 3901a90b11f1823a00fea6f3c3c877e7f336465e9d9facc98fd6b8803e8fac7e
             files:
               fastfetch: fastfetch-macos-aarch64/usr/bin/fastfetch
         linux-x86_64:
           asset_pattern: ^fastfetch-linux-amd64\.tar\.gz$
           resolved:
             asset: fastfetch-linux-amd64.tar.gz
-            sha256: 0c51ef6fa3e976eb5038fe0afda38629d3ca07947740bb0e3354c7c4f1238c0c
+            sha256: 9fe880a34de3fec88e57a69230c02fd7be0846db3f3ea9f88f2b74489a79ff55
             files:
               fastfetch: fastfetch-linux-amd64/usr/bin/fastfetch
       bins:
@@ -146,22 +146,22 @@ portable_pkgs:
       type: archive-files
     gh:
       repo: cli/cli
-      tag: v2.101.0
+      tag: v2.102.0
       targets:
         darwin-aarch64:
           asset_pattern: ^gh_.*_macOS_arm64\.zip$
           resolved:
-            asset: gh_2.101.0_macOS_arm64.zip
-            sha256: e4303e39d8f07141c4bad4b99b01079f05029c59b27076e8fbc825c985ecdd8b
+            asset: gh_2.102.0_macOS_arm64.zip
+            sha256: da922c20d1792e5b2cbf375593d7a658acf034c12c84e007e71c76ef959c337e
             files:
-              gh: gh_2.101.0_macOS_arm64/bin/gh
+              gh: gh_2.102.0_macOS_arm64/bin/gh
         linux-x86_64:
           asset_pattern: ^gh_.*_linux_amd64\.tar\.gz$
           resolved:
-            asset: gh_2.101.0_linux_amd64.tar.gz
-            sha256: 9bca2d1c16825f109907a23307628a2f0698fbf99662b73a5cf0b020293072b8
+            asset: gh_2.102.0_linux_amd64.tar.gz
+            sha256: bb766f710eef8ede859c18578c72c327597cd4c8a85b06001b1f3843c6019386
             files:
-              gh: gh_2.101.0_linux_amd64/bin/gh
+              gh: gh_2.102.0_linux_amd64/bin/gh
       bins:
         gh: '{assetStem}/bin/gh'
       type: archive-files
@@ -230,20 +230,20 @@ portable_pkgs:
       type: archive-files
     rtk:
       repo: rtk-ai/rtk
-      tag: v0.49.0
+      tag: v0.51.0
       targets:
         darwin-aarch64:
           asset_pattern: ^rtk-aarch64-apple-darwin\.tar\.gz$
           resolved:
             asset: rtk-aarch64-apple-darwin.tar.gz
-            sha256: bbbfebabb22686993a80da731aa4d5d35116fb8ae24abb00608efa028e13ae01
+            sha256: 8817d8b71afc02ac8bf06eb24bcc41c306592ab735b68e8fee9db1ba0de7cb59
             files:
               rtk: rtk
         linux-x86_64:
           asset_pattern: ^rtk-x86_64-unknown-linux-musl\.tar\.gz$
           resolved:
             asset: rtk-x86_64-unknown-linux-musl.tar.gz
-            sha256: 7278231dfd7e6a730a4ab7f847b195bcf02289c2d57622b0dab75a6411100c8f
+            sha256: 5028d3b19a8f0990d30fec9fbb07e32782bc5698e618fb1861aad8a9ccba4eb5
             files:
               rtk: rtk
       bins:
@@ -272,18 +272,18 @@ portable_pkgs:
       type: archive-files
     yq:
       repo: mikefarah/yq
-      tag: v4.53.6
+      tag: v4.54.1
       targets:
         darwin-aarch64:
           asset_pattern: ^yq_darwin_arm64$
           resolved:
             asset: yq_darwin_arm64
-            sha256: cceb0b8d71ea5294334121f8429f33f92b920e7217d904a2f9f35443968ac424
+            sha256: fee511a181bd8b3e6b7da98842b41973bfac8cd3bcd341ed29a584620b5b2844
         linux-x86_64:
           asset_pattern: ^yq_linux_amd64$
           resolved:
             asset: yq_linux_amd64
-            sha256: c5f056448f973ae7d39b5401949648a78f2dc1947d6a8eb65be60d5c504b9385
+            sha256: 8e34fc298390875de416e6a4afcb8cabeceb25d9aa8506c1a2f9353cf702ea5f
       type: file
       bin: yq
     zoxide:
@@ -325,20 +325,20 @@ portable_pkgs:
       bin: jq
     kache:
       repo: kunobi-ninja/kache
-      tag: v0.26.3
+      tag: v0.28.1
       targets:
         darwin-aarch64:
           asset_pattern: ^kache\-aarch64\-apple\-darwin\.tar\.gz$
           resolved:
             asset: kache-aarch64-apple-darwin.tar.gz
-            sha256: c51e7c0e3d5e6bf4a614c8e2287553e602d03e98b71616ddecb2066856fea647
+            sha256: 253096ab5972fe179b86301abbcfb5944bc9807e3fa3d1720b44b129b86fcbff
             files:
               kache: kache
         linux-x86_64:
           asset_pattern: ^kache\-x86_64\-unknown\-linux\-musl\.tar\.gz$
           resolved:
             asset: kache-x86_64-unknown-linux-musl.tar.gz
-            sha256: dcd5e578a74079a288622ac13243f21d4f2861d2cb5fd9f35ba8e6ba71afbd32
+            sha256: 68635a9f92ce5015a2c48c98b968d1b3707b6dbee0ca725e51d1671c9346f38f
             files:
               kache: kache
       bins:
@@ -346,20 +346,20 @@ portable_pkgs:
       type: archive-files
     pnpm:
       repo: pnpm/pnpm
-      tag: v12.5.1
+      tag: v12.9.1
       targets:
         darwin-aarch64:
           asset_pattern: ^pnpm-darwin-arm64[.]tar[.]gz$
           resolved:
             asset: pnpm-darwin-arm64.tar.gz
-            sha256: 776b26182ea825d5846dc236d29773cf4b7568b7f0abe145c328a342284c8b75
+            sha256: 4dcea94654bc8f2189dfd591aea7af4adddd29243e4bfcc8d4c8b4289e7983ba
             files:
               pnpm: pnpm
         linux-x86_64:
           asset_pattern: ^pnpm-linux-x64-musl[.]tar[.]gz$
           resolved:
             asset: pnpm-linux-x64-musl.tar.gz
-            sha256: 9b1910e07dac85bb7a2f5e0d1eb15da49b9e6220e0862b339877f8729bfb467a
+            sha256: 7c52e6db59c9cd3837ae1ec0b96ab3209d3c42cb0e3a77f5db8cbe86661d85a6
             files:
               pnpm: pnpm
       bins:
@@ -367,13 +367,13 @@ portable_pkgs:
       type: archive-files
     uv:
       repo: astral-sh/uv
-      tag: 0.12.18
+      tag: 0.12.23
       targets:
         darwin-aarch64:
           asset_pattern: ^uv\-aarch64\-apple\-darwin\.tar\.gz$
           resolved:
             asset: uv-aarch64-apple-darwin.tar.gz
-            sha256: cf40e0c6a202190ccd9e0406dcfdd5b2d6668a9a5c779b17948963df32aafe5b
+            sha256: 50487ae565ccd96e499056b4674d438f4c53170202617b4c759defe0c6a1b544
             files:
               uv: uv-aarch64-apple-darwin/uv
               uvx: uv-aarch64-apple-darwin/uvx
@@ -381,7 +381,7 @@ portable_pkgs:
           asset_pattern: ^uv\-x86_64\-unknown\-linux\-musl\.tar\.gz$
           resolved:
             asset: uv-x86_64-unknown-linux-musl.tar.gz
-            sha256: e38d97460b98ebfd31b197de0fe9fa578add4bc8ba0179b203dd3f87b99f98e6
+            sha256: 1cff8783850e794470aadb73f54b749542a511fc57b0ce6468b64bd3852e0ade
             files:
               uv: uv-x86_64-unknown-linux-musl/uv
               uvx: uv-x86_64-unknown-linux-musl/uvx
@@ -391,20 +391,20 @@ portable_pkgs:
       type: archive-files
     kimi-code:
       repo: MoonshotAI/kimi-code
-      tag: '@moonshot-ai/kimi-code@2.1.0'
+      tag: '@moonshot-ai/kimi-code@2.1.1'
       targets:
         darwin-aarch64:
           asset_pattern: ^kimi-code-darwin-arm64\.tar\.gz$
           resolved:
             asset: kimi-code-darwin-arm64.tar.gz
-            sha256: b5e9a77313855e6a763608bda12ff0e26855d311a4faeed770ae915c7ee7c39a
+            sha256: 8c3bad99571b16abd113ab5d511a98a36b852c0d5493991842a67b8c2bc4ecd0
             files:
               kimi: kimi
         linux-x86_64:
           asset_pattern: ^kimi-code-linux-x64\.tar\.gz$
           resolved:
             asset: kimi-code-linux-x64.tar.gz
-            sha256: 2e23d34146a702a8e02c20e4bdd66dbdeb8d452f1dc37a06dd5e1d9a1bc566da
+            sha256: b66cc3787bc9dfa6a06761305dc8878f98e7a24f79fa4494c00714229a1486e8
             files:
               kimi: kimi
       bins:
@@ -412,13 +412,13 @@ portable_pkgs:
       type: archive-files
     codex:
       repo: openai/codex
-      tag: rust-v0.156.1
+      tag: rust-v0.160.0
       targets:
         darwin-aarch64:
           asset_pattern: ^codex-package-aarch64-apple-darwin\.tar\.gz$
           resolved:
             asset: codex-package-aarch64-apple-darwin.tar.gz
-            sha256: fea42f9625091f011e38f059da974d52e57ba31831648bb1c7f0b1a385fde547
+            sha256: 007df41b607dbbc8d204b9746ce7fed2d4ce6c813f44c32ceee54175ca796525
             files:
               codex: bin/codex
               codex-code-mode-host: bin/codex-code-mode-host
@@ -426,7 +426,7 @@ portable_pkgs:
           asset_pattern: ^codex-package-x86_64-unknown-linux-musl\.tar\.gz$
           resolved:
             asset: codex-package-x86_64-unknown-linux-musl.tar.gz
-            sha256: 8b711520beddf385467b8da4d2c93736637c6ba1e46811cf0d8606b7c490b6f6
+            sha256: 4fcc47ab57f52ff75363951a8761146cd10c8288bd86fed45487dbb204a16b71
             files:
               codex: bin/codex
               codex-code-mode-host: bin/codex-code-mode-host
