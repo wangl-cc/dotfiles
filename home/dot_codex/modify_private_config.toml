@@ -3,11 +3,14 @@
 {{- $config := fromToml .chezmoi.stdin -}}
 {{- /* Legacy sandbox settings take precedence over permission profiles. */ -}}
 {{- $config = $config | deleteValueAtPath "sandbox_mode" | deleteValueAtPath "sandbox_workspace_write" -}}
-{{- $permissionProfileName := "Approve for me (with cache)" -}}
+{{- $permissionProfileName := "Approve for me (with tool storage)" -}}
 {{- $kacheCacheDir := joinPath .chezmoi.homeDir ".cache" "kache" -}}
+{{- $rtkDataDir := joinPath .chezmoi.homeDir ".local" "share" "rtk" -}}
 {{- if eq .chezmoi.os "darwin" -}}
 {{- $kacheCacheDir = joinPath .chezmoi.homeDir "Library" "Caches" "kache" -}}
+{{- $rtkDataDir = joinPath .chezmoi.homeDir "Library" "Application Support" "rtk" -}}
 {{- end -}}
+{{- $matplotlibDir := joinPath .chezmoi.homeDir ".matplotlib" -}}
 
 {{- /* Replace managed tables wholesale so obsolete settings do not survive. */ -}}
 {{- $patch := dict
@@ -30,15 +33,20 @@
 {{- $config = setValueAtPath (list $key) $value $config -}}
 {{- end -}}
 
+{{- /* Desktop commands need the same Matplotlib path as interactive shells. */ -}}
+{{- $config = setValueAtPath (list "shell_environment_policy" "set" "MPLCONFIGDIR") $matplotlibDir $config -}}
+
 {{- /* Replace the managed permissions table wholesale. */ -}}
 {{- $permissions := dict
-    "description" "Only ask for actions detected as potentially unsafe. Cache access is allowed."
+    "description" "Only ask for actions detected as potentially unsafe. Tool storage access is allowed."
     "extends" ":workspace"
     "filesystem" (dict
         $kacheCacheDir "write"
         (joinPath .chezmoi.homeDir ".cache" "uv") "write"
+        $matplotlibDir "write"
+        $rtkDataDir "write"
     )
-    "network" (dict "enabled" true)
+    "network" (dict "enabled" false)
 -}}
 {{- $config = setValueAtPath (list "permissions") (dict $permissionProfileName $permissions) $config -}}
 
