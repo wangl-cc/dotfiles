@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.local/bin/rtk-pre-tool-use antigravity",
+            "command": "rtk hook antigravity",
             "timeout": 5
           }
         ]

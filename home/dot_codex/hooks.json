@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.local/bin/rtk-pre-tool-use\" codex",
+            "command": "rtk hook codex",
             "timeout": 5,
             "statusMessage": "Rewriting command through RTK"
           }
