@@ -5,7 +5,7 @@
   },
   {
     "command": "hotkeyWindow",
-    "key": "Alt+Space"
+    "key": null
   },
   {
     "command": "openAvatarOverlay",
