@@ -1,4 +1,17 @@
 patch:
+  # 雾凇官方万象 LTS 配方
+  grammar:
+    language: wanxiang-lts-zh-hans
+    collocation_max_length: 6
+    collocation_min_length: 3
+    collocation_penalty: -14
+    non_collocation_penalty: -6
+    weak_collocation_penalty: -100
+    rear_penalty: -20
+  translator/max_homophones: 8
+
+  translator/contextual_suggestions: true # 分段输入时利用最近上屏的前文
+
   translator/preedit_format:
     - xform/([jqxy])v/$1u/ # 显示为 ju qu xu yu
     - xform/([nl])v/$1ü/ # 显示为 nü lü
