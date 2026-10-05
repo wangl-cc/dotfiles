@@ -8,14 +8,11 @@ During the first init, chezmoi prompts once for machine-local options and stores
 - `rime.enabled`: macOS-only, default `true`. Deploy Rime configuration and the rime-ice repository to `~/Library/Rime`; Squirrel must be installed and added as a macOS input source separately.
 - `git.signingkey`: enter a complete SSH public key or a public key file path beginning with `/` or `~/`, such as `~/.ssh/id_ed25519.pub`; leave empty to disable signing. Initialization validates the public key with `ssh-keygen` and saves its value with a `key::` prefix. Signing requires the matching private key in an accessible SSH agent.
 - `services.development` and `services.smb`: Linux-only service groups, both defaulting to `false`. Development manages dev-box, claude-box, Codex, Kimi, DSH, marimo, secret-proxy, their builds, and the secret-proxy network; SMB manages the independent Samba service.
-- `ingress.caddy` and `ingress.cloudflared`: Linux-only ingress groups, both defaulting to `false`. Caddy serves private HTTPS routes and Cloudflare Tunnel serves public routes. These questions appear only when `services.development` is enabled; otherwise initialization writes both ingress flags as `false`, including previously saved choices.
-- `device.tailscale_ipv4`: asked only when development, SMB, or Caddy is enabled, default empty; the address used for published SSH, HTTPS, or SMB ports. Empty leaves those services unpublished.
-- `device.domain`: asked only when Caddy or Cloudflare Tunnel is enabled and required; the device's complete service DNS suffix, such as `workstation.example.com`.
+- `ingress.caddy`: Linux-only private HTTPS ingress through Tailscale, default `false`. This question appears only when `services.development` is enabled; otherwise initialization writes `false`, including previously saved choices.
+- `device.tailscale_ipv4`: asked only when development or SMB is enabled, default empty; the address used for published SSH, HTTPS, or SMB ports. Empty leaves those services unpublished.
+- `device.domain`: asked only when Caddy is enabled and required; the device's complete service DNS suffix, such as `workstation.example.com`.
 - `acme.ca`: written only when Caddy is enabled; initialization sets the ZeroSSL production ACME URL without prompting.
 - `acme.email`: asked only when Caddy is enabled and required for ZeroSSL. Stored only in machine-local configuration.
-- `cloudflared.tunnel_id`: required when Cloudflare Tunnel is enabled; UUID of a locally managed Tunnel. Runtime credentials are stored in the standard user encrypted credential store and decrypted by systemd and mounted read-only into the container.
-- `cloudflared.access_team`: required when Cloudflare Tunnel is enabled; the team-name prefix of `<team>.cloudflareaccess.com`.
-- `cloudflared.access_aud`: required when Cloudflare Tunnel is enabled; the 64-character hexadecimal AUD of one Access application covering the enabled public browser hostnames.
 
 Use `--promptDefaults` to choose defaults non-interactively. Use flags such as `--promptString` and `--promptBool` when scripted bootstrap needs non-default answers.
 
@@ -31,16 +28,31 @@ Rime is also controlled per machine through its initialization prompt. Disabling
 
 ### Retiring local inference
 
-The `services.llm` option and the vLLM/Bifrost deployment have been removed. Run `chezmoi init` to regenerate machine-local configuration without the old `services.llm` key. Use `--prompt` if other saved choices need to change. Ingress now requires `services.development`; reinitialization writes both ingress flags as `false` when development is disabled.
+The `services.llm` option and the vLLM/Bifrost deployment have been removed. Run `chezmoi init` to regenerate machine-local configuration without the old `services.llm` key. Use `--prompt` if other saved choices need to change. Ingress now requires `services.development`; reinitialization writes `ingress.caddy = false` when development is disabled.
 
 Existing installations require explicit cleanup because removing sources does not remove previously deployed files or services:
 
-1. Move translation clients to their provider's API, then stop `vllm.service` and `bifrost.service`. Stop shared Caddy/cloudflared services before changing their networks; this briefly interrupts development HTTPS access.
-2. Remove the retired targets from `~/.config/containers/systemd`: `vllm.container`, `vllm.build`, `bifrost.container`, `llm.network`, and `inference.network`, plus `~/.config/bifrost`. Inspect `chezmoi diff` and apply the updated Caddy/cloudflared targets. If development is disabled, remove their obsolete targets instead.
+1. Move translation clients to their provider's API, then stop `vllm.service` and `bifrost.service`. Stop Caddy before changing its networks; this briefly interrupts development HTTPS access. Retire any deployed cloudflared service using the steps below.
+2. Remove the retired targets from `~/.config/containers/systemd`: `vllm.container`, `vllm.build`, `bifrost.container`, `llm.network`, and `inference.network`, plus `~/.config/bifrost`. Inspect `chezmoi diff` and apply the updated Caddy targets. If development is disabled, remove its obsolete targets instead.
 3. Run `systemctl --user daemon-reload`, then restart the retained ingress services. Check their development routes and remove the unused `llm` and `inference` Podman networks after their containers have detached.
 4. Remove obsolete inference images and model/compiler caches once no other consumer needs them. Decide whether to archive or delete the `bifrost-data` volume and its `bifrost.env` encrypted credential together; they contain historical configuration and usage records.
 
 DNS routes and Cloudflare Access applications are managed externally. Remove the retired `llm.<device.domain>`, `llm-<device.domain>`, and `admin-llm-<device.domain>` hostnames from those resources while retaining development routes. This retirement does not add automatic deletion rules for other machines.
+
+### Retiring public ingress
+
+Kimi, DSH, and marimo use private HTTPS through Tailscale and Caddy. The cloudflared deployment, `ingress.cloudflared`, and `cloudflared` settings have been removed. Tailscale SSH and SMB, and HTTP between workspace containers, remain available. Cloudflare remains the DNS provider for private names and Caddy's certificate challenges.
+
+Run `chezmoi init` to remove the retired keys from machine-local configuration. The default remains `ingress.caddy = false`; a saved Caddy choice is retained only when development is enabled. If Caddy was previously retired on the machine, enable `services.development` and `ingress.caddy` with `chezmoi init --prompt`, and supply the Tailscale address, DNS suffix, and ACME email. Plain reinitialization does not automatically enable Caddy for an installation that only used the Tunnel. A saved or overridden Tunnel choice no longer enables ingress or requests Tunnel credentials. Tailscale address prompts remain for development and SMB.
+
+For existing deployments:
+
+1. Prepare Caddy's `cloudflare-dns-token` encrypted credential and DNS-only records pointing to the Tailscale address. Restore archived `caddy-data` and `caddy-config` volumes if available, or let Caddy provision new certificates. Preserve those DNS records and the DNS API token when removing Tunnel resources.
+2. Inspect the full `chezmoi diff`, then apply Caddy's configuration and Quadlets plus the updated Kimi environment and DSH web hosts configuration. Run `systemctl --user daemon-reload`, start Caddy, and restart Kimi and DSH to load private host allowlists; this interrupts their sessions. marimo does not need a restart for this ingress change.
+3. Verify `kimi.<device.domain>`, `dsh.<device.domain>`, and `marimo.<device.domain>` from a Tailscale client, including the applicable Tailscale access rules. Stop `cloudflared.service`, then remove `~/.config/cloudflared` and `~/.config/containers/systemd/cloudflared.container`, and run `systemctl --user daemon-reload` again.
+4. Archive any needed Tunnel configuration and encrypted credential before removing `~/.config/credstore.encrypted/cloudflared-credentials` and unused cloudflared images. Remove dedicated public DNS routes such as `kimi-<device.domain>`, `dsh-<device.domain>`, and `marimo-<device.domain>`. Delete the Tunnel and Access application only after checking that no other route uses them; these resources are managed externally and require their own permissions.
+
+No automatic removal rules are added for other machines. Removing the connector and public DNS does not itself delete the Tunnel or Access application in Cloudflare.
 
 ## Fish
 

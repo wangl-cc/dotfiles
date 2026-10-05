@@ -14,6 +14,8 @@ curl -fsLS https://get.chezmoi.io | sh -s -- \
 
 Initialization prompts for machine-local options and saves them in `~/.config/chezmoi/chezmoi.toml`.
 
+Browser access to Kimi, DSH, and marimo uses Tailscale and Caddy. Cloudflare Tunnel has been retired; Cloudflare remains the DNS provider. Existing deployments should run `chezmoi init` and follow the [public ingress migration](docs/configuration.md#retiring-public-ingress) to enable private HTTPS and remove the old connector and public routes.
+
 ## Documentation
 
 - [Machine configuration](docs/configuration.md): initialization options and shell behavior.

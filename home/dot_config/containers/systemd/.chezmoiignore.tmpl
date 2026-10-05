@@ -15,10 +15,6 @@ secret-proxy.*
 caddy.*
 {{ end }}
 
-{{ if not .ingress.cloudflared }}
-cloudflared.*
-{{ end }}
-
 {{ if not .services.smb }}
 smb-box.*
 {{ end }}

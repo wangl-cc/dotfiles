@@ -4,7 +4,7 @@ Use this reference when the bundled scripts cannot reach the intended notebook, 
 
 ## Targeting
 
-Server selection is explicit `--url` or `--port`, then `MARIMO_URL`, then `https://marimo.ws.loongw.cc`. `--url` and `--port` are mutually exclusive.
+Server selection is explicit `--url` or `--port`, then `MARIMO_URL`, then `http://marimo:2718`. `--url` and `--port` are mutually exclusive.
 
 - `--url URL` accepts a server base URL or a browser URL. A browser `?file=` is decoded into a notebook selector and removed from the API base URL.
 - `--port PORT` connects to `http://127.0.0.1:PORT`. Use this only from the server's network namespace or an explicitly configured local forwarding endpoint. Other workspace containers use `--url http://marimo:2718`.
@@ -23,7 +23,7 @@ Discovery queries only the selected endpoint and emits an array containing its `
 
 ## Authentication
 
-The configured Tailscale endpoint uses no token. Do not look for tokens in logs, registry files, or retired token files. For an explicitly selected token-authenticated server, supply `MARIMO_TOKEN` or `--token`; the latter overrides the environment variable but exposes the value in process arguments. Both scripts support these options and send a bearer token to the selected server.
+The internal workspace endpoint uses no token. Do not look for tokens in logs, registry files, or retired token files. For an explicitly selected token-authenticated server, supply `MARIMO_TOKEN` or `--token`; the latter overrides the environment variable but exposes the value in process arguments. Both scripts support these options and send a bearer token to the selected server.
 
 ## Code Input and Quoting
 
@@ -53,7 +53,7 @@ HTTP errors, invalid responses, non-event-stream execution responses, an executi
 
 ## Common Problems
 
-- **Server unreachable**: check the selected URL and managed service/Caddy status. Do not launch a duplicate server as a fallback.
+- **Server unreachable**: check the selected URL and managed service and workspace network status. Do not launch a duplicate server as a fallback.
 - **No active or matching session**: open the intended notebook in the shared browser, then list sessions again.
 - **Multiple matching sessions**: use an exact session ID; do not guess.
 - **Authentication failure on another server**: verify the supplied token and endpoint without printing credentials.

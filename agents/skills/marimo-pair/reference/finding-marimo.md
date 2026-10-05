@@ -1,6 +1,6 @@
 # Finding a Notebook on the Shared Server
 
-`marimo.service` owns the shared server and its kernels in a dedicated container. The skill connects to `https://marimo.ws.loongw.cc` by default; use `MARIMO_URL` or `--url` for another deployment. From containers on the workspace network, use `--url http://marimo:2718` to connect directly to the same server. Host processes use HTTPS; each container has its own localhost.
+`marimo.service` owns the shared server and its kernels in a dedicated container. The skill connects to `http://marimo:2718` by default; use `MARIMO_URL` or `--url` for another deployment. Run the client from a container on the workspace network. Browsers use private HTTPS over Tailscale; agents in workspace containers connect directly to the internal endpoint. Each container has its own localhost.
 
 ## Find an Active Session
 
@@ -17,7 +17,7 @@ Use the server's reported notebook path or a unique relative path suffix. A note
 
 If no session exists for the intended notebook, have the user open it in the shared notebook browser. A running server and an active notebook session are distinct: headless startup alone does not open every notebook.
 
-If the server is unreachable, report the failed endpoint and check the managed service and Caddy route when host diagnostics are available. Do not start another server, install another marimo runtime, change port publications, or restart the shared service as an automatic pairing fallback. A `marimo.service` restart interrupts every notebook kernel. For a notebook-specific problem, use that notebook's kernel restart through the UI when authorized.
+If the server is unreachable, report the failed endpoint and check the managed service and workspace network when host diagnostics are available. Do not start another server, install another marimo runtime, change port publications, or restart the shared service as an automatic pairing fallback. A `marimo.service` restart interrupts every notebook kernel. For a notebook-specific problem, use that notebook's kernel restart through the UI when authorized.
 
 ## Environment Selection
 

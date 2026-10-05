@@ -17,8 +17,5 @@
 {{- if .ingress.caddy }}
         {{ printf "dsh.%s" .device.domain | quote }},
 {{- end }}
-{{- if .ingress.cloudflared }}
-        {{ printf "dsh-%s" .device.domain | quote }},
-{{- end }}
         ...ctx.webRuntime.trustedHosts,
       ]

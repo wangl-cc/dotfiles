@@ -16,7 +16,7 @@ A user interacts with the same runtime via a notebook UI with cells, outputs, an
 
 ## Connect to a Notebook
 
-Use the bundled scripts from this skill's directory. They require Bash and Python 3, and connect to the managed shared server at `https://marimo.ws.loongw.cc` by default. `MARIMO_URL` overrides the default; `--url` or `--port` selects an explicit server. The configured Tailscale endpoint uses no token.
+Use the bundled scripts from this skill's directory. They require Bash and Python 3, and connect to the managed shared server at `http://marimo:2718` by default. `MARIMO_URL` overrides the default; `--url` or `--port` selects an explicit server. The internal workspace endpoint uses no token.
 
 First list the server's active sessions:
 
@@ -30,10 +30,10 @@ Select the intended notebook by its server-side path. A relative path must uniqu
 bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py -c "print('connected')"
 ```
 
-A browser URL also selects its `?file=` notebook:
+A URL on the internal endpoint also selects its `?file=` notebook:
 
 ```bash
-bash scripts/execute-code.sh --url 'https://marimo.ws.loongw.cc/?file=ecDNA%2Fnotebooks%2Famplicon_cohorts.py' -c "print('connected')"
+bash scripts/execute-code.sh --url 'http://marimo:2718/?file=ecDNA%2Fnotebooks%2Famplicon_cohorts.py' -c "print('connected')"
 ```
 
 Use `--session` instead of a file selector when selecting an exact session ID. If no selector is supplied, execution requires exactly one active session. Do not guess between sessions.
@@ -56,7 +56,7 @@ When code already lives in a file, pass its path as the positional argument; `--
 bash scripts/execute-code.sh --file ecDNA/notebooks/amplicon_cohorts.py /tmp/code.py
 ```
 
-The scripts query HTTP APIs only. They do not scan ports, inspect or delete registry entries, or read tokens from logs. From containers on the workspace network, use `--url http://marimo:2718` or set `MARIMO_URL=http://marimo:2718`; host processes use HTTPS. `--port` selects the calling container's loopback, not the separate marimo container.
+The scripts query HTTP APIs only. They do not scan ports, inspect or delete registry entries, or read tokens from logs. Run these scripts from a container on the workspace network. Browsers use the private HTTPS endpoint over Tailscale; agents in workspace containers use the internal endpoint directly. `--port` selects the calling container's loopback, not the separate marimo container.
 
 `marimo.service` owns the server. If the notebook has no active session, have the user open it in the shared notebook browser. Do not launch a per-project server or restart the shared service to make a session appear. A transport error may occur after code has run: inspect the notebook before retrying a mutation. See [finding-marimo.md](reference/finding-marimo.md) for lifecycle and environment selection, and [execution-context.md](reference/execution-context.md) for targeting, authentication, and failures.
 

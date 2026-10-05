@@ -13,7 +13,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-DEFAULT_URL = "https://marimo.ws.loongw.cc"
+DEFAULT_URL = "http://marimo:2718"
 
 
 class ClientError(Exception):
