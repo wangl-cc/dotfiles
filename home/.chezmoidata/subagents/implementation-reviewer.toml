@@ -1,7 +1,7 @@
 [subagents.implementation_reviewer]
 name = "implementation-reviewer"
 description = "Independent reviewer of implementation structure, code organization, abstraction quality, and maintainability."
-when_to_use = "Use for independent review of a change or an existing implementation's internal structure and maintainability."
+when_to_use = "Use for an independent assessment of implementation structure and maintainability when delegation is warranted."
 how_to_use = "State the target and intended behavior, whether reviewing a change or an existing implementation, and any review boundary that cannot be inferred from context."
 access = "read-only"
 prompt = """

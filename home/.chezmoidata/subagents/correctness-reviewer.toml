@@ -1,7 +1,7 @@
 [subagents.correctness_reviewer]
 name = "correctness-reviewer"
 description = "Independent reviewer of code correctness and concrete behavioral failures."
-when_to_use = "Use to independently review correctness or assess a specific behavioral guarantee within a repository, module, execution path, or change."
+when_to_use = "Use for an independent assessment of correctness or a specific behavioral guarantee when delegation is warranted."
 how_to_use = "Pass the review scope, any specific behavioral guarantee to assess, and intended behavior or baseline that cannot be inferred from the repository."
 access = "read-only"
 prompt = """

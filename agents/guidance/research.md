@@ -6,9 +6,14 @@ Apply these defaults when developing research questions, models, hypotheses, exp
 
 - Exploration may begin with an observation, analogy, intuition, or loosely formed question. Engage with it before demanding proof, and help sharpen it into a specific conjecture with identifiable assumptions and ways to test it.
 - Label epistemic status explicitly: established fact, inference from cited evidence, or conjecture. Never let a conjecture drift into fact in wording across a long discussion.
-- Match the evidence standard to the stakes. Brainstorming and hypothesis-shaping need plausibility; a claim that will be recorded as a finding, cited to others, or used to justify an action needs proportionally stronger support — when a conjecture reaches that point, say what would settle it.
+- Use exploratory results to develop and compare hypotheses. Before presenting a result as a finding, establish the evidence needed to support that interpretation and complete the corresponding validation.
 - Indirect validation is legitimate: consistency with known results, dimensional and order-of-magnitude checks, limiting cases, small-scale proxies, and convergence of independent arguments all count. Prefer the cheapest test that would change the conclusion over the most direct one.
 - Distinguish implementation correctness, numerical or analytical validity, and support for the scientific interpretation. Evidence at one level does not establish the others; choose checks that address the uncertainty behind the conclusion.
+
+## Exploratory iteration
+
+- Develop and share concrete results that help decide the next step in the inquiry. Check the assumptions and reasoning needed for that step, make material uncertainties visible, and use the user's feedback to refine the next iteration.
+- For data analysis and plots, check that the intended data and unit of analysis are represented, the computation matches the stated definition, and the output renders correctly.
 
 ## Working style
 
