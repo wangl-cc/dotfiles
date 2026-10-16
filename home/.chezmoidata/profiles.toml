@@ -1,0 +1,3 @@
+# Portable packages installed by the cloud machine profile.
+[profiles.cloud]
+portable_pkgs = ["bat", "chezmoi", "delta", "dust", "fd", "rtk", "uv"]

@@ -31,7 +31,9 @@ checksum.sha256 = "e3f958d2557a2c027543e874c802dcce9022b9b6fe1673d97c0bd1ef30592
 {{- $arch := default .chezmoi.arch (index $arch_aliases .chezmoi.arch) }}
 {{- $target_name := printf "%s-%s" .chezmoi.os $arch }}
 {{- $install_dir := .portable_pkgs.install_dir }}
+{{- $cloud := eq (dig "machine" "profile" "default" .) "cloud" }}
 {{- range $name, $tool := .portable_pkgs.tools }}
+{{-   if and $cloud (not (has $name $.profiles.cloud.portable_pkgs)) }}{{ continue }}{{ end }}
 {{-   with index $tool.targets $target_name }}
 {{-     with $resolved := get . "resolved" }}
 {{-       $url := printf "https://github.com/%s/releases/download/%s/%s" $tool.repo (urlquery $tool.tag | replace "+" "%20") (urlquery $resolved.asset | replace "+" "%20") }}

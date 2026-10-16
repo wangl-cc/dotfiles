@@ -10,3 +10,18 @@ Library
 .config/caddy
 .config/secret-proxy
 {{ end }}
+
+{{ if eq (dig "machine" "profile" "default" .) "cloud" }}
+.bash_profile
+.bashrc
+.zshenv
+.cargo/config.toml
+.local/bin/pn
+{{   range $name, $tool := .portable_pkgs.tools }}
+{{     if and (eq $tool.type "bundle") (not (has $name $.profiles.cloud.portable_pkgs)) }}
+{{       range $bin, $_ := $tool.bins }}
+{{ printf "%s/%s" $.portable_pkgs.install_dir $bin }}
+{{       end }}
+{{     end }}
+{{   end }}
+{{ end }}

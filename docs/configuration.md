@@ -2,6 +2,7 @@
 
 During the first init, chezmoi prompts once for machine-local options and stores the answers in `~/.config/chezmoi/chezmoi.toml`:
 
+- `machine.profile`: default `default`. `cloud` is for ephemeral cloud containers such as Claude Code cloud sessions: it installs only the portable packages listed in `home/.chezmoidata/profiles.toml` and leaves the container's own `.bashrc`, `.bash_profile`, `.zshenv`, and `~/.cargo/config.toml` alone. pnpm is not installed there, so pair it with `toolchains.node = false`. Configurations created before this option behave as `default` until the next `chezmoi init`.
 - `shell.fish.auto`: default `true`. Enter fish automatically from fallback bash/zsh sessions.
 - `toolchains.node`: default `true`; pnpm installs the latest Node.js LTS release.
 - `toolchains.rustup`: default `none`; choose `minimal`, `default`, or `complete` to install rustup with that profile.

@@ -19,6 +19,13 @@ prefix = {{ if eq .chezmoi.os "darwin" -}}
   "/home/linuxbrew/.linuxbrew"
 {{- end }}
 
+[data.machine]
+{{- $profile := promptChoiceOnce . "machine.profile" "Machine profile (cloud: minimal tools for ephemeral cloud containers)" (list "default" "cloud") "default" }}
+{{- if not (has $profile (list "default" "cloud")) }}
+{{-   fail (printf "machine.profile must be default or cloud, got %q" $profile) }}
+{{- end }}
+profile = {{ $profile | quote }}
+
 [data.kache]
 {{- $kacheMaxSizeGiB := promptIntOnce . "kache.maxSizeGiB" "Maximum local kache store size in GiB" 20 }}
 {{- if lt $kacheMaxSizeGiB 1 }}
