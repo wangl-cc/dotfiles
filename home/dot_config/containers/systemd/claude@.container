@@ -1,24 +1,35 @@
 [Unit]
-Description=Claude Desktop SSH Remote Container
+Description=Claude Remote Control Container (%i)
 Requires=ssh-agent.socket gh-config.service
 Wants=ssh-agent-load.service
 After=ssh-agent-load.service gh-config.service
 
 [Container]
-# Process: Claude Desktop logs in over SSH and starts its own remote server.
-Image=claude-box.build
-ContainerName=claude-box
+# Process: one Remote Control server per project. Every session it serves
+# starts in WorkingDir; an instance drop-in overrides the default location.
+# Without a terminal the server cannot ask for workspace trust, so accept it
+# once by running claude in the project before starting an instance.
+Image=box-base.build
+ContainerName=claude-%i
+WorkingDir=/home/%u/Documents/%i
+Exec=claude remote-control --permission-mode auto
 
-# Reap the remote server and agent tool processes that outlive SSH sessions.
+# Remote Control groups environments into devices by hostname, which would
+# otherwise be each container's random ID; share the host's name instead.
+HostName=%H
+
+# Shared development tool paths and application configuration directories.
+EnvironmentFile=./development.env
+
+# Reap orphaned processes from agent tools and shell commands.
 RunInit=true
 
-# Network: call workspace services and the credential proxy; SSH publication is in the drop-in.
+# Network: call workspace services and the credential proxy.
 Network=workspace.network
 Network=secret-proxy.network
 
-# Identity: map the login user to the host; sshd starts as namespace root.
+# Identity: retain host ownership when reading and writing the shared home.
 UserNS=keep-id
-User=0
 
 # SELinux: preserve existing labels on shared host files and sockets.
 SecurityLabelDisable=true
@@ -27,9 +38,9 @@ SecurityLabelDisable=true
 Volume=%h/.config/secret-proxy/gitconfig:/etc/gitconfig:ro
 
 # GitHub CLI: shadow host login state with ordinary config and a proxy socket.
-# sshd sets GH_TOKEN for login sessions; see 40-claude-box.conf.
 Volume=%t/gh-config:/home/%u/.config/gh:ro
 Volume=%t/secret-proxy:/run/secret-proxy:ro
+Environment=GH_TOKEN=proxy-placeholder
 
 # Shared home: reuse projects, tools and configuration; mask private host state.
 Volume=%h:/home/%u
@@ -39,19 +50,12 @@ Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/ho
 # Keep Kimi's server.token available to its API client.
 Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env
 
-# Claude Desktop remote runtime: keep the server's lock, socket and uploaded
-# binaries apart from a host-side server sharing the same home.
-Volume=claude-box-remote.volume:/home/%u/.claude/remote
-
-# SSH: hide host private keys behind a client-state volume and use the forwarded agent.
-# Trust host keys recorded on the host; mount authorized_keys separately for inbound login.
-Volume=claude-box-ssh.volume:/home/%u/.ssh
+# SSH: hide host private keys behind a client-state volume shared by all
+# instances and use the forwarded agent. Trust host keys recorded on the host.
+Volume=claude-ssh:/home/%u/.ssh:U
 Volume=%h/.ssh/known_hosts:/etc/ssh/ssh_known_hosts:ro
-Volume=%h/.ssh/authorized_keys:/home/%u/.ssh/authorized_keys:ro
 Volume=%t/ssh-agent.socket:/run/ssh-agent.socket
-
-# Persistent state: retain SSH host keys across recreation.
-Volume=claude-box-data:/var/lib/dev-box
+Environment=SSH_AUTH_SOCK=/run/ssh-agent.socket
 
 # Runtime files: use host timezone data and disposable scratch space.
 Volume=/etc/localtime:/etc/localtime:ro
@@ -63,7 +67,9 @@ RuntimeDirectory=secret-proxy
 RuntimeDirectoryMode=0700
 RuntimeDirectoryPreserve=yes
 
-Restart=on-failure
+# The server exits successfully when stopped and gives up after about ten
+# minutes offline, so restart it after any exit.
+Restart=always
 RestartSec=5
 
 [Install]

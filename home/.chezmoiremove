@@ -30,4 +30,9 @@
 .local/bin/marimo-server
 .local/state/marimo/server-token
 .config/containers/systemd/workspace.pod
+.config/containers/systemd/claude-box.build
+.config/containers/systemd/claude-box.container
+.config/containers/systemd/claude-box.container.d
+.config/containers/systemd/claude-box-remote.volume
+.config/containers/systemd/claude-box-ssh.volume
 .claude/statusline.sh

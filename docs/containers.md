@@ -4,7 +4,7 @@ Optional Linux services run as independent rootless Podman containers. Enable th
 
 | Option | Services |
 | --- | --- |
-| `services.development` | dev-box, claude-box, Codex, Kimi, DSH, marimo, and secret-proxy |
+| `services.development` | dev-box, Claude, Codex, Kimi, DSH, marimo, and secret-proxy |
 | `services.smb` | [Samba](../containers/smb-box/README.md) |
 | `ingress.caddy` | Private HTTPS through Tailscale |
 
@@ -43,7 +43,7 @@ systemctl --user daemon-reload
 
 Start the services you enabled with `systemctl --user start <name>.service`; for example, `systemctl --user start kimi.service caddy.service`. Quadlet creates the required networks and runs build dependencies. Complete credential provisioning before starting services that need it.
 
-For later changes, restart affected services to activate new mounts, environment, or network settings. If a Containerfile changed, rebuild its image first with `systemctl --user restart <name>-build.service`, then restart its consumers. Agents and marimo share `box-base`; dev-box has its own image, and claude-box extends it. Applying dotfiles does not itself restart these containers, and disabling a chezmoi option does not stop or remove a deployed service.
+For later changes, restart affected services to activate new mounts, environment, or network settings. If a Containerfile changed, rebuild its image first with `systemctl --user restart <name>-build.service`, then restart its consumers. Agents and marimo share `box-base`; dev-box has its own image. Applying dotfiles does not itself restart these containers, and disabling a chezmoi option does not stop or remove a deployed service.
 
 In symlink mode, edits to static source files can already be visible on the host before apply. When changing a shared network or a proxy/client interface, stop the affected services together and activate the complete change at a session boundary. Container restarts interrupt agent sessions and notebook kernels. Preserve home and named volumes.
 
@@ -67,9 +67,13 @@ Kimi and marimo have no application login on the private network. DSH retains it
 
 ## Development services
 
-Development containers reuse tools and projects from the shared home directory. Codex, Kimi, DSH, and marimo read common tool paths from `development.env`. Updating a home-installed tool needs a service restart, not an image rebuild. SSH is available through dev-box on the Tailscale address at port 2222.
+Development containers reuse tools and projects from the shared home directory. Claude, Codex, Kimi, DSH, and marimo read common tool paths from `development.env`. Updating a home-installed tool needs a service restart, not an image rebuild. SSH is available through dev-box on the Tailscale address at port 2222.
 
-Claude Desktop connects over SSH to claude-box on the Tailscale address at port 10022, with the same authorized keys as dev-box. Desktop starts and upgrades its remote server inside the container, so sessions can open any folder in the shared home; restarting claude-box ends them. claude-box has agent permissions: gh goes through secret-proxy and other agents' credentials are masked. dev-box is for interactive login and keeps the host's gh login and agent credentials visible, so point Desktop at claude-box rather than dev-box or the host.
+Claude runs one [Remote Control](https://code.claude.com/docs/en/remote-control) server per project as `claude@<project>.service`. Sessions are opened and driven from claude.ai/code, the Claude mobile app, or Claude Desktop over an outbound connection; no port is published. Each instance serves `~/Documents/<project>` unless a `claude@<project>.container.d` drop-in sets another directory, as the chezmoi instance does. The managed instances are `chezmoi`, `ecDNA`, and `pheno-geno`. Start another project under `~/Documents` with `systemctl --user start claude@<project>.service`; to keep one across boots, add an instance symlink beside the others.
+
+Every session of an instance starts in its project directory with auto permission mode, agent permissions, and the host's Claude login: gh goes through secret-proxy and other agents' credentials are masked. The server cannot ask for workspace trust, so run `claude` once in a new project directory before starting its instance. Restarting an instance interrupts its sessions; they return when it comes back within about four hours. dev-box is for interactive login and keeps the host's gh login and agent credentials visible, so prefer an instance over running Claude there.
+
+claude-box, the earlier SSH entry for Claude Desktop, has been removed. Applying dotfiles deletes its Quadlets but not a deployed service: stop `claude-box.service`, run `systemctl --user daemon-reload`, then remove the `claude-box-remote`, `claude-box-ssh`, and `claude-box-data` volumes and the `localhost/fedora-claude-box` image.
 
 Agents delegate through service APIs and hide each other's provider credential files. Containers use the forwarded ssh-agent and trust the host's `~/.ssh/known_hosts` read-only; restart them after replacing that file, for example with `ssh-keygen -R`. Git and gh use [secret-proxy](../containers/secret-proxy/README.md); gh preferences are regenerated automatically from the host config. These are cooperative containers with shared home access, not isolation for mutually untrusted users.
 
