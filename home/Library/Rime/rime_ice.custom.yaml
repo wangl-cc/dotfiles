@@ -1,4 +1,6 @@
 patch:
+  engine/translators/@2: null # 关闭日期、时间、星期翻译器（上游列表第三项）
+
   # 雾凇官方万象 LTS 配方
   grammar:
     language: wanxiang-lts-zh-hans
