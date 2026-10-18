@@ -38,5 +38,8 @@
   "tui": "fullscreen",
   "theme": "dark-ansi",
   "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "sandbox": {
+    "enabled": true
+  }
 }
