@@ -8,7 +8,7 @@
 // command palette
 {
   "cli_default_open_behavior": "existing_window",
-  "diff_view_style": "unified",
+  "diff_view_style": "split",
   "agent_servers": {
     "kimi": {
       "type": "registry"
@@ -53,7 +53,10 @@
     },
     "sandbox_permissions": {
       "network_hosts": [
-        "github.com"
+        "github.com",
+        "docs.github.com",
+        "api.github.com",
+        "cli.github.com"
       ],
       "allow_all_hosts": false
     },
