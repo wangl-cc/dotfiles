@@ -67,6 +67,13 @@ RuntimeDirectory=secret-proxy
 RuntimeDirectoryMode=0700
 RuntimeDirectoryPreserve=yes
 
+# The server reuses its previous environment and sessions only while the
+# project's bridge pointer is recent (about four hours); a stale pointer
+# registers a new environment with a new empty session. Refresh an existing
+# pointer so a restart after a longer gap reconnects instead. The project key
+# is the container WorkingDir with non-alphanumerics replaced by dashes.
+ExecStartPre=-/usr/bin/touch -c %h/.claude/projects/-home-%u-Documents-%i/bridge-pointer.json
+
 # The server exits successfully when stopped and gives up after about ten
 # minutes offline, so restart it after any exit.
 Restart=always
