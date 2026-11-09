@@ -86,7 +86,7 @@ portable_pkgs:
       tag: 2.69.0
       targets:
         darwin-aarch64:
-          asset_pattern: ^fastfetch-macos-aarch64\.tar\.gz$
+          asset_pattern: ^fastfetch-macos-(aarch64|universal)\.tar\.gz$
           resolved:
             asset: fastfetch-macos-aarch64.tar.gz
             sha256: 3901a90b11f1823a00fea6f3c3c877e7f336465e9d9facc98fd6b8803e8fac7e
