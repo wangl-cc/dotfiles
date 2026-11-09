@@ -166,6 +166,20 @@ class CliParsingTest(unittest.TestCase):
         self.assertIn("Aborted", result.stderr)
 
 
+class RepositoryManifestTest(unittest.TestCase):
+    def test_fastfetch_macos_asset_pattern_matches_release_assets(self) -> None:
+        manifest = storage.PackageStore(
+            ROOT / "home/.chezmoidata/portable-pkgs.yaml"
+        ).load()
+        target = manifest.tools["fastfetch"].targets["darwin-aarch64"]
+        for asset in (
+            "fastfetch-macos-aarch64.tar.gz",
+            "fastfetch-macos-universal.tar.gz",
+        ):
+            with self.subTest(asset=asset):
+                self.assertRegex(asset, target.asset_pattern)
+
+
 class WorkflowTest(unittest.TestCase):
     def setUp(self) -> None:
         tmp = tempfile.TemporaryDirectory()
