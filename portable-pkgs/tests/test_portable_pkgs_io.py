@@ -621,6 +621,42 @@ class BundleVerificationTest(BundleFixture):
         self.assertTrue((destination / "link").is_symlink())
         self.assertTrue((destination / "bin/tool").stat().st_mode & 0o111)
 
+    def test_materializes_bundle_hardlinks_before_stripping(self) -> None:
+        payload = b"#!/bin/sh\n"
+        with tarfile.open(self.archive, "w:gz") as archive:
+            executable = tarfile.TarInfo("pkg/lib/entry")
+            executable.mode = 0o755
+            executable.size = len(payload)
+            archive.addfile(executable, io.BytesIO(payload))
+            link = tarfile.TarInfo("pkg/bin/tool")
+            link.type = tarfile.LNKTYPE
+            link.linkname = executable.name
+            archive.addfile(link)
+        tool = models.BundleSpec.model_validate(
+            self.tool() | {"materialize_hardlinks": True}
+        )
+        resolved = tool.targets[self.target].resolved
+        assert resolved is not None
+        destination = self.base / "extracted"
+        installation.verify_archive(tool, self.archive, resolved, destination)
+        installed = destination / "bin/tool"
+        self.assertEqual(installed.read_bytes(), payload)
+        self.assertFalse(installed.is_symlink())
+
+    def test_filter_rejects_hardlinks_to_files_outside_the_archive(self) -> None:
+        with tarfile.open(self.archive, "w:gz") as archive:
+            member = tarfile.TarInfo("pkg/bin/tool")
+            member.type = tarfile.LNKTYPE
+            member.linkname = "/etc/passwd"
+            archive.addfile(member)
+        tool = models.BundleSpec.model_validate(
+            self.tool() | {"materialize_hardlinks": True}
+        )
+        resolved = tool.targets[self.target].resolved
+        assert resolved is not None
+        with self.assertRaisesRegex(models.PackageError, "invalid tar hardlink"):
+            installation.verify_archive(tool, self.archive, resolved, self.base / "bad")
+
     def test_rejects_hardlinks_before_extracting_members(self) -> None:
         with tarfile.open(self.archive, "w:gz") as archive:
             for name, target in [

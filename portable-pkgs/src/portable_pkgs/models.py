@@ -254,6 +254,9 @@ class ArchiveFilesSpec(ArchiveSpecBase):
 
 
 class BundleSpec(ArchiveSpecBase):
+    materialize_hardlinks: bool = Field(
+        default=False, strict=True, exclude_if=lambda x: not x
+    )
     type: Literal["bundle"]
     strip_components: int = Field(default=0, ge=0, strict=True)
 

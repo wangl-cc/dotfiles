@@ -55,10 +55,14 @@ class AddOptions(FrozenModel):
     )
     strip_components: Annotated[int | None, Field(ge=0)] = None
 
+    materialize_hardlinks: bool | None = None
+
     @model_validator(mode="after")
     def validate_options(self) -> Self:
         if self.package_type != "bundle" and self.strip_components is not None:
             raise ValueError("--strip-components requires --type bundle")
+        if self.package_type != "bundle" and self.materialize_hardlinks is not None:
+            raise ValueError("--materialize-hardlinks requires --type bundle")
         if self.package_type == "file" and (
             self.path_pattern is not None or self.paths or self.target_paths
         ):
@@ -177,6 +181,10 @@ class AddOptions(FrozenModel):
         }
         if self.package_type == "bundle":
             data["strip_components"] = self.stripping_for(existing)
+            if self.materialize_hardlinks is not None:
+                data["materialize_hardlinks"] = self.materialize_hardlinks
+            elif isinstance(existing, BundleSpec):
+                data["materialize_hardlinks"] = existing.materialize_hardlinks
         if self.tag is not None:
             data["tag"] = self.tag
         elif existing is not None and repo == existing.repo:
@@ -192,6 +200,12 @@ class AddOptions(FrozenModel):
         Otherwise only explicitly edited targets need resolving.
         """
         if existing is None:
+            return tuple(candidate.targets)
+        if (
+            isinstance(candidate, BundleSpec)
+            and isinstance(existing, BundleSpec)
+            and candidate.materialize_hardlinks != existing.materialize_hardlinks
+        ):
             return tuple(candidate.targets)
         if candidate.repo != existing.repo or candidate.tag != existing.tag:
             return tuple(candidate.targets)

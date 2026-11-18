@@ -2,7 +2,7 @@
 
 - Portable standalone CLI packages are declared in `home/.chezmoidata/portable-pkgs.yaml` and installed by chezmoi externals on macOS and Linux.
 - `uv` and `uvx` are installed together from the pinned `uv` release archive and can install or run Python ecosystem CLIs.
-- pnpm is installed as a standalone portable binary, then installs the latest Node.js LTS release and provides `pnpm dlx` for one-off JavaScript or TypeScript CLIs.
+- `pnpm` is installed with its bundled `node-gyp` runtime. Applying the bundle requires Python 3 to convert tar hardlinks to regular files. pnpm installs the latest Node.js LTS release and provides `pnpm dlx` for one-off JavaScript or TypeScript CLIs.
 - `rustup` defaults to `none`. Choose `minimal`, `default`, or `complete` to install it with the official installer and that profile.
 
 The portable package manifest renders a managed block in `home/.chezmoiexternal.toml.tmpl` when chezmoi applies templates.

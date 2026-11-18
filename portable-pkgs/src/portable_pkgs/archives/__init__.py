@@ -15,7 +15,7 @@ from .zip import ZipArchive
 @contextmanager
 def open_archive(path: Path) -> Iterator[Archive]:
     try:
-        if TAR_RE.search(path.name):
+        if TAR_RE.search(path.name) or path.suffix == ".tar":
             opener = TarArchive.open
         elif ZIP_RE.search(path.name):
             opener = ZipArchive.open

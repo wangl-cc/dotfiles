@@ -42,6 +42,11 @@ type = "archive"
 url = {{ $url | quote }}
 exact = true
 stripComponents = {{ $tool.strip_components }}
+{{- if get $tool "materialize_hardlinks" }}
+format = "tar"
+filter.command = "python3"
+filter.args = [{{ joinPath $.chezmoi.sourceDir ".." "portable-pkgs/src/portable_pkgs/archives/materialize.py" | quote }}]
+{{- end }}
 checksum.sha256 = {{ $resolved.sha256 | quote }}
 
 {{-       else if eq $tool.type "file" }}

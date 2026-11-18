@@ -91,17 +91,21 @@ portable_pkgs:
             asset: fastfetch-macos-universal.tar.gz
             sha256: 6e503980ac268b072259f00e5c439eb90a420535f3593704c096b5b3bea64199
             files:
-              fastfetch: fastfetch-macos-universal/usr/bin/fastfetch
+              fastfetch: usr/bin/fastfetch
+              flashfetch: usr/bin/flashfetch
         linux-x86_64:
           asset_pattern: ^fastfetch-linux-amd64\.tar\.gz$
           resolved:
             asset: fastfetch-linux-amd64.tar.gz
             sha256: abf5c99a3702cce8d3c7fa2cccd3ac205076ae0f2e45bced24a42a68821702d6
             files:
-              fastfetch: fastfetch-linux-amd64/usr/bin/fastfetch
+              fastfetch: usr/bin/fastfetch
+              flashfetch: usr/bin/flashfetch
       bins:
-        fastfetch: '{assetStem}/usr/bin/fastfetch'
-      type: archive-files
+        fastfetch: usr/bin/{bin}
+        flashfetch: usr/bin/{bin}
+      type: bundle
+      strip_components: 1
     fd:
       repo: sharkdp/fd
       tag: v10.5.2
@@ -334,6 +338,7 @@ portable_pkgs:
             sha256: b46139f7d42895c62962450886dd35f4554c17531209ea69b2db053d2a142bcb
             files:
               kache: kache
+              kache-engine: kache-engine
         linux-x86_64:
           asset_pattern: ^kache\-x86_64\-unknown\-linux\-musl\.tar\.gz$
           resolved:
@@ -341,8 +346,10 @@ portable_pkgs:
             sha256: 6c59665faf1b14d0944391e6f2a1b510195e6be92c63060a9d1770ed00676824
             files:
               kache: kache
+              kache-engine: kache-engine
       bins:
         kache: '{bin}'
+        kache-engine: '{bin}'
       type: archive-files
     pnpm:
       repo: pnpm/pnpm
@@ -363,8 +370,10 @@ portable_pkgs:
             files:
               pnpm: pnpm
       bins:
-        pnpm: pnpm
-      type: archive-files
+        pnpm: '{bin}'
+      materialize_hardlinks: true
+      type: bundle
+      strip_components: 0
     uv:
       repo: astral-sh/uv
       tag: 0.13.7

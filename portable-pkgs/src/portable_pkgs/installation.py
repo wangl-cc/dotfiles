@@ -2,11 +2,13 @@
 
 import posixpath
 import re
+import tarfile
 from collections.abc import Sequence
 from pathlib import Path
 
 from .archives import open_archive
 from .archives.base import Archive, ArchiveMember, InstalledMember, assert_safe_member
+from .archives.materialize import materialize_hardlinks
 from .models import (
     ARCHIVE_RE,
     ArchiveFilesSpec,
@@ -95,6 +97,14 @@ def verify_archive(
     resolved: ResolvedArchive,
     destination: Path,
 ) -> None:
+    if isinstance(tool, BundleSpec) and tool.materialize_hardlinks:
+        normalized = destination.parent / "materialized.tar"
+        try:
+            with archive_path.open("rb") as source, normalized.open("wb") as output:
+                materialize_hardlinks(source, output)
+        except tarfile.TarError as error:
+            raise PackageError(f"normalize {archive_path.name}: {error}") from error
+        archive_path = normalized
     with open_archive(archive_path) as archive:
         bundle = tool if isinstance(tool, BundleSpec) else None
         if bundle is not None:
