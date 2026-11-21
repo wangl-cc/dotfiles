@@ -10,11 +10,6 @@
   "on_new_window": "readme",
   "cli_default_open_behavior": "existing_window",
   "diff_view_style": "unified",
-  "agent_servers": {
-    "codex-acp": {
-      "type": "registry",
-    },
-  },
   "language_models": {
     "openai_compatible": {
       "kimi-code": {
