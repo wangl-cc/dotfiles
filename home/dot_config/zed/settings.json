@@ -7,12 +7,10 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "on_new_window": "readme",
   "cli_default_open_behavior": "existing_window",
-  "diff_view_style": "split",
+  "diff_view_style": "unified",
   "agent_servers": {
-    "kimi": {
-      "type": "registry"
-    },
     "codex-acp": {
       "type": "registry",
     },
@@ -56,7 +54,8 @@
         "github.com",
         "docs.github.com",
         "api.github.com",
-        "cli.github.com"
+        "cli.github.com",
+        "mozilla.github.io"
       ],
       "allow_all_hosts": false
     },
@@ -67,20 +66,13 @@
     "expand_terminal_card": false,
     "single_file_review": true,
     "dock": "right",
-    "favorite_models": [
-      {
-        "provider": "openai-subscribed",
-        "model": "gpt-6.1-sol",
-        "enable_thinking": true,
-        "effort": "high",
-      },
-    ],
+    "favorite_models": [],
     "show_turn_stats": true,
     "default_model": {
-      "effort": "high",
+      "effort": "medium",
       "enable_thinking": true,
       "provider": "openai-subscribed",
-      "model": "gpt-6.1-sol",
+      "model": "gpt-6.2-sol",
     },
     "inline_assistant_model": {
       "provider": "deepseek",
