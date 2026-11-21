@@ -115,13 +115,32 @@
     "expand_terminal_card": false,
     "single_file_review": true,
     "dock": "right",
-    "favorite_models": [],
+    "favorite_models": [
+      {
+        "provider": "kimi-code",
+        "model": "k3.1-pro",
+        "enable_thinking": true,
+        "effort": "high"
+      },
+      {
+        "provider": "openai-subscribed",
+        "model": "gpt-6.2-sol",
+        "enable_thinking": true,
+        "effort": "medium"
+      },
+      {
+        "provider": "deepseek",
+        "model": "deepseek-flash",
+        "enable_thinking": true,
+        "effort": "high"
+      }
+    ],
     "show_turn_stats": true,
     "default_model": {
-      "effort": "medium",
+      "effort": "high",
       "enable_thinking": true,
-      "provider": "openai-subscribed",
-      "model": "gpt-6.2-sol",
+      "provider": "kimi-code",
+      "model": "k3.1-pro",
     },
     "inline_assistant_model": {
       "provider": "deepseek",
