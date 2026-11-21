@@ -15,6 +15,54 @@
       "type": "registry",
     },
   },
+  "language_models": {
+    "openai_compatible": {
+      "kimi-code": {
+        "api_url": "https://api.kimi.com/coding/v1",
+        "available_models": [
+          {
+            "name": "k3.1-pro",
+            "display_name": "K3.1 Pro",
+            "max_tokens": 1048576,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false,
+            },
+          },
+          {
+            "name": "k3.1-pro-highspeed",
+            "display_name": "K3.1 Pro Highspeed",
+            "max_tokens": 1048576,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false,
+            },
+          },
+          {
+            "name": "kimi-for-coding",
+            "display_name": "Kimi K2.8 Preview",
+            "max_tokens": 1048576,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": false,
+            },
+          },
+        ],
+      },
+    },
+  },
   "colorize_brackets": true,
   "restore_on_startup": "last_session",
   // Keep Zed's defaults explicit; only disabled_globs documents merging with them.
