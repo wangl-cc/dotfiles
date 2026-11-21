@@ -103,7 +103,8 @@
         "docs.github.com",
         "api.github.com",
         "cli.github.com",
-        "mozilla.github.io"
+        "mozilla.github.io",
+        "zed.dev",
       ],
       "allow_all_hosts": false
     },
