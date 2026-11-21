@@ -93,6 +93,11 @@
       "position": "right"
     },
     "sandbox_permissions": {
+      "write_paths": [
+        "/tmp/external-repo-research",
+        "/Users/qs251589/.cache/uv",
+        "/Users/loong/.cache/uv"
+      ],
       "network_hosts": [
         "github.com",
         "docs.github.com",
