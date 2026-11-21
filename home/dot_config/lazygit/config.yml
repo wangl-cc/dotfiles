@@ -1,5 +1,6 @@
 gui:
-  authorColors:
-    Loong: magenta
-    # use blue for other authors
-    "*": blue
+  theme:
+    authorColors:
+      Loong: magenta
+      # use blue for other authors
+      "*": blue
