@@ -46,38 +46,38 @@ portable_pkgs:
       type: archive-files
     chezmoi:
       repo: twpayne/chezmoi
-      tag: v2.74.1
+      tag: v2.74.2
       targets:
         darwin-aarch64:
           asset_pattern: ^chezmoi-darwin-arm64$
           resolved:
             asset: chezmoi-darwin-arm64
-            sha256: 39d3cea7b9954ebbeddc7832edc7dd313a3902d72f468a4ab85ff1f2c2375a6d
+            sha256: 371177229cd7b8ef86d4317f509bbc41fe5dc2ed437478d1fb390eb68a9a0d40
         linux-x86_64:
           asset_pattern: ^chezmoi-linux-amd64-musl$
           resolved:
             asset: chezmoi-linux-amd64-musl
-            sha256: daea5b14035b8a77553d80f4348225b8bb8cbdddb24ea6f699b88976f600029d
+            sha256: cebbe027a4c9b420a9aa3e55356c4d084f6d4a2c5562d18922494316f5656e0e
       type: file
       bin: chezmoi
     delta:
       repo: dandavison/delta
-      tag: 0.21.2
+      tag: 0.22.0
       targets:
         darwin-aarch64:
           asset_pattern: ^delta-.*-aarch64-apple-darwin\.tar\.gz$
           resolved:
-            asset: delta-0.21.2-aarch64-apple-darwin.tar.gz
-            sha256: ac78b8953c5087852437bfa0abfcc7908db1f7a7b7ab0e39e114a9454bb335a4
+            asset: delta-0.22.0-aarch64-apple-darwin.tar.gz
+            sha256: 1baa389d6de21e41f6de8a328ed2e19a4fdef6112641420bf591ead50299cab5
             files:
-              delta: delta-0.21.2-aarch64-apple-darwin/delta
+              delta: delta-0.22.0-aarch64-apple-darwin/delta
         linux-x86_64:
           asset_pattern: ^delta-.*-x86_64-unknown-linux-musl\.tar\.gz$
           resolved:
-            asset: delta-0.21.2-x86_64-unknown-linux-musl.tar.gz
-            sha256: d4c55c9b9991c308cad84412e8a8afdc990779e4dd021f6ebb277a4249719b9f
+            asset: delta-0.22.0-x86_64-unknown-linux-musl.tar.gz
+            sha256: 04bc8cde7e73e8603ce75fe6054453f316ca47263aa7d5832748ab442f5ad051
             files:
-              delta: delta-0.21.2-x86_64-unknown-linux-musl/delta
+              delta: delta-0.22.0-x86_64-unknown-linux-musl/delta
       bins:
         delta: '{assetStem}/delta'
       type: archive-files
@@ -213,22 +213,22 @@ portable_pkgs:
       type: archive-files
     rg:
       repo: BurntSushi/ripgrep
-      tag: 15.2.0
+      tag: 16.0.0
       targets:
         darwin-aarch64:
           asset_pattern: ^ripgrep-.*-aarch64-apple-darwin\.tar\.gz$
           resolved:
-            asset: ripgrep-15.2.0-aarch64-apple-darwin.tar.gz
-            sha256: 3750b2e93f37e0c692657da574d7019a101c0084da05a790c83fd335bad973e4
+            asset: ripgrep-16.0.0-aarch64-apple-darwin.tar.gz
+            sha256: 5a145656d5067144001bfce6648767fd3254599aa736f1ffdb7fb907760b8ca1
             files:
-              rg: ripgrep-15.2.0-aarch64-apple-darwin/rg
+              rg: ripgrep-16.0.0-aarch64-apple-darwin/rg
         linux-x86_64:
           asset_pattern: ^ripgrep-.*-x86_64-unknown-linux-musl\.tar\.gz$
           resolved:
-            asset: ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz
-            sha256: 33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c
+            asset: ripgrep-16.0.0-x86_64-unknown-linux-musl.tar.gz
+            sha256: 54268ab4643c00a290a29b0086066d64b3f56236dd805ec64629a86f9bd29fd0
             files:
-              rg: ripgrep-15.2.0-x86_64-unknown-linux-musl/rg
+              rg: ripgrep-16.0.0-x86_64-unknown-linux-musl/rg
       bins:
         rg: '{assetStem}/rg'
       type: archive-files
@@ -353,20 +353,20 @@ portable_pkgs:
       type: archive-files
     pnpm:
       repo: pnpm/pnpm
-      tag: v12.21.0
+      tag: v12.23.0
       targets:
         darwin-aarch64:
           asset_pattern: ^pnpm-darwin-arm64[.]tar[.]gz$
           resolved:
             asset: pnpm-darwin-arm64.tar.gz
-            sha256: 5c4d73018e00dd602531ce714625594fb693cbe110e6719df2b043b0ae62ab1a
+            sha256: 52bb314bf0d48928fc15126ccce42aa199275e29018bef112a04ae8acdcaaf14
             files:
               pnpm: pnpm
         linux-x86_64:
           asset_pattern: ^pnpm-linux-x64-musl[.]tar[.]gz$
           resolved:
             asset: pnpm-linux-x64-musl.tar.gz
-            sha256: 6dbcd9ea8ed37b5acbe279159ad0ed3a4ac614f5d7ae62d5ba51d32a85a589d7
+            sha256: bd5ccafed63753322371d24b6676fe9a773ef5f9961d22ea225c1b287be28d57
             files:
               pnpm: pnpm
       bins:
