@@ -12,7 +12,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -34,12 +34,13 @@
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true
   },
+  "sandbox": {
+    "enabled": true
+  },
   "effortLevel": "high",
   "tui": "fullscreen",
   "theme": "dark-ansi",
+  "switchModelsOnFlag": false,
   "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": true,
-  "sandbox": {
-    "enabled": true
-  }
+  "agentPushNotifEnabled": true
 }
