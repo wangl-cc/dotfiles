@@ -79,7 +79,7 @@ The `chezmoi` instance has been retired in favor of claude-box. Applying dotfile
 
 Agents delegate through service APIs and hide each other's provider credential files. Containers use the forwarded ssh-agent and trust the host's `~/.ssh/known_hosts` read-only; restart them after replacing that file, for example with `ssh-keygen -R`. Git and gh use [secret-proxy](../containers/secret-proxy/README.md); gh preferences are regenerated automatically from the host config. These are cooperative containers with shared home access, not isolation for mutually untrusted users.
 
-marimo serves `~/Documents` through private HTTPS when Caddy is enabled; containers use `http://marimo:2718`. Its service installs `marimo[sandbox]` with `uv tool install --managed-python` into shared home before startup. Upgrade explicitly with `uv tool upgrade marimo`. Restarting the service stops all notebook kernels. See [environment selection](../agents/skills/marimo-pair/reference/finding-marimo.md#environment-selection) for project venvs and [marimo-pair](../agents/skills/marimo-pair/SKILL.md) for agent access.
+marimo serves `~/Documents` through private HTTPS when Caddy is enabled; containers use `http://marimo:2718`. Its service installs `marimo[sandbox]` with `uv tool install --managed-python` into shared home before startup. Upgrade explicitly with `uv tool upgrade marimo`. Restarting the service stops all notebook kernels. See [notebook dependencies](../agents/skills/marimo-notebook/reference/dependencies.md) for notebook environments and [marimo-notebook](../agents/skills/marimo-notebook/SKILL.md) for agent access.
 
 ## Networks and configuration
 
