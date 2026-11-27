@@ -48,7 +48,7 @@ Mask=/home/%u/.local/share/containers:/home/%u/.local/share/zed/server_state:/ho
 
 # Delegate through service APIs; hide other agents' provider credentials.
 # Keep Kimi's server.token available to its API client.
-Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env
+Mask=/home/%u/.codex/auth.json:/home/%u/.kimi-code/credentials:/home/%u/.kimi-code/oauth:/home/%u/.kimi-code/config.toml:/home/%u/.dsh/.credentials.yaml:/home/%u/.dsh/.env:/home/%u/.gemini/antigravity-cli/antigravity-oauth-token:/home/%u/.config/antigravity
 
 # SSH: hide host private keys behind a client-state volume shared by all
 # instances and use the forwarded agent. Trust host keys recorded on the host.

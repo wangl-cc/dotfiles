@@ -4,7 +4,7 @@ Optional Linux services run as independent rootless Podman containers. Enable th
 
 | Option | Services |
 | --- | --- |
-| `services.development` | dev-box, claude-box, Claude Remote Control, Codex, Kimi, DSH, marimo, and secret-proxy |
+| `services.development` | dev-box, claude-box, Claude Remote Control, Codex, Kimi, DSH, marimo, Antigravity, and secret-proxy |
 | `services.smb` | [Samba](../containers/smb-box/README.md) |
 | `ingress.caddy` | Private HTTPS through Tailscale |
 
@@ -67,7 +67,7 @@ Kimi and marimo have no application login on the private network. DSH retains it
 
 ## Development services
 
-Development containers reuse tools and projects from the shared home directory. Claude Remote Control, Codex, Kimi, DSH, and marimo read common tool paths from `development.env`. Updating a home-installed tool needs a service restart, not an image rebuild. SSH is available through dev-box on the Tailscale address at port 2222.
+Development containers reuse tools and projects from the shared home directory. Antigravity, Claude Remote Control, Codex, Kimi, DSH, and marimo read common tool paths from `development.env`. Updating a home-installed tool needs a service restart, not an image rebuild. SSH is available through dev-box on the Tailscale address at port 2222.
 
 Claude Desktop connects over SSH to claude-box on the Tailscale address at port 10022, with the same authorized keys as dev-box. Desktop starts and upgrades its remote server inside the container, so sessions can open any folder in the shared home; restarting claude-box ends running sessions, and Desktop can resume them from their transcripts. claude-box has agent permissions: gh goes through secret-proxy and other agents' credentials are masked. dev-box is for interactive login and keeps the host's gh login and agent credentials visible, so point Desktop at claude-box rather than dev-box or the host.
 
